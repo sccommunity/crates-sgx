@@ -1,6 +1,11 @@
+# crates-sgx
+
+crates-sgx is a monorepo of all Rust crates ported for Teaclave SGX SDK
+targeting the Intel SGX platform.
+
 ## Branch
 
-- `master`/`sgx1.1.0`: Teaclave SGX SDK 1.1.0 (Intel SGX SDK 2.7.1)
+- `sgx1.1.0` (default): Teaclave SGX SDK 1.1.0 (Intel SGX SDK 2.7.1)
 
 ## Version
 
@@ -16,7 +21,7 @@ For example:
 
 ## Tag
 
-Tag follows this convention `v{x.y.z}+sgx{x.y.z}`, where:
+Tags follow this convention `v{x.y.z}+sgx{x.y.z}`, where:
 - `v{x.y.z}` is the version of crates-sgx
 - `sgx{x.y.z}` is the version of Teaclave SGX SDK
 
