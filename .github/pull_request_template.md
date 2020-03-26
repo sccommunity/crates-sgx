@@ -1,6 +1,6 @@
 NOTE: Choose a PR template below and delete others.
 
-## Adding/Upgrading Crates
+## Add/Upgrade Crates
 
 ### Description
 
@@ -11,19 +11,23 @@ Fixes # (issue)
 
 ### Crate Meta
 
-- Name:
-- Version:
-- License:
-- Upstream commit hash base:
-- Teaclave SGX SDK version:
+- **Name**:
+- **Version**:
+- **License**:
+- **Upstream commit hash base**:
+- **Teaclave SGX SDK version**:
 
 ### Diff of Changes
 
 ```
 Please include a diff of changes between the upstream and the ported version.
+
+Use either of these commands to generate diff:
+  - git diff (when .git has not been deleted)
+  - diff -Naur --exclude=.git sgx-crate-dir upstream-crate-dir (comparing two dirs)
 ```
 
-## Updating Crates
+## Update Crates
 
 ### Description
 
@@ -32,7 +36,7 @@ include relevant motivation and context.
 
 Fixes # (issue)
 
-## Deleting Crates
+## Delete Crates
 
 ### Description
 
