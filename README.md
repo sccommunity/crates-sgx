@@ -9,10 +9,10 @@ targeting the Intel SGX platform.
 
 ## Version
 
-Given a version number X.Y.Z, increment:
-- X when making incompatible structural/API changes
-- Y when updating Teaclave SGX SDK
-- Z when adding, updating, deprecating and deleting crates
+Given a version number `x.y.z`, increment:
+- `z` when adding, updating, deprecating and deleting crates of crates-sgx
+- `y` when updating Teaclave SGX SDK
+- `x` when making incompatible structural/API changes of crates-sgx
 
 For example:
 - crates-sgx 0.1.0: Teaclave SGX SDK 1.1.0 (Intel SGX SDK 2.7.1) + 10 SGX crates
@@ -36,7 +36,7 @@ Tags follow this convention `v{x.y.z}+sgx{x.y.z}`, where:
 
 ## Crates
 
-- crate name, version, license, upstream commit hash base
+- `{crate name}`, `{version}`, `{license}`, `{upstream commit hash base}`
 - cfg-if, 0.1.10, MIT/Apache-2.0, 4484a6faf816ff8058088ad857b0c6bb2f4b02b2
 - rust-hex, 0.4.2, MIT/Apache-2.0, be0c32f9c8938ca0359bbb0d1477e31b07cb3358
 
