@@ -25,6 +25,15 @@ Tags follow this convention `v{x.y.z}+sgx{x.y.z}`, where:
 - `v{x.y.z}` is the version of crates-sgx
 - `sgx{x.y.z}` is the version of Teaclave SGX SDK
 
+## Contributing
+
+- Propose a crate you paln to port in issue and then port crates for Teaclave
+  SGX SDK.
+- Create a pull request stating crate name, version, license and upstream
+  commit hash (usually a public release) which your port based on.
+- Provide a diff of your changes for reviewing and auditing.
+- Add metadata in the crates section of `README.md` and update `CHANGELOG.md`.
+
 ## Crates
 
 - crate name, version, license, upstream commit hash base
