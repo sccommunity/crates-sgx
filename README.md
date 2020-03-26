@@ -30,3 +30,9 @@ Tags follow this convention `v{x.y.z}+sgx{x.y.z}`, where:
 - crate name, version, license, upstream commit hash base
 - cfg-if, 0.1.10, MIT/Apache-2.0, 4484a6faf816ff8058088ad857b0c6bb2f4b02b2
 - rust-hex, 0.4.2, MIT/Apache-2.0, be0c32f9c8938ca0359bbb0d1477e31b07cb3358
+
+## License
+
+crates-sgx is provided under the Apache License 2.0. We only accept crates
+provided under ["Apache-like"](https://www.apache.org/legal/resolved.html)
+license.
