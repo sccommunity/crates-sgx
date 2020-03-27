@@ -3,6 +3,12 @@
 crates-sgx is a monorepo of all Rust crates ported for Teaclave SGX SDK
 targeting the Intel SGX platform.
 
+## Usage
+
+The
+[crates-sgx-example](https://github.com/universal-secure-computing-community/crates-sgx-example)
+project illustrates usages of these crates for developing sgx enclave.
+
 ## Branch
 
 - `sgx1.1.0` (default): Teaclave SGX SDK 1.1.0 (Intel SGX SDK 2.7.1)
