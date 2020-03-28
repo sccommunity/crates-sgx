@@ -9,6 +9,32 @@ The
 [crates-sgx-example](https://github.com/universal-secure-computing-community/crates-sgx-example)
 project illustrates usages of these crates for developing sgx enclave.
 
+Here is an example of `Cargo.toml`.
+
+```
+[package]
+name = "crates-sgx-example"
+version = "0.1.0"
+authors = ["The Universal Secure Computing Community Authors"]
+edition = "2018"
+
+[lib]
+name = "crates_sgx_example"
+crate-type = ["staticlib", "rlib"]
+
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = [
+  "sgx_tstd",
+]
+
+[dependencies]
+cfg-if = { git = "https://github.com/universal-secure-computing-community/crates-sgx", tag = "v0.1.0+sgx1.1.0" }
+hex = { git = "https://github.com/universal-secure-computing-community/crates-sgx", tag = "v0.1.0+sgx1.1.0" }
+
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk", tag = "v1.1.0", optional = true }
+```
+
 ## Branch
 
 - `sgx1.1.0` (default): Teaclave SGX SDK 1.1.0 (Intel SGX SDK 2.7.1)
