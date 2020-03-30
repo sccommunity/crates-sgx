@@ -370,14 +370,34 @@ pub fn encode_to_slice<T: AsRef<[u8]>>(input: T, output: &mut [u8]) -> Result<()
     Ok(())
 }
 
-#[cfg(test)]
-mod test {
+#[cfg(feature = "enclave_unit_test")]
+pub mod test {
     use super::*;
     #[cfg(not(feature = "std"))]
     use alloc::string::ToString;
-    use pretty_assertions::assert_eq;
 
-    #[test]
+    use sgx_tunittest::*;
+
+    pub fn run_tests() {
+        rsgx_unit_tests!(
+            test_gen_iter,
+            test_encode_to_slice,
+            test_decode_to_slice,
+            test_encode,
+            test_decode,
+            test_from_hex_okay_str,
+            test_from_hex_okay_bytes,
+            test_invalid_length,
+            test_invalid_char,
+            test_empty,
+            test_from_hex_whitespace,
+            test_from_hex_array,
+            test_to_hex,
+        );
+
+        error::tests::run_tests();
+    }
+
     fn test_gen_iter() {
         let mut result = Vec::new();
         result.push((0, 1));
@@ -386,7 +406,6 @@ mod test {
         assert_eq!(generate_iter(5).collect::<Vec<_>>(), result);
     }
 
-    #[test]
     fn test_encode_to_slice() {
         let mut output_1 = [0; 4 * 2];
         encode_to_slice(b"kiwi", &mut output_1).unwrap();
@@ -404,7 +423,6 @@ mod test {
         );
     }
 
-    #[test]
     fn test_decode_to_slice() {
         let mut output_1 = [0; 4];
         decode_to_slice(b"6b697769", &mut output_1).unwrap();
@@ -419,35 +437,29 @@ mod test {
         assert_eq!(decode_to_slice(b"6", &mut output_3), Err(FromHexError::OddLength));
     }
 
-    #[test]
     fn test_encode() {
         assert_eq!(encode("foobar"), "666f6f626172");
     }
 
-    #[test]
     fn test_decode() {
         assert_eq!(decode("666f6f626172"), Ok(String::from("foobar").into_bytes()));
     }
 
-    #[test]
     pub fn test_from_hex_okay_str() {
         assert_eq!(Vec::from_hex("666f6f626172").unwrap(), b"foobar");
         assert_eq!(Vec::from_hex("666F6F626172").unwrap(), b"foobar");
     }
 
-    #[test]
     pub fn test_from_hex_okay_bytes() {
         assert_eq!(Vec::from_hex(b"666f6f626172").unwrap(), b"foobar");
         assert_eq!(Vec::from_hex(b"666F6F626172").unwrap(), b"foobar");
     }
 
-    #[test]
     pub fn test_invalid_length() {
         assert_eq!(Vec::from_hex("1").unwrap_err(), FromHexError::OddLength);
         assert_eq!(Vec::from_hex("666f6f6261721").unwrap_err(), FromHexError::OddLength);
     }
 
-    #[test]
     pub fn test_invalid_char() {
         assert_eq!(
             Vec::from_hex("66ag").unwrap_err(),
@@ -455,12 +467,10 @@ mod test {
         );
     }
 
-    #[test]
     pub fn test_empty() {
         assert_eq!(Vec::from_hex("").unwrap(), b"");
     }
 
-    #[test]
     pub fn test_from_hex_whitespace() {
         assert_eq!(
             Vec::from_hex("666f 6f62617").unwrap_err(),
@@ -468,7 +478,6 @@ mod test {
         );
     }
 
-    #[test]
     pub fn test_from_hex_array() {
         assert_eq!(
             <[u8; 6] as FromHex>::from_hex("666f6f626172"),
@@ -481,7 +490,6 @@ mod test {
         );
     }
 
-    #[test]
     fn test_to_hex() {
         assert_eq!(
             [0x66, 0x6f, 0x6f, 0x62, 0x61, 0x72].encode_hex::<String>(),
