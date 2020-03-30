@@ -59,12 +59,58 @@ Tags follow this convention `v{x.y.z}+sgx{x.y.z}`, where:
 
 ## Contributing
 
-- Propose a crate you paln to port in issue and then port crates for Teaclave
-  SGX SDK.
+- Propose a crate you paln to port in issue and then port crates and
+  corresponding tests for Teaclave SGX SDK.
 - Create a pull request stating crate name, version, license and upstream
   commit hash (usually a public release) which your port based on.
 - Provide a diff of your changes for reviewing and auditing.
 - Add metadata in the crates section of `README.md` and update `CHANGELOG.md`.
+
+## Porting
+
+1. Fix dependencies: add SGX related dependencies in the Cargo.toml. For example:
+```
+[dependencies]
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.0", optional = true }
+
+// Replace hex = "0.4.2", and pay attention to the tag
+hex = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "0.1.0" }
+```
+
+2. Fix features: add a feature to enable SGX's standard library. For example:
+
+```
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+```
+
+3. Add headers in the `lib.rs` to enable the std. For example:
+
+```
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
+```
+
+4. Fix standard library issues. For example:
+
+```
+// use std::sync::{Arc, Mutex};
+use std::sync::{Arc, SgxMutex as Mutex};
+```
+5. Tests including unit tests and functional tests should be also ported for SGX
+   std.
+   [Here](https://github.com/universal-secure-computing-community/crates-sgx/commit/01e0595f66af87a0c3631360696217dbbae90f14)
+   is an example to port tests. Basically, you can use `utils/sgx-tests`
+   template as a test driver for testing in SGX enclave.
+
+6. There are other cases like file system APIs, and untrusted calls you need to
+   review and handle properly. Feel free to submit an issue to discussion.
 
 ## Crates
 
