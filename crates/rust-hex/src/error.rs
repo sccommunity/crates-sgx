@@ -32,14 +32,24 @@ impl fmt::Display for FromHexError {
     }
 }
 
-#[cfg(test)]
-mod tests {
+#[cfg(feature = "enclave_unit_test")]
+pub mod tests {
     use super::*;
     #[cfg(not(feature = "std"))]
     use alloc::string::ToString;
-    use pretty_assertions::assert_eq;
 
-    #[test]
+    use sgx_tunittest::*;
+    #[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+    use std::string::ToString;
+    #[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+    use std::prelude::v1::*;
+
+    pub fn run_tests() {
+        rsgx_unit_tests!(
+            test_display,
+        );
+    }
+
     fn test_display() {
         assert_eq!(
             FromHexError::InvalidHexCharacter { c: '\n', index: 5 }.to_string(),
