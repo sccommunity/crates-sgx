@@ -29,10 +29,10 @@ mesalock_sgx = [
 ]
 
 [dependencies]
-cfg-if = { git = "https://github.com/universal-secure-computing-community/crates-sgx", tag = "v0.1.0+sgx1.1.0" }
-hex = { git = "https://github.com/universal-secure-computing-community/crates-sgx", tag = "v0.1.0+sgx1.1.0" }
+cfg-if = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.1.0+sgx1.1.0" }
+hex = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.1.0+sgx1.1.0" }
 
-sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk", tag = "v1.1.0", optional = true }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.0", optional = true }
 ```
 
 ## Branch
