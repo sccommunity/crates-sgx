@@ -127,7 +127,7 @@ $(Signed_RustEnclave_Name): $(RustEnclave_Name)
 	@$(SGX_ENCLAVE_SIGNER) sign -key ../../../utils/enclave_signing_key.pem -enclave $(RustEnclave_Name) -out $@ -config enclave/Enclave.config.xml
 	@echo "SIGN =>  $@"
 
-run:
+run: all
 	@( cd bin && ./run-tests )
 
 .PHONY: enclave
