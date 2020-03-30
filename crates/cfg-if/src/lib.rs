@@ -86,10 +86,17 @@ macro_rules! cfg_if {
     };
 }
 
-#[cfg(test)]
-mod tests {
+#[cfg(feature = "enclave_unit_test")]
+/// Run tests
+pub mod tests {
+    /// Run tests
+    pub fn run_tests() {
+        it_works();
+        test_usage_within_a_function();
+    }
+
     cfg_if! {
-        if #[cfg(test)] {
+        if #[cfg(feature = "enclave_unit_test")] {
             use core::option::Option as Option2;
             fn works1() -> Option2<u32> { Some(1) }
         } else {
@@ -100,7 +107,7 @@ mod tests {
     cfg_if! {
         if #[cfg(foo)] {
             fn works2() -> bool { false }
-        } else if #[cfg(test)] {
+        } else if #[cfg(feature = "enclave_unit_test")] {
             fn works2() -> bool { true }
         } else {
             fn works2() -> bool { false }
@@ -116,7 +123,7 @@ mod tests {
     }
 
     cfg_if! {
-        if #[cfg(test)] {
+        if #[cfg(feature = "enclave_unit_test")] {
             use core::option::Option as Option3;
             fn works4() -> Option3<u32> { Some(1) }
         }
@@ -125,12 +132,11 @@ mod tests {
     cfg_if! {
         if #[cfg(foo)] {
             fn works5() -> bool { false }
-        } else if #[cfg(test)] {
+        } else if #[cfg(feature = "enclave_unit_test")] {
             fn works5() -> bool { true }
         }
     }
 
-    #[test]
     fn it_works() {
         assert!(works1().is_some());
         assert!(works2());
@@ -139,7 +145,6 @@ mod tests {
         assert!(works5());
     }
 
-    #[test]
     #[allow(clippy::assertions_on_constants)]
     fn test_usage_within_a_function() {
         cfg_if! {if #[cfg(debug_assertions)] {

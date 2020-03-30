@@ -20,6 +20,8 @@ travis-ci = { repository = "alexcrichton/cfg-if" }
 [dependencies]
 core = { version = "1.0.0", optional = true, package = 'rustc-std-workspace-core' }
 compiler_builtins = { version = '0.1.2', optional = true }
+sgx_tunittest = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.0", optional = true }
 
 [features]
 rustc-dep-of-std = ['core', 'compiler_builtins']
+enclave_unit_test = ["sgx_tunittest"]
