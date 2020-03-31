@@ -68,6 +68,17 @@ Tags follow this convention `v{x.y.z}+sgx{x.y.z}`, where:
 - Provide a diff of your changes for reviewing and auditing.
 - Add metadata in the crates section of `README.md` and update `CHANGELOG.md`.
 
+### Test
+
+To run unit tests for all crates maintained by this repository, just run
+
+```bash
+# in simulated mode
+SGX_MODE=SW make test
+
+# or hardware mode with 'make test'
+```
+
 ## Porting
 
 1. Fix dependencies: add SGX related dependencies in the Cargo.toml. For example:
