@@ -14,7 +14,7 @@ Here is an example of `Cargo.toml`.
 ```
 [package]
 name = "crates-sgx-example"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["The Universal Secure Computing Community Authors"]
 edition = "2018"
 
@@ -29,15 +29,16 @@ mesalock_sgx = [
 ]
 
 [dependencies]
-cfg-if = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.1.0+sgx1.1.0" }
-hex = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.1.0+sgx1.1.0" }
+cfg-if = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.0+sgx1.1.1" }
+hex = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.0+sgx1.1.1" }
 
-sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.0", optional = true }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.1", optional = true }
 ```
 
 ## Branch
 
-- `sgx1.1.0` (default): Teaclave SGX SDK 1.1.0 (Intel SGX SDK 2.7.1)
+- `sgx1.1.1` (default): Teaclave SGX SDK 1.1.1 (Intel SGX SDK 2.9)
+- `sgx1.1.0`: Teaclave SGX SDK 1.1.0 (Intel SGX SDK 2.7.1)
 - `gh-pages`: Docs of all SGX crates for the release with the latest version
 
 ## Version
@@ -84,10 +85,10 @@ SGX_MODE=SW make test
 1. Fix dependencies: add SGX related dependencies in the Cargo.toml. For example:
 ```
 [dependencies]
-sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.0", optional = true }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.1", optional = true }
 
 // Replace hex = "0.4.2", and pay attention to the tag
-hex = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "0.1.0" }
+hex = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.0+sgx1.1.1" }
 ```
 
 2. Fix features: add a feature to enable SGX's standard library. For example:
