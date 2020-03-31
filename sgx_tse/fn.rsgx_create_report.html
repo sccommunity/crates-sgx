@@ -1,0 +1,32 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `rsgx_create_report` fn in crate `sgx_tse`."><meta name="keywords" content="rust, rustlang, rust-lang, rsgx_create_report"><title>sgx_tse::rsgx_create_report - Rust</title><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../dark.css"><link rel="stylesheet" type="text/css" href="../light.css" id="themeStyle"><script src="../storage.js"></script><noscript><link rel="stylesheet" href="../noscript.css"></noscript><link rel="shortcut icon" href="../favicon.ico"><style type="text/css">#crate-search{background-image:url("../down-arrow.svg");}</style></head><body class="rustdoc fn"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../sgx_tse/index.html'><div class='logo-container'><img src='../rust-logo.png' alt='logo'></div></a><div class="sidebar-elems"><p class='location'><a href='index.html'>sgx_tse</a></p><script>window.sidebarCurrent = {name: 'rsgx_create_report', ty: 'fn', relpath: ''};</script><script defer src="sidebar-items.js"></script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../settings.html"><img src="../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../src/sgx_tse/se.rs.html#77-89' title='goto source code'>[src]</a></span><span class='in-band'>Function <a href='index.html'>sgx_tse</a>::<wbr><a class="fn" href=''>rsgx_create_report</a></span></h1><pre class='rust fn'>pub fn rsgx_create_report(<br>&nbsp;&nbsp;&nbsp;&nbsp;target_info: &amp;<a class="struct" href="../sgx_types/types/struct.sgx_target_info_t.html" title="struct sgx_types::types::sgx_target_info_t">sgx_target_info_t</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;report_data: &amp;<a class="struct" href="../sgx_types/types/struct.sgx_report_data_t.html" title="struct sgx_types::types::sgx_report_data_t">sgx_report_data_t</a><br>) -&gt; <a class="type" href="../sgx_types/error/type.SgxResult.html" title="type sgx_types::error::SgxResult">SgxResult</a>&lt;<a class="struct" href="../sgx_types/types/struct.sgx_report_t.html" title="struct sgx_types::types::sgx_report_t">sgx_report_t</a>&gt;</pre><div class='docblock'><p>The rsgx_create_report function tries to use the information of the target enclave and other information
+to create a cryptographic report of the enclave.</p>
+<p>This function is a wrapper for the SGX EREPORT instruction.</p>
+<h1 id="description" class="section-header"><a href="#description">Description</a></h1>
+<p>Use the function rsgx_create_report to create a cryptographic report that describes the contents of the
+calling enclave. The report can be used by other enclaves to verify that the enclave is running on the
+same platform. When an enclave calls rsgx_verify_report to verify a report, it will succeed only if
+the report was generated using the target_info for said enclave. This function is a wrapper for the SGX EREPORT
+instruction.</p>
+<p>Before the source enclave calls rsgx_create_report to generate a report, it needs to populate target_info with
+information about the target enclave that will verify the report. The target enclave may obtain this information
+calling rsgx_create_report with a default value for target_info and pass it to the source enclave at the beginning
+of the inter-enclave attestation process.</p>
+<h1 id="parameters" class="section-header"><a href="#parameters">Parameters</a></h1>
+<p><strong>target_info</strong></p>
+<p>A pointer to the sgx_target_info_t object that contains the information of the target enclave,
+which will be able to cryptographically verify the report calling rsgx_verify_report.efore calling this function.</p>
+<p>If value is default, sgx_create_report retrieves information about the calling enclave,
+but the generated report cannot be verified by any enclave.</p>
+<p><strong>report_data</strong></p>
+<p>A pointer to the sgx_report_data_t object which contains a set of data used for communication between the enclaves.</p>
+<h1 id="requirements" class="section-header"><a href="#requirements">Requirements</a></h1>
+<p>Library: libsgx_tservice.a</p>
+<h1 id="return-value" class="section-header"><a href="#return-value">Return value</a></h1>
+<p>Cryptographic report of the enclave</p>
+<h1 id="errors" class="section-header"><a href="#errors">Errors</a></h1>
+<p><strong>SGX_ERROR_INVALID_PARAMETER</strong></p>
+<p>An error is reported if any of the parameters memory is not within the enclave or the reserved fields
+of the data structure are not set to zero.</p>
+<p><strong>SGX_ERROR_OUT_OF_MEMORY</strong></p>
+<p>Indicates that the enclave is out of memory.</p>
+</div></section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../";window.currentCrate = "sgx_tse";</script><script src="../aliases.js"></script><script src="../main.js"></script><script defer src="../search-index.js"></script></body></html>

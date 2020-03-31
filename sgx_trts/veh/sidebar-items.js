@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["rsgx_register_exception_handler","rsgx_register_exception_handler registers an exception handler."],["rsgx_unregister_exception_handler","rsgx_unregister_exception_handler is used to unregister a custom exception handler."]],"type":[["exception_handle",""]]});

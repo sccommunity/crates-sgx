@@ -1,0 +1,225 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/mssun/.cargo/git/checkouts/incubator-teaclave-sgx-sdk-c63c8825343e87f0/71a88b6/sgx_trts/src/veh.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>veh.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../sgx_trts/index.html'><div class='logo-container'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<span id="2">  2</span>
+<span id="3">  3</span>
+<span id="4">  4</span>
+<span id="5">  5</span>
+<span id="6">  6</span>
+<span id="7">  7</span>
+<span id="8">  8</span>
+<span id="9">  9</span>
+<span id="10"> 10</span>
+<span id="11"> 11</span>
+<span id="12"> 12</span>
+<span id="13"> 13</span>
+<span id="14"> 14</span>
+<span id="15"> 15</span>
+<span id="16"> 16</span>
+<span id="17"> 17</span>
+<span id="18"> 18</span>
+<span id="19"> 19</span>
+<span id="20"> 20</span>
+<span id="21"> 21</span>
+<span id="22"> 22</span>
+<span id="23"> 23</span>
+<span id="24"> 24</span>
+<span id="25"> 25</span>
+<span id="26"> 26</span>
+<span id="27"> 27</span>
+<span id="28"> 28</span>
+<span id="29"> 29</span>
+<span id="30"> 30</span>
+<span id="31"> 31</span>
+<span id="32"> 32</span>
+<span id="33"> 33</span>
+<span id="34"> 34</span>
+<span id="35"> 35</span>
+<span id="36"> 36</span>
+<span id="37"> 37</span>
+<span id="38"> 38</span>
+<span id="39"> 39</span>
+<span id="40"> 40</span>
+<span id="41"> 41</span>
+<span id="42"> 42</span>
+<span id="43"> 43</span>
+<span id="44"> 44</span>
+<span id="45"> 45</span>
+<span id="46"> 46</span>
+<span id="47"> 47</span>
+<span id="48"> 48</span>
+<span id="49"> 49</span>
+<span id="50"> 50</span>
+<span id="51"> 51</span>
+<span id="52"> 52</span>
+<span id="53"> 53</span>
+<span id="54"> 54</span>
+<span id="55"> 55</span>
+<span id="56"> 56</span>
+<span id="57"> 57</span>
+<span id="58"> 58</span>
+<span id="59"> 59</span>
+<span id="60"> 60</span>
+<span id="61"> 61</span>
+<span id="62"> 62</span>
+<span id="63"> 63</span>
+<span id="64"> 64</span>
+<span id="65"> 65</span>
+<span id="66"> 66</span>
+<span id="67"> 67</span>
+<span id="68"> 68</span>
+<span id="69"> 69</span>
+<span id="70"> 70</span>
+<span id="71"> 71</span>
+<span id="72"> 72</span>
+<span id="73"> 73</span>
+<span id="74"> 74</span>
+<span id="75"> 75</span>
+<span id="76"> 76</span>
+<span id="77"> 77</span>
+<span id="78"> 78</span>
+<span id="79"> 79</span>
+<span id="80"> 80</span>
+<span id="81"> 81</span>
+<span id="82"> 82</span>
+<span id="83"> 83</span>
+<span id="84"> 84</span>
+<span id="85"> 85</span>
+<span id="86"> 86</span>
+<span id="87"> 87</span>
+<span id="88"> 88</span>
+<span id="89"> 89</span>
+<span id="90"> 90</span>
+<span id="91"> 91</span>
+<span id="92"> 92</span>
+<span id="93"> 93</span>
+<span id="94"> 94</span>
+<span id="95"> 95</span>
+<span id="96"> 96</span>
+<span id="97"> 97</span>
+<span id="98"> 98</span>
+<span id="99"> 99</span>
+<span id="100">100</span>
+<span id="101">101</span>
+<span id="102">102</span>
+<span id="103">103</span>
+<span id="104">104</span>
+<span id="105">105</span>
+<span id="106">106</span>
+<span id="107">107</span>
+<span id="108">108</span>
+<span id="109">109</span>
+<span id="110">110</span>
+<span id="111">111</span>
+</pre><div class="example-wrap"><pre class="rust ">
+<span class="comment">// Licensed to the Apache Software Foundation (ASF) under one</span>
+<span class="comment">// or more contributor license agreements.  See the NOTICE file</span>
+<span class="comment">// distributed with this work for additional information</span>
+<span class="comment">// regarding copyright ownership.  The ASF licenses this file</span>
+<span class="comment">// to you under the Apache License, Version 2.0 (the</span>
+<span class="comment">// &quot;License&quot;); you may not use this file except in compliance</span>
+<span class="comment">// with the License.  You may obtain a copy of the License at</span>
+<span class="comment">//</span>
+<span class="comment">//   http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="comment">//</span>
+<span class="comment">// Unless required by applicable law or agreed to in writing,</span>
+<span class="comment">// software distributed under the License is distributed on an</span>
+<span class="comment">// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+<span class="comment">// KIND, either express or implied.  See the License for the</span>
+<span class="comment">// specific language governing permissions and limitations</span>
+<span class="comment">// under the License..</span>
+
+<span class="kw">use</span> <span class="ident">sgx_types</span>::<span class="kw-2">*</span>;
+
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">exception_handle</span> <span class="op">=</span> <span class="op">*</span> <span class="kw">const</span> <span class="ident">c_void</span>;
+
+<span class="doccomment">///</span>
+<span class="doccomment">/// rsgx_register_exception_handler registers an exception handler.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// rsgx_register_exception_handler allows developers to register an exception handler, and specify whether to prepend</span>
+<span class="doccomment">/// (when is_first_handler is equal to 1) or append the handler to the handler chain.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Description</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// The Intel(R) SGX SDK supports the registration of custom exception handler functions. You can write your own code to</span>
+<span class="doccomment">/// handle a limited set of hardware exceptions. For example, a CPUID instruction inside an enclave will effectively result</span>
+<span class="doccomment">/// in a #UD fault (Invalid Opcode Exception). ISV enclave code can have an exception handler to prevent the enclave from</span>
+<span class="doccomment">/// being trapped into an exception condition.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Calling rsgx_register_exception_handler allows you to register an exception handler, and specify whether to prepend</span>
+<span class="doccomment">/// (when is_first_handler is nonzero) or append the handler to the handler chain.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// After calling rsgx_register_exception_handler to prepend an exception handler, a subsequent call to this function may</span>
+<span class="doccomment">/// add another exception handler at the beginning of the handler chain. Therefore the order in which exception handlers</span>
+<span class="doccomment">/// are called does not only depend on the value of the is_first_handler parameter. It depends on the order</span>
+<span class="doccomment">/// in which exception handlers are registered.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Parameters</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// **is_first_handler**</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Specify the order in which the handler should be called. If the parameter is nonzero, the handler is the first handler</span>
+<span class="doccomment">/// to be called. If the parameter is zero, the handler is the last handler to be called.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// **exception_handler**</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// The exception handler to be called</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Requirements</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Library: libsgx_trts.a</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Return value</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// **Some(exception_handle)**</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Indicates the exception handler is registered successfully. The return value is an open handle to the custom exception handler.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// **None**</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// The exception handler was not registered.</span>
+<span class="doccomment">///</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rsgx_register_exception_handler</span>(<span class="ident">is_first_handler</span>: <span class="ident">u32</span>, <span class="ident">exception_handler</span>: <span class="ident">sgx_exception_handler_t</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">exception_handle</span><span class="op">&gt;</span> {
+
+    <span class="kw">let</span> <span class="ident">handle</span> <span class="op">=</span> <span class="kw">unsafe</span> {
+        <span class="ident">sgx_register_exception_handler</span>(<span class="ident">is_first_handler</span>, <span class="ident">exception_handler</span>)
+    };
+
+    <span class="kw">if</span> <span class="ident">handle</span>.<span class="ident">is_null</span>() { <span class="prelude-val">None</span> } <span class="kw">else</span> { <span class="prelude-val">Some</span>(<span class="ident">handle</span>) }
+}
+
+<span class="doccomment">///</span>
+<span class="doccomment">/// rsgx_unregister_exception_handler is used to unregister a custom exception handler.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Description</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// The Intel(R) SGX SDK supports the registration of custom exception handler functions. An enclave developer</span>
+<span class="doccomment">/// can write their own code to handle a limited set of hardware exceptions.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Calling rsgx_unregister_exception_handler allows developers to unregister an exception handler that was registered earlier.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Parameters</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// **handle**</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// A handle to the custom exception handler previously registered using the rsgx_register_exception_handler function.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Requirements</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Library: libsgx_trts.a</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Return value</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// **true**</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// The custom exception handler is unregistered successfully.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// **false**</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// The exception handler was not unregistered (not a valid pointer, handler not found).</span>
+<span class="doccomment">///</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rsgx_unregister_exception_handler</span>(<span class="ident">handle</span>: <span class="ident">exception_handle</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+
+    <span class="kw">let</span> <span class="ident">ret</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">sgx_unregister_exception_handler</span>(<span class="ident">handle</span>) };
+    <span class="ident">ret</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span>
+}
+</pre></div>
+</section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../";window.currentCrate = "sgx_trts";</script><script src="../../aliases.js"></script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>

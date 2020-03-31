@@ -1,0 +1,1 @@
+initSidebarItems({"trait":[["BytewiseEquality","Trait implemented for types that can be compared for equality using their bytewise representation A type can implement BytewiseEquality if all of its components implement BytewiseEquality."],["ContiguousMemory","Trait for demonstrating one structure locates in contiguous memory."]]});

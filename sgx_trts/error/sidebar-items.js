@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["errno","Get the last error number."],["error_string","Gets a detailed string description for the given error number."],["set_errno","Set the last error number."]]});
