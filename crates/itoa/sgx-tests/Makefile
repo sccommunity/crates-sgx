@@ -60,7 +60,7 @@ App_Name := bin/run-tests
 ######## Enclave Settings ########
 
 ifneq ($(SGX_MODE), HW)
-	Trts_Library_Name := sgx_trts_si	m
+	Trts_Library_Name := sgx_trts_sim
 	Service_Library_Name := sgx_tservice_sim
 else
 	Trts_Library_Name := sgx_trts
