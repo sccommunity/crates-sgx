@@ -38,6 +38,7 @@ sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", t
 ## Branch
 
 - `sgx1.1.0` (default): Teaclave SGX SDK 1.1.0 (Intel SGX SDK 2.7.1)
+- `gh-pages`: Docs of all SGX crates for the release with the latest version
 
 ## Version
 
