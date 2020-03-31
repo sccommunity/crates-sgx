@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/mssun/.cargo/git/checkouts/crates-sgx-5ff696dc041b8147/ff208de/crates/rust-hex/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../hex/index.html'><div class='logo-container'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/mssun/.cargo/git/checkouts/crates-sgx-5ff696dc041b8147/f23c8a8/crates/rust-hex/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../hex/index.html'><div class='logo-container'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -494,6 +494,14 @@
 <span id="494">494</span>
 <span id="495">495</span>
 <span id="496">496</span>
+<span id="497">497</span>
+<span id="498">498</span>
+<span id="499">499</span>
+<span id="500">500</span>
+<span id="501">501</span>
+<span id="502">502</span>
+<span id="503">503</span>
+<span id="504">504</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="comment">// Copyright (c) 2013-2014 The Rust Project Developers.</span>
 <span class="comment">// Copyright (c) 2015-2020 The rust-hex Developers.</span>
@@ -867,14 +875,34 @@
     <span class="prelude-val">Ok</span>(())
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="kw">mod</span> <span class="ident">test</span> {
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;enclave_unit_test&quot;</span>)]</span>
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">test</span> {
     <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>))]</span>
     <span class="kw">use</span> <span class="ident">alloc</span>::<span class="ident">string</span>::<span class="ident">ToString</span>;
-    <span class="kw">use</span> <span class="ident">pretty_assertions</span>::<span class="ident">assert_eq</span>;
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">use</span> <span class="ident">sgx_tunittest</span>::<span class="kw-2">*</span>;
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">run_tests</span>() {
+        <span class="macro">rsgx_unit_tests</span><span class="macro">!</span>(
+            <span class="ident">test_gen_iter</span>,
+            <span class="ident">test_encode_to_slice</span>,
+            <span class="ident">test_decode_to_slice</span>,
+            <span class="ident">test_encode</span>,
+            <span class="ident">test_decode</span>,
+            <span class="ident">test_from_hex_okay_str</span>,
+            <span class="ident">test_from_hex_okay_bytes</span>,
+            <span class="ident">test_invalid_length</span>,
+            <span class="ident">test_invalid_char</span>,
+            <span class="ident">test_empty</span>,
+            <span class="ident">test_from_hex_whitespace</span>,
+            <span class="ident">test_from_hex_array</span>,
+            <span class="ident">test_to_hex</span>,
+        );
+
+        <span class="ident">error</span>::<span class="ident">tests</span>::<span class="ident">run_tests</span>();
+    }
+
     <span class="kw">fn</span> <span class="ident">test_gen_iter</span>() {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
         <span class="ident">result</span>.<span class="ident">push</span>((<span class="number">0</span>, <span class="number">1</span>));
@@ -883,7 +911,6 @@
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">generate_iter</span>(<span class="number">5</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>(), <span class="ident">result</span>);
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_encode_to_slice</span>() {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">output_1</span> <span class="op">=</span> [<span class="number">0</span>; <span class="number">4</span> <span class="op">*</span> <span class="number">2</span>];
         <span class="ident">encode_to_slice</span>(<span class="string">b&quot;kiwi&quot;</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">output_1</span>).<span class="ident">unwrap</span>();
@@ -901,7 +928,6 @@
         );
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_decode_to_slice</span>() {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">output_1</span> <span class="op">=</span> [<span class="number">0</span>; <span class="number">4</span>];
         <span class="ident">decode_to_slice</span>(<span class="string">b&quot;6b697769&quot;</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">output_1</span>).<span class="ident">unwrap</span>();
@@ -916,35 +942,29 @@
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">decode_to_slice</span>(<span class="string">b&quot;6&quot;</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">output_3</span>), <span class="prelude-val">Err</span>(<span class="ident">FromHexError</span>::<span class="ident">OddLength</span>));
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_encode</span>() {
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">encode</span>(<span class="string">&quot;foobar&quot;</span>), <span class="string">&quot;666f6f626172&quot;</span>);
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_decode</span>() {
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">decode</span>(<span class="string">&quot;666f6f626172&quot;</span>), <span class="prelude-val">Ok</span>(<span class="ident">String</span>::<span class="ident">from</span>(<span class="string">&quot;foobar&quot;</span>).<span class="ident">into_bytes</span>()));
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">test_from_hex_okay_str</span>() {
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">Vec</span>::<span class="ident">from_hex</span>(<span class="string">&quot;666f6f626172&quot;</span>).<span class="ident">unwrap</span>(), <span class="string">b&quot;foobar&quot;</span>);
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">Vec</span>::<span class="ident">from_hex</span>(<span class="string">&quot;666F6F626172&quot;</span>).<span class="ident">unwrap</span>(), <span class="string">b&quot;foobar&quot;</span>);
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">test_from_hex_okay_bytes</span>() {
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">Vec</span>::<span class="ident">from_hex</span>(<span class="string">b&quot;666f6f626172&quot;</span>).<span class="ident">unwrap</span>(), <span class="string">b&quot;foobar&quot;</span>);
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">Vec</span>::<span class="ident">from_hex</span>(<span class="string">b&quot;666F6F626172&quot;</span>).<span class="ident">unwrap</span>(), <span class="string">b&quot;foobar&quot;</span>);
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">test_invalid_length</span>() {
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">Vec</span>::<span class="ident">from_hex</span>(<span class="string">&quot;1&quot;</span>).<span class="ident">unwrap_err</span>(), <span class="ident">FromHexError</span>::<span class="ident">OddLength</span>);
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">Vec</span>::<span class="ident">from_hex</span>(<span class="string">&quot;666f6f6261721&quot;</span>).<span class="ident">unwrap_err</span>(), <span class="ident">FromHexError</span>::<span class="ident">OddLength</span>);
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">test_invalid_char</span>() {
         <span class="macro">assert_eq</span><span class="macro">!</span>(
             <span class="ident">Vec</span>::<span class="ident">from_hex</span>(<span class="string">&quot;66ag&quot;</span>).<span class="ident">unwrap_err</span>(),
@@ -952,12 +972,10 @@
         );
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">test_empty</span>() {
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">Vec</span>::<span class="ident">from_hex</span>(<span class="string">&quot;&quot;</span>).<span class="ident">unwrap</span>(), <span class="string">b&quot;&quot;</span>);
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">test_from_hex_whitespace</span>() {
         <span class="macro">assert_eq</span><span class="macro">!</span>(
             <span class="ident">Vec</span>::<span class="ident">from_hex</span>(<span class="string">&quot;666f 6f62617&quot;</span>).<span class="ident">unwrap_err</span>(),
@@ -965,7 +983,6 @@
         );
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">test_from_hex_array</span>() {
         <span class="macro">assert_eq</span><span class="macro">!</span>(
             <span class="op">&lt;</span>[<span class="ident">u8</span>; <span class="number">6</span>] <span class="kw">as</span> <span class="ident">FromHex</span><span class="op">&gt;</span>::<span class="ident">from_hex</span>(<span class="string">&quot;666f6f626172&quot;</span>),
@@ -978,7 +995,6 @@
         );
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_to_hex</span>() {
         <span class="macro">assert_eq</span><span class="macro">!</span>(
             [<span class="number">0x66</span>, <span class="number">0x6f</span>, <span class="number">0x6f</span>, <span class="number">0x62</span>, <span class="number">0x61</span>, <span class="number">0x72</span>].<span class="ident">encode_hex</span>::<span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>(),

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/mssun/.cargo/git/checkouts/incubator-teaclave-sgx-sdk-c63c8825343e87f0/71a88b6/sgx_trts/src/cpu_feature.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>cpu_feature.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../sgx_trts/index.html'><div class='logo-container'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/mssun/.cargo/git/checkouts/incubator-teaclave-sgx-sdk-c63c8825343e87f0/7f38d08/sgx_trts/src/cpu_feature.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>cpu_feature.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../sgx_trts/index.html'><div class='logo-container'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -319,6 +319,7 @@
 <span id="319">319</span>
 <span id="320">320</span>
 <span id="321">321</span>
+<span id="322">322</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="comment">// Licensed to the Apache Software Foundation (ASF) under one</span>
 <span class="comment">// or more contributor license agreements.  See the NOTICE file</span>
@@ -336,6 +337,7 @@
 <span class="comment">// KIND, either express or implied.  See the License for the</span>
 <span class="comment">// specific language governing permissions and limitations</span>
 <span class="comment">// under the License..</span>
+
 <span class="kw">use</span> <span class="ident">sgx_types</span>::<span class="ident">impl_enum</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">enclave</span>;
 
@@ -531,102 +533,102 @@
     <span class="attribute">#[<span class="ident">repr</span>(<span class="ident">u32</span>)]</span>
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
     <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Feature</span> {
-        <span class="ident">none</span> <span class="op">=</span> <span class="number">0</span>,
-        <span class="ident">ia32</span> <span class="op">=</span> <span class="number">1</span>,             <span class="comment">/* 0x00000001 */</span>
-        <span class="ident">fpu</span> <span class="op">=</span> <span class="number">2</span>,              <span class="comment">/* 0x00000002 */</span>
-        <span class="ident">cmov</span> <span class="op">=</span> <span class="number">3</span>,             <span class="comment">/* 0x00000004 */</span>
-        <span class="ident">mmx</span> <span class="op">=</span> <span class="number">4</span>,              <span class="comment">/* 0x00000008 */</span>
-        <span class="ident">fxsave</span> <span class="op">=</span> <span class="number">5</span>,           <span class="comment">/* 0x00000010 */</span>
-        <span class="ident">sse</span> <span class="op">=</span> <span class="number">6</span>,              <span class="comment">/* 0x00000020 */</span>
-        <span class="ident">sse2</span> <span class="op">=</span> <span class="number">7</span>,             <span class="comment">/* 0x00000040 */</span>
-        <span class="ident">sse3</span> <span class="op">=</span> <span class="number">8</span>,             <span class="comment">/* 0x00000080 */</span>
-        <span class="ident">ssse3</span> <span class="op">=</span> <span class="number">9</span>,            <span class="comment">/* 0x00000100 */</span>
-        <span class="ident">sse4_1</span> <span class="op">=</span> <span class="number">10</span>,          <span class="comment">/* 0x00000200 */</span>
-        <span class="ident">sse4_2</span> <span class="op">=</span> <span class="number">11</span>,          <span class="comment">/* 0x00000400 */</span>
-        <span class="ident">movbe</span> <span class="op">=</span> <span class="number">12</span>,           <span class="comment">/* 0x00000800 */</span>
-        <span class="ident">popcnt</span> <span class="op">=</span> <span class="number">13</span>,          <span class="comment">/* 0x00001000 */</span>
-        <span class="ident">pclmulqdq</span> <span class="op">=</span> <span class="number">14</span>,       <span class="comment">/* 0x00002000 */</span>
-        <span class="ident">aes</span> <span class="op">=</span> <span class="number">15</span>,             <span class="comment">/* 0x00004000 */</span>
+        <span class="ident">none</span>            <span class="op">=</span> <span class="number">0</span>,
+        <span class="ident">ia32</span>            <span class="op">=</span> <span class="number">1</span>,        <span class="comment">/* 0x00000001 */</span>
+        <span class="ident">fpu</span>             <span class="op">=</span> <span class="number">2</span>,        <span class="comment">/* 0x00000002 */</span>
+        <span class="ident">cmov</span>            <span class="op">=</span> <span class="number">3</span>,        <span class="comment">/* 0x00000004 */</span>
+        <span class="ident">mmx</span>             <span class="op">=</span> <span class="number">4</span>,        <span class="comment">/* 0x00000008 */</span>
+        <span class="ident">fxsave</span>          <span class="op">=</span> <span class="number">5</span>,        <span class="comment">/* 0x00000010 */</span>
+        <span class="ident">sse</span>             <span class="op">=</span> <span class="number">6</span>,        <span class="comment">/* 0x00000020 */</span>
+        <span class="ident">sse2</span>            <span class="op">=</span> <span class="number">7</span>,        <span class="comment">/* 0x00000040 */</span>
+        <span class="ident">sse3</span>            <span class="op">=</span> <span class="number">8</span>,        <span class="comment">/* 0x00000080 */</span>
+        <span class="ident">ssse3</span>           <span class="op">=</span> <span class="number">9</span>,        <span class="comment">/* 0x00000100 */</span>
+        <span class="ident">sse4_1</span>          <span class="op">=</span> <span class="number">10</span>,       <span class="comment">/* 0x00000200 */</span>
+        <span class="ident">sse4_2</span>          <span class="op">=</span> <span class="number">11</span>,       <span class="comment">/* 0x00000400 */</span>
+        <span class="ident">movbe</span>           <span class="op">=</span> <span class="number">12</span>,       <span class="comment">/* 0x00000800 */</span>
+        <span class="ident">popcnt</span>          <span class="op">=</span> <span class="number">13</span>,       <span class="comment">/* 0x00001000 */</span>
+        <span class="ident">pclmulqdq</span>       <span class="op">=</span> <span class="number">14</span>,       <span class="comment">/* 0x00002000 */</span>
+        <span class="ident">aes</span>             <span class="op">=</span> <span class="number">15</span>,       <span class="comment">/* 0x00004000 */</span>
 
         <span class="comment">/* 16-bit floating-point conversions instructions */</span>
-        <span class="ident">f16c</span> <span class="op">=</span> <span class="number">16</span>,            <span class="comment">/* 0x00008000 */</span>
+        <span class="ident">f16c</span>            <span class="op">=</span> <span class="number">16</span>,       <span class="comment">/* 0x00008000 */</span>
         <span class="comment">/* AVX instructions - SNB */</span>
-        <span class="ident">avx</span> <span class="op">=</span> <span class="number">17</span>,            <span class="comment">/* 0x00010000 */</span>
+        <span class="ident">avx</span>             <span class="op">=</span> <span class="number">17</span>,       <span class="comment">/* 0x00010000 */</span>
         <span class="comment">/* RDRND (read random value) instruction */</span>
-        <span class="ident">rdrand</span> <span class="op">=</span> <span class="number">18</span>,          <span class="comment">/* 0x00020000 */</span>
+        <span class="ident">rdrand</span>          <span class="op">=</span> <span class="number">18</span>,       <span class="comment">/* 0x00020000 */</span>
         <span class="comment">/* FMA, may need more precise name - HSW */</span>
-        <span class="ident">fma</span> <span class="op">=</span> <span class="number">19</span>,             <span class="comment">/* 0x00040000 */</span>
+        <span class="ident">fma</span>             <span class="op">=</span> <span class="number">19</span>,       <span class="comment">/* 0x00040000 */</span>
         <span class="comment">/* two groups of advanced bit manipulation extensions */</span>
-        <span class="ident">bmi</span> <span class="op">=</span> <span class="number">20</span>,             <span class="comment">/* 0x00080000 */</span>
+        <span class="ident">bmi</span>             <span class="op">=</span> <span class="number">20</span>,       <span class="comment">/* 0x00080000 */</span>
         <span class="comment">/* LZCNT (leading zeroes count) */</span>
-        <span class="ident">lzcnt</span> <span class="op">=</span> <span class="number">21</span>,           <span class="comment">/* 0x00100000 */</span>
+        <span class="ident">lzcnt</span>           <span class="op">=</span> <span class="number">21</span>,       <span class="comment">/* 0x00100000 */</span>
         <span class="comment">/* HLE (hardware lock elision) */</span>
-        <span class="ident">hle</span> <span class="op">=</span> <span class="number">22</span>,             <span class="comment">/* 0x00200000 */</span>
+        <span class="ident">hle</span>             <span class="op">=</span> <span class="number">22</span>,       <span class="comment">/* 0x00200000 */</span>
         <span class="comment">/* RTM (restricted transactional memory) */</span>
-        <span class="ident">rtm</span> <span class="op">=</span> <span class="number">23</span>,             <span class="comment">/* 0x00400000 */</span>
+        <span class="ident">rtm</span>             <span class="op">=</span> <span class="number">23</span>,       <span class="comment">/* 0x00400000 */</span>
         <span class="comment">/* AVX2 instructions - HSW */</span>
-        <span class="ident">avx2</span> <span class="op">=</span> <span class="number">24</span>,            <span class="comment">/* 0x00800000 */</span>
+        <span class="ident">avx2</span>            <span class="op">=</span> <span class="number">24</span>,       <span class="comment">/* 0x00800000 */</span>
         <span class="comment">/* AVX512DQ - SKX 512-bit dword/qword vector instructions */</span>
-        <span class="ident">avx512dq</span> <span class="op">=</span> <span class="number">25</span>,        <span class="comment">/* 0x01000000 */</span>
+        <span class="ident">avx512dq</span>        <span class="op">=</span> <span class="number">25</span>,       <span class="comment">/* 0x01000000 */</span>
         <span class="comment">/* Unused, remained from KNF */</span>
-        <span class="ident">ptwrite</span> <span class="op">=</span> <span class="number">26</span>,         <span class="comment">/* 0x02000000 */</span>
+        <span class="ident">ptwrite</span>         <span class="op">=</span> <span class="number">26</span>,       <span class="comment">/* 0x02000000 */</span>
         <span class="comment">/* KNC new instructions */</span>
-        <span class="ident">kncni</span> <span class="op">=</span> <span class="number">27</span>,           <span class="comment">/* 0x04000000 */</span>
+        <span class="ident">kncni</span>           <span class="op">=</span> <span class="number">27</span>,       <span class="comment">/* 0x04000000 */</span>
         <span class="comment">/* AVX-512 foundation instructions - KNL and SKX */</span>
-        <span class="ident">avx512f</span> <span class="op">=</span> <span class="number">28</span>,         <span class="comment">/* 0x08000000 */</span>
+        <span class="ident">avx512f</span>         <span class="op">=</span> <span class="number">28</span>,       <span class="comment">/* 0x08000000 */</span>
         <span class="comment">/* uint add with OF or CF flags (ADOX, ADCX) - BDW */</span>
-        <span class="ident">adx</span> <span class="op">=</span> <span class="number">29</span>,             <span class="comment">/* 0x10000000 */</span>
+        <span class="ident">adx</span>             <span class="op">=</span> <span class="number">29</span>,       <span class="comment">/* 0x10000000 */</span>
         <span class="comment">/* Enhanced non-deterministic rand generator - BDW */</span>
-        <span class="ident">rdseed</span> <span class="op">=</span> <span class="number">30</span>,          <span class="comment">/* 0x20000000 */</span>
+        <span class="ident">rdseed</span>          <span class="op">=</span> <span class="number">30</span>,       <span class="comment">/* 0x20000000 */</span>
         <span class="comment">/* AVX512IFMA52:  vpmadd52huq and vpmadd52luq. */</span>
-        <span class="ident">avx512ifma</span> <span class="op">=</span> <span class="number">31</span>,      <span class="comment">/* 0x40000000 */</span>
+        <span class="ident">avx512ifma</span>      <span class="op">=</span> <span class="number">31</span>,       <span class="comment">/* 0x40000000 */</span>
         <span class="comment">/* Full inorder (like Silverthorne) processor */</span>
-        <span class="ident">full_inorder</span> <span class="op">=</span> <span class="number">32</span>,    <span class="comment">/* 0x80000000 */</span>
+        <span class="ident">full_inorder</span>    <span class="op">=</span> <span class="number">32</span>,       <span class="comment">/* 0x80000000 */</span>
         <span class="comment">/* AVX-512 exponential and reciprocal instructions - KNL */</span>
-        <span class="ident">avx512er</span> <span class="op">=</span> <span class="number">33</span>,        <span class="comment">/* 0x100000000 */</span>
+        <span class="ident">avx512er</span>        <span class="op">=</span> <span class="number">33</span>,       <span class="comment">/* 0x100000000 */</span>
         <span class="comment">/* AVX-512 gather/scatter prefetch instructions - KNL */</span>
-        <span class="ident">avx512pf</span> <span class="op">=</span> <span class="number">34</span>,        <span class="comment">/* 0x200000000 */</span>
+        <span class="ident">avx512pf</span>        <span class="op">=</span> <span class="number">34</span>,       <span class="comment">/* 0x200000000 */</span>
         <span class="comment">/* AVX-512 conflict detection instructions - KNL */</span>
-        <span class="ident">avx512cd</span> <span class="op">=</span> <span class="number">35</span>,        <span class="comment">/* 0x400000000 */</span>
+        <span class="ident">avx512cd</span>        <span class="op">=</span> <span class="number">35</span>,       <span class="comment">/* 0x400000000 */</span>
         <span class="comment">/* Secure Hash Algorithm instructions (SHA) */</span>
-        <span class="ident">sha</span> <span class="op">=</span> <span class="number">36</span>,             <span class="comment">/* 0x800000000 */</span>
+        <span class="ident">sha</span>             <span class="op">=</span> <span class="number">36</span>,       <span class="comment">/* 0x800000000 */</span>
         <span class="comment">/* Memory Protection Extensions (MPX) */</span>
-        <span class="ident">mpx</span> <span class="op">=</span> <span class="number">37</span>,             <span class="comment">/* 0x1000000000 */</span>
+        <span class="ident">mpx</span>             <span class="op">=</span> <span class="number">37</span>,       <span class="comment">/* 0x1000000000 */</span>
         <span class="comment">/* AVX512BW - SKX 512-bit byte/word vector instructions */</span>
-        <span class="ident">avx512bw</span> <span class="op">=</span> <span class="number">38</span>,        <span class="comment">/* 0x2000000000 */</span>
+        <span class="ident">avx512bw</span>        <span class="op">=</span> <span class="number">38</span>,       <span class="comment">/* 0x2000000000 */</span>
         <span class="comment">/* AVX512VL - adds 128/256-bit vector support of other AVX512 instructions. */</span>
-        <span class="ident">avx512vl</span> <span class="op">=</span> <span class="number">39</span>,        <span class="comment">/* 0x4000000000 */</span>
+        <span class="ident">avx512vl</span>        <span class="op">=</span> <span class="number">39</span>,       <span class="comment">/* 0x4000000000 */</span>
         <span class="comment">/* AVX512VBMI:  vpermb, vpermi2b, vpermt2b and vpmultishiftqb. */</span>
-        <span class="ident">avx512vbmi</span> <span class="op">=</span> <span class="number">40</span>,      <span class="comment">/* 0x8000000000 */</span>
+        <span class="ident">avx512vbmi</span>      <span class="op">=</span> <span class="number">40</span>,       <span class="comment">/* 0x8000000000 */</span>
         <span class="comment">/* AVX512_4FMAPS: Single Precision FMA for multivector(4 vector) operand. */</span>
-        <span class="ident">avx512_4fmaps</span> <span class="op">=</span> <span class="number">41</span>,   <span class="comment">/* 0x10000000000 */</span>
+        <span class="ident">avx512_4fmaps</span>   <span class="op">=</span> <span class="number">41</span>,       <span class="comment">/* 0x10000000000 */</span>
         <span class="comment">/* AVX512_4VNNIW: Vector Neural Network Instructions for
         *  multivector(4 vector) operand with word elements. */</span>
-        <span class="ident">avx512_4vnniw</span> <span class="op">=</span> <span class="number">42</span>,   <span class="comment">/* 0x20000000000 */</span>
+        <span class="ident">avx512_4vnniw</span>   <span class="op">=</span> <span class="number">42</span>,       <span class="comment">/* 0x20000000000 */</span>
         <span class="comment">/* AVX512_VPOPCNTDQ: 512-bit vector POPCNT. */</span>
-        <span class="ident">avx512_vpopcntdq</span> <span class="op">=</span> <span class="number">43</span>,   <span class="comment">/* 0x40000000000 */</span>
+        <span class="ident">avx512_vpopcntdq</span> <span class="op">=</span> <span class="number">43</span>,      <span class="comment">/* 0x40000000000 */</span>
         <span class="comment">/* AVX512_BITALG: vector bit algebra in AVX512. */</span>
-        <span class="ident">avx512_bitalg</span> <span class="op">=</span> <span class="number">44</span>,   <span class="comment">/* 0x80000000000 */</span>
+        <span class="ident">avx512_bitalg</span>   <span class="op">=</span> <span class="number">44</span>,       <span class="comment">/* 0x80000000000 */</span>
         <span class="comment">/* AVX512_VBMI2: additional byte, word, dword and qword capabilities */</span>
-        <span class="ident">avx512vbmi2</span> <span class="op">=</span> <span class="number">45</span>,     <span class="comment">/* 0x100000000000 */</span>
+        <span class="ident">avx512vbmi2</span>     <span class="op">=</span> <span class="number">45</span>,       <span class="comment">/* 0x100000000000 */</span>
         <span class="comment">/* GFNI: Galois Field New Instructions. */</span>
-        <span class="ident">gfni</span> <span class="op">=</span> <span class="number">46</span>,            <span class="comment">/* 0x200000000000 */</span>
+        <span class="ident">gfni</span>            <span class="op">=</span> <span class="number">46</span>,       <span class="comment">/* 0x200000000000 */</span>
         <span class="comment">/* VAES: vector AES instructions */</span>
-        <span class="ident">vaes</span> <span class="op">=</span> <span class="number">47</span>,            <span class="comment">/* 0x400000000000 */</span>
+        <span class="ident">vaes</span>            <span class="op">=</span> <span class="number">47</span>,       <span class="comment">/* 0x400000000000 */</span>
         <span class="comment">/* VPCLMULQDQ: vector PCLMULQDQ instructions. */</span>
-        <span class="ident">vpclmulqdq</span> <span class="op">=</span> <span class="number">48</span>,      <span class="comment">/* 0x800000000000 */</span>
+        <span class="ident">vpclmulqdq</span>      <span class="op">=</span> <span class="number">48</span>,       <span class="comment">/* 0x800000000000 */</span>
         <span class="comment">/* AVX512_VNNI: vector Neural Network Instructions. */</span>
-        <span class="ident">avx512vnni</span> <span class="op">=</span> <span class="number">49</span>,      <span class="comment">/* 0x1000000000000 */</span>
+        <span class="ident">avx512vnni</span>      <span class="op">=</span> <span class="number">49</span>,       <span class="comment">/* 0x1000000000000 */</span>
         <span class="comment">/* CLWB: Cache Line Write Back. */</span>
-        <span class="ident">clwb</span> <span class="op">=</span> <span class="number">50</span>,            <span class="comment">/* 0x2000000000000 */</span>
+        <span class="ident">clwb</span>            <span class="op">=</span> <span class="number">50</span>,       <span class="comment">/* 0x2000000000000 */</span>
         <span class="comment">/* RDPID: Read Processor ID. */</span>
-        <span class="ident">rdpid</span> <span class="op">=</span> <span class="number">51</span>,           <span class="comment">/* 0x4000000000000 */</span>
-        <span class="ident">ibt</span> <span class="op">=</span> <span class="number">52</span>,             <span class="comment">/* 0x8000000000000 */</span>
-        <span class="ident">shstk</span> <span class="op">=</span> <span class="number">53</span>,
-        <span class="ident">sgx</span> <span class="op">=</span> <span class="number">54</span>,
-        <span class="ident">wbnoinvd</span> <span class="op">=</span> <span class="number">55</span>,
-        <span class="ident">pconfig</span> <span class="op">=</span> <span class="number">56</span>,
-        <span class="ident">end</span> <span class="op">=</span> <span class="number">57</span>,
+        <span class="ident">rdpid</span>           <span class="op">=</span> <span class="number">51</span>,       <span class="comment">/* 0x4000000000000 */</span>
+        <span class="ident">ibt</span>             <span class="op">=</span> <span class="number">52</span>,       <span class="comment">/* 0x8000000000000 */</span>
+        <span class="ident">shstk</span>           <span class="op">=</span> <span class="number">53</span>,
+        <span class="ident">sgx</span>             <span class="op">=</span> <span class="number">54</span>,
+        <span class="ident">wbnoinvd</span>        <span class="op">=</span> <span class="number">55</span>,
+        <span class="ident">pconfig</span>         <span class="op">=</span> <span class="number">56</span>,
+        <span class="ident">end</span>             <span class="op">=</span> <span class="number">57</span>,
     }
 }
 

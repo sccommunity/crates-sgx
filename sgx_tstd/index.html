@@ -17,7 +17,7 @@ standard library can be accessed in [<code>use</code>] statements through the pa
 </td></tr><tr class='module-item'><td><a class="mod" href="any/index.html" title='sgx_tstd::any mod'>any</a></td><td class='docblock-short'><p>This module implements the <code>Any</code> trait, which enables dynamic typing
 of any <code>'static</code> type through runtime reflection.</p>
 </td></tr><tr class='module-item'><td><a class="mod" href="array/index.html" title='sgx_tstd::array mod'>array</a></td><td class='docblock-short'><p>Implementations of things like <code>Eq</code> for fixed-length arrays
-up to a certain length. Eventually we should able to generalize
+up to a certain length. Eventually, we should be able to generalize
 to all lengths.</p>
 </td></tr><tr class='module-item'><td><a class="mod" href="ascii/index.html" title='sgx_tstd::ascii mod'>ascii</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="mod" href="borrow/index.html" title='sgx_tstd::borrow mod'>borrow</a></td><td class='docblock-short'><p>A module for working with borrowed data.</p>
 </td></tr><tr class='module-item'><td><a class="mod" href="boxed/index.html" title='sgx_tstd::boxed mod'>boxed</a></td><td class='docblock-short'><p>A pointer type for heap allocation.</p>
@@ -64,11 +64,11 @@ Counted'.</p>
 </td></tr><tr class='module-item'><td><a class="mod" href="str/index.html" title='sgx_tstd::str mod'>str</a></td><td class='docblock-short'><p>Unicode string slices.</p>
 </td></tr><tr class='module-item'><td><a class="mod" href="string/index.html" title='sgx_tstd::string mod'>string</a></td><td class='docblock-short'><p>A UTF-8 encoded, growable string.</p>
 </td></tr><tr class='module-item'><td><a class="mod" href="sync/index.html" title='sgx_tstd::sync mod'>sync</a></td><td class='docblock-short'><p>The Intel(R) Software Guard Extensions SDK already supports mutex and conditional
-variable synchronization mechanisms by means of the following APIand data types
+variable synchronization mechanisms by means of the following API and data types
 defined in the Types and Enumerations section. Some functions included in the
 trusted Thread Synchronization library may make calls outside the enclave (OCALLs).
 If you use any of the APIs below, you must first import the needed OCALL functions
-from sgx_tstdc.edl. Otherwise, you will get a linker error when the enclave is
+from sgx_tstd.edl. Otherwise, you will get a linker error when the enclave is
 being built; see Calling Functions outside the Enclave for additional details.
 The table below illustrates the primitives that the Intel(R) SGX Thread
 Synchronization library supports, as well as the OCALLs that each API function needs.</p>
@@ -101,7 +101,7 @@ Synchronization library supports, as well as the OCALLs that each API function n
 </td></tr><tr class='module-item'><td><a class="macro" href="macro.thread_local.html" title='sgx_tstd::thread_local macro'>thread_local</a></td><td class='docblock-short'><p>Declare a new thread local storage key of type [<code>std::thread::LocalKey</code>].</p>
 </td></tr><tr class='module-item'><td><a class="macro" href="macro.todo.html" title='sgx_tstd::todo macro'>todo</a></td><td class='docblock-short'><p>Indicates unfinished code.</p>
 </td></tr><tr class='deprecated module-item'><td><a class="macro" href="macro.try.html" title='sgx_tstd::try macro'>try</a></td><td class='docblock-short'><span class="stab deprecated">Deprecated</span><p>Unwraps a result or propagates its error.</p>
-</td></tr><tr class='module-item'><td><a class="macro" href="macro.unimplemented.html" title='sgx_tstd::unimplemented macro'>unimplemented</a></td><td class='docblock-short'><p>Indicates unfinished code by panicking with a message of &quot;not yet implemented&quot;.</p>
+</td></tr><tr class='module-item'><td><a class="macro" href="macro.unimplemented.html" title='sgx_tstd::unimplemented macro'>unimplemented</a></td><td class='docblock-short'><p>Indicates unimplemented code by panicking with a message of &quot;not implemented&quot;.</p>
 </td></tr><tr class='module-item'><td><a class="macro" href="macro.unreachable.html" title='sgx_tstd::unreachable macro'>unreachable</a></td><td class='docblock-short'><p>Indicates unreachable code.</p>
 </td></tr><tr class='module-item'><td><a class="macro" href="macro.vec.html" title='sgx_tstd::vec macro'>vec</a></td><td class='docblock-short'><p>Creates a <a href="../std/vec/struct.Vec.html"><code>Vec</code></a> containing the arguments.</p>
 </td></tr><tr class='module-item'><td><a class="macro" href="macro.write.html" title='sgx_tstd::write macro'>write</a></td><td class='docblock-short'><p>Writes formatted data into a buffer.</p>

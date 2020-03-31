@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["ProtectAttr",""]],"fn":[["alloc",""],["alloc_zeroed",""],["dealloc",""],["protect",""],["sgx_alloc_rsrv_mem",""],["sgx_free_rsrv_mem",""],["sgx_tprotect_rsrv_mem",""]],"struct":[["RsrvMemAlloc",""],["RsrvMemAllocErr",""]]});

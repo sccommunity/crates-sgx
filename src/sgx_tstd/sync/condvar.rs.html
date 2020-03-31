@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/mssun/.cargo/git/checkouts/incubator-teaclave-sgx-sdk-c63c8825343e87f0/71a88b6/sgx_tstd/src/sync/condvar.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>condvar.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../sgx_tstd/index.html'><div class='logo-container'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/mssun/.cargo/git/checkouts/incubator-teaclave-sgx-sdk-c63c8825343e87f0/7f38d08/sgx_tstd/src/sync/condvar.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>condvar.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../sgx_tstd/index.html'><div class='logo-container'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -433,141 +433,6 @@
 <span id="433">433</span>
 <span id="434">434</span>
 <span id="435">435</span>
-<span id="436">436</span>
-<span id="437">437</span>
-<span id="438">438</span>
-<span id="439">439</span>
-<span id="440">440</span>
-<span id="441">441</span>
-<span id="442">442</span>
-<span id="443">443</span>
-<span id="444">444</span>
-<span id="445">445</span>
-<span id="446">446</span>
-<span id="447">447</span>
-<span id="448">448</span>
-<span id="449">449</span>
-<span id="450">450</span>
-<span id="451">451</span>
-<span id="452">452</span>
-<span id="453">453</span>
-<span id="454">454</span>
-<span id="455">455</span>
-<span id="456">456</span>
-<span id="457">457</span>
-<span id="458">458</span>
-<span id="459">459</span>
-<span id="460">460</span>
-<span id="461">461</span>
-<span id="462">462</span>
-<span id="463">463</span>
-<span id="464">464</span>
-<span id="465">465</span>
-<span id="466">466</span>
-<span id="467">467</span>
-<span id="468">468</span>
-<span id="469">469</span>
-<span id="470">470</span>
-<span id="471">471</span>
-<span id="472">472</span>
-<span id="473">473</span>
-<span id="474">474</span>
-<span id="475">475</span>
-<span id="476">476</span>
-<span id="477">477</span>
-<span id="478">478</span>
-<span id="479">479</span>
-<span id="480">480</span>
-<span id="481">481</span>
-<span id="482">482</span>
-<span id="483">483</span>
-<span id="484">484</span>
-<span id="485">485</span>
-<span id="486">486</span>
-<span id="487">487</span>
-<span id="488">488</span>
-<span id="489">489</span>
-<span id="490">490</span>
-<span id="491">491</span>
-<span id="492">492</span>
-<span id="493">493</span>
-<span id="494">494</span>
-<span id="495">495</span>
-<span id="496">496</span>
-<span id="497">497</span>
-<span id="498">498</span>
-<span id="499">499</span>
-<span id="500">500</span>
-<span id="501">501</span>
-<span id="502">502</span>
-<span id="503">503</span>
-<span id="504">504</span>
-<span id="505">505</span>
-<span id="506">506</span>
-<span id="507">507</span>
-<span id="508">508</span>
-<span id="509">509</span>
-<span id="510">510</span>
-<span id="511">511</span>
-<span id="512">512</span>
-<span id="513">513</span>
-<span id="514">514</span>
-<span id="515">515</span>
-<span id="516">516</span>
-<span id="517">517</span>
-<span id="518">518</span>
-<span id="519">519</span>
-<span id="520">520</span>
-<span id="521">521</span>
-<span id="522">522</span>
-<span id="523">523</span>
-<span id="524">524</span>
-<span id="525">525</span>
-<span id="526">526</span>
-<span id="527">527</span>
-<span id="528">528</span>
-<span id="529">529</span>
-<span id="530">530</span>
-<span id="531">531</span>
-<span id="532">532</span>
-<span id="533">533</span>
-<span id="534">534</span>
-<span id="535">535</span>
-<span id="536">536</span>
-<span id="537">537</span>
-<span id="538">538</span>
-<span id="539">539</span>
-<span id="540">540</span>
-<span id="541">541</span>
-<span id="542">542</span>
-<span id="543">543</span>
-<span id="544">544</span>
-<span id="545">545</span>
-<span id="546">546</span>
-<span id="547">547</span>
-<span id="548">548</span>
-<span id="549">549</span>
-<span id="550">550</span>
-<span id="551">551</span>
-<span id="552">552</span>
-<span id="553">553</span>
-<span id="554">554</span>
-<span id="555">555</span>
-<span id="556">556</span>
-<span id="557">557</span>
-<span id="558">558</span>
-<span id="559">559</span>
-<span id="560">560</span>
-<span id="561">561</span>
-<span id="562">562</span>
-<span id="563">563</span>
-<span id="564">564</span>
-<span id="565">565</span>
-<span id="566">566</span>
-<span id="567">567</span>
-<span id="568">568</span>
-<span id="569">569</span>
-<span id="570">570</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="comment">// Licensed to the Apache Software Foundation (ASF) under one</span>
 <span class="comment">// or more contributor license agreements.  See the NOTICE file</span>
@@ -588,39 +453,30 @@
 
 <span class="doccomment">//!</span>
 <span class="doccomment">//! The Intel(R) Software Guard Extensions SDK already supports mutex and conditional</span>
-<span class="doccomment">//! variable synchronization mechanisms by means of the following APIand data types</span>
+<span class="doccomment">//! variable synchronization mechanisms by means of the following API and data types</span>
 <span class="doccomment">//! defined in the Types and Enumerations section. Some functions included in the</span>
 <span class="doccomment">//! trusted Thread Synchronization library may make calls outside the enclave (OCALLs).</span>
 <span class="doccomment">//! If you use any of the APIs below, you must first import the needed OCALL functions</span>
-<span class="doccomment">//! from sgx_tstdc.edl. Otherwise, you will get a linker error when the enclave is</span>
+<span class="doccomment">//! from sgx_tstd.edl. Otherwise, you will get a linker error when the enclave is</span>
 <span class="doccomment">//! being built; see Calling Functions outside the Enclave for additional details.</span>
 <span class="doccomment">//! The table below illustrates the primitives that the Intel(R) SGX Thread</span>
 <span class="doccomment">//! Synchronization library supports, as well as the OCALLs that each API function needs.</span>
 <span class="doccomment">//!</span>
 
-
-
-<span class="kw">use</span> <span class="ident">sgx_types</span>::{<span class="self">self</span>, <span class="ident">SysError</span>, <span class="ident">sgx_thread_t</span>, <span class="ident">SGX_THREAD_T_NULL</span>};
-<span class="kw">use</span> <span class="ident">sgx_trts</span>::<span class="ident">enclave</span>::<span class="ident">SgxThreadData</span>;
-<span class="kw">use</span> <span class="ident">sgx_types</span>::{<span class="ident">c_void</span>, <span class="ident">c_int</span>, <span class="ident">c_long</span>};
-<span class="kw">use</span> <span class="ident">sgx_trts</span>::<span class="ident">libc</span>;
+<span class="kw">use</span> <span class="ident">sgx_types</span>::<span class="ident">SysError</span>;
 <span class="kw">use</span> <span class="ident">sgx_trts</span>::<span class="ident">oom</span>;
-<span class="kw">use</span> <span class="kw">super</span>::<span class="ident">mutex</span>::{<span class="self">self</span>, <span class="ident">SgxThreadMutex</span>, <span class="ident">SgxMutexGuard</span>};
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">sys_common</span>::<span class="ident">poison</span>::{<span class="self">self</span>, <span class="ident">LockResult</span>, <span class="ident">PoisonError</span>};
+<span class="kw">use</span> <span class="ident">sgx_trts</span>::<span class="ident">libc</span>;
 <span class="kw">use</span> <span class="ident">core</span>::<span class="ident">sync</span>::<span class="ident">atomic</span>::{<span class="ident">AtomicUsize</span>, <span class="ident">Ordering</span>};
 <span class="kw">use</span> <span class="ident">core</span>::<span class="ident">cell</span>::<span class="ident">UnsafeCell</span>;
 <span class="kw">use</span> <span class="ident">core</span>::<span class="ident">fmt</span>;
-<span class="kw">use</span> <span class="ident">core</span>::<span class="ident">mem</span>;
 <span class="kw">use</span> <span class="ident">core</span>::<span class="ident">alloc</span>::<span class="ident">AllocErr</span>;
 <span class="kw">use</span> <span class="ident">alloc_crate</span>::<span class="ident">boxed</span>::<span class="ident">Box</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">sync</span>::<span class="ident">SgxThreadSpinlock</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">io</span>::{<span class="self">self</span>, <span class="ident">Error</span>, <span class="ident">ErrorKind</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">sync</span>::<span class="ident">mutex</span>::{<span class="self">self</span>, <span class="ident">SgxThreadMutex</span>, <span class="ident">SgxMutexGuard</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">sys_common</span>::<span class="ident">poison</span>::{<span class="self">self</span>, <span class="ident">LockResult</span>, <span class="ident">PoisonError</span>};
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">time</span>::<span class="ident">Duration</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">time</span>::<span class="ident">Instant</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">untrusted</span>::<span class="ident">time</span>::<span class="ident">InstantEx</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">thread</span>::{<span class="self">self</span>, <span class="ident">rsgx_thread_self</span>};
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">u64</span>;
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Copy</span>, <span class="ident">Clone</span>)]</span>
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">sys</span>::<span class="ident">condvar</span> <span class="kw">as</span> <span class="ident">imp</span>;
 
 <span class="doccomment">/// A type indicating whether a timed wait on a condition variable returned</span>
 <span class="doccomment">/// due to a time out or not.</span>
@@ -628,6 +484,7 @@
 <span class="doccomment">/// It is returned by the [`wait_timeout`] method.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// [`wait_timeout`]: struct.Condvar.html#method.wait_timeout</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Copy</span>, <span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">WaitTimeoutResult</span>(<span class="ident">bool</span>);
 
 <span class="kw">impl</span> <span class="ident">WaitTimeoutResult</span> {
@@ -638,23 +495,7 @@
     }
 }
 
-<span class="kw">struct</span> <span class="ident">SgxThreadCondvarInner</span> {
-    <span class="ident">spinlock</span>: <span class="ident">SgxThreadSpinlock</span>,
-    <span class="ident">thread_vec</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">sgx_thread_t</span><span class="op">&gt;</span>,
-}
-
-<span class="kw">impl</span> <span class="ident">SgxThreadCondvarInner</span> {
-    <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="ident">SgxThreadCondvarInner</span> {
-            <span class="ident">spinlock</span>: <span class="ident">SgxThreadSpinlock</span>::<span class="ident">new</span>(),
-            <span class="ident">thread_vec</span>: <span class="ident">Vec</span>::<span class="ident">new</span>(),
-        }
-    }
-}
-
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SgxThreadCondvar</span> {
-    <span class="ident">inner</span>: <span class="ident">UnsafeCell</span><span class="op">&lt;</span><span class="ident">SgxThreadCondvarInner</span><span class="op">&gt;</span>,
-}
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SgxThreadCondvar</span>(<span class="ident">imp</span>::<span class="ident">SgxThreadCondvar</span>);
 
 <span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">Send</span> <span class="kw">for</span> <span class="ident">SgxThreadCondvar</span> {}
 <span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">Sync</span> <span class="kw">for</span> <span class="ident">SgxThreadCondvar</span> {}
@@ -662,153 +503,42 @@
 <span class="kw">impl</span> <span class="ident">SgxThreadCondvar</span> {
 
     <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="ident">SgxThreadCondvar</span> { <span class="ident">inner</span>: <span class="ident">UnsafeCell</span>::<span class="ident">new</span>(<span class="ident">SgxThreadCondvarInner</span>::<span class="ident">new</span>()) }
+        <span class="ident">SgxThreadCondvar</span>(<span class="ident">imp</span>::<span class="ident">SgxThreadCondvar</span>::<span class="ident">new</span>())
     }
 
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">wait</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">mutex</span>: <span class="kw-2">&amp;</span><span class="ident">SgxThreadMutex</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">SysError</span> {
-
-        <span class="kw">let</span> <span class="ident">condvar</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">SgxThreadCondvarInner</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">get</span>();
-        <span class="ident">condvar</span>.<span class="ident">spinlock</span>.<span class="ident">lock</span>();
-        <span class="ident">condvar</span>.<span class="ident">thread_vec</span>.<span class="ident">push</span>(<span class="ident">rsgx_thread_self</span>());
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">waiter</span>: <span class="ident">sgx_thread_t</span> <span class="op">=</span> <span class="ident">SGX_THREAD_T_NULL</span>;
-
-        <span class="ident">mutex</span>.<span class="ident">unlock_lazy</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">waiter</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">ret</span><span class="op">|</span> {
-            <span class="ident">condvar</span>.<span class="ident">thread_vec</span>.<span class="ident">pop</span>();
-            <span class="ident">condvar</span>.<span class="ident">spinlock</span>.<span class="ident">unlock</span>();
-            <span class="ident">ret</span>
-        })<span class="question-mark">?</span>;
-
-        <span class="kw">loop</span> {
-            <span class="ident">condvar</span>.<span class="ident">spinlock</span>.<span class="ident">unlock</span>();
-            <span class="kw">if</span> <span class="ident">waiter</span> <span class="op">=</span><span class="op">=</span> <span class="ident">SGX_THREAD_T_NULL</span> {
-                <span class="ident">mutex</span>::<span class="ident">thread_wait_event</span>(<span class="ident">SgxThreadData</span>::<span class="ident">current</span>().<span class="ident">get_tcs</span>(), <span class="ident">Duration</span>::<span class="ident">new</span>(<span class="ident">u64</span>::<span class="ident">MAX</span>, <span class="number">1_000_000_000</span> <span class="op">-</span> <span class="number">1</span>));
-            } <span class="kw">else</span> {
-                <span class="ident">mutex</span>::<span class="ident">thread_setwait_events</span>(<span class="ident">SgxThreadData</span>::<span class="ident">from_raw</span>(<span class="ident">waiter</span>).<span class="ident">get_tcs</span>(),
-                                             <span class="ident">SgxThreadData</span>::<span class="ident">current</span>().<span class="ident">get_tcs</span>(),
-                                             <span class="ident">Duration</span>::<span class="ident">new</span>(<span class="ident">u64</span>::<span class="ident">MAX</span>, <span class="number">1_000_000_000</span> <span class="op">-</span> <span class="number">1</span>));
-                <span class="ident">waiter</span> <span class="op">=</span> <span class="ident">SGX_THREAD_T_NULL</span>;
-            }
-            <span class="ident">condvar</span>.<span class="ident">spinlock</span>.<span class="ident">lock</span>();
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">thread_waiter</span>: <span class="ident">sgx_thread_t</span> <span class="op">=</span> <span class="ident">SGX_THREAD_T_NULL</span>;
-            <span class="kw">for</span> <span class="ident">tmp</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">condvar</span>.<span class="ident">thread_vec</span> {
-                <span class="kw">if</span> <span class="ident">thread</span>::<span class="ident">rsgx_thread_equal</span>(<span class="kw-2">*</span><span class="ident">tmp</span>, <span class="ident">rsgx_thread_self</span>()) {
-                    <span class="ident">thread_waiter</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">tmp</span>;
-                    <span class="kw">break</span>;
-                }
-            }
-            <span class="kw">if</span> <span class="ident">thread_waiter</span> <span class="op">=</span><span class="op">=</span> <span class="ident">SGX_THREAD_T_NULL</span> {
-                <span class="kw">break</span>;
-            }
-        }
-        <span class="ident">condvar</span>.<span class="ident">spinlock</span>.<span class="ident">unlock</span>();
-        <span class="ident">mutex</span>.<span class="ident">lock</span>();
-        <span class="prelude-val">Ok</span>(())
+        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">wait</span>(<span class="ident">mutex</span>::<span class="ident">raw</span>(<span class="ident">mutex</span>))
     }
 
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">wait_timeout</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">mutex</span>: <span class="kw-2">&amp;</span><span class="ident">SgxThreadMutex</span>, <span class="ident">dur</span>: <span class="ident">Duration</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">SysError</span> {
-
-        <span class="kw">let</span> <span class="ident">condvar</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">SgxThreadCondvarInner</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">get</span>();
-        <span class="ident">condvar</span>.<span class="ident">spinlock</span>.<span class="ident">lock</span>();
-        <span class="ident">condvar</span>.<span class="ident">thread_vec</span>.<span class="ident">push</span>(<span class="ident">rsgx_thread_self</span>());
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">waiter</span>: <span class="ident">sgx_thread_t</span> <span class="op">=</span> <span class="ident">SGX_THREAD_T_NULL</span>;
-
-        <span class="ident">mutex</span>.<span class="ident">unlock_lazy</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">waiter</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">ret</span><span class="op">|</span> {
-            <span class="ident">condvar</span>.<span class="ident">thread_vec</span>.<span class="ident">pop</span>();
-            <span class="ident">condvar</span>.<span class="ident">spinlock</span>.<span class="ident">unlock</span>();
-            <span class="ident">ret</span>
-        })<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ret</span> <span class="op">=</span> <span class="prelude-val">Ok</span>(());
-        <span class="kw">loop</span> {
-            <span class="ident">condvar</span>.<span class="ident">spinlock</span>.<span class="ident">unlock</span>();
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">result</span> <span class="op">=</span> <span class="number">0</span>;
-            <span class="kw">if</span> <span class="ident">waiter</span> <span class="op">=</span><span class="op">=</span> <span class="ident">SGX_THREAD_T_NULL</span> {
-                <span class="ident">result</span> <span class="op">=</span> <span class="ident">mutex</span>::<span class="ident">thread_wait_event</span>(<span class="ident">SgxThreadData</span>::<span class="ident">current</span>().<span class="ident">get_tcs</span>(), <span class="ident">dur</span>);
-            } <span class="kw">else</span> {
-                <span class="ident">result</span> <span class="op">=</span> <span class="ident">mutex</span>::<span class="ident">thread_setwait_events</span>(<span class="ident">SgxThreadData</span>::<span class="ident">from_raw</span>(<span class="ident">waiter</span>).<span class="ident">get_tcs</span>(),
-                                                      <span class="ident">SgxThreadData</span>::<span class="ident">current</span>().<span class="ident">get_tcs</span>(),
-                                                      <span class="ident">dur</span>);
-                <span class="ident">waiter</span> <span class="op">=</span> <span class="ident">SGX_THREAD_T_NULL</span>;
-            }
-
-            <span class="ident">condvar</span>.<span class="ident">spinlock</span>.<span class="ident">lock</span>();
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">thread_waiter</span>: <span class="ident">sgx_thread_t</span> <span class="op">=</span> <span class="ident">SGX_THREAD_T_NULL</span>;
-            <span class="kw">for</span> <span class="ident">tmp</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">condvar</span>.<span class="ident">thread_vec</span> {
-                <span class="kw">if</span> <span class="ident">thread</span>::<span class="ident">rsgx_thread_equal</span>(<span class="kw-2">*</span><span class="ident">tmp</span>, <span class="ident">rsgx_thread_self</span>()) {
-                    <span class="ident">thread_waiter</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">tmp</span>;
-                    <span class="kw">break</span>;
-                }
-            }
-
-            <span class="kw">if</span> <span class="ident">thread_waiter</span> <span class="op">!</span><span class="op">=</span> <span class="ident">SGX_THREAD_T_NULL</span> <span class="kw-2">&amp;</span><span class="op">&amp;</span> <span class="ident">result</span> <span class="op">&lt;</span> <span class="number">0</span> {
-                <span class="kw">if</span> <span class="ident">Error</span>::<span class="ident">last_os_error</span>().<span class="ident">kind</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">io</span>::<span class="ident">ErrorKind</span>::<span class="ident">TimedOut</span> {
-                    <span class="ident">condvar</span>.<span class="ident">thread_vec</span>.<span class="ident">remove_item</span>(<span class="kw-2">&amp;</span><span class="ident">thread_waiter</span>);
-                    <span class="ident">ret</span> <span class="op">=</span> <span class="prelude-val">Err</span>(<span class="ident">libc</span>::<span class="ident">ETIMEDOUT</span>);
-                    <span class="kw">break</span>;
-                }
-            }
-
-            <span class="kw">if</span> <span class="ident">thread_waiter</span> <span class="op">=</span><span class="op">=</span> <span class="ident">SGX_THREAD_T_NULL</span> {
-                <span class="kw">break</span>;
-            }
-        }
-        <span class="ident">condvar</span>.<span class="ident">spinlock</span>.<span class="ident">unlock</span>();
-        <span class="ident">mutex</span>.<span class="ident">lock</span>();
-        <span class="ident">ret</span>
+        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">wait_timeout</span>(<span class="ident">mutex</span>::<span class="ident">raw</span>(<span class="ident">mutex</span>), <span class="ident">dur</span>)
     }
 
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">signal</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">SysError</span> {
-
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">waiter</span>: <span class="ident">sgx_thread_t</span> <span class="op">=</span> <span class="ident">SGX_THREAD_T_NULL</span>;
-        <span class="kw">let</span> <span class="ident">condvar</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">SgxThreadCondvarInner</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">get</span>();
-        <span class="ident">condvar</span>.<span class="ident">spinlock</span>.<span class="ident">lock</span>();
-        <span class="kw">if</span> <span class="ident">condvar</span>.<span class="ident">thread_vec</span>.<span class="ident">is_empty</span>() {
-            <span class="ident">condvar</span>.<span class="ident">spinlock</span>.<span class="ident">unlock</span>();
-            <span class="kw">return</span> <span class="prelude-val">Ok</span>(());
-        }
-
-        <span class="ident">waiter</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">condvar</span>.<span class="ident">thread_vec</span>.<span class="ident">first</span>().<span class="ident">unwrap</span>();
-        <span class="ident">condvar</span>.<span class="ident">thread_vec</span>.<span class="ident">remove</span>(<span class="number">0</span>);
-        <span class="ident">condvar</span>.<span class="ident">spinlock</span>.<span class="ident">unlock</span>();
-        <span class="ident">mutex</span>::<span class="ident">thread_set_event</span>(<span class="ident">SgxThreadData</span>::<span class="ident">from_raw</span>(<span class="ident">waiter</span>).<span class="ident">get_tcs</span>());
-        <span class="prelude-val">Ok</span>(())
+        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">signal</span>()
     }
 
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">broadcast</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">SysError</span> {
-
-        <span class="kw">let</span> <span class="ident">condvar</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">SgxThreadCondvarInner</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">get</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tcs_vec</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
-        <span class="ident">condvar</span>.<span class="ident">spinlock</span>.<span class="ident">lock</span>();
-        <span class="kw">if</span> <span class="ident">condvar</span>.<span class="ident">thread_vec</span>.<span class="ident">is_empty</span>() {
-            <span class="ident">condvar</span>.<span class="ident">spinlock</span>.<span class="ident">unlock</span>();
-            <span class="kw">return</span> <span class="prelude-val">Ok</span>(());
-        }
-
-        <span class="kw">while</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">waiter</span>) <span class="op">=</span> <span class="ident">condvar</span>.<span class="ident">thread_vec</span>.<span class="ident">pop</span>() {
-           <span class="ident">tcs_vec</span>.<span class="ident">push</span>(<span class="ident">SgxThreadData</span>::<span class="ident">from_raw</span>(<span class="ident">waiter</span>).<span class="ident">get_tcs</span>())
-        }
-        <span class="ident">condvar</span>.<span class="ident">spinlock</span>.<span class="ident">unlock</span>();
-        <span class="ident">mutex</span>::<span class="ident">thread_set_multiple_events</span>(<span class="ident">tcs_vec</span>.<span class="ident">as_slice</span>());
-        <span class="prelude-val">Ok</span>(())
+        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">broadcast</span>()
     }
 
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">notify_one</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">SysError</span> {
         <span class="self">self</span>.<span class="ident">signal</span>()
     }
 
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">notify_all</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">SysError</span> {
         <span class="self">self</span>.<span class="ident">broadcast</span>()
     }
 
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">destroy</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">SysError</span> {
-
-        <span class="kw">let</span> <span class="ident">condvar</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">SgxThreadCondvarInner</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">get</span>();
-        <span class="ident">condvar</span>.<span class="ident">spinlock</span>.<span class="ident">lock</span>();
-        <span class="kw">if</span> <span class="ident">condvar</span>.<span class="ident">thread_vec</span>.<span class="ident">first</span>() <span class="op">!</span><span class="op">=</span> <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">SGX_THREAD_T_NULL</span>) {
-            <span class="ident">condvar</span>.<span class="ident">spinlock</span>.<span class="ident">unlock</span>();
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">libc</span>::<span class="ident">EBUSY</span>);
-        }
-        <span class="ident">condvar</span>.<span class="ident">spinlock</span>.<span class="ident">unlock</span>();
-        <span class="prelude-val">Ok</span>(())
+        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">destroy</span>()
     }
 }
 
@@ -975,7 +705,6 @@
                             <span class="op">-</span><span class="op">&gt;</span> <span class="ident">LockResult</span><span class="op">&lt;</span>(<span class="ident">SgxMutexGuard</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span><span class="op">&gt;</span>, <span class="ident">WaitTimeoutResult</span>)<span class="op">&gt;</span> {
 
         <span class="kw">let</span> (<span class="ident">poisoned</span>, <span class="ident">result</span>) <span class="op">=</span> <span class="kw">unsafe</span> {
-
             <span class="kw">let</span> <span class="ident">lock</span> <span class="op">=</span> <span class="ident">mutex</span>::<span class="ident">guard_lock</span>(<span class="kw-2">&amp;</span><span class="ident">guard</span>);
             <span class="self">self</span>.<span class="ident">verify</span>(<span class="ident">lock</span>);
             <span class="kw">let</span> <span class="ident">_result</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">wait_timeout</span>(<span class="ident">lock</span>, <span class="ident">dur</span>);
@@ -1087,7 +816,6 @@
             <span class="kw">let</span> <span class="ident">ret</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">broadcast</span>();
             <span class="kw">match</span> <span class="ident">ret</span> {
                 <span class="prelude-val">Err</span>(<span class="ident">r</span>) <span class="kw">if</span> <span class="ident">r</span> <span class="op">=</span><span class="op">=</span> <span class="ident">libc</span>::<span class="ident">ENOMEM</span> <span class="op">=</span><span class="op">&gt;</span> {
-                    <span class="comment">//let _layout = Layout::from_size_align(mem::size_of::&lt;usize&gt;(), 1).unwrap();</span>
                     <span class="ident">oom</span>::<span class="ident">rsgx_oom</span>(<span class="ident">AllocErr</span>)
                 },
                 <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> {},
@@ -1095,16 +823,17 @@
         }
     }
 
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">notify_one</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) {
         <span class="self">self</span>.<span class="ident">signal</span>()
     }
 
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">notify_all</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) {
         <span class="self">self</span>.<span class="ident">broadcast</span>()
     }
 
     <span class="kw">fn</span> <span class="ident">verify</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">mutex</span>: <span class="kw-2">&amp;</span><span class="ident">SgxThreadMutex</span>) {
-
         <span class="kw">let</span> <span class="ident">addr</span> <span class="op">=</span> <span class="ident">mutex</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="kw">_</span> <span class="kw">as</span> <span class="ident">usize</span>;
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">mutex</span>.<span class="ident">compare_and_swap</span>(<span class="number">0</span>, <span class="ident">addr</span>, <span class="ident">Ordering</span>::<span class="ident">SeqCst</span>) {
             <span class="comment">// If we got out 0, then we have successfully bound the mutex to</span>
@@ -1136,7 +865,8 @@
 
 <span class="kw">impl</span> <span class="ident">Drop</span> <span class="kw">for</span> <span class="ident">SgxCondvar</span> {
     <span class="kw">fn</span> <span class="ident">drop</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
-        <span class="kw">unsafe</span> { <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">destroy</span>(); }
+        <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">destroy</span>() };
+        <span class="macro">debug_assert_eq</span><span class="macro">!</span>(<span class="ident">result</span>, <span class="prelude-val">Ok</span>(()), <span class="string">&quot;Error when destroy an SgxCondvar: {}&quot;</span>, <span class="ident">result</span>.<span class="ident">unwrap_err</span>());
     }
 }</pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../../";window.currentCrate = "sgx_tstd";</script><script src="../../../aliases.js"></script><script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script><script defer src="../../../search-index.js"></script></body></html>

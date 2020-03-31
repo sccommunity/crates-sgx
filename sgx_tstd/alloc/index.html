@@ -10,16 +10,14 @@ do not satisfy its documented constraints.</p>
 that may be due to resource exhaustion or to
 something wrong when combining the given input arguments with this
 allocator.</p>
-</td></tr><tr class='unstable module-item'><td><a class="struct" href="struct.CannotReallocInPlace.html" title='sgx_tstd::alloc::CannotReallocInPlace struct'>CannotReallocInPlace</a></td><td class='docblock-short'><span class="stab unstable">Experimental</span><p>The <code>CannotReallocInPlace</code> error is used when <a href="./trait.Alloc.html#method.grow_in_place"><code>grow_in_place</code></a> or
-<a href="./trait.Alloc.html#method.shrink_in_place"><code>shrink_in_place</code></a> were unable to reuse the given memory block for
+</td></tr><tr class='unstable module-item'><td><a class="struct" href="struct.CannotReallocInPlace.html" title='sgx_tstd::alloc::CannotReallocInPlace struct'>CannotReallocInPlace</a></td><td class='docblock-short'><span class="stab unstable">Experimental</span><p>The <code>CannotReallocInPlace</code> error is used when <a href="./trait.AllocRef.html#method.grow_in_place"><code>grow_in_place</code></a> or
+<a href="./trait.AllocRef.html#method.shrink_in_place"><code>shrink_in_place</code></a> were unable to reuse the given memory block for
 a requested layout.</p>
-</td></tr><tr class='unstable module-item'><td><a class="struct" href="struct.Excess.html" title='sgx_tstd::alloc::Excess struct'>Excess</a></td><td class='docblock-short'><span class="stab unstable">Experimental</span><p>Represents the combination of a starting address and
-a total capacity of the returned block.</p>
 </td></tr><tr class='unstable module-item'><td><a class="struct" href="struct.Global.html" title='sgx_tstd::alloc::Global struct'>Global</a></td><td class='docblock-short'><span class="stab unstable">Experimental</span><p>The global memory allocator.</p>
 </td></tr><tr class='module-item'><td><a class="struct" href="struct.System.html" title='sgx_tstd::alloc::System struct'>System</a></td><td class='docblock-short'></td></tr></table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
 <table><tr class='module-item'><td><a class="trait" href="trait.GlobalAlloc.html" title='sgx_tstd::alloc::GlobalAlloc trait'>GlobalAlloc</a></td><td class='docblock-short'><p>A memory allocator that can be registered as the standard library’s default
-though the <code>#[global_allocator]</code> attributes.</p>
-</td></tr><tr class='unstable module-item'><td><a class="trait" href="trait.Alloc.html" title='sgx_tstd::alloc::Alloc trait'>Alloc</a></td><td class='docblock-short'><span class="stab unstable">Experimental</span><p>An implementation of <code>Alloc</code> can allocate, reallocate, and
+through the <code>#[global_allocator]</code> attribute.</p>
+</td></tr><tr class='unstable module-item'><td><a class="trait" href="trait.AllocRef.html" title='sgx_tstd::alloc::AllocRef trait'>AllocRef</a></td><td class='docblock-short'><span class="stab unstable">Experimental</span><p>An implementation of <code>AllocRef</code> can allocate, reallocate, and
 deallocate arbitrary blocks of data described via <code>Layout</code>.</p>
 </td></tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
 <table><tr class='module-item'><td><a class="fn" href="fn.alloc.html" title='sgx_tstd::alloc::alloc fn'>alloc</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td><td class='docblock-short'><p>Allocate memory with the global allocator.</p>

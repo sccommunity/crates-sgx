@@ -1,0 +1,34 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `rsgx_cpuidex` fn in crate `sgx_trts`."><meta name="keywords" content="rust, rustlang, rust-lang, rsgx_cpuidex"><title>sgx_trts::cpuid::rsgx_cpuidex - Rust</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc fn"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../sgx_trts/index.html'><div class='logo-container'><img src='../../rust-logo.png' alt='logo'></div></a><div class="sidebar-elems"><p class='location'><a href='../index.html'>sgx_trts</a>::<wbr><a href='index.html'>cpuid</a></p><script>window.sidebarCurrent = {name: 'rsgx_cpuidex', ty: 'fn', relpath: ''};</script><script defer src="sidebar-items.js"></script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../../src/sgx_trts/cpuid.rs.html#132-139' title='goto source code'>[src]</a></span><span class='in-band'>Function <a href='../index.html'>sgx_trts</a>::<wbr><a href='index.html'>cpuid</a>::<wbr><a class="fn" href=''>rsgx_cpuidex</a></span></h1><pre class='rust fn'>pub fn rsgx_cpuidex(leaf: i32, subleaf: i32) -&gt; <a class="type" href="../../sgx_types/error/type.SgxResult.html" title="type sgx_types::error::SgxResult">SgxResult</a>&lt;<a class="type" href="../../sgx_types/types/type.sgx_cpuinfo_t.html" title="type sgx_types::types::sgx_cpuinfo_t">sgx_cpuinfo_t</a>&gt;</pre><div class='docblock'><p>The rsgx_cpuidex function performs the equivalent of a cpuid_ex() function call or
+intrinisic which executes the CPUID instruction to query the host processor for
+the information about supported features.</p>
+<p><strong>Note</strong></p>
+<p>This function performs an OCALL to execute the CPUID instruction.</p>
+<h1 id="description" class="section-header"><a href="#description">Description</a></h1>
+<p>This function provides the equivalent of the cpuid_ex() function or intrinsic. The
+function executes the CPUID instruction for the given leaf (input). The CPUID
+instruction provides processor feature and type information that is returned in
+cpuinfo, an array of 4 integers to specify the values of EAX, EBX, ECX and EDX
+registers. rsgx_cpuidex performs an OCALL by invoking oc_cpuidex to get the
+info from untrusted side because the CPUID instruction is an illegal instruction
+in the enclave domain.</p>
+<p><strong>Note</strong></p>
+<p>As the CPUID instruction is executed by an OCALL, the results should not
+be trusted. Code should verify the results and perform a threat evaluation
+to determine the impact on trusted code if the results were
+spoofed.</p>
+<p>The implementation of this function performs an OCALL and therefore,
+this function will not have the same serializing or fencing behavior of
+executing a CPUID instruction in an untrusted domain code flow.</p>
+<h1 id="parameters" class="section-header"><a href="#parameters">Parameters</a></h1>
+<p><strong>leaf</strong></p>
+<p>The leaf specified for retrieved CPU info.</p>
+<p><strong>subleaf</strong></p>
+<p>The sub-leaf specified for retrieved CPU info.</p>
+<h1 id="requirements" class="section-header"><a href="#requirements">Requirements</a></h1>
+<p>Library: libsgx_tstdc.a</p>
+<h1 id="return-value" class="section-header"><a href="#return-value">Return value</a></h1>
+<p>The information returned in an array of four integers.</p>
+<h1 id="errors" class="section-header"><a href="#errors">Errors</a></h1>
+<p><strong>SGX_ERROR_INVALID_PARAMETER</strong></p>
+<p>Indicates the parameter is invalid.</p>
+</div></section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../";window.currentCrate = "sgx_trts";</script><script src="../../aliases.js"></script><script src="../../main.js"></script><script defer src="../../search-index.js"></script></body></html>
