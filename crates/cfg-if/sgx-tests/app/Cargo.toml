@@ -5,5 +5,5 @@ build = "build.rs"
 edition = "2018"
 
 [dependencies]
-sgx_types = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.0" }
-sgx_urts = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.0" }
+sgx_types = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.1" }
+sgx_urts = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.1" }
