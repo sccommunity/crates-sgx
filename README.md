@@ -63,7 +63,8 @@ Tags follow this convention `v{x.y.z}+sgx{x.y.z}`, where:
 - Propose a crate you paln to port in issue and then port crates and
   corresponding tests for Teaclave SGX SDK.
 - Create a pull request stating crate name, version, license and upstream
-  commit hash (usually a public release) which your port based on.
+  commit hash (usually a public release) which your port based on. Also,
+  `meta.txt` needs to be updated.
 - Provide a diff of your changes for reviewing and auditing.
 - Add metadata in the crates section of `README.md` and update `CHANGELOG.md`.
 
@@ -115,10 +116,8 @@ use std::sync::{Arc, SgxMutex as Mutex};
 
 ## Crates
 
-- `{crate name}`, `{version}`, `{license}`, `{upstream commit hash base}`
-- cfg-if, 0.1.10, MIT/Apache-2.0, 4484a6faf816ff8058088ad857b0c6bb2f4b02b2
-- itoa, 0.4.5, MIT/Apache-2.0, 0ecba421fa2f278431d1e0ab607d9311ad2c1541
-- rust-hex, 0.4.2, MIT/Apache-2.0, be0c32f9c8938ca0359bbb0d1477e31b07cb3358
+See [meta.txt](meta.txt) for more information (like version, license, commit
+hash, etc) on these crates.
 
 ## License
 
