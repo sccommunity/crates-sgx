@@ -1,6 +1,7 @@
 # Changelog
 
-## [Unreleased]
+## [0.2.0]
+- Update to Teaclave SGX SDK 1.1.1
 - Add itoa 0.4.5
 - Add an example project
 - Add tests for itoa, hex, and cfg-if
