@@ -2,5 +2,6 @@ project name, version, upstream URL, upstream commit hash base, license, tests (
 anyhow, 1.0.28,https://github.com/dtolnay/anyhow, 022f700a1c67c5cd663c34b8a3c11c6818ec0ecb, MIT/Apache-2.0, partial
 cfg-if, 0.1.10, https://github.com/alexcrichton/cfg-if, 4484a6faf816ff8058088ad857b0c6bb2f4b02b2, MIT/Apache-2.0, full
 itoa, 0.4.5, https://github.com/dtolnay/itoa, 0ecba421fa2f278431d1e0ab607d9311ad2c1541, MIT/Apache-2.0, full
+rust-fnv, 1.0.6, https://github.com/servo/rust-fnv, 2ca7554508beb26d7b3f817008d0e58da367d227, MIT/Apache-2.0, full
 rust-hex, 0.4.2, https://github.com/KokaKiwi/rust-hex, be0c32f9c8938ca0359bbb0d1477e31b07cb3358, MIT/Apache-2.0, full
 thiserror, 1.0.14, https://github.com/dtolnay/thiserror, 6fd405929807e73ac4b1bd026192a91f64a08636, MIT/Apache-2.0, partial

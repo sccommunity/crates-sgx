@@ -1,8 +1,10 @@
 # Changelog
 
 ## [Unreleased]
-- Add thiserror 1.0.14
-- Add anyhow 1.0.28
+### Add
+- rust-fnv 1.0.6
+- thiserror 1.0.14
+- anyhow 1.0.28
 
 ## [0.2.0]
 - Update to Teaclave SGX SDK 1.1.1
