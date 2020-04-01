@@ -11,7 +11,7 @@ crate-type = ["staticlib"]
 default = []
 
 [dependencies]
-hex = { path = "../..", features = ["enclave_unit_test"] }
+anyhow = { path = "../.." }
 
 [target.'cfg(not(target_env = "sgx"))'.dependencies]
 sgx_types = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.1" }
