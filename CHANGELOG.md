@@ -1,5 +1,8 @@
 # Changelog
 
+## [Unreleased]
+- Add anyhow 1.0.28
+
 ## [0.2.0]
 - Update to Teaclave SGX SDK 1.1.1
 - Add itoa 0.4.5
