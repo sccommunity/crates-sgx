@@ -1,6 +1,7 @@
 # Changelog
 
 ## [Unreleased]
+- Add thiserror 1.0.14
 - Add anyhow 1.0.28
 
 ## [0.2.0]
