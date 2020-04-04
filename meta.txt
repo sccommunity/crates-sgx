@@ -1,4 +1,5 @@
 project name, version, upstream URL, upstream commit hash base, license, tests (none, partial, full)
+adler32-rs, 1.0.4, https://github.com/remram44/adler32-rs, b235700967618065f89f188a0000d67d08451705, zlib, full
 anyhow, 1.0.28,https://github.com/dtolnay/anyhow, 022f700a1c67c5cd663c34b8a3c11c6818ec0ecb, MIT/Apache-2.0, partial
 cfg-if, 0.1.10, https://github.com/alexcrichton/cfg-if, 4484a6faf816ff8058088ad857b0c6bb2f4b02b2, MIT/Apache-2.0, full
 itoa, 0.4.5, https://github.com/dtolnay/itoa, 0ecba421fa2f278431d1e0ab607d9311ad2c1541, MIT/Apache-2.0, full

@@ -11,4 +11,20 @@ license = "Zlib"
 edition = "2018"
 
 [dev-dependencies]
-rand = "0.4"
+#rand = "0.4"
+
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+enclave_unit_test = ["rand", "sgx_tunittest"]
+
+[dependencies]
+sgx_tstd        = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.1", optional = true }
+sgx_tunittest   = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.1", optional = true }
+
+[dependencies.rand]
+package = "sgx_rand"
+git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git"
+optional = true
+tag = "v1.1.1"
+

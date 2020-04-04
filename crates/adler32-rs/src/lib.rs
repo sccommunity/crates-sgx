@@ -8,7 +8,17 @@
 //! The adler32 code has been translated (as accurately as I could manage) from
 //! the zlib implementation.
 
-#[cfg(test)]
+#![cfg_attr(all(feature = "mesalock_sgx", not(target_env = "sgx")), no_std)]
+#![cfg_attr(
+    all(target_env = "sgx", target_vendor = "mesalock"),
+    feature(rustc_private)
+)]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
+
+#[cfg(feature = "enclave_unit_test")]
+//#[cfg(test)]
 extern crate rand;
 
 use std::io;
@@ -203,13 +213,22 @@ pub fn adler32<R: io::Read>(mut reader: R) -> io::Result<u32> {
     Ok(hash.hash())
 }
 
-#[cfg(test)]
-mod test {
+#[cfg(feature = "enclave_unit_test")]
+//#[cfg(test)]
+pub mod test {
+    use std::prelude::v1::*;
+
     use rand;
     use rand::Rng;
     use std::io;
 
     use super::{adler32, RollingAdler32, BASE};
+
+    use sgx_tunittest::*;
+
+    pub fn run_tests() {
+        rsgx_unit_tests!(testvectors, compare, rolling, long_window_remove);
+    }
 
     fn adler32_slow<R: io::Read>(reader: R) -> io::Result<u32> {
         let mut a: u32 = 1;
@@ -224,7 +243,7 @@ mod test {
         Ok((b << 16) | a)
     }
 
-    #[test]
+    //#[test]
     fn testvectors() {
         fn do_test(v: u32, bytes: &[u8]) {
             let mut hash = RollingAdler32::new();
@@ -253,7 +272,7 @@ mod test {
         do_test(0xD6251498, &[255; 64000]);
     }
 
-    #[test]
+    //#[test]
     fn compare() {
         let mut rng = rand::thread_rng();
         let mut data = vec![0u8; 5589];
@@ -272,7 +291,7 @@ mod test {
         }
     }
 
-    #[test]
+    //#[test]
     fn rolling() {
         assert_eq!(RollingAdler32::from_value(0x01020304).hash(), 0x01020304);
 
@@ -293,7 +312,7 @@ mod test {
         do_test(b"this a ", b"test");
     }
 
-    #[test]
+    //#[test]
     fn long_window_remove() {
         let mut hash = RollingAdler32::new();
         let w = 65536;
