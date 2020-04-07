@@ -5,4 +5,5 @@ cfg-if, 0.1.10, https://github.com/alexcrichton/cfg-if, 4484a6faf816ff8058088ad8
 itoa, 0.4.5, https://github.com/dtolnay/itoa, 0ecba421fa2f278431d1e0ab607d9311ad2c1541, MIT/Apache-2.0, full
 rust-fnv, 1.0.6, https://github.com/servo/rust-fnv, 2ca7554508beb26d7b3f817008d0e58da367d227, MIT/Apache-2.0, full
 rust-hex, 0.4.2, https://github.com/KokaKiwi/rust-hex, be0c32f9c8938ca0359bbb0d1477e31b07cb3358, MIT/Apache-2.0, full
+serde, 1.0.106, https://github.com/serde-rs/serde/, d1564525ad5172edeac5a73ebe0680dbe735e63a, Apache-2.0, partial
 thiserror, 1.0.14, https://github.com/dtolnay/thiserror, 6fd405929807e73ac4b1bd026192a91f64a08636, MIT/Apache-2.0, partial
