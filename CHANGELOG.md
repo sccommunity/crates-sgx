@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 ### Add
+- serde 1.0.106
 - adler32-rs 1.0.4
 - rust-fnv 1.0.6
 - thiserror 1.0.14

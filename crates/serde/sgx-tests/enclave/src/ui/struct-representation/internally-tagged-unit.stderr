@@ -1,0 +1,7 @@
+error: #[serde(tag = "...")] can only be used on enums and structs with named fields
+ --> $DIR/internally-tagged-unit.rs:3:10
+  |
+3 | #[derive(Serialize)]
+  |          ^^^^^^^^^
+  |
+  = note: this error originates in a derive macro (in Nightly builds, run with -Z macro-backtrace for more info)
