@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["PrintFormat","Controls how the backtrace should be formatted."]],"fn":[["__rust_begin_short_backtrace","Fixed frame used to clean the backtrace with `RUST_BACKTRACE=1`."],["enable_backtrace","Enable backtrace for dumping call stack on crash."]]});
