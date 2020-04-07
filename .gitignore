@@ -1,2 +1,4 @@
 example/target
 example/Cargo.lock
+**/sgx-tests/**/target
+**/target
