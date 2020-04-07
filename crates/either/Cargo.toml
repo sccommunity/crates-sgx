@@ -1,0 +1,34 @@
+[package]
+name = "either"
+version = "1.5.3"
+authors = ["bluss"]
+
+license = "MIT/Apache-2.0"
+repository = "https://github.com/bluss/either"
+documentation = "https://docs.rs/either/1/"
+readme = "README-crates.io.md"
+
+description = """
+The enum `Either` with variants `Left` and `Right` is a general purpose sum type with two cases.
+"""
+
+keywords = ["data-structure", "no_std"]
+categories = ["data-structures", "no-std"]
+
+[dependencies]
+serde = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.1+sgx1.1.1", features = ["derive"], optional = true }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.1", optional = true }
+sgx_tunittest = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.1", optional = true }
+
+[features]
+default = ["use_std"]
+use_std = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+enclave_unit_test = ["sgx_tunittest"]
+
+[package.metadata.release]
+no-dev-version = true
+tag-name = "{{version}}"
+
+[package.metadata.docs.rs]
+features = ["serde"]
