@@ -14,7 +14,7 @@ Here is an example of `Cargo.toml`.
 ```
 [package]
 name = "crates-sgx-example"
-version = "0.2.0"
+version = "0.2.1"
 authors = ["The Universal Secure Computing Community Authors"]
 edition = "2018"
 
@@ -29,8 +29,8 @@ mesalock_sgx = [
 ]
 
 [dependencies]
-cfg-if = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.0+sgx1.1.1" }
-hex = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.0+sgx1.1.1" }
+cfg-if = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.1+sgx1.1.1" }
+hex = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.1+sgx1.1.1" }
 
 sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.1", optional = true }
 ```
@@ -51,7 +51,7 @@ Given a version number `x.y.z`, increment:
 For example:
 - crates-sgx 0.1.0: Teaclave SGX SDK 1.1.0 (Intel SGX SDK 2.7.1) + 10 SGX crates
 - crates-sgx 0.1.1: Teaclave SGX SDK 1.1.0 (Intel SGX SDK 2.7.1) + 20 SGX crates
-- crates-sgx 0.2.0: Teaclave SGX SDK 1.2.0 (Intel SGX SDK 2.8) + 20 SGX crates
+- crates-sgx 0.2.1: Teaclave SGX SDK 1.2.0 (Intel SGX SDK 2.8) + 20 SGX crates
 
 ## Tag
 
@@ -88,7 +88,7 @@ SGX_MODE=SW make test
 sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.1", optional = true }
 
 // Replace hex = "0.4.2", and pay attention to the tag
-hex = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.0+sgx1.1.1" }
+hex = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.1+sgx1.1.1" }
 ```
 
 2. Fix features: add a feature to enable SGX's standard library. For example:

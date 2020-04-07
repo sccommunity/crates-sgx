@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+
+## [0.2.1] - 2020-04-07
 ### Add
 - serde 1.0.106
 - adler32-rs 1.0.4
@@ -8,7 +10,7 @@
 - thiserror 1.0.14
 - anyhow 1.0.28
 
-## [0.2.0]
+## [0.2.0] - 2020-03-31
 - Update to Teaclave SGX SDK 1.1.1
 - Add itoa 0.4.5
 - Add an example project

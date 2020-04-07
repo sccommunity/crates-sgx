@@ -1,6 +1,6 @@
 [package]
 name = "crates-sgx-example"
-version = "0.2.0"
+version = "0.2.1"
 authors = ["The Universal Secure Computing Community Authors"]
 edition = "2018"
 
@@ -15,15 +15,13 @@ mesalock_sgx = [
 ]
 
 [dependencies]
-cfg-if = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.0+sgx1.1.1" }
-hex = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.0+sgx1.1.1" }
-itoa = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.0+sgx1.1.1" }
-
-# unreleased crates
-serde = { path = "../crates/serde/serde", features = ["derive"] }
-adler32 = { path = "../crates/adler32-rs" }
-fnv = { path = "../crates/rust-fnv" }
-thiserror = { path = "../crates/thiserror" }
-anyhow = { path = "../crates/anyhow" }
+adler32 = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.1+sgx1.1.1" }
+anyhow = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.1+sgx1.1.1" }
+cfg-if = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.1+sgx1.1.1" }
+fnv = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.1+sgx1.1.1" }
+hex = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.1+sgx1.1.1" }
+itoa = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.1+sgx1.1.1" }
+serde = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.1+sgx1.1.1", features = ["derive"] }
+thiserror = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.1+sgx1.1.1" }
 
 sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.1", optional = true }
