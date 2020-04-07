@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Add
 - either 1.5.3
+- rust-smallvec 1.2.0
 
 ## [0.2.1] - 2020-04-07
 ### Add
