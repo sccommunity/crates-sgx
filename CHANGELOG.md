@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+
+## [0.2.2] - 2020-04-07
 ### Add
 - either 1.5.3
 - rust-smallvec 1.2.0
