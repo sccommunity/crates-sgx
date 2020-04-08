@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+
+## [0.2.3] - 2020-04-07
 ### Add
 - ryu 1.0.3
 - sval 0.5.1
