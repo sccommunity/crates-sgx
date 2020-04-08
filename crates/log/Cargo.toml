@@ -1,0 +1,62 @@
+[package]
+
+name = "log"
+version = "0.4.10" # remember to update html_root_url
+authors = ["The Rust Project Developers"]
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/rust-lang/log"
+documentation = "https://docs.rs/log"
+description = """
+A lightweight logging facade for Rust
+"""
+categories = ["development-tools::debugging"]
+keywords = ["logging"]
+exclude = ["rfcs/**/*", "/.travis.yml", "/appveyor.yml"]
+build = "build.rs"
+
+[package.metadata.docs.rs]
+features = ["std", "serde", "kv_unstable_sval"]
+
+[[test]]
+name = "filters"
+harness = false
+
+[[test]]
+name = "macros"
+harness = true
+
+[features]
+max_level_off   = []
+max_level_error = []
+max_level_warn  = []
+max_level_info  = []
+max_level_debug = []
+max_level_trace = []
+
+release_max_level_off   = []
+release_max_level_error = []
+release_max_level_warn  = []
+release_max_level_info  = []
+release_max_level_debug = []
+release_max_level_trace = []
+
+std = ["mesalock_sgx"]
+mesalock_sgx = [
+  "sgx_tstd",
+]
+
+# requires the latest stable
+# this will have a tighter MSRV before stabilization
+kv_unstable = []
+kv_unstable_sval = ["kv_unstable", "sval/fmt"]
+
+[dependencies]
+cfg-if = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.3+sgx1.1.1" }
+serde = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.3+sgx1.1.1", optional = true, default-features = false }
+sval = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.3+sgx1.1.1", optional = true, default-features = false }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.1", optional = true }
+
+[dev-dependencies]
+# serde_test = "1.0"
+# sval = { version = "0.4.2", features = ["test"] }
