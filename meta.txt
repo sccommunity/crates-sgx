@@ -9,6 +9,7 @@ no-panic, 0.1.12, https://github.com/dtolnay/no-panic, 54b2251659a7e6d9c81622d87
 rust-fnv, 1.0.6, https://github.com/servo/rust-fnv, 2ca7554508beb26d7b3f817008d0e58da367d227, MIT/Apache-2.0, full
 rust-hex, 0.4.2, https://github.com/KokaKiwi/rust-hex, be0c32f9c8938ca0359bbb0d1477e31b07cb3358, MIT/Apache-2.0, full
 rust-smallvec, 1.2.0, https://github.com/servo/rust-smallvec, 08b82495c01948813b3577780fb96d9957950a9a, MIT/Apache-2.0, partial
+ryu, 1.0.3, https://github.com/dtolnay/ryu, 664db527610d0d9cfccecd38029fc8d2d80bc303, MIT/Apache-2.0, none-no-std
 serde, 1.0.106, https://github.com/serde-rs/serde/, d1564525ad5172edeac5a73ebe0680dbe735e63a, Apache-2.0, partial
 spin-rs, 0.5.2, https://github.com/mvdnes/spin-rs, 7516c8037d3d15712ba4d8499ab075e97a19d778, MIT, none-no-std
 thiserror, 1.0.14, https://github.com/dtolnay/thiserror, 6fd405929807e73ac4b1bd026192a91f64a08636, MIT/Apache-2.0, partial

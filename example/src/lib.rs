@@ -5,5 +5,6 @@ extern crate sgx_tstd as std;
 
 use lazy_static::lazy_static;
 use either;
+use ryu;
 
 pub fn example() {}
