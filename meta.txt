@@ -3,6 +3,7 @@ adler32-rs, 1.0.4, https://github.com/remram44/adler32-rs, b235700967618065f89f1
 anyhow, 1.0.28,https://github.com/dtolnay/anyhow, 022f700a1c67c5cd663c34b8a3c11c6818ec0ecb, MIT/Apache-2.0, partial
 cfg-if, 0.1.10, https://github.com/alexcrichton/cfg-if, 4484a6faf816ff8058088ad857b0c6bb2f4b02b2, MIT/Apache-2.0, full
 either, 1.5.3, https://github.com/bluss/either, cd15a341118b5af765450dcb6380c6dee17ed0f2, MIT/Apache-2.0, full
+itertools, 0.9.0, https://github.com/rust-itertools/itertools, b085c523681146151866ead66ae8a4b8967fd005, MIT/Apache-2.0, partial
 itoa, 0.4.5, https://github.com/dtolnay/itoa, 0ecba421fa2f278431d1e0ab607d9311ad2c1541, MIT/Apache-2.0, full
 lazy-static.rs, 1.4.0, https://github.com/rust-lang-nursery/lazy-static.rs, 421669662b35fcb455f2902daed2e20bbbba79b6, Apache-2.0, none-no-std
 no-panic, 0.1.12, https://github.com/dtolnay/no-panic, 54b2251659a7e6d9c81622d87a29aeedcf8281ba, MIT/Apache-2.0, none-no-std

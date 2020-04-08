@@ -1,6 +1,7 @@
 # Changelog
 
 ## [Unreleased]
+- itertools 0.9.0
 
 ## [0.2.3] - 2020-04-07
 ### Add
