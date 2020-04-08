@@ -1,9 +1,10 @@
-project name, version, upstream URL, upstream commit hash base, license, tests (none, partial, full)
+project name, version, upstream URL, upstream commit hash base, license, tests (none, partial, full, none-no-std)
 adler32-rs, 1.0.4, https://github.com/remram44/adler32-rs, b235700967618065f89f188a0000d67d08451705, zlib, full
 anyhow, 1.0.28,https://github.com/dtolnay/anyhow, 022f700a1c67c5cd663c34b8a3c11c6818ec0ecb, MIT/Apache-2.0, partial
 cfg-if, 0.1.10, https://github.com/alexcrichton/cfg-if, 4484a6faf816ff8058088ad857b0c6bb2f4b02b2, MIT/Apache-2.0, full
 either, 1.5.3, https://github.com/bluss/either, cd15a341118b5af765450dcb6380c6dee17ed0f2, MIT/Apache-2.0, full
 itoa, 0.4.5, https://github.com/dtolnay/itoa, 0ecba421fa2f278431d1e0ab607d9311ad2c1541, MIT/Apache-2.0, full
+no-panic, 0.1.12, https://github.com/dtolnay/no-panic, 54b2251659a7e6d9c81622d87a29aeedcf8281ba, MIT/Apache-2.0, none-no-std
 rust-fnv, 1.0.6, https://github.com/servo/rust-fnv, 2ca7554508beb26d7b3f817008d0e58da367d227, MIT/Apache-2.0, full
 rust-hex, 0.4.2, https://github.com/KokaKiwi/rust-hex, be0c32f9c8938ca0359bbb0d1477e31b07cb3358, MIT/Apache-2.0, full
 rust-smallvec, 1.2.0, https://github.com/servo/rust-smallvec, 08b82495c01948813b3577780fb96d9957950a9a, MIT/Apache-2.0, partial
