@@ -28,5 +28,6 @@ thiserror = { git = "https://github.com/universal-secure-computing-community/cra
 either = { path = "../crates/either", features = ["serde"] }
 smallvec = { path = "../crates/rust-smallvec", features = ["write", "union", "specialization", "may_dangle", "serde"] }
 no-panic = { path = "../crates/no-panic" }
+lazy_static = { path = "../crates/lazy-static.rs" }
 
 sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.1", optional = true }

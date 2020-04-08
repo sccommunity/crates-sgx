@@ -5,6 +5,8 @@
 - either 1.5.3
 - rust-smallvec 1.2.0
 - no-panic 0.1.12
+- lazy-static.rs 1.4.0
+- spin-rs 0.5.2
 
 ## [0.2.1] - 2020-04-07
 ### Add
