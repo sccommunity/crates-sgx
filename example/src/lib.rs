@@ -8,4 +8,7 @@ use either;
 use ryu;
 use log;
 
+#[macro_use]
+extern crate matches;
+
 pub fn example() {}

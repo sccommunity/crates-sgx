@@ -3,6 +3,7 @@
 ## [Unreleased]
 - itertools 0.9.0
 - log 0.4.10
+- matches 0.1.8
 
 ## [0.2.3] - 2020-04-07
 ### Add

@@ -34,5 +34,6 @@ thiserror = { git = "https://github.com/universal-secure-computing-community/cra
 # Unreleased
 itertools = { path = "../crates/itertools" }
 log = { path = "../crates/log" }
+matches = { path = "../crates/matches" }
 
 sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.1", optional = true }
