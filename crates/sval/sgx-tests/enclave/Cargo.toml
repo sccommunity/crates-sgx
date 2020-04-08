@@ -1,0 +1,23 @@
+[package]
+name = "run-tests-enclave"
+version = "1.0.0"
+edition = "2018"
+
+[lib]
+name = "run_tests_enclave"
+crate-type = ["staticlib"]
+
+[features]
+default = []
+
+[dependencies]
+sval = { path = "../..", features = ["std", "test", "serde", "derive", "arbitrary-depth"] }
+serde = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.2+sgx1.1.1", features = ["derive"] }
+serde_test = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.2+sgx1.1.1" }
+
+[target.'cfg(not(target_env = "sgx"))'.dependencies]
+sgx_types = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.1" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.1" }
+sgx_tunittest = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.1" }
+
+[workspace]

@@ -1,0 +1,30 @@
+[package]
+name = "sval_json_benches"
+version = "0.0.0"
+authors = ["Ashley Mannix <ashleymannix@live.com.au>"]
+edition = "2018"
+publish = false
+
+[dependencies.sval]
+path = "../../"
+features = ["derive", "serde"]
+
+[dependencies.sval_json]
+path = "../"
+features = ["std"]
+
+[dependencies.sval_json_tests]
+path = "../tests"
+
+[dependencies.serde]
+version = "1"
+features = ["derive"]
+
+[dependencies.serde_json]
+version = "1"
+
+[dependencies.miniserde]
+version = "0.1"
+
+[dependencies.erased-serde]
+version = "0.3"

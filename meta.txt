@@ -12,4 +12,5 @@ rust-smallvec, 1.2.0, https://github.com/servo/rust-smallvec, 08b82495c01948813b
 ryu, 1.0.3, https://github.com/dtolnay/ryu, 664db527610d0d9cfccecd38029fc8d2d80bc303, MIT/Apache-2.0, none-no-std
 serde, 1.0.106, https://github.com/serde-rs/serde/, d1564525ad5172edeac5a73ebe0680dbe735e63a, Apache-2.0, partial
 spin-rs, 0.5.2, https://github.com/mvdnes/spin-rs, 7516c8037d3d15712ba4d8499ab075e97a19d778, MIT, none-no-std
+sval, 0.5.1, https://github.com/sval-rs/sval, 85ccf03b78736d910a1ae92c39690640d1cbfef8, Apache-2.0, partial
 thiserror, 1.0.14, https://github.com/dtolnay/thiserror, 6fd405929807e73ac4b1bd026192a91f64a08636, MIT/Apache-2.0, partial
