@@ -1,11 +1,11 @@
 all:
-	@for i in $$(ls crates); do make -C crates/$$i/sgx-tests; done
+	@for i in $$(find crates -name "sgx-tests"); do make -C $$i; done
 
 test:
-	@for i in $$(ls crates); do make -C crates/$$i/sgx-tests run; done
+	@for i in $$(find crates -name "sgx-tests"); do make -C $$i run; done
 
 clean:
-	@for i in $$(ls crates); do make -C crates/$$i/sgx-tests clean; done
+	@for i in $$(find crates -name "sgx-tests"); do make -C $$i clean; done
 	@cargo clean --manifest-path example/Cargo.toml
 
 doc:
