@@ -859,90 +859,107 @@ impl<L, R> fmt::Display for Either<L, R>
     }
 }
 
-// #[test]
-fn basic() {
-    let mut e = Left(2);
-    let r = Right(2);
-    assert_eq!(e, Left(2));
-    e = r;
-    assert_eq!(e, Right(2));
-    assert_eq!(e.left(), None);
-    assert_eq!(e.right(), Some(2));
-    assert_eq!(e.as_ref().right(), Some(&2));
-    assert_eq!(e.as_mut().right(), Some(&mut 2));
-}
+#[cfg(feature = "enclave_unit_test")]
+pub mod tests {
+    use super::*;
+    use sgx_tunittest::*;
 
-// #[test]
-fn macros() {
-    fn a() -> Either<u32, u32> {
-        let x: u32 = try_left!(Right(1337u32));
-        Left(x * 2)
+    pub fn run_tests() {
+        rsgx_unit_tests!(
+            basic,
+            macros,
+            deref,
+            iter,
+            read_write,
+            error,
+        );
     }
-    assert_eq!(a(), Right(1337));
 
-    fn b() -> Either<String, &'static str> {
-        Right(try_right!(Left("foo bar")))
+    // #[test]
+    fn basic() {
+        let mut e = Left(2);
+        let r = Right(2);
+        assert_eq!(e, Left(2));
+        e = r;
+        assert_eq!(e, Right(2));
+        assert_eq!(e.left(), None);
+        assert_eq!(e.right(), Some(2));
+        assert_eq!(e.as_ref().right(), Some(&2));
+        assert_eq!(e.as_mut().right(), Some(&mut 2));
     }
-    assert_eq!(b(), Left(String::from("foo bar")));
-}
 
-// #[test]
-fn deref() {
-    fn is_str(_: &str) {}
-    let value: Either<String, &str> = Left(String::from("test"));
-    is_str(&*value);
-}
+    // #[test]
+    fn macros() {
+        fn a() -> Either<u32, u32> {
+            let x: u32 = try_left!(Right(1337u32));
+            Left(x * 2)
+        }
+        assert_eq!(a(), Right(1337));
 
-// #[test]
-fn iter() {
-    let x = 3;
-    let mut iter = match x {
-        3 => Left(0..10),
-        _ => Right(17..),
-    };
+        fn b() -> Either<String, &'static str> {
+            Right(try_right!(Left("foo bar")))
+        }
+        assert_eq!(b(), Left(String::from("foo bar")));
+    }
 
-    assert_eq!(iter.next(), Some(0));
-    assert_eq!(iter.count(), 9);
-}
+    // #[test]
+    fn deref() {
+        fn is_str(_: &str) {}
+        let value: Either<String, &str> = Left(String::from("test"));
+        is_str(&*value);
+    }
 
-// #[test]
-fn read_write() {
-    use std::io;
+    // #[test]
+    fn iter() {
+        let x = 3;
+        let mut iter = match x {
+            3 => Left(0..10),
+            _ => Right(17..),
+        };
 
-    let use_stdio = false;
-    let mockdata = [0xff; 256];
+        assert_eq!(iter.next(), Some(0));
+        assert_eq!(iter.count(), 9);
+    }
 
-    let mut reader = if use_stdio {
-        Left(io::stdin())
-    } else {
-        Right(&mockdata[..])
-    };
+    // #[test]
+    fn read_write() {
+        use std::io;
 
-    let mut buf = [0u8; 16];
-    assert_eq!(reader.read(&mut buf).unwrap(), buf.len());
-    assert_eq!(&buf, &mockdata[..buf.len()]);
+        let use_stdio = false;
+        let mockdata = [0xff; 256];
 
-    let mut mockbuf = [0u8; 256];
-    let mut writer = if use_stdio {
-        Left(io::stdout())
-    } else {
-        Right(&mut mockbuf[..])
-    };
+        let mut reader = if use_stdio {
+            Left(io::stdin())
+        } else {
+            Right(&mockdata[..])
+        };
 
-    let buf = [1u8; 16];
-    assert_eq!(writer.write(&buf).unwrap(), buf.len());
-}
+        let mut buf = [0u8; 16];
+        assert_eq!(reader.read(&mut buf).unwrap(), buf.len());
+        assert_eq!(&buf, &mockdata[..buf.len()]);
 
-// #[test]
-fn error() {
-    let invalid_utf8 = b"\xff";
-    let res = || -> Result<_, Either<_, _>> {
-        try!(::std::str::from_utf8(invalid_utf8).map_err(Left));
-        try!("x".parse::<i32>().map_err(Right));
-        Ok(())
-    }();
-    assert!(res.is_err());
-    res.unwrap_err().description(); // make sure this can be called
+        let mut mockbuf = [0u8; 256];
+        let mut writer = if use_stdio {
+            Left(io::stdout())
+        } else {
+            Right(&mut mockbuf[..])
+        };
+
+        let buf = [1u8; 16];
+        assert_eq!(writer.write(&buf).unwrap(), buf.len());
+    }
+
+    // #[test]
+    fn error() {
+        let invalid_utf8 = b"\xff";
+        let res = || -> Result<_, Either<_, _>> {
+            try!(::std::str::from_utf8(invalid_utf8).map_err(Left));
+            try!("x".parse::<i32>().map_err(Right));
+            Ok(())
+        }();
+        assert!(res.is_err());
+        res.unwrap_err().description(); // make sure this can be called
+    }
 }
 
 /// A helper macro to check if AsRef and AsMut are implemented for a given type.
@@ -981,21 +998,4 @@ fn _unsized_std_propagation() {
     check_t!(::std::path::Path);
     check_t!(::std::ffi::OsStr);
     check_t!(::std::ffi::CStr);
-}
-
-#[cfg(feature = "enclave_unit_test")]
-pub mod tests {
-    use super::*;
-    use sgx_tunittest::*;
-
-    pub fn run_tests() {
-        rsgx_unit_tests!(
-            basic,
-            macros,
-            deref,
-            iter,
-            read_write,
-            error,
-        );
-    }
 }
