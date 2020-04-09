@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+
+## [0.2.4] - 2020-04-09
+### Add
 - itertools 0.9.0
 - log 0.4.10
 - matches 0.1.8

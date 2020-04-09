@@ -64,13 +64,13 @@ sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", t
 
 [dependencies.smallvec]
 git = "https://github.com/universal-secure-computing-community/crates-sgx.git"
-tag = "v0.2.3+sgx1.1.1"
+tag = "v0.2.4+sgx1.1.1"
 default-features = false
 optional = true
 
 [dependencies.serde_lib]
 git = "https://github.com/universal-secure-computing-community/crates-sgx.git"
-tag = "v0.2.3+sgx1.1.1"
+tag = "v0.2.4+sgx1.1.1"
 optional = true
 default-features = false
 package = "serde"
