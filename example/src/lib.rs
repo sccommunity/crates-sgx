@@ -7,6 +7,7 @@ use lazy_static::lazy_static;
 use either;
 use ryu;
 use log;
+use getrandom;
 
 #[macro_use]
 extern crate matches;
