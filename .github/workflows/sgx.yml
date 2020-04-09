@@ -1,0 +1,51 @@
+name: sgx
+
+on:
+  push:
+    branches: [ 'sgx**' ]
+  pull_request:
+    branches: [ 'sgx**' ]
+
+jobs:
+  test:
+
+    runs-on: ubuntu-18.04
+    container: 
+      image: teaclave/teaclave-build-ubuntu-1804-sgx-2.9:0.1.1
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: 'true'
+    - name: Set up Github Actions' $HOME
+      run: |
+        cp /root/.bashrc $HOME/.bashrc &&
+        ln -sf /root/.rustup ~/.rustup &&
+        ln -sf /root/.cargo ~/.cargo
+    - name: Rust toolchains
+      run: |
+        . ~/.cargo/env && 
+        rustc --version &&
+        rustup --version &&
+        cargo --version
+      shell: bash
+    - name: Cache cargo registry
+      uses: actions/cache@v1
+      with:
+        path: ~/.cargo/registry
+        key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.toml') }}
+        restore-keys: ${{ runner.os }}-cargo-registry- 
+    - name: Cache cargo index
+      uses: actions/cache@v1
+      with:
+        path: ~/.cargo/git
+        key: ${{ runner.os }}-cargo-index-${{ hashFiles('**/Cargo.toml') }}
+        restore-keys: ${{ runner.os }}-cargo-index- 
+    - name: Run tests
+      run: |
+        . ~/.cargo/env && 
+        . /opt/sgxsdk/environment && 
+        SGX_MODE=SW make test > test.log && 
+        cat test.log &&
+        if [[ $(grep 'test result .*FAILED' test.log | wc -l) -ge "1" ]]; then exit 1; fi;
+      shell: bash
