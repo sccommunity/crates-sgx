@@ -36,5 +36,6 @@ thiserror = { git = "https://github.com/universal-secure-computing-community/cra
 
 # Unreleased
 getrandom = { path = "../crates/getrandom" }
+num-traits = { path = "../crates/num-traits" }
 
 sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.1", optional = true }

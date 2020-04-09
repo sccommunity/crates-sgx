@@ -10,6 +10,7 @@ lazy-static.rs, 1.4.0, https://github.com/rust-lang-nursery/lazy-static.rs, 4216
 log, 0.4.10, https://github.com/rust-lang/log, 4e196f927d0e87a1bf799e57a9582e7a6003bcd1, MIT/Apache02.0, full
 matches, 0.1.8, https://github.com/mesalock-linux/rust-std-candidates-sgx, df2edec638128c35a4cf55aac73314ef2be03bf4, MIT, none-no-std
 no-panic, 0.1.12, https://github.com/dtolnay/no-panic, 54b2251659a7e6d9c81622d87a29aeedcf8281ba, MIT/Apache-2.0, none-no-std
+num-traits, 0.2.11, https://github.com/rust-num/num-traits, 93ff6dc382f35d292830515156693f008bc61c6d, MIT/Apache-2.0, full
 rust-fnv, 1.0.6, https://github.com/servo/rust-fnv, 2ca7554508beb26d7b3f817008d0e58da367d227, MIT/Apache-2.0, full
 rust-hex, 0.4.2, https://github.com/KokaKiwi/rust-hex, be0c32f9c8938ca0359bbb0d1477e31b07cb3358, MIT/Apache-2.0, full
 rust-smallvec, 1.2.0, https://github.com/servo/rust-smallvec, 08b82495c01948813b3577780fb96d9957950a9a, MIT/Apache-2.0, partial
