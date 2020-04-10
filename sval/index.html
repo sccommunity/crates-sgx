@@ -1,0 +1,115 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `sval` crate."><meta name="keywords" content="rust, rustlang, rust-lang, sval"><title>sval - Rust</title><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../dark.css"><link rel="stylesheet" type="text/css" href="../light.css" id="themeStyle"><script src="../storage.js"></script><noscript><link rel="stylesheet" href="../noscript.css"></noscript><link rel="shortcut icon" href="../favicon.ico"><style type="text/css">#crate-search{background-image:url("../down-arrow.svg");}</style></head><body class="rustdoc mod"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../sval/index.html'><div class='logo-container'><img src='../rust-logo.png' alt='logo'></div></a><p class='location'>Crate sval</p><div class="sidebar-elems"><a id='all-types' href='all.html'><p>See all sval's items</p></a><div class="block items"><ul><li><a href="#reexports">Re-exports</a></li><li><a href="#modules">Modules</a></li><li><a href="#structs">Structs</a></li><li><a href="#functions">Functions</a></li></ul></div><p class='location'></p><script>window.sidebarCurrent = {name: 'sval', ty: 'mod', relpath: '../'};</script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../settings.html"><img src="../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../src/sval/lib.rs.html#1-270' title='goto source code'>[src]</a></span><span class='in-band'>Crate <a class="mod" href=''>sval</a></span></h1><div class='docblock'><p>A small, no-std, object-safe, serialization-only framework.</p>
+<p>The <code>sval</code> API is built around two key traits:</p>
+<ul>
+<li><a href="../sval/value/trait.Value.html" title="`Value`"><code>Value</code></a> is a trait for data with a streamable structure. It's like <code>serde::Serialize</code>.</li>
+<li><a href="../sval/stream/trait.Stream.html" title="`Stream`"><code>Stream</code></a> is a trait for receiving the structure of a value. It's like <code>serde::Serializer</code>.</li>
+</ul>
+<h1 id="getting-started" class="section-header"><a href="#getting-started">Getting started</a></h1>
+<p>Add <code>sval</code> to your <code>Cargo.toml</code>:</p>
+<pre><code class="language-toml,ignore">[dependencies.sval]
+version = &quot;0.5.1&quot;
+</code></pre>
+<h1 id="supported-formats" class="section-header"><a href="#supported-formats">Supported formats</a></h1>
+<ul>
+<li><a href="https://crates.io/crates/sval_json">JSON</a>, the ubiquitous JavaScript Object Notation used by many HTTP APIs.</li>
+</ul>
+<h1 id="streaming-values" class="section-header"><a href="#streaming-values">Streaming values</a></h1>
+<p>The structure of a <a href="../sval/value/trait.Value.html" title="`Value`"><code>Value</code></a> can be streamed to a <a href="../sval/stream/trait.Stream.html" title="`Stream`"><code>Stream</code></a>.</p>
+<h2 id="in-a-single-call" class="section-header"><a href="#in-a-single-call">in a single call</a></h2>
+<p>For simple use-cases, use the <a href="function.stream.html"><code>stream</code></a> function to stream the structure of a value:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="ident">sval</span>::<span class="ident">stream</span>(<span class="ident">MyStream</span>, <span class="number">42</span>)<span class="question-mark">?</span>;</pre></div>
+<p>where <code>42</code> is a <a href="../sval/value/trait.Value.html" title="`Value`"><code>Value</code></a> and <code>MyStream</code> is a <a href="../sval/stream/trait.Stream.html" title="`Stream`"><code>Stream</code></a>.</p>
+<h2 id="over-multiple-calls" class="section-header"><a href="#over-multiple-calls">over multiple calls</a></h2>
+<p>More involved use-cases may want to build up structure over time. Use a <a href="stream/struct.OwnedStream.html"><code>stream::OwnedStream</code></a>
+to hang on to a stream and pass it values over time:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="kw">use</span> <span class="ident">sval</span>::{
+    <span class="ident">Value</span>,
+    <span class="ident">stream</span>::{<span class="self">self</span>, <span class="ident">OwnedStream</span>},
+};
+
+<span class="comment">// We begin the wrapper over `MyStream`</span>
+<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">stream</span> <span class="op">=</span> <span class="ident">StreamPairs</span>::<span class="ident">new</span>()<span class="question-mark">?</span>;
+
+<span class="comment">// Pairs can be streamed independently</span>
+<span class="ident">stream</span>.<span class="ident">pair</span>(<span class="string">&quot;a&quot;</span>, <span class="number">42</span>)<span class="question-mark">?</span>;
+<span class="ident">stream</span>.<span class="ident">pair</span>(<span class="string">&quot;b&quot;</span>, <span class="number">17</span>)<span class="question-mark">?</span>;
+
+<span class="comment">// Eventually we end the wrapper and return the underlying `MyStream`</span>
+<span class="kw">let</span> <span class="ident">my_stream</span> <span class="op">=</span> <span class="ident">stream</span>.<span class="ident">end</span>()<span class="question-mark">?</span>;
+
+<span class="kw">struct</span> <span class="ident">StreamPairs</span> {
+    <span class="comment">// Using `OwnedStream&lt;MyStream&gt;` instead of just `MyStream`</span>
+    <span class="comment">// gives us better ergonomics and validation</span>
+    <span class="ident">stream</span>: <span class="ident">OwnedStream</span><span class="op">&lt;</span><span class="ident">MyStream</span><span class="op">&gt;</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">StreamPairs</span> {
+    <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">stream</span>::<span class="ident">Error</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">stream</span> <span class="op">=</span> <span class="ident">OwnedStream</span>::<span class="ident">new</span>(<span class="ident">MyStream</span>);
+        <span class="ident">stream</span>.<span class="ident">map_begin</span>(<span class="prelude-val">None</span>)<span class="question-mark">?</span>;
+
+        <span class="prelude-val">Ok</span>(<span class="ident">StreamPairs</span> {
+            <span class="ident">stream</span>,
+        })
+    }
+
+    <span class="kw">fn</span> <span class="ident">pair</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">k</span>: <span class="kw">impl</span> <span class="ident">Value</span>, <span class="ident">v</span>: <span class="kw">impl</span> <span class="ident">Value</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">stream</span>::<span class="ident">Error</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">stream</span>.<span class="ident">map_key</span>(<span class="ident">k</span>)<span class="question-mark">?</span>;
+        <span class="self">self</span>.<span class="ident">stream</span>.<span class="ident">map_value</span>(<span class="ident">v</span>)<span class="question-mark">?</span>;
+
+        <span class="prelude-val">Ok</span>(())
+    }
+
+    <span class="kw">fn</span> <span class="ident">end</span>(<span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">MyStream</span>, <span class="ident">stream</span>::<span class="ident">Error</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">stream</span>.<span class="ident">map_end</span>()<span class="question-mark">?</span>;
+
+        <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">stream</span>.<span class="ident">into_inner</span>())
+    }
+}</pre></div>
+<p>The above example captures an <code>OwnedStream&lt;MyStream&gt;</code> and then allows multiple key-value pairs to be
+streamed through it before finishing.</p>
+<h1 id="serde-integration" class="section-header"><a href="#serde-integration"><code>serde</code> integration</a></h1>
+<p>Use the <code>serde</code> Cargo feature to enable integration with <code>serde</code>:</p>
+<pre><code class="language-toml,ignore">[dependencies.sval]
+features = [&quot;serde&quot;]
+</code></pre>
+<p>When <code>serde</code> is available, the <code>Value</code> trait can also be derived
+based on an existing <code>Serialize</code> implementation:</p>
+
+<div class='information'><div class='tooltip ignore'>ⓘ<span class='tooltiptext'>This example is not tested</span></div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore">
+<span class="kw">use</span> <span class="ident">sval</span>::<span class="ident">Value</span>;
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Value</span>)]</span>
+<span class="attribute">#[<span class="ident">sval</span>(<span class="ident">derive_from</span> <span class="op">=</span> <span class="string">&quot;serde&quot;</span>)]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Data</span> {
+    <span class="ident">Variant</span>(<span class="ident">i32</span>, <span class="ident">String</span>),
+}</pre></div>
+<h1 id="stdfmt-integration" class="section-header"><a href="#stdfmt-integration"><code>std::fmt</code> integration</a></h1>
+<p>Use the <code>fmt</code> Cargo feature to enable extended integration with <code>std::fmt</code>:</p>
+<pre><code class="language-toml,ignore">[dependencies.sval]
+features = [&quot;fmt&quot;]
+</code></pre>
+<p>When <code>fmt</code> is available, arbitrary <code>Value</code>s can be treated like <code>std::fmt::Debug</code>:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="kw">fn</span> <span class="ident">with_value</span>(<span class="ident">value</span>: <span class="kw">impl</span> <span class="ident">sval</span>::<span class="ident">Value</span>) {
+    <span class="macro">dbg</span><span class="macro">!</span>(<span class="ident">sval</span>::<span class="ident">fmt</span>::<span class="ident">to_debug</span>(<span class="kw-2">&amp;</span><span class="ident">value</span>));
+
+    <span class="comment">// Do something with the value</span>
+}</pre></div>
+</div><h2 id='reexports' class='section-header'><a href="#reexports">Re-exports</a></h2>
+<table><tr><td><code>pub use self::stream::<a class="trait" href="../sval/stream/trait.Stream.html" title="trait sval::stream::Stream">Stream</a>;</code></td></tr><tr><td><code>pub use self::value::<a class="trait" href="../sval/value/trait.Value.html" title="trait sval::value::Value">Value</a>;</code></td></tr></table><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
+<table><tr class='module-item'><td><a class="mod" href="serde/index.html" title='sval::serde mod'>serde</a></td><td class='docblock-short'><p>Integration between <code>sval</code> and <code>serde</code>.</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="stream/index.html" title='sval::stream mod'>stream</a></td><td class='docblock-short'><p>A stream for datastructures.</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="test/index.html" title='sval::test mod'>test</a></td><td class='docblock-short'><p>Helpers for testing value implementations.</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="value/index.html" title='sval::value mod'>value</a></td><td class='docblock-short'><p>A streamable value.</p>
+</td></tr></table><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<table><tr class='module-item'><td><a class="struct" href="struct.Error.html" title='sval::Error struct'>Error</a></td><td class='docblock-short'><p>An error encountered while visiting a value.</p>
+</td></tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
+<table><tr class='module-item'><td><a class="fn" href="fn.stream.html" title='sval::stream fn'>stream</a></td><td class='docblock-short'><p>Stream the structure of a <a href="../sval/value/trait.Value.html" title="`Value`"><code>Value</code></a> using the given <a href="../sval/stream/trait.Stream.html" title="`Stream`"><code>Stream</code></a>.</p>
+</td></tr></table><h2 id='derives' class='section-header'><a href="#derives">Derive Macros</a></h2>
+<table><tr class='module-item'><td><a class="derive" href="derive.Value.html" title='sval::Value derive'>Value</a></td><td class='docblock-short'></td></tr></table></section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../";window.currentCrate = "sval";</script><script src="../aliases.js"></script><script src="../main.js"></script><script defer src="../search-index.js"></script></body></html>
