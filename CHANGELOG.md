@@ -4,6 +4,7 @@
 ### Add
 - getrandom 0.1.14
 - num-traits 0.2.11
+- libm 0.2.1
 
 ## [0.2.4] - 2020-04-09
 ### Add

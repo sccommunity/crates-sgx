@@ -8,6 +8,7 @@ use either;
 use ryu;
 use log;
 use getrandom;
+use libm;
 
 #[macro_use]
 extern crate matches;

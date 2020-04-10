@@ -7,6 +7,7 @@ getrandom, 0.1.14, https://github.com/rust-random/getrandom, 33b859bae16ae0b1c78
 itertools, 0.9.0, https://github.com/rust-itertools/itertools, b085c523681146151866ead66ae8a4b8967fd005, MIT/Apache-2.0, partial
 itoa, 0.4.5, https://github.com/dtolnay/itoa, 0ecba421fa2f278431d1e0ab607d9311ad2c1541, MIT/Apache-2.0, full
 lazy-static.rs, 1.4.0, https://github.com/rust-lang-nursery/lazy-static.rs, 421669662b35fcb455f2902daed2e20bbbba79b6, Apache-2.0, none-no-std
+libm, 0.2.1, https://github.com/rust-lang/libm, 3d729b7a85daad3b4d54b22e02d00681762bc602, MIT/Apache-2.0, none-no-std
 log, 0.4.10, https://github.com/rust-lang/log, 4e196f927d0e87a1bf799e57a9582e7a6003bcd1, MIT/Apache02.0, full
 matches, 0.1.8, https://github.com/mesalock-linux/rust-std-candidates-sgx, df2edec638128c35a4cf55aac73314ef2be03bf4, MIT, none-no-std
 no-panic, 0.1.12, https://github.com/dtolnay/no-panic, 54b2251659a7e6d9c81622d87a29aeedcf8281ba, MIT/Apache-2.0, none-no-std
