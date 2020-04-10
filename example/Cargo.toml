@@ -1,6 +1,6 @@
 [package]
 name = "crates-sgx-example"
-version = "0.2.4"
+version = "0.2.5"
 authors = ["The Universal Secure Computing Community Authors"]
 edition = "2018"
 
@@ -15,28 +15,26 @@ mesalock_sgx = [
 ]
 
 [dependencies]
-adler32 = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.4+sgx1.1.1" }
-anyhow = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.4+sgx1.1.1" }
-cfg-if = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.4+sgx1.1.1" }
-either = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.4+sgx1.1.1", features = ["serde"] }
-fnv = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.4+sgx1.1.1" }
-hex = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.4+sgx1.1.1" }
-itertools = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.4+sgx1.1.1" }
-itoa = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.4+sgx1.1.1" }
-lazy_static = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.4+sgx1.1.1" }
-log = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.4+sgx1.1.1" }
-matches = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.4+sgx1.1.1" }
-no-panic = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.4+sgx1.1.1" }
-ryu = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.4+sgx1.1.1", features = ["small", "no-panic"] }
-serde = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.4+sgx1.1.1", features = ["derive"] }
-smallvec = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.4+sgx1.1.1", features = ["write", "union", "specialization", "may_dangle", "serde"] }
-spin = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.4+sgx1.1.1" }
-sval = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.4+sgx1.1.1", features = ["std", "test", "serde", "derive", "arbitrary-depth"] }
-thiserror = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.4+sgx1.1.1" }
-
-# Unreleased
-getrandom = { path = "../crates/getrandom" }
-num-traits = { path = "../crates/num-traits" }
-libm = { path = "../crates/libm" }
+adler32 = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.5+sgx1.1.1" }
+anyhow = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.5+sgx1.1.1" }
+cfg-if = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.5+sgx1.1.1" }
+either = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.5+sgx1.1.1", features = ["serde"] }
+fnv = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.5+sgx1.1.1" }
+getrandom = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.5+sgx1.1.1" }
+hex = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.5+sgx1.1.1" }
+itertools = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.5+sgx1.1.1" }
+itoa = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.5+sgx1.1.1" }
+lazy_static = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.5+sgx1.1.1" }
+libm = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.5+sgx1.1.1" }
+log = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.5+sgx1.1.1" }
+matches = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.5+sgx1.1.1" }
+no-panic = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.5+sgx1.1.1" }
+num-traits = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.5+sgx1.1.1" }
+ryu = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.5+sgx1.1.1", features = ["small", "no-panic"] }
+serde = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.5+sgx1.1.1", features = ["derive"] }
+smallvec = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.5+sgx1.1.1", features = ["write", "union", "specialization", "may_dangle", "serde"] }
+spin = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.5+sgx1.1.1" }
+sval = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.5+sgx1.1.1", features = ["std", "test", "serde", "derive", "arbitrary-depth"] }
+thiserror = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.5+sgx1.1.1" }
 
 sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.1", optional = true }

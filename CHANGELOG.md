@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+
+## [0.2.5] - 2020-04-09
 ### Add
 - getrandom 0.1.14
 - num-traits 0.2.11
