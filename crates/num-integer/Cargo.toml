@@ -1,0 +1,34 @@
+[package]
+authors = ["The Rust Project Developers"]
+description = "Integer traits and functions"
+documentation = "https://docs.rs/num-integer"
+homepage = "https://github.com/rust-num/num-integer"
+keywords = ["mathematics", "numerics"]
+categories = ["algorithms", "science", "no-std"]
+license = "MIT/Apache-2.0"
+repository = "https://github.com/rust-num/num-integer"
+name = "num-integer"
+version = "0.1.42"
+readme = "README.md"
+build = "build.rs"
+exclude = ["/ci/*", "/.travis.yml", "/bors.toml"]
+
+[package.metadata.docs.rs]
+features = ["std"]
+
+[dependencies]
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.1", optional = true }
+
+[dependencies.num-traits]
+git = "https://github.com/universal-secure-computing-community/crates-sgx.git"
+tag = "v0.2.5+sgx1.1.1"
+default-features = false
+
+[features]
+default = ["std"]
+i128 = ["num-traits/i128"]
+std = ["num-traits/std", "mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+
+[build-dependencies]
+autocfg = "1"
