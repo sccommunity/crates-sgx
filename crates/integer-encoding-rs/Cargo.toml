@@ -10,3 +10,10 @@ keywords = ["integer", "varint", "zigzag", "protobuf", "serialize"]
 edition = "2018"
 
 [dependencies]
+sgx_tstd        = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.1", optional = true }
+sgx_tunittest   = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.1", optional = true }
+
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+enclave_unit_test = ["sgx_tunittest"]

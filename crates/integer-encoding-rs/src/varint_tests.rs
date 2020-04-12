@@ -1,10 +1,12 @@
-#[cfg(test)]
+//#[cfg(test)]
 mod tests {
+    use std::prelude::v1::*;
+
     use crate::reader::VarIntReader;
     use crate::varint::VarInt;
     use crate::writer::VarIntWriter;
 
-    #[test]
+    //#[test]
     fn test_required_space() {
         assert_eq!((0 as u32).required_space(), 1);
         assert_eq!((1 as u32).required_space(), 1);
@@ -14,13 +16,13 @@ mod tests {
         assert_eq!((2097152 as u32).required_space(), 4);
     }
 
-    #[test]
+    //#[test]
     fn test_encode_u64() {
         assert_eq!((0 as u32).encode_var_vec(), vec![0b00000000]);
         assert_eq!((300 as u32).encode_var_vec(), vec![0b10101100, 0b00000010]);
     }
 
-    #[test]
+    //#[test]
     fn test_identity_u64() {
         for i in 1 as u64..100 {
             assert_eq!(u64::decode_var_vec(&i.encode_var_vec()), (i, 1));
@@ -30,13 +32,13 @@ mod tests {
         }
     }
 
-    #[test]
+    //#[test]
     fn test_decode_max_u64() {
         let max_vec_encoded = vec![0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x01];
         assert_eq!(u64::decode_var_vec(&max_vec_encoded).0, u64::max_value());
     }
 
-    #[test]
+    //#[test]
     fn test_encode_i64() {
         assert_eq!((0 as i64).encode_var_vec(), (0 as u32).encode_var_vec());
         assert_eq!((150 as i64).encode_var_vec(), (300 as u32).encode_var_vec());
@@ -58,19 +60,19 @@ mod tests {
         );
     }
 
-    #[test]
+    //#[test]
     fn test_decode_min_i64() {
         let min_vec_encoded = vec![0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x01];
         assert_eq!(i64::decode_var_vec(&min_vec_encoded).0, i64::min_value());
     }
 
-    #[test]
+    //#[test]
     fn test_decode_max_i64() {
         let max_vec_encoded = vec![0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x01];
         assert_eq!(i64::decode_var_vec(&max_vec_encoded).0, i64::max_value());
     }
 
-    #[test]
+    //#[test]
     fn test_encode_i16() {
         assert_eq!((150 as i16).encode_var_vec(), (300 as u32).encode_var_vec());
         assert_eq!(
@@ -79,7 +81,7 @@ mod tests {
         );
     }
 
-    #[test]
+    //#[test]
     fn test_reader_writer() {
         let mut buf = Vec::with_capacity(128);
 
@@ -105,4 +107,22 @@ mod tests {
 
         assert!(reader.read_varint::<u32>().is_err());
     }
+
+    use sgx_tunittest::*;
+
+    pub fn run_tests() {
+        rsgx_unit_tests!(
+            test_required_space,
+            test_encode_u64,
+            test_identity_u64,
+            test_decode_max_u64,
+            test_encode_i64,
+            test_decode_min_i64,
+            test_decode_max_i64,
+            test_encode_i16,
+            test_reader_writer,
+        );
+    }
 }
+
+pub use tests::run_tests;

@@ -15,10 +15,21 @@
 //! }
 //! ```
 
+#![cfg_attr(all(feature = "mesalock_sgx", not(target_env = "sgx")), no_std)]
+#![cfg_attr(
+    all(target_env = "sgx", target_vendor = "mesalock"),
+    feature(rustc_private)
+)]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
+
 mod fixed;
+#[cfg(feature = "enclave_unit_test")]
 mod fixed_tests;
 
 mod varint;
+#[cfg(feature = "enclave_unit_test")]
 mod varint_tests;
 
 mod reader;
@@ -31,3 +42,6 @@ pub use reader::FixedIntReader;
 pub use reader::VarIntReader;
 pub use writer::FixedIntWriter;
 pub use writer::VarIntWriter;
+
+#[cfg(feature = "enclave_unit_test")]
+pub mod test;

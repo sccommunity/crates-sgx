@@ -1,26 +1,28 @@
-#[cfg(test)]
+//#[cfg(test)]
 mod tests {
+    use std::prelude::v1::*;
+
     use crate::fixed::FixedInt;
 
     use crate::reader::FixedIntReader;
     use crate::writer::FixedIntWriter;
 
-    #[test]
+    //#[test]
     fn test_u32_enc() {
         let result = (32 as u32).encode_fixed_vec();
         assert_eq!(result, vec![32, 0, 0, 0]);
     }
-    #[test]
+    //#[test]
     fn test_u16_enc() {
         let result = (256 as u16).encode_fixed_vec();
         assert_eq!(result, vec![0, 1]);
     }
-    #[test]
+    //#[test]
     fn test_i16_enc() {
         let result = (-32768 as i16).encode_fixed_vec();
         assert_eq!(result, vec![0, 128]);
     }
-    #[test]
+    //#[test]
     fn test_i32_enc() {
         let result = (-32767 as i32).encode_fixed_vec();
         assert_eq!(result, vec![1, 128, 255, 255]);
@@ -36,13 +38,13 @@ mod tests {
     }
     */
 
-    #[test]
+    //#[test]
     fn test_i32_enc_light() {
         let int = -32767 as i32;
         let result = int.encode_fixed_light();
         assert_eq!(result, &[1, 128, 255, 255]);
     }
-    #[test]
+    //#[test]
     fn test_all_identity() {
         let a: u16 = 17;
         let b: u32 = 17;
@@ -66,7 +68,7 @@ mod tests {
         assert_eq!(f, FixedInt::decode_fixed(&f.encode_fixed_light()));
     }
 
-    #[test]
+    //#[test]
     fn test_reader_writer() {
         let mut buf = Vec::with_capacity(128);
 
@@ -93,15 +95,41 @@ mod tests {
         assert!(reader.read_fixedint::<u32>().is_err());
     }
 
-    #[should_panic]
-    #[test]
+    //#[should_panic]
+    //#[test]
     fn test_invalid_decode_size() {
         assert_eq!(33, u64::decode_fixed(&[1, 0, 0, 0, 0, 1]));
     }
-    #[should_panic]
-    #[test]
+    //#[should_panic]
+    //#[test]
     fn test_invalid_encode_size() {
         let mut buf = [0 as u8; 4];
         (11 as u64).encode_fixed(&mut buf);
     }
+
+    use sgx_tunittest::*;
+
+    fn test_invalid_decode_size_panic() {
+        should_panic!(test_invalid_decode_size());
+    }
+
+    fn test_invalid_encode_size_panic() {
+        should_panic!(test_invalid_encode_size());
+    }
+
+    pub fn run_tests() {
+        rsgx_unit_tests!(
+            test_u32_enc,
+            test_u16_enc,
+            test_i16_enc,
+            test_i32_enc,
+            test_i32_enc_light,
+            test_all_identity,
+            test_reader_writer,
+            test_invalid_decode_size_panic,
+            test_invalid_encode_size_panic,
+        );
+    }
 }
+
+pub use tests::run_tests;
