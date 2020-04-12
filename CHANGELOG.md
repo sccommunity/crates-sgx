@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 ### Add
+- integer-encoding-rs 1.0.7
 - num-integer 0.1.42
 
 ## [0.2.5] - 2020-04-09
