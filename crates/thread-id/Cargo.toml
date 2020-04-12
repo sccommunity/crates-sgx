@@ -14,11 +14,21 @@ edition = "2018"
 travis-ci = { repository = "ruuda/thread-id", branch = "v3.3.0" }
 appveyor = { repository = "ruuda/thread-id", branch = "v3.3.0" }
 
-[target.'cfg(unix)'.dependencies]
-libc = "0.2.6"
+#[target.'cfg(unix)'.dependencies]
+#libc = "0.2.6"
 
 [target.'cfg(windows)'.dependencies]
 winapi = { version = "0.3", features = ["processthreadsapi"] }
 
 [target.'cfg(target_os = "redox")'.dependencies]
 redox_syscall = "0.1"
+
+[dependencies.sgx_types]
+git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git"
+optional = true
+tag = "v1.1.1"
+
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_types"]
+

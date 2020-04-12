@@ -24,9 +24,10 @@
 //! ```
 
 #![warn(missing_docs)]
+#![no_std]
 
-#[cfg(unix)]
-extern crate libc;
+//#[cfg(unix)]
+//extern crate libc;
 
 #[cfg(windows)]
 extern crate winapi;
@@ -47,7 +48,7 @@ pub fn get() -> usize {
 #[cfg(unix)]
 #[inline]
 fn get_internal() -> usize {
-    unsafe { libc::pthread_self() as usize }
+    unsafe { sgx_types::sgx_thread_self() as usize }
 }
 
 #[cfg(windows)]
