@@ -22,3 +22,4 @@ serde, 1.0.106, https://github.com/serde-rs/serde/, d1564525ad5172edeac5a73ebe06
 spin-rs, 0.5.2, https://github.com/mvdnes/spin-rs, 7516c8037d3d15712ba4d8499ab075e97a19d778, MIT, none-no-std
 sval, 0.5.1, https://github.com/sval-rs/sval, 85ccf03b78736d910a1ae92c39690640d1cbfef8, Apache-2.0, partial
 thiserror, 1.0.14, https://github.com/dtolnay/thiserror, 6fd405929807e73ac4b1bd026192a91f64a08636, MIT/Apache-2.0, partial
+thread-id, 3.3.0, https://github.com/ruuda/thread-id, 841dd55b94aef76f2bb199633bb4fe740ecc8be9, MIT/Apache-2, no
