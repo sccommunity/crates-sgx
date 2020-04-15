@@ -4,6 +4,7 @@
 ### Add
 - integer-encoding-rs 1.0.7
 - num-integer 0.1.42
+- rust-threadpool 1.7.1
 - thread-id 3.3.0
 
 ## [0.2.5] - 2020-04-09
