@@ -2,6 +2,7 @@ project name, version, upstream URL, upstream commit hash base, license, tests (
 adler32-rs, 1.0.4, https://github.com/remram44/adler32-rs, b235700967618065f89f188a0000d67d08451705, zlib, full
 anyhow, 1.0.28,https://github.com/dtolnay/anyhow, 022f700a1c67c5cd663c34b8a3c11c6818ec0ecb, MIT/Apache-2.0, partial
 cfg-if, 0.1.10, https://github.com/alexcrichton/cfg-if, 4484a6faf816ff8058088ad857b0c6bb2f4b02b2, MIT/Apache-2.0, full
+color_quant, master, https://github.com/PistonDevelopers/color_quant, 3a1d0c129301adcc1ad4caa91e19089294721c58, MIT, none
 either, 1.5.3, https://github.com/bluss/either, cd15a341118b5af765450dcb6380c6dee17ed0f2, MIT/Apache-2.0, full
 getrandom, 0.1.14, https://github.com/rust-random/getrandom, 33b859bae16ae0b1c782e48db2ed96eb2306a2fc, MIT/Apache-2.0, full
 integer-encoding-rs, 1.0.7, https://github.com/dermesser/integer-encoding-rs, 336db48685b7db34fb336f355666f8c1c3b23ffb, MIT, full
