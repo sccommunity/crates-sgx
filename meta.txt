@@ -12,6 +12,7 @@ lazy-static.rs, 1.4.0, https://github.com/rust-lang-nursery/lazy-static.rs, 4216
 libm, 0.2.1, https://github.com/rust-lang/libm, 3d729b7a85daad3b4d54b22e02d00681762bc602, MIT/Apache-2.0, none-no-std
 log, 0.4.10, https://github.com/rust-lang/log, 4e196f927d0e87a1bf799e57a9582e7a6003bcd1, MIT/Apache02.0, full
 matches, 0.1.8, https://github.com/mesalock-linux/rust-std-candidates-sgx, df2edec638128c35a4cf55aac73314ef2be03bf4, MIT, none-no-std
+md5, master, https://github.com/stainless-steel/md5, 3236fc93c26af909923767e65be87e45c47aab89, Apache-2.0/MIT, partial
 no-panic, 0.1.12, https://github.com/dtolnay/no-panic, 54b2251659a7e6d9c81622d87a29aeedcf8281ba, MIT/Apache-2.0, none-no-std
 num-integer, 0.1.42, https://github.com/rust-num/num-integer, 0f9ba577371cbb89042835f7ae4966b7f12191e4, MIT/Apache-2.0, full
 num-traits, 0.2.11, https://github.com/rust-num/num-traits, 93ff6dc382f35d292830515156693f008bc61c6d, MIT/Apache-2.0, full

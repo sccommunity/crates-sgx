@@ -28,17 +28,20 @@
 // https://people.csail.mit.edu/rivest/Md5.c
 // https://tools.ietf.org/html/rfc1321
 
-#![cfg_attr(not(feature = "std"), no_std)]
+#![cfg_attr(all(feature = "mesalock_sgx", not(target_env = "sgx")), no_std)]
+#![cfg_attr(
+    all(target_env = "sgx", target_vendor = "mesalock"),
+    feature(rustc_private)
+)]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
+use std::prelude::v1::*;
 
+#[cfg(not(feature = "std"))]
+use core::{convert, fmt, ops};
 #[cfg(feature = "std")]
-use std as core;
-
-use core::convert;
-use core::fmt;
-use core::ops;
-
-#[cfg(feature = "std")]
-use core::io;
+use std::{convert, fmt, io, ops};
 
 /// A digest.
 #[derive(Clone, Copy, Eq, Hash, PartialEq)]
@@ -368,9 +371,19 @@ fn transform(state: &mut [u32; 4], input: &[u32; 16]) {
     state[3] = add!(state[3], d);
 }
 
-#[cfg(test)]
-mod tests {
-    #[test]
+//#[cfg(test)]
+//mod tests {
+#[cfg(feature = "enclave_unit_test")]
+pub mod test {
+    use std::prelude::v1::*;
+
+    use sgx_tunittest::*;
+
+    pub fn run_tests() {
+        rsgx_unit_tests!(compute, index, overflow_count);
+    }
+
+    //#[test]
     fn compute() {
         let inputs = [
             "",
@@ -393,23 +406,23 @@ mod tests {
             "57edf4a22be3c955ac49da2e2107b67a",
         ];
         for (input, &output) in inputs.iter().zip(outputs.iter()) {
-            assert_eq!(format!("{:x}", ::compute(input)), output);
+            assert_eq!(format!("{:x}", crate::compute(input)), output);
         }
     }
 
-    #[test]
+    //#[test]
     fn index() {
-        let mut digest = ::compute(b"abc");
+        let mut digest = crate::compute(b"abc");
         assert_eq!(digest[0], 0x90);
         assert_eq!(&digest[0], &0x90);
         assert_eq!(&mut digest[0], &mut 0x90);
     }
 
-    #[test]
+    //#[test]
     fn overflow_count() {
         use std::io::prelude::Write;
         let data = vec![0; 8 * 1024 * 1024];
-        let mut context = ::Context::new();
+        let mut context = crate::Context::new();
         for _ in 0..64 {
             context.write(&data).unwrap();
         }
