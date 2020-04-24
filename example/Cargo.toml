@@ -1,6 +1,6 @@
 [package]
 name = "crates-sgx-example"
-version = "0.2.5"
+version = "0.3.0"
 authors = ["The Universal Secure Computing Community Authors"]
 edition = "2018"
 
