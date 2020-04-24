@@ -11,7 +11,7 @@ jobs:
 
     runs-on: ubuntu-18.04
     container: 
-      image: teaclave/teaclave-build-ubuntu-1804-sgx-2.9:0.1.1
+      image: teaclave/teaclave-build-ubuntu-1804-sgx-2.9.1:latest
 
     steps:
     - uses: actions/checkout@v2

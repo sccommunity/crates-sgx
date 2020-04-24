@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+## [0.3.0] - 2020-04-23
+- Update to Teaclave SGX SDK 1.1.2
+
 ## [0.2.6] - 2020-04-23
 ### Add
 - integer-encoding-rs 1.0.7

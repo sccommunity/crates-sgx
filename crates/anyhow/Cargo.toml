@@ -19,7 +19,7 @@ std = []
 mesalock_sgx = ["std", "sgx_tstd", "sgx_tstd/backtrace"]
 
 [dependencies]
-sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.1", optional = true }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 
 [dev-dependencies]
 futures = { version = "0.3", default-features = false }

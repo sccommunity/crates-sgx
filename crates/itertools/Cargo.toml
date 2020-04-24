@@ -23,8 +23,8 @@ bench = false
 test = false
 
 [dependencies]
-either = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.2.6+sgx1.1.1", default-features = false }
-sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.1", optional = true }
+either = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.0+sgx1.1.2", default-features = false }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 
 [dev-dependencies]
 rand = "0.7"

@@ -22,12 +22,12 @@ edition = "2018"
 features = ["thread"]
 git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git"
 optional = true
-tag = "v1.1.1"
+tag = "v1.1.2"
 
 [dependencies.sgx_tunittest]
 git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git"
 optional = true 
-tag = "v1.1.1"
+tag = "v1.1.2"
 
 [features]
 default = ["mesalock_sgx"]
