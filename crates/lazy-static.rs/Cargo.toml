@@ -19,7 +19,7 @@ sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", t
 
 [dependencies.spin]
 git = "https://github.com/universal-secure-computing-community/crates-sgx.git"
-tag = "v0.2.5+sgx1.1.1"
+tag = "v0.2.6+sgx1.1.1"
 optional = true
 
 [features]

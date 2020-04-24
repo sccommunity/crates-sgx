@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+
+## [0.2.6] - 2020-04-23
 ### Add
 - integer-encoding-rs 1.0.7
 - num-integer 0.1.42
