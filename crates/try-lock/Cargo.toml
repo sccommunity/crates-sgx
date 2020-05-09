@@ -10,5 +10,11 @@ repository = "https://github.com/seanmonstar/try-lock"
 homepage = "https://github.com/seanmonstar/try-lock"
 documentation = "https://docs.rs/try-lock"
 readme = "README.md"
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+enclave_unit_test = ["sgx_tunittest"]
 
 [dependencies]
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+sgx_tunittest = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }

@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [0.3.1] - 2020-04-23
+### Add
+- try-lock 0.2.2
+
 ## [0.3.0] - 2020-04-23
 - Update to Teaclave SGX SDK 1.1.2
 

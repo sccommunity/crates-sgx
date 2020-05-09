@@ -1,7 +1,7 @@
-#![doc(html_root_url = "https://docs.rs/try-lock/0.2.2")]
-#![deny(missing_docs)]
-#![deny(missing_debug_implementations)]
-#![deny(warnings)]
+// #![doc(html_root_url = "https://docs.rs/try-lock/0.2.2")]
+// #![deny(missing_docs)]
+// #![deny(missing_debug_implementations)]
+// #![deny(warnings)]
 
 //! A light-weight lock guarded by an atomic boolean.
 //!
@@ -42,6 +42,14 @@
 //!
 //! assert_eq!(locked2.name, "Spanner Bundle");
 //! ```
+
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
 
 use std::cell::UnsafeCell;
 use std::fmt;
@@ -187,11 +195,20 @@ impl<'a, T: fmt::Debug> fmt::Debug for Locked<'a, T> {
     }
 }
 
-#[cfg(test)]
-mod tests {
+//#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
+extern crate sgx_tunittest;
+pub mod tests {
+    use std::prelude::v1::*;
     use super::TryLock;
+    
+    use sgx_tunittest::*;
 
-    #[test]
+    pub fn run_tests() {
+        rsgx_unit_tests!(fmt_debug,);
+    }
+    
+    //#[test]
     fn fmt_debug() {
         let lock = TryLock::new(5);
         assert_eq!(format!("{:?}", lock), "TryLock { value: 5 }");

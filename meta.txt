@@ -26,3 +26,4 @@ spin-rs, 0.5.2, https://github.com/mvdnes/spin-rs, 7516c8037d3d15712ba4d8499ab07
 sval, 0.5.1, https://github.com/sval-rs/sval, 85ccf03b78736d910a1ae92c39690640d1cbfef8, Apache-2.0, partial
 thiserror, 1.0.14, https://github.com/dtolnay/thiserror, 6fd405929807e73ac4b1bd026192a91f64a08636, MIT/Apache-2.0, partial
 thread-id, 3.3.0, https://github.com/ruuda/thread-id, 841dd55b94aef76f2bb199633bb4fe740ecc8be9, MIT/Apache-2, no
+try-lock, 0.2.2, https://github.com/seanmonstar/try-lock, 90a682467dfbaf762a8986d406c6af6851af2ebd, MIT, full
