@@ -1,0 +1,14 @@
+[workspace]
+
+members = [
+  "tokio",
+  "tokio-macros",
+  "tokio-test",
+  "tokio-util",
+
+  # Internal
+  "benches",
+  "examples",
+  "tests-build",
+  "tests-integration",
+]
