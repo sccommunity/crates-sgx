@@ -195,20 +195,17 @@ impl<'a, T: fmt::Debug> fmt::Debug for Locked<'a, T> {
     }
 }
 
-//#[cfg(test)]
 #[cfg(feature = "enclave_unit_test")]
-extern crate sgx_tunittest;
 pub mod tests {
     use std::prelude::v1::*;
     use super::TryLock;
-    
+
     use sgx_tunittest::*;
 
     pub fn run_tests() {
         rsgx_unit_tests!(fmt_debug,);
     }
-    
-    //#[test]
+
     fn fmt_debug() {
         let lock = TryLock::new(5);
         assert_eq!(format!("{:?}", lock), "TryLock { value: 5 }");
