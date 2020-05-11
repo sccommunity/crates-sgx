@@ -15,8 +15,8 @@ travis-ci = { repository = "rust-random/getrandom" }
 appveyor = { repository = "rust-random/getrandom" }
 
 [dependencies]
-log = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.0+sgx1.1.2" }
-cfg-if = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.0+sgx1.1.2" }
+log = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2" }
+cfg-if = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2" }
 sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 sgx_libc = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 sgx_trts = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }

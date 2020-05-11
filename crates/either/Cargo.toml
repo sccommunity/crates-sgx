@@ -16,7 +16,7 @@ keywords = ["data-structure", "no_std"]
 categories = ["data-structures", "no-std"]
 
 [dependencies]
-serde = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.0+sgx1.1.2", features = ["derive"], optional = true }
+serde = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2", features = ["derive"], optional = true }
 sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 sgx_tunittest = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 

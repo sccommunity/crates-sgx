@@ -17,7 +17,7 @@ build = "build.rs"
 small = []
 
 [dependencies]
-no-panic = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.0+sgx1.1.2", optional = true }
+no-panic = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2", optional = true }
 
 [dev-dependencies]
 num_cpus = "1.8"
