@@ -1,7 +1,7 @@
-#![doc(html_root_url = "https://docs.rs/want/0.3.0")]
-#![deny(warnings)]
-#![deny(missing_docs)]
-#![deny(missing_debug_implementations)]
+// #![doc(html_root_url = "https://docs.rs/want/0.3.0")]
+// #![deny(warnings)]
+// #![deny(missing_docs)]
+// #![deny(missing_debug_implementations)]
 
 //! A Futures channel-like utility to signal when a value is wanted.
 //!
@@ -79,6 +79,13 @@
 //!
 //! # fn main() {}
 //! ```
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
 
 #[macro_use]
 extern crate log;
