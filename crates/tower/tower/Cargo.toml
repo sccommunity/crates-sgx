@@ -1,0 +1,76 @@
+[package]
+name = "tower"
+# When releasing to crates.io:
+# - Remove path dependencies
+# - Update html_root_url.
+# - Update doc url
+#   - Cargo.toml
+#   - README.md
+# - Update CHANGELOG.md.
+# - Create "vX.X.X" git tag.
+version = "0.3.1"
+authors = ["Tower Maintainers <team@tower-rs.com>"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/tower-rs/tower"
+homepage = "https://github.com/tower-rs/tower"
+documentation = "https://docs.rs/tower/0.3.1"
+description = """
+Tower is a library of modular and reusable components for building robust
+clients and servers.
+"""
+categories = ["asynchronous", "network-programming"]
+keywords = ["io", "async", "non-blocking", "futures", "service"]
+edition = "2018"
+
+[features]
+default = ["log"]
+log = ["tracing/log"]
+balance = ["discover", "load", "ready-cache", "make", "rand", "slab"]
+buffer = ["tokio/sync", "tokio/rt-core"]
+discover = []
+filter = []
+hedge = ["filter", "futures-util", "hdrhistogram", "tokio/time"]
+limit = ["tokio/time"]
+load = ["tokio/time"]
+load-shed = []
+make = ["tokio/io-std"]
+ready-cache = ["futures-util", "indexmap", "tokio/sync"]
+reconnect = ["make", "tokio/io-std"]
+retry = ["tokio/time"]
+spawn-ready = ["futures-util", "tokio/sync", "tokio/rt-core"]
+steer = ["futures-util"]
+timeout = ["tokio/time"]
+util = ["futures-util"]
+
+[dependencies]
+futures-core = "0.3"
+pin-project = "0.4"
+tower-layer = { version = "0.3", path = "../tower-layer" }
+tower-service = { version = "0.3" }
+tracing = "0.1.2"
+
+futures-util = { version = "0.3", default-features = false, features = ["alloc"], optional = true }
+hdrhistogram = { version = "6.0", optional = true }
+indexmap = { version = "1.0.2", optional = true }
+rand = { version = "0.7", features = ["small_rng"], optional = true }
+slab = { version = "0.4", optional = true }
+tokio = { version = "0.2", optional = true, features = ["sync"] }
+
+[dev-dependencies]
+futures-util = { version = "0.3", default-features = false, features = ["alloc", "async-await"] }
+hdrhistogram = "6.0"
+quickcheck = { version = "0.9", default-features = false }
+tokio = { version = "0.2", features = ["macros", "stream", "sync", "test-util" ] }
+tokio-test = "0.2"
+tower-test = { version = "0.3", path = "../tower-test" }
+tracing-subscriber = "0.1.1"
+# env_logger = { version = "0.5.3", default-features = false }
+# log = "0.4.1"
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
+
+[package.metadata.playground]
+features = ["full"]

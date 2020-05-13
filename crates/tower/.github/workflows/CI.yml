@@ -1,0 +1,131 @@
+name: CI
+
+on:
+  push:
+    branches:
+    - master
+  pull_request: {}
+
+jobs:
+  check:
+    # Run `cargo check` first to ensure that the pushed code at least compiles.
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        rust: [stable, 1.40.0]
+    steps:
+    - uses: actions/checkout@master
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: ${{ matrix.rust }}
+        profile: minimal
+    - name: Check
+      uses: actions-rs/cargo@v1
+      with:
+        command: check
+        args: --all --all-targets --all-features
+
+  cache-cargo-hack:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Fetch latest release version of cargo-hack
+      run: |
+        mkdir -p .github/caching
+        curl -sL https://api.github.com/repos/taiki-e/cargo-hack/releases/latest | jq -r '.name' > .github/caching/cargo-hack.lock
+    - name: Cache cargo-hack/bin
+      id: cache-cargo-hack
+      uses: actions/cache@v1
+      with:
+        path: ${{ runner.tool_cache }}/cargo-hack/bin
+        key: cargo-hack-bin-${{ hashFiles('.github/caching/cargo-hack.lock') }}
+    - name: Install cargo-hack
+      if: "steps.cache-cargo-hack.outputs.cache-hit != 'true'"
+      uses: actions-rs/cargo@v1
+      with:
+        command: install
+        args: --root ${{ runner.tool_cache }}/cargo-hack --force cargo-hack
+
+  cargo-hack:
+    needs: cache-cargo-hack
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        profile: minimal
+    - name: Fetch latest release version of cargo-hack
+      run: |
+        mkdir -p .github/caching
+        curl -sL https://api.github.com/repos/taiki-e/cargo-hack/releases/latest | jq -r '.name' > .github/caching/cargo-hack.lock
+    - name: Restore cargo-hack/bin
+      uses: actions/cache@v1
+      with:
+        path: ${{ runner.tool_cache }}/cargo-hack/bin
+        key: cargo-hack-bin-${{ hashFiles('.github/caching/cargo-hack.lock') }}
+    - run: echo "::add-path::${{ runner.tool_cache }}/cargo-hack/bin"
+    # if `cargo-hack` somehow doesn't exist after loading it from the cache,
+    # make *sure* it's there.
+    - run: cargo hack --help || { cargo install --force cargo-hack; }
+    - name: cargo hack check
+      working-directory: ${{ matrix.subcrate }}
+      run: cargo hack check --each-feature --no-dev-deps --all
+
+  test-versions:
+    # Test against the stable, beta, and nightly Rust toolchains on ubuntu-latest.
+    needs: check
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        rust: [stable, beta, nightly, 1.40.0]
+    steps:
+    - uses: actions/checkout@master
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: ${{ matrix.rust }}
+        profile: minimal
+    - name: Run tests
+      uses: actions-rs/cargo@v1
+      with:
+        command: test
+        args: --all --all-features
+
+  style:
+    # Check style.
+    needs: check
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        components: rustfmt
+        profile: minimal
+    - name: rustfmt
+      uses: actions-rs/cargo@v1
+      with:
+        command: fmt
+        args: --all -- --check
+  
+  # warnings:
+  #   # Check for any warnings. This is informational and thus is allowed to fail.
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@master
+  #   - uses: actions-rs/toolchain@v1
+  #     with:
+  #       toolchain: stable
+  #       components: clippy
+  #       profile: minimal
+  #   - name: Clippy
+  #     uses: actions-rs/clippy-check@v1
+  #     with:
+  #       token: ${{ secrets.GITHUB_TOKEN }}
+  #       args: --all --all-targets --all-features -- -D warnings
+
+  deny-check:
+    name: cargo-deny check
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: EmbarkStudios/cargo-deny-action@v1
