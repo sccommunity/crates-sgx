@@ -1,0 +1,27 @@
+[package]
+name = "tracing-macros"
+version = "0.1.0"
+authors = ["Eliza Weisman <eliza@buoyant.io>"]
+edition = "2018"
+repository = "https://github.com/tokio-rs/tracing"
+homepage = "https://tokio.rs"
+description = """
+Macros for emitting trace events
+"""
+categories = [
+    "development-tools::debugging",
+    "development-tools::profiling",
+    "asynchronous",
+]
+keywords = ["logging", "tracing"]
+license = "MIT"
+
+[dependencies]
+tracing = "0.1"
+
+[dev-dependencies]
+tracing-log = "0.1"
+env_logger = "0.5"
+
+[badges]
+maintenance = { status = "experimental" }
