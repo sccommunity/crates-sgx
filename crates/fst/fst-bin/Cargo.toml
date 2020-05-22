@@ -1,0 +1,34 @@
+[package]
+name = "fst-bin"
+version = "0.4.1"  #:version
+authors = ["Andrew Gallant <jamslam@gmail.com>"]
+description = """
+A command line tool for using finite state transducers to compactly represents
+sets or maps of many strings (> 1 billion is possible). The command line tool
+exposes functionality to search FSTs using regular expressions, Levenshtein
+automata and range queries.
+"""
+documentation = "http://burntsushi.net/rustdoc/fst/"
+homepage = "https://github.com/BurntSushi/fst"
+repository = "https://github.com/BurntSushi/fst"
+keywords = ["search", "information", "retrieval", "dictionary", "map"]
+license = "Unlicense/MIT"
+edition = "2018"
+
+[[bin]]
+name = "fst"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = "1.0.26"
+bit-set = "0.5.1"
+bstr = "0.2.11"
+clap = { version = "2.33.0", default-features = false }
+crossbeam-channel = "0.4.2"
+csv = "1.1.3"
+fst = { version = "0.4.0", features = ["levenshtein"] }
+memmap = "0.7"
+num_cpus = "1.5"
+regex-automata = { version = "0.1.9", features = ["transducer"] }
+serde = { version = "1.0.104", features = ["derive"] }
+tempfile = "3.1.0"
