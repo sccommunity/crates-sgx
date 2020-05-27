@@ -51,7 +51,10 @@ pub trait UnparkHandleT {
 }
 
 cfg_if! {
-    if #[cfg(any(target_os = "linux", target_os = "android"))] {
+    if #[cfg(any(feature = "mesalock_sgx", all(target_env = "sgx", target_vendor = "mesalock")))] {
+        #[path = "mesalock.rs"]
+        mod imp;
+    } else if #[cfg(all(any(target_os = "linux", target_os = "android"), not(target_vendor = "mesalock")))] {
         #[path = "linux.rs"]
         mod imp;
     } else if #[cfg(unix)] {
