@@ -1,0 +1,22 @@
+[package]
+name = "parking_lot-benchmark"
+version = "0.0.0"
+authors = ["Amanieu d'Antras <amanieu@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+parking_lot = {path = ".."}
+seqlock = "0.1"
+libc = "0.2"
+
+[[bin]]
+name = "mutex"
+path = "src/mutex.rs"
+
+[[bin]]
+name = "rwlock"
+path = "src/rwlock.rs"
+
+[features]
+nightly = ["parking_lot/nightly"]
+deadlock_detection = ["parking_lot/deadlock_detection"]
