@@ -1,0 +1,20 @@
+[package]
+name = "fixedbitset"
+version = "0.3.0"
+authors = ["bluss"]
+license = "MIT/Apache-2.0"
+
+description = "FixedBitSet is a simple bitset collection"
+documentation = "https://docs.rs/fixedbitset/"
+repository = "https://github.com/bluss/fixedbitset"
+
+keywords = ["container", "data-structure", "bitvec", "bitset", "no_std"]
+categories = ["data-structures"]
+
+[features]
+std = []
+default = ["std"]
+
+[package.metadata.release]
+no-dev-version = true
+tag-name = "{{version}}"
