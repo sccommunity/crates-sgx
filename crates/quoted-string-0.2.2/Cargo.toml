@@ -1,0 +1,20 @@
+[package]
+name    = "quoted-string"
+version = "0.2.2"
+
+authors = ["Philipp Korber <p.korber@1aim.com>"]
+license = "MIT/Apache-2.0"
+
+description   = "Utilities to handle quoted strings (in mail, MIME types, ..)"
+readme        = "README.md"
+documentation = "https://docs.rs/quoted-string"
+repository    = "https://github.com/1aim/quoted-string"
+keywords      = ["mail", "quoted", "mime", "string", "rfc5322"]
+categories    = ["encoding"]
+
+[badges]
+travis-ci = { repository = "1aim/quoted-string", branch = "master" }
+maintenance = { status = "actively-developed" }
+
+[dependencies]
+quick-error = "1.2.1"
