@@ -1,0 +1,24 @@
+[package]
+name = "language-tags"
+version = "0.3.0"
+authors = [
+    "Pyfisch <pyfisch@gmail.com>",
+    "Tpt <thomas@pellissier-tanon.fr>"
+]
+edition = "2018"
+
+description = "Language tags for Rust"
+license = "MIT/Apache-2.0"
+repository = "https://github.com/pyfisch/rust-language-tags"
+keywords = ["language", "i18n", "internationalization", "translation", "http", "html"]
+categories = ["parser-implementations"]
+
+[badges]
+travis-ci = { repository = "pyfisch/rust-language-tags" }
+
+[dev-dependencies]
+bencher = "0.1"
+
+[[bench]]
+name = "language_tag"
+harness = false
