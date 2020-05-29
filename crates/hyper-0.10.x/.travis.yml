@@ -1,0 +1,17 @@
+language: rust
+matrix:
+    fast_finish: true
+    include:
+        - rust: nightly
+          env: FEATURES="--features nightly"
+        - rust: beta
+        - rust: stable
+          # disabled since dependencies no longer compile on 1.17
+          #- rust: 1.17.0
+
+script:
+  - ./.travis/readme.py
+  - cargo build --verbose $FEATURES
+  - cargo test --verbose $FEATURES
+  - 'if [ $TRAVIS_RUST_VERSION = nightly ]; then cargo bench --no-run; fi'
+
