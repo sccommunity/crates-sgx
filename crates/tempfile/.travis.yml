@@ -1,0 +1,10 @@
+language: rust
+cache: cargo
+rust:
+  - nightly
+  - beta
+  - stable
+  - 1.32.0
+os:
+  - linux
+  - osx
