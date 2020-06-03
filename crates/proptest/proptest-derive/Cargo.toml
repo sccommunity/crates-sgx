@@ -1,0 +1,51 @@
+[package]
+name          = "proptest-derive"
+version       = "0.2.0"
+authors       = ["Mazdak Farrokhzad <twingoow@gmail.com>"]
+license       = "MIT/Apache-2.0"
+readme        = "README.md"
+
+repository    = "https://github.com/AltSysrq/proptest"
+documentation = "https://altsysrq.github.io/proptest-book/proptest-derive/index.html"
+
+keywords      = ["derive", "arbitrary", "proptest", "testing", "quickcheck"]
+categories    = ["development-tools::testing"]
+
+description = """
+Custom-derive for the Arbitrary trait of proptest.
+"""
+
+homepage = "https://altsysrq.github.io/proptest-book/proptest-derive/index.html"
+edition = "2018"
+
+[badges]
+maintenance = { status = "experimental" }
+travis-ci = { repository = "AltSysrq/proptest" }
+
+[badges.appveyor]
+repository = "AltSysrq/proptest"
+branch = "master"
+service = "github"
+
+[lib]
+proc-macro = true
+
+[dev-dependencies]
+proptest = { version = "0.10.0", path = "../proptest" }
+# We don't actually run the tests on stable since some of them use nightly
+# features. However, due to
+# https://github.com/laumann/compiletest-rs/issues/166, the default features of
+# compiletest-rs fail to compile, but the stable fallback works fine.
+compiletest_rs = { version = "0.3.19", features = ["tmp", "stable"] }
+# criterion is used for benchmarks.
+criterion = "0.2"
+
+[dependencies]
+proc-macro2 = "0.4"
+
+syn = { version = "0.15.17", features = ["visit", "extra-traits", "full"] }
+quote = "0.6"
+
+[[bench]]
+name = "large_enum"
+harness = false
