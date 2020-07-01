@@ -1,0 +1,32 @@
+[package]
+
+name          = "bytes"
+version       = "0.3.0"
+license       = "MIT"
+authors       = ["Carl Lerche <me@carllerche.com>"]
+description   = "Types and traits for working with bytes"
+documentation = "https://carllerche.github.io/bytes/bytes"
+homepage      = "https://github.com/carllerche/bytes"
+repository    = "https://github.com/carllerche/bytes"
+readme        = "README.md"
+keywords      = ["buffers", "rope", "io"]
+exclude       = [
+    ".gitignore",
+    ".travis.yml",
+    "deploy.sh",
+    "bench/**/*",
+    "test/**/*"
+]
+
+[dev-dependencies]
+rand = "0.3.5"
+
+[[bench]]
+
+name = "bench"
+path = "bench/bench.rs"
+
+[[test]]
+
+name = "test"
+path = "test/test.rs"
