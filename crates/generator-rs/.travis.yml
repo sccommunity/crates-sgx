@@ -1,0 +1,19 @@
+sudo: false
+language: rust
+# cache: cargo
+
+os:
+ - windows
+ - linux
+ - osx
+
+rust:
+  - stable
+  - nightly
+
+evn:
+  - RUST_BACKTRACE=1
+
+script:
+  - cargo test
+  - cargo test --release
