@@ -1,0 +1,12 @@
+[package]
+name = "spmc"
+version = "0.3.0"
+description = "Simple SPMC channel"
+keywords = ["spmc", "channel", "queue"]
+authors = ["Sean McArthur <sean.monstar@gmail.com>"]
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/seanmonstar/spmc"
+documentation = "https://docs.rs/spmc"
+
+[dev-dependencies]
+loom = "0.2.2"
