@@ -1,0 +1,7 @@
+[workspace]
+members = [
+    "rmp",
+    "rmp-serde",
+    "rmpv",
+    "rmpv-tests"
+]
