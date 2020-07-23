@@ -1,0 +1,7 @@
+[workspace]
+members = [
+  # the main library and tests
+  "rustls",
+  # tests and example code that depend on mio
+  "rustls-mio",
+]
