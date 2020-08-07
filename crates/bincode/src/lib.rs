@@ -29,6 +29,32 @@
 #![crate_type = "rlib"]
 #![crate_type = "dylib"]
 
+#![cfg_attr(not(
+    all(
+        any(feature = "std", feature = "mesalock_sgx"),
+        target_env = "sgx",
+        target_vendor = "mesalock",
+    )),
+    no_std
+  )]
+  
+  #![cfg_attr(
+    all(
+        any(feature = "std", feature = "mesalock_sgx"),
+        target_env = "sgx",
+        target_vendor = "mesalock",
+    ),
+    feature(rustc_private)
+  )]
+
+  #[cfg(all(
+    any(feature = "std", feature = "mesalock_sgx"),
+    not(target_env = "sgx"),
+    not(target_vendor = "mesalock"),
+  ))]
+  #[macro_use]
+  extern crate sgx_tstd as std;
+
 extern crate byteorder;
 #[macro_use]
 extern crate serde;
@@ -47,7 +73,7 @@ pub use de::read::BincodeRead;
 pub use de::Deserializer;
 pub use error::{Error, ErrorKind, Result};
 pub use ser::Serializer;
-
+use std::prelude::v1::*;
 /// Get a default configuration object.
 ///
 /// ### Default Configuration:

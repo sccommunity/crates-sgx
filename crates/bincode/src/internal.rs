@@ -1,7 +1,7 @@
 use serde;
 use std::io::{Read, Write};
 use std::marker::PhantomData;
-
+use std::prelude::v1::*;
 use config::{Infinite, InternalOptions, Options, SizeLimit, TrailingBytes};
 use de::read::BincodeRead;
 use Result;

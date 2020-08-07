@@ -1,6 +1,6 @@
 use config::{BincodeByteOrder, Options};
 use std::io::Read;
-
+use std::prelude::v1::*;
 use self::read::{BincodeRead, IoReader, SliceReader};
 use byteorder::ReadBytesExt;
 use config::{IntEncoding, SizeLimit};

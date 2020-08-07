@@ -1,6 +1,6 @@
 use std::io::Write;
 use std::mem::size_of;
-
+use std::prelude::v1::*;
 use super::Options;
 use de::read::BincodeRead;
 use error::{ErrorKind, Result};

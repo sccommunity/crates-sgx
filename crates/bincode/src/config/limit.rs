@@ -1,5 +1,5 @@
 use error::{ErrorKind, Result};
-
+use std::prelude::v1::*;
 /// A trait for stopping serialization and deserialization when a certain limit has been reached.
 pub trait SizeLimit {
     /// Tells the SizeLimit that a certain number of bytes has been

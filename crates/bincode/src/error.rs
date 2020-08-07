@@ -2,7 +2,7 @@ use std::error::Error as StdError;
 use std::io;
 use std::str::Utf8Error;
 use std::{error, fmt};
-
+use std::prelude::v1::*;
 use serde;
 
 /// The result of a serialization or deserialization operation.

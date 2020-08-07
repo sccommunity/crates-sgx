@@ -1,5 +1,5 @@
 use std::io::{Read, Write};
-
+use std::prelude::v1::*;
 use self::EndianOption::*;
 use self::LimitOption::*;
 use super::{DefaultOptions, Options};

@@ -1,6 +1,6 @@
 use de::read::SliceReader;
 use {ErrorKind, Result};
-
+use std::prelude::v1::*;
 /// A trait for erroring deserialization if not all bytes were read.
 pub trait TrailingBytes {
     /// Checks a given slice reader to determine if deserialization used all bytes in the slice.

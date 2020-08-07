@@ -3,7 +3,7 @@ use error::Result;
 use serde;
 use std::io::{Read, Write};
 use std::marker::PhantomData;
-
+use std::prelude::v1::*;
 pub(crate) use self::endian::BincodeByteOrder;
 pub(crate) use self::int::IntEncoding;
 pub(crate) use self::internal::*;

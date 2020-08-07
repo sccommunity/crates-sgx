@@ -1,7 +1,7 @@
 use error::Result;
 use serde;
 use std::io;
-
+use std::prelude::v1::*;
 /// An optional Read trait for advanced Bincode usage.
 ///
 /// It is highly recommended to use bincode with `io::Read` or `&[u8]` before
