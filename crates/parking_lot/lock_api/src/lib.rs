@@ -52,7 +52,7 @@
 //!             .is_ok()
 //!     }
 //!
-//!     fn unlock(&self) {
+//!     unsafe fn unlock(&self) {
 //!         self.0.store(false, Ordering::Release);
 //!     }
 //! }
@@ -85,10 +85,17 @@
 //! - `nightly`: Enables nightly-only features. At the moment the only such
 //!   feature is `const fn` constructors for lock types.
 
-#![no_std]
-#![warn(missing_docs)]
+//#![no_std]
+//#![warn(missing_docs)]
 #![warn(rust_2018_idioms)]
 #![cfg_attr(feature = "nightly", feature(const_fn))]
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
 
 #[macro_use]
 extern crate scopeguard;

@@ -9,7 +9,7 @@ use std::{
     marker::PhantomData,
     panic::{RefUnwindSafe, UnwindSafe},
     sync::atomic::{AtomicBool, AtomicUsize, Ordering},
-    thread::{self, Thread},
+    thread::{self, SgxThread as Thread},
 };
 
 #[derive(Debug)]

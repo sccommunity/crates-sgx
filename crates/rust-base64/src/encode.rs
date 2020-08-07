@@ -1,8 +1,7 @@
+#[cfg(feature = "std")]
+use std::prelude::v1::*;
 use crate::Config;
-#[cfg(any(feature = "alloc", feature = "std", test))]
 use crate::{chunked_encoder, STANDARD};
-#[cfg(any(feature = "alloc", feature = "std", test))]
-use alloc::{string::String, vec};
 use core::convert::TryInto;
 
 ///Encode arbitrary octets as base64.

@@ -4,7 +4,7 @@ use std::mem;
 use std::os::unix::prelude::*;
 use std::path::Path;
 
-use libc::{self, c_int, c_ulong};
+use sgx_libc::{self, c_int, c_ulong};
 
 use cvt;
 
@@ -19,7 +19,7 @@ use cvt;
     target_os = "illumos",
     target_os = "solaris"
 ))]
-use libc::{SOCK_CLOEXEC, SOCK_NONBLOCK};
+use sgx_libc::{SOCK_CLOEXEC, SOCK_NONBLOCK};
 #[cfg(not(any(
     target_os = "linux",
     target_os = "android",
@@ -62,9 +62,9 @@ impl Socket {
             }
 
             let fd = Socket { fd: try!(cvt(libc::socket(libc::AF_UNIX, ty, 0))) };
-            try!(cvt(libc::ioctl(fd.fd, libc::FIOCLEX)));
-            let mut nonblocking = 1 as c_ulong;
-            try!(cvt(libc::ioctl(fd.fd, libc::FIONBIO, &mut nonblocking)));
+            try!(cvt(libc::ioctl_arg0(fd.fd, libc::FIOCLEX)));
+            let mut nonblocking = 1 as c_int;
+            try!(cvt(libc::ioctl_arg1(fd.fd, libc::FIONBIO, &mut nonblocking)));
             Ok(fd)
         }
     }
@@ -93,11 +93,11 @@ impl Socket {
             try!(cvt(libc::socketpair(libc::AF_UNIX, ty, 0, fds.as_mut_ptr())));
             let a = Socket { fd: fds[0] };
             let b = Socket { fd: fds[1] };
-            try!(cvt(libc::ioctl(a.fd, libc::FIOCLEX)));
-            try!(cvt(libc::ioctl(b.fd, libc::FIOCLEX)));
-            let mut nonblocking = 1 as c_ulong;
-            try!(cvt(libc::ioctl(a.fd, libc::FIONBIO, &mut nonblocking)));
-            try!(cvt(libc::ioctl(b.fd, libc::FIONBIO, &mut nonblocking)));
+            try!(cvt(libc::ioctl_arg0(a.fd, libc::FIOCLEX)));
+            try!(cvt(libc::ioctl_arg0(b.fd, libc::FIOCLEX)));
+            let mut nonblocking = 1 as c_int;
+            try!(cvt(libc::ioctl_arg1(a.fd, libc::FIONBIO, &mut nonblocking)));
+            try!(cvt(libc::ioctl_arg1(b.fd, libc::FIONBIO, &mut nonblocking)));
             Ok((a, b))
         }
     }
@@ -164,3 +164,7 @@ fn sun_path_offset() -> usize {
     }
 }
 
+mod libc {
+    pub use sgx_libc::*;
+    pub use sgx_libc::ocall::*;
+}

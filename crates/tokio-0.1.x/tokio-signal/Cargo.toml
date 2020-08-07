@@ -19,24 +19,39 @@ An implementation of an asynchronous Unix signal handling backed futures.
 """
 categories = ["asynchronous"]
 
+
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd", "sgx_signal", "sgx_libc"]
+
 [badges]
 travis-ci = { repository = "tokio-rs/tokio" }
 appveyor = { repository = "carllerche/tokio", id = "s83yxhy9qeb58va7" }
 
 [dependencies]
-futures = "0.1.11"
-mio = "0.6.14"
-tokio-reactor = "0.1.0"
-tokio-executor = "0.1.0"
-tokio-io = "0.1"
+futures = { path = "../../futures-rs_01"}
+mio = { path = "../../mio-0.6.x" }
+tokio-reactor = { path = "../tokio-reactor" }
+tokio-executor = { path = "../tokio-executor" }
+tokio-io = { path = "../tokio-io" }
+
+#futures = "0.1.11"
+#mio = "0.6.14"
+#tokio-reactor = "0.1.0"
+#tokio-executor = "0.1.0"
+#tokio-io = "0.1"
 
 [target.'cfg(unix)'.dependencies]
-libc = "0.2"
-mio-uds = "0.6"
-signal-hook-registry = "~1"
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+sgx_libc = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+sgx_signal = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+mio-uds = { path = "../../mio-uds"}
+#libc = "0.2"
+#mio-uds = "0.6"
+#signal-hook-registry = "~1"
 
 [dev-dependencies]
-tokio = "0.1.8"
+#tokio = "0.1.8"
 
 [target.'cfg(windows)'.dependencies.winapi]
 version = "0.3"

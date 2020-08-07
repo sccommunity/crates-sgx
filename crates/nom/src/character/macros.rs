@@ -1,6 +1,6 @@
 /// Character level parsers
 
-/// matches one of the provided characters
+/// Matches one of the provided characters.
 ///
 /// # Example
 /// ```
@@ -18,7 +18,7 @@ macro_rules! one_of (
   ($i:expr, $inp: expr) => ( $crate::character::streaming::one_of($inp)($i) );
 );
 
-/// matches anything but the provided characters
+/// Matches anything but the provided characters.
 ///
 /// # Example
 /// ```
@@ -37,7 +37,7 @@ macro_rules! none_of (
   ($i:expr, $inp: expr) => ( $crate::character::streaming::none_of($inp)($i) );
 );
 
-/// matches one character: `char!(char) => &[u8] -> IResult<&[u8], char>
+/// Matches one character: `char!(char) => &[u8] -> IResult<&[u8], char>`.
 ///
 /// # Example
 /// ```
@@ -55,12 +55,13 @@ macro_rules! char (
   ($i:expr, $c: expr) => ( $crate::character::streaming::char($c)($i) );
 );
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
   use crate::error::ErrorKind;
   use crate::internal::Err;
-
-  #[test]
+  use std::string::ToString;
+  use crates_unittest::test_case;
+  #[test_case]
   fn one_of() {
     named!(f<char>, one_of!("ab"));
 
@@ -77,7 +78,7 @@ mod tests {
     assert!(utf8("\u{FF0B}").is_ok());
   }
 
-  #[test]
+  #[test_case]
   fn none_of() {
     named!(f<char>, none_of!("ab"));
 
@@ -88,7 +89,7 @@ mod tests {
     assert_eq!(f(b), Ok((&b"de"[..], 'c')));
   }
 
-  #[test]
+  #[test_case]
   fn char() {
     named!(f<char>, char!('c'));
 
@@ -99,7 +100,7 @@ mod tests {
     assert_eq!(f(b), Ok((&b"de"[..], 'c')));
   }
 
-  #[test]
+  #[test_case]
   fn char_str() {
     named!(f<&str, char>, char!('c'));
 

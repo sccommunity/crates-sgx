@@ -1,5 +1,14 @@
 //! Data structure measurement.
 
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"), feature(rustc_private))]
+
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+extern crate sgx_tstd as std;
+
+use std::prelude::v1::*;
+
 #[cfg(target_os = "windows")]
 extern crate winapi;
 
@@ -40,11 +49,13 @@ unsafe fn heap_size_of_impl(ptr: *const c_void) -> usize {
     // platforms `JEMALLOC_USABLE_SIZE_CONST` is `const` and on some it is empty. But in practice
     // this function doesn't modify the contents of the block that `ptr` points to, so we use
     // `*const c_void` here.
-    extern "C" {
-		#[cfg_attr(any(prefixed_jemalloc, target_os = "macos", target_os = "ios", target_os = "android"), link_name = "je_malloc_usable_size")]
-        fn malloc_usable_size(ptr: *const c_void) -> usize;
-    }
-    malloc_usable_size(ptr)
+    //extern "C" {
+	//	//#[cfg_attr(any(prefixed_jemalloc, target_os = "macos", target_os = "ios", target_os = "android"), link_name = "je_malloc_usable_size")]
+    //    #[link_name = "mspace_usable_size"]
+    //    fn malloc_usable_size(ptr: *const c_void) -> usize;
+    //}
+    //malloc_usable_size(ptr)
+    sgx_usable_size(ptr)
 }
 
 #[cfg(target_os = "windows")]
@@ -364,3 +375,66 @@ known_heap_size!(0, i8, i16, i32, i64, isize);
 known_heap_size!(0, bool, f32, f64);
 known_heap_size!(0, AtomicBool, AtomicIsize, AtomicUsize);
 known_heap_size!(0, Ipv4Addr, Ipv6Addr, RangeFull);
+
+static TWO_SIZE_T_SIZES: usize = size_of::<usize>() * 2;
+static PINUSE_BIT      : usize = 1;
+static CINUSE_BIT      : usize = 2;
+static FLAG4_BIT       : usize = 4;
+static INUSE_BITS      : usize = PINUSE_BIT | CINUSE_BIT;
+static FLAG_BITS       : usize = PINUSE_BIT | CINUSE_BIT | FLAG4_BIT;
+static CHUNK_OVERHEAD  : usize = TWO_SIZE_T_SIZES;
+static MMAP_CHUNK_OVERHEAD  : usize = TWO_SIZE_T_SIZES;
+
+#[repr(C)]
+struct malloc_chunk {
+    prev_foot: usize,
+    head: usize,
+    fd: *const malloc_chunk,
+    bk: *const malloc_chunk,
+}
+
+#[inline(always)]
+fn mem2chunk(p: * const c_void) -> *const malloc_chunk {
+    let pu8 = p as * const u8;
+    let chunk = pu8.wrapping_sub(TWO_SIZE_T_SIZES) as * const malloc_chunk;
+
+    chunk
+}
+
+#[inline(always)]
+unsafe fn is_mmapped(p: * const malloc_chunk) -> bool {
+    ((*p).head & INUSE_BITS) == 0
+}
+
+#[inline(always)]
+unsafe fn chunksize(p: * const malloc_chunk) -> usize {
+    (*p).head & !FLAG_BITS
+}
+
+#[inline(always)]
+unsafe fn overhead_for(p: * const malloc_chunk) -> usize {
+    if is_mmapped(p) {
+        MMAP_CHUNK_OVERHEAD
+    } else {
+        CHUNK_OVERHEAD
+    }
+}
+
+#[inline(always)]
+unsafe fn is_inuse(p: * const malloc_chunk) -> bool {
+    ((*p).head & INUSE_BITS) != PINUSE_BIT
+}
+
+fn sgx_usable_size(p: * const c_void) -> usize {
+    if p.is_null() {
+        return 0;
+    }
+    let c: *const malloc_chunk = mem2chunk(p);
+    unsafe {
+        if is_inuse(c) {
+            return chunksize(c) - overhead_for(c);
+        } else {
+            return 0;
+        }
+    }
+}

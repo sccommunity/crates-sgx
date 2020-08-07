@@ -471,11 +471,13 @@ pub use self::fixed::FixedOffset;
 pub use self::local::Local;
 pub use self::utc::Utc;
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::*;
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
 
-    #[test]
+    #[test_case]
     fn test_negative_millis() {
         let dt = Utc.timestamp_millis(-1000);
         assert_eq!(dt.to_string(), "1969-12-31 23:59:59 UTC");
@@ -508,7 +510,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_negative_nanos() {
         let dt = Utc.timestamp_nanos(-1_000_000_000);
         assert_eq!(dt.to_string(), "1969-12-31 23:59:59 UTC");
@@ -522,7 +524,7 @@ mod tests {
         assert_eq!(dt.to_string(), "1969-12-31 23:00:00 UTC");
     }
 
-    #[test]
+    #[test_case]
     fn test_nanos_never_panics() {
         Utc.timestamp_nanos(i64::max_value());
         Utc.timestamp_nanos(i64::default());

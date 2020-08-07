@@ -88,6 +88,10 @@
 //! [`tracing::Event`]: https://docs.rs/tracing/latest/tracing/struct.Event.html
 //! [flags]: https://docs.rs/tracing/latest/tracing/#crate-feature-flags
 #![doc(html_root_url = "https://docs.rs/tracing-log/0.1.1")]
+#![doc(
+    html_logo_url = "https://raw.githubusercontent.com/tokio-rs/tracing/master/assets/logo.svg",
+    issue_tracker_base_url = "https://github.com/tokio-rs/tracing/issues/"
+)]
 #![cfg_attr(docsrs, feature(doc_cfg))]
 #![warn(
     missing_debug_implementations,
@@ -111,6 +115,34 @@
     unused_parens,
     while_true
 )]
+
+#![cfg_attr(not(
+    all(
+        any(feature = "std", feature = "mesalock_sgx"),
+        target_env = "sgx",
+        target_vendor = "mesalock",
+    )),
+    no_std
+)]
+
+#![cfg_attr(
+    all(
+        any(feature = "std", feature = "mesalock_sgx"),
+        target_env = "sgx",
+        target_vendor = "mesalock",
+    ),
+    feature(rustc_private)
+)]
+
+
+#[cfg(all(
+    any(feature = "std", feature = "mesalock_sgx"),
+    not(target_env = "sgx"),
+    not(target_vendor = "mesalock"),
+))]
+#[macro_use]
+extern crate sgx_tstd as std;
+
 use lazy_static::lazy_static;
 
 use std::{fmt, io};

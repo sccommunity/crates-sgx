@@ -19,12 +19,20 @@ Synchronization utilities.
 """
 categories = ["asynchronous"]
 
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd", "sgx_trts"]
+
 [dependencies]
-fnv = "1.0.6"
-futures = "0.1.19"
+fnv = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2" }
+futures = { path = "../../futures-rs_01" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+sgx_trts = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+#fnv = "1.0.6"
+#futures = "0.1.19"
 
 [dev-dependencies]
-env_logger = { version = "0.6", default-features = false }
-tokio = { version = "0.1.15", path = "../tokio" }
-tokio-mock-task = "0.1.1"
-loom = { version = "0.1.1", features = ["futures"] }
+#env_logger = { version = "0.6", default-features = false }
+#tokio = { version = "0.1.15", path = "../tokio" }
+#tokio-mock-task = "0.1.1"
+#loom = { version = "0.1.1", features = ["futures"] }

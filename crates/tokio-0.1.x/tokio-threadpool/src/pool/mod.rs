@@ -24,9 +24,10 @@ use std::sync::atomic::AtomicUsize;
 use std::sync::atomic::Ordering::{AcqRel, Acquire};
 use std::sync::{Arc, Weak};
 use std::thread;
-
+use std::prelude::v1::Box;
 use crossbeam_deque::Injector;
 use crossbeam_utils::CachePadded;
+use std::prelude::v1::Vec;
 
 #[derive(Debug)]
 pub(crate) struct Pool {
@@ -318,9 +319,9 @@ impl Pool {
             th = th.name(format!("{}{}", prefix, backup_id.0));
         }
 
-        if let Some(stack) = pool.config.stack_size {
-            th = th.stack_size(stack);
-        }
+        // if let Some(stack) = pool.config.stack_size {
+        //     th = th.stack_size(stack);
+        // }
 
         let pool = pool.clone();
 

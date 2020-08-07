@@ -6,12 +6,21 @@
     unreachable_pub
 )]
 #![allow(elided_lifetimes_in_paths)]
+
 #![cfg_attr(docsrs, feature(doc_cfg))]
 
 //! `fn(Request) -> Future<Response>`
 //!
 //! Tower is a library of modular and reusable components for building
 //! robust networking clients and servers.
+
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
 
 #[cfg(feature = "balance")]
 #[cfg_attr(docsrs, doc(cfg(feature = "balance")))]
@@ -76,6 +85,8 @@ pub use crate::builder::ServiceBuilder;
 pub use tower_layer::Layer;
 #[doc(inline)]
 pub use tower_service::Service;
+use std::prelude::v1::*;
+
 
 #[allow(unreachable_pub)]
 mod sealed {
@@ -84,3 +95,5 @@ mod sealed {
 
 /// Alias for a type-erased error type.
 pub type BoxError = Box<dyn std::error::Error + Send + Sync>;
+
+

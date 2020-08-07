@@ -3,7 +3,7 @@
 // See README.md and LICENSE.txt for details.
 
 //! 7-bit ASCII encoding.
-
+use std::prelude::v1::*;
 use std::mem;
 use std::convert::Into;
 use types::*;
@@ -96,14 +96,15 @@ impl RawDecoder for ASCIIDecoder {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
-    extern crate test;
+    //extern crate test;
     use super::ASCIIEncoding;
     use testutils;
     use types::*;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::{ test_case };
+    #[test_case]
     fn test_encoder() {
         let mut e = ASCIIEncoding.raw_encoder();
         assert_feed_ok!(e, "A", "", [0x41]);
@@ -114,7 +115,7 @@ mod tests {
         assert_finish_ok!(e, []);
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder() {
         let mut d = ASCIIEncoding.raw_decoder();
         assert_feed_ok!(d, [0x41], [], "A");
@@ -125,39 +126,39 @@ mod tests {
         assert_finish_ok!(d, "");
     }
 
-    #[bench]
-    fn bench_encode(bencher: &mut test::Bencher) {
-        let s = testutils::ASCII_TEXT;
-        bencher.bytes = s.len() as u64;
-        bencher.iter(|| test::black_box({
-            ASCIIEncoding.encode(s, EncoderTrap::Strict)
-        }))
-    }
+    // #[bench]
+    // fn bench_encode(bencher: &mut test::Bencher) {
+    //     let s = testutils::ASCII_TEXT;
+    //     bencher.bytes = s.len() as u64;
+    //     bencher.iter(|| test::black_box({
+    //         ASCIIEncoding.encode(s, EncoderTrap::Strict)
+    //     }))
+    // }
 
-    #[bench]
-    fn bench_decode(bencher: &mut test::Bencher) {
-        let s = testutils::ASCII_TEXT.as_bytes();
-        bencher.bytes = s.len() as u64;
-        bencher.iter(|| test::black_box({
-            ASCIIEncoding.decode(s, DecoderTrap::Strict)
-        }))
-    }
+    // #[bench]
+    // fn bench_decode(bencher: &mut test::Bencher) {
+    //     let s = testutils::ASCII_TEXT.as_bytes();
+    //     bencher.bytes = s.len() as u64;
+    //     bencher.iter(|| test::black_box({
+    //         ASCIIEncoding.decode(s, DecoderTrap::Strict)
+    //     }))
+    // }
 
-    #[bench]
-    fn bench_encode_replace(bencher: &mut test::Bencher) {
-        let s = testutils::KOREAN_TEXT;
-        bencher.bytes = s.len() as u64;
-        bencher.iter(|| test::black_box({
-            ASCIIEncoding.encode(s, EncoderTrap::Replace)
-        }))
-    }
+    // #[bench]
+    // fn bench_encode_replace(bencher: &mut test::Bencher) {
+    //     let s = testutils::KOREAN_TEXT;
+    //     bencher.bytes = s.len() as u64;
+    //     bencher.iter(|| test::black_box({
+    //         ASCIIEncoding.encode(s, EncoderTrap::Replace)
+    //     }))
+    // }
 
-    #[bench]
-    fn bench_decode_replace(bencher: &mut test::Bencher) {
-        let s = testutils::KOREAN_TEXT.as_bytes();
-        bencher.bytes = s.len() as u64;
-        bencher.iter(|| test::black_box({
-            ASCIIEncoding.decode(s, DecoderTrap::Replace)
-        }))
-    }
+    // #[bench]
+    // fn bench_decode_replace(bencher: &mut test::Bencher) {
+    //     let s = testutils::KOREAN_TEXT.as_bytes();
+    //     bencher.bytes = s.len() as u64;
+    //     bencher.iter(|| test::black_box({
+    //         ASCIIEncoding.decode(s, DecoderTrap::Replace)
+    //     }))
+    // }
 }

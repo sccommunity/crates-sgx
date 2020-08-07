@@ -19,7 +19,17 @@ Utilities for encoding and decoding frames.
 """
 categories = ["asynchronous"]
 
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+
 [dependencies]
-tokio-io = "0.1.7"
-bytes = "0.4.7"
-futures = "0.1.18"
+tokio-io = { path = "../tokio-io" }
+bytes = { path = "../../bytes-0.4.x" }
+futures = { path = "../../futures-rs_01" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+
+
+#tokio-io = "0.1.7"
+#bytes = "0.4.7"
+#futures = "0.1.18"

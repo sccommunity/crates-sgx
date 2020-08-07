@@ -6,6 +6,7 @@
 
 use std::borrow::ToOwned;
 use types::{RawDecoder, RawEncoder};
+use std::prelude::v1::*;
 
 pub struct TestResult<'a, Output: 'a + ?Sized + ToOwned> {
     pub expected_return: (usize, Option<isize>),

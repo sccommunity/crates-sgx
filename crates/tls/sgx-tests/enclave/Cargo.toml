@@ -1,0 +1,27 @@
+[package]
+name = "run-tests-enclave"
+version = "1.0.0"
+edition = "2018"
+
+[lib]
+name = "run_tests_enclave"
+crate-type = ["staticlib"]
+
+[features]
+default = ["crates_unittest", "inventory"]
+
+# rename pkg to avoid updating src/lib.rs every time
+[dependencies]
+crates_unittest = { git = "https://github.com/Zha0Chan/crates-sgx-unittest.git", optional = true, default-features = true }
+inventory = { version = "0.1.6", optional = true }
+tokio = { path = "../../../tokio/tokio", version = "0.2.0", features = ["macros", "net", "io-util", "rt-core", "time"] }
+futures-util = { path = "../../../futures-rs/futures-util"}
+lazy_static = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2" }
+rustls = { path = "../../../rustls/rustls" }
+webpki = { path = "../../../webpki" }
+tokio-rustls = { path = "../../tokio-rustls" }
+tokio-test = { path = "../../../tokio/tokio-test" }
+#webpki-roots = "0.20"
+
+[target.'cfg(not(target_env = "sgx"))'.dependencies]
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", features = ["untrusted_fs", "untrusted_time"] }

@@ -13,14 +13,18 @@ use std::io;
 use std::mem;
 use std::net::{TcpListener, TcpStream, UdpSocket};
 use std::os::unix::io::FromRawFd;
-use libc::{self, c_int};
-#[cfg(not(any(target_os = "solaris", target_os = "illumos", target_os = "emscripten")))]
-use libc::{ioctl, FIOCLEX};
+use sgx_libc::c_int;
+//#[cfg(not(any(target_os = "solaris", target_os = "emscripten")))]
+//use sgx_libc::{ioctl, FIOCLEX};
 
 mod impls;
 
 pub mod c {
-    pub use libc::*;
+    pub use sgx_libc::*;
+
+    pub use sgx_libc::ocall::{
+        bind, connect, listen, setsockopt, getsockopt, getsockname, send, recv, ioctl_arg1,
+    };
 
     pub fn sockaddr_in_u32(sa: &sockaddr_in) -> u32 {
         ::ntoh((*sa).sin_addr.s_addr)
@@ -33,6 +37,19 @@ pub mod c {
 
 pub struct Socket {
     fd: c_int,
+}
+
+pub mod libc {
+    pub use sgx_libc::*;
+
+    pub use sgx_libc::ocall::{
+        ioctl_arg0,
+        close,
+    };
+
+    pub use sgx_libc::ocall::{
+        socket,
+    };
 }
 
 impl Socket {
@@ -51,7 +68,7 @@ impl Socket {
             }
 
             let fd = try!(::cvt(libc::socket(family, ty, 0)));
-            ioctl(fd, FIOCLEX);
+            libc::ioctl_arg0(fd, c::FIOCLEX);
             Ok(Socket { fd: fd })
         }
     }

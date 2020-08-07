@@ -1,5 +1,6 @@
 use language_tags::LanguageTag;
 use header::QualityItem;
+use std::prelude::v1::*;
 
 header! {
     /// `Accept-Language` header, defined in

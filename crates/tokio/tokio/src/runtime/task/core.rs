@@ -20,7 +20,7 @@ use std::future::Future;
 use std::pin::Pin;
 use std::ptr::NonNull;
 use std::task::{Context, Poll, Waker};
-
+use std::prelude::v1::*;
 /// The task cell. Contains the components of the task.
 ///
 /// It is critical for `Header` to be the first field as the task structure will
@@ -279,11 +279,13 @@ cfg_rt_threaded! {
         }
     }
 }
+#[cfg(all(enclave_unit_test, not(loom)))]
+mod tests {
+    use std::string::ToString;
+    use crates_unittest::test_case;
+    fn header_lte_cache_line() {
+        use std::mem::size_of;
 
-#[test]
-#[cfg(not(loom))]
-fn header_lte_cache_line() {
-    use std::mem::size_of;
-
-    assert!(size_of::<Header>() <= 8 * size_of::<*const ()>());
+        assert!(size_of::<Header>() <= 8 * size_of::<*const ()>());
+    }
 }

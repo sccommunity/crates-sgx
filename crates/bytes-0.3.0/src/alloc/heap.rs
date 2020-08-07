@@ -1,6 +1,7 @@
 use alloc::{Allocator, Mem, MemRef};
 use std::{mem, ptr, usize};
 use std::ops::DerefMut;
+use std::prelude::v1::*;
 
 const MAX_ALLOC_SIZE: usize = usize::MAX;
 
@@ -26,7 +27,7 @@ impl Heap {
             ptr::write(ptr as *mut Vec<u8>, vec);
 
             let ptr = ptr.offset(mem::size_of::<Vec<u8>>() as isize);
-            ptr::write(ptr as *mut Mem, Mem::new(len, mem::transmute(self as &Allocator)));
+            ptr::write(ptr as *mut Mem, Mem::new(len, mem::transmute(self as &dyn Allocator)));
 
             // Return the info
             MemRef::new(ptr as *mut Mem)

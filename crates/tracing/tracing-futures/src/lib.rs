@@ -25,7 +25,7 @@
 //!    `tokio::executor::Executor`, `tokio::runtime::Runtime`, and
 //!    `tokio::runtime::current_thread`. Enabled by default.
 //! - `tokio-executor`: Enables compatibility with the `tokio-executor`
-//!    crate, including  [`Instrument`] and [`WithSubscriber`]
+//!    crate, including [`Instrument`] and [`WithSubscriber`]
 //!    implementations for types implementing `tokio_executor::Executor`.
 //!    This is intended primarily for use in crates which depend on
 //!    `tokio-executor` rather than `tokio`; in general the `tokio` feature
@@ -54,7 +54,11 @@
 //! [`Instrument`]: trait.Instrument.html
 //! [`WithSubscriber`]: trait.WithSubscriber.html
 //! [`futures`]: https://crates.io/crates/futures
-#![doc(html_root_url = "https://docs.rs/tracing-futures/0.2.3")]
+#![doc(html_root_url = "https://docs.rs/tracing-futures/0.2.4")]
+#![doc(
+    html_logo_url = "https://raw.githubusercontent.com/tokio-rs/tracing/master/assets/logo.svg",
+    issue_tracker_base_url = "https://github.com/tokio-rs/tracing/issues/"
+)]
 #![warn(
     missing_debug_implementations,
     missing_docs,
@@ -77,8 +81,36 @@
     unused_parens,
     while_true
 )]
-#![cfg_attr(not(feature = "std"), no_std)]
+
+//#![cfg_attr(not(feature = "std"), no_std)]
 #![cfg_attr(docsrs, feature(doc_cfg))]
+
+#![cfg_attr(not(
+    all(
+        any(feature = "std", feature = "mesalock_sgx"),
+        target_env = "sgx",
+        target_vendor = "mesalock",
+    )),
+    no_std
+)]
+
+#![cfg_attr(
+    all(
+        any(feature = "std", feature = "mesalock_sgx"),
+        target_env = "sgx",
+        target_vendor = "mesalock",
+    ),
+    feature(rustc_private)
+)]
+
+
+#[cfg(all(
+    any(feature = "std", feature = "mesalock_sgx"),
+    not(target_env = "sgx"),
+    not(target_vendor = "mesalock"),
+))]
+extern crate sgx_tstd as std;
+
 #[cfg(feature = "std-future")]
 use pin_project::pin_project;
 

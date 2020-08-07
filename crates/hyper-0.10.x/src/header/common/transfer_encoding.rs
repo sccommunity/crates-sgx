@@ -1,4 +1,7 @@
 use header::Encoding;
+use std::prelude::v1::*;
+
+
 
 header! {
     /// `Transfer-Encoding` header, defined in

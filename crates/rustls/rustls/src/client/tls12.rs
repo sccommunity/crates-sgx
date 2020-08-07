@@ -25,6 +25,7 @@ use crate::client::hs;
 
 use std::mem;
 use ring::constant_time;
+use std::prelude::v1::*;
 
 pub struct ExpectCertificate {
     pub handshake: HandshakeDetails,

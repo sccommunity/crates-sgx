@@ -1,3 +1,4 @@
+use std::prelude::v1::*;
 use hir::{self, Hir, HirKind};
 
 /// A trait for visiting the high-level IR (HIR) in depth first order.

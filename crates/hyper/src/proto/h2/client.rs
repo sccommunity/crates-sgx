@@ -6,7 +6,7 @@ use futures_util::future::{self, Either, FutureExt as _, TryFutureExt as _};
 use futures_util::stream::StreamExt as _;
 use h2::client::{Builder, SendRequest};
 use tokio::io::{AsyncRead, AsyncWrite};
-
+use std::prelude::v1::Box;
 use super::{decode_content_length, ping, PipeToSendStream, SendBuf};
 use crate::body::Payload;
 use crate::common::{task, Exec, Future, Never, Pin, Poll};

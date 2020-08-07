@@ -11,14 +11,23 @@ Utilities for working with time-related functions in Rust.
 """
 readme = "README.md"
 exclude = [".github", "benches"]
+edition = "2018"
+
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd", "sgx_libc"]
+enclave_unit_test = ["crates_unittest", "inventory", "log"]
 
 [dependencies]
-libc = "0.2.69"
-rustc-serialize = { version = "0.3", optional = true }
+rustc-serialize = { path = "../rustc-serialize", version = "0.3", optional = true }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true, features = ["untrusted_time"] }
+sgx_libc = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+crates_unittest = { git = "https://github.com/Zha0Chan/crates-sgx-unittest.git", optional = true, default-features = false }
+inventory = { version = "0.1.6", optional = true }
+log = { path = "../log", optional = true }
+#[target.'cfg(windows)'.dependencies]
+#winapi = { version = "0.3.0", features = ["std", "minwinbase", "minwindef", "ntdef", "profileapi", "sysinfoapi", "timezoneapi"] }
 
-[target.'cfg(windows)'.dependencies]
-winapi = { version = "0.3.0", features = ["std", "minwinbase", "minwindef", "ntdef", "profileapi", "sysinfoapi", "timezoneapi"] }
-
-[dev-dependencies]
-log = "0.4"
-winapi = { version = "0.3.0", features = ["std", "processthreadsapi", "winbase"] }
+#[dev-dependencies]
+#log = "0.4"
+#winapi = { version = "0.3.0", features = ["std", "processthreadsapi", "winbase"] }

@@ -1,5 +1,6 @@
 //! Deserialize JSON data to a Rust data structure.
 
+use std::prelude::v1::*;
 use crate::error::{Error, ErrorCode, Result};
 #[cfg(feature = "float_roundtrip")]
 use crate::lexical;

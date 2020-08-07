@@ -9,7 +9,7 @@
 // except according to those terms.
 
 use std::os::unix::io::{FromRawFd, AsRawFd};
-use libc::c_int;
+use sgx_libc::c_int;
 
 use {TcpBuilder, UdpBuilder, FromInner, AsInner};
 use socket::Socket;

@@ -1,6 +1,6 @@
 //! Span and `Event` key-value data.
 //!
-//! Spans and events  may be annotated with key-value data, referred to as known
+//! Spans and events may be annotated with key-value data, referred to as known
 //! as _fields_. These fields consist of a mapping from a key (corresponding to
 //! a `&str` but represented internally as an array index) to a [`Value`].
 //!
@@ -169,8 +169,15 @@ pub struct Iter {
 /// `examples/counters.rs`, which demonstrates a very simple metrics system
 /// implemented using `tracing`.
 ///
-/// **Note:** the `record_error` trait method is only available when the Rust
-/// standard library is present, as it requires the `std::error::Error` trait.
+/// <div class="information">
+///     <div class="tooltip ignore" style="">ⓘ<span class="tooltiptext">Note</span></div>
+/// </div>
+/// <div class="example-wrap" style="display:inline-block">
+/// <pre class="ignore" style="white-space:normal;font:inherit;">
+/// <strong>Note</strong>: The <code>record_error</code> trait method is only
+/// available when the Rust standard library is present, as it requires the
+/// <code>std::error::Error</code> trait.
+/// </pre></div>
 ///
 /// [`Value`]: trait.Value.html
 /// [recorded]: trait.Value.html#method.record
@@ -202,8 +209,14 @@ pub trait Visit {
 
     /// Records a type implementing `Error`.
     ///
-    /// **Note**: this is only enabled when the Rust standard library is
+    /// <div class="information">
+    ///     <div class="tooltip ignore" style="">ⓘ<span class="tooltiptext">Note</span></div>
+    /// </div>
+    /// <div class="example-wrap" style="display:inline-block">
+    /// <pre class="ignore" style="white-space:normal;font:inherit;">
+    /// <strong>Note</strong>: This is only enabled when the Rust standard library is
     /// present.
+    /// </pre>
     #[cfg(feature = "std")]
     #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
     fn record_error(&mut self, field: &Field, value: &(dyn std::error::Error + 'static)) {
@@ -482,6 +495,12 @@ impl<T: fmt::Display> fmt::Debug for DisplayValue<T> {
     }
 }
 
+impl<T: fmt::Display> fmt::Display for DisplayValue<T> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        fmt::Display::fmt(&self.0, f)
+    }
+}
+
 // ===== impl DebugValue =====
 
 impl<T: fmt::Debug> crate::sealed::Sealed for DebugValue<T> {}
@@ -604,11 +623,18 @@ impl FieldSet {
 
     /// Returns `true` if `self` contains the given `field`.
     ///
-    /// **Note**: If `field` shares a name with a field in this `FieldSet`, but
-    /// was created by a `FieldSet` with a different callsite, this `FieldSet`
-    /// does _not_ contain it. This is so that if two separate span callsites
-    /// define a field named "foo", the `Field` corresponding to "foo" for each
+    /// <div class="information">
+    ///     <div class="tooltip ignore" style="">ⓘ<span class="tooltiptext">Note</span></div>
+    /// </div>
+    /// <div class="example-wrap" style="display:inline-block">
+    /// <pre class="ignore" style="white-space:normal;font:inherit;">
+    /// <strong>Note</strong>: If <code>field</code> shares a name with a field
+    /// in this <code>FieldSet</code>, but was created by a <code>FieldSet</code>
+    /// with a different callsite, this <code>FieldSet</code> does <em>not</em>
+    /// contain it. This is so that if two separate span callsites define a field
+    /// named "foo", the <code>Field</code> corresponding to "foo" for each
     /// of those callsites are not equivalent.
+    /// </pre></div>
     pub fn contains(&self, field: &Field) -> bool {
         field.callsite() == self.callsite() && field.i <= self.len()
     }

@@ -1,5 +1,7 @@
 use unicase::UniCase;
 
+use std::prelude::v1::*;
+
 header! {
     /// `Vary` header, defined in [RFC7231](https://tools.ietf.org/html/rfc7231#section-7.1.4)
     ///
@@ -49,8 +51,8 @@ header! {
 
     test_vary {
         test_header!(test1, vec![b"accept-encoding, accept-language"]);
-
-        #[test]
+        
+        #[crates_unittest::test_case]
         fn test2() {
             let mut vary: ::Result<Vary>;
 

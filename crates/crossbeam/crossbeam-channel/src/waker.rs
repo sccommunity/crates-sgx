@@ -6,6 +6,7 @@ use std::thread::{self, ThreadId};
 use crate::context::Context;
 use crate::select::{Operation, Selected};
 use crate::utils::Spinlock;
+use std::prelude::v1::*;
 
 /// Represents a thread blocked on a specific channel operation.
 pub struct Entry {

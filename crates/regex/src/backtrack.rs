@@ -16,6 +16,7 @@
 // the bitset has to be zeroed on each execution, which becomes quite expensive
 // on large bitsets.
 
+use std::prelude::v1::*;
 use exec::ProgramCache;
 use input::{Input, InputAt};
 use prog::{InstPtr, Program};

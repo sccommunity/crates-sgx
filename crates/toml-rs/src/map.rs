@@ -16,6 +16,7 @@
 
 use crate::value::Value;
 use serde::{de, ser};
+use std::prelude::v1::*;
 use std::borrow::Borrow;
 use std::fmt::{self, Debug};
 use std::hash::Hash;

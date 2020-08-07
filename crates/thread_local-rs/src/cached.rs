@@ -1,4 +1,5 @@
 use super::{IntoIter, IterMut, ThreadLocal};
+use std::prelude::v1::*;
 use std::cell::UnsafeCell;
 use std::fmt;
 use std::panic::UnwindSafe;

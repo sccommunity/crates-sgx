@@ -13,6 +13,7 @@
 
 use std::cmp::max;
 use std::ops::Range;
+use std::prelude::v1::*;
 
 use super::char_data::BidiClass;
 use super::level::Level;
@@ -41,7 +42,7 @@ pub struct IsolatingRunSequence {
 /// whose matching PDI is the first character of the next level run in the sequence.
 ///
 /// Note: This function does *not* return the sequences in order by their first characters.
-#[cfg_attr(feature = "flame_it", flame)]
+//#[cfg_attr(feature = "flame_it", flame)]
 pub fn isolating_run_sequences(
     para_level: Level,
     original_classes: &[BidiClass],
@@ -137,7 +138,7 @@ pub fn isolating_run_sequences(
 /// Finds the level runs in a paragraph.
 ///
 /// <http://www.unicode.org/reports/tr9/#BD7>
-fn level_runs(levels: &[Level], original_classes: &[BidiClass]) -> Vec<LevelRun> {
+pub fn level_runs(levels: &[Level], original_classes: &[BidiClass]) -> Vec<LevelRun> {
     assert_eq!(levels.len(), original_classes.len());
 
     let mut runs = Vec::new();
@@ -172,11 +173,13 @@ pub fn not_removed_by_x9(class: &BidiClass) -> bool {
     !removed_by_x9(*class)
 }
 
-#[cfg(test)]
+
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::*;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn test_level_runs() {
         assert_eq!(level_runs(&Level::vec(&[]), &[]), &[]);
         assert_eq!(
@@ -187,7 +190,7 @@ mod tests {
 
     // From <http://www.unicode.org/reports/tr9/#BD13>
     #[cfg_attr(rustfmt, rustfmt_skip)]
-    #[test]
+    #[test_case]
     fn test_isolating_run_sequences() {
 
         // == Example 1 ==
@@ -232,7 +235,7 @@ mod tests {
 
     // From <http://www.unicode.org/reports/tr9/#X10>
     #[cfg_attr(rustfmt, rustfmt_skip)]
-    #[test]
+    #[test_case]
     fn test_isolating_run_sequences_sos_and_eos() {
 
         // == Example 1 ==
@@ -344,7 +347,7 @@ mod tests {
         );
     }
 
-    #[test]
+    #[test_case]
     fn test_removed_by_x9() {
         let rem_classes = &[RLE, LRE, RLO, LRO, PDF, BN];
         let not_classes = &[L, RLI, AL, LRI, PDI];
@@ -356,7 +359,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_not_removed_by_x9() {
         let non_x9_classes = &[L, R, AL, EN, ES, ET, AN, CS, NSM, B, S, WS, ON, LRI, RLI, FSI, PDI];
         for x in non_x9_classes {

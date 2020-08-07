@@ -12,7 +12,7 @@ pub use self::task_executor::TaskExecutor;
 use reactor::{Handle, Reactor};
 
 use std::io;
-use std::sync::Mutex;
+use std::sync::SgxMutex as Mutex;
 
 use tokio_executor::enter;
 use tokio_threadpool as threadpool;

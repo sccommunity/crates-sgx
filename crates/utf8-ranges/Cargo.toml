@@ -9,11 +9,20 @@ repository = "https://github.com/BurntSushi/utf8-ranges"
 readme = "README.md"
 keywords = ["codepoint", "utf8", "automaton", "range"]
 license = "Unlicense/MIT"
-exclude = ["/ci/*", "/.travis.yml", "/Makefile", "/ctags.rust", "/session.vim"]
+exclude = ["/ci/*", "/.travis.yml", "/Makefile", "/ctags.rust", "/session.vim", "/sgx/*"]
 
 [badges]
 travis-ci = { repository = "BurntSushi/utf8-ranges" }
 
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+enclave_unit_test = ["crates_unittest", "inventory", "quickcheck"]
+[dependencies]
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+crates_unittest = { git = "https://github.com/Zha0Chan/crates-sgx-unittest.git", optional = true, default-features = false }
+inventory = { version = "0.1.6", optional = true }
+quickcheck = { path = "../quickcheck", optional = true }
 [dev-dependencies]
-quickcheck = { version = "0.8", default-features = false }
-doc-comment = "0.3"
+#quickcheck = { version = "0.8", default-features = false }
+#doc-comment = "0.3"

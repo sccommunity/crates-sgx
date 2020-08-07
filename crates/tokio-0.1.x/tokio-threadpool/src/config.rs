@@ -4,7 +4,7 @@ use std::any::Any;
 use std::fmt;
 use std::sync::Arc;
 use std::time::Duration;
-
+use std::prelude::v1::*;
 /// Thread pool specific configuration values
 #[derive(Clone)]
 pub(crate) struct Config {

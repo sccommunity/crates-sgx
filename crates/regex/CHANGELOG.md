@@ -1,10 +1,31 @@
-TBD
-===
+1.3.9 (2020-05-28)
+==================
+This release fixes a MSRV (Minimum Support Rust Version) regression in the
+1.3.8 release. Namely, while 1.3.8 compiles on Rust 1.28, it actually does not
+compile on other Rust versions, such as Rust 1.39.
+
+Bug fixes:
+
+* [BUG #685](https://github.com/rust-lang/regex/issues/685):
+  Remove use of `doc_comment` crate, which cannot be used before Rust 1.43.
+
+
+1.3.8 (2020-05-28)
+==================
+This release contains a couple of important bug fixes driven
+by better support for empty-subexpressions in regexes. For
+example, regexes like `b|` are now allowed. Major thanks to
+[@sliquister](https://github.com/sliquister) for implementing support for this
+in [#677](https://github.com/rust-lang/regex/pull/677).
 
 Bug fixes:
 
 * [BUG #523](https://github.com/rust-lang/regex/pull/523):
   Add note to documentation that spaces can be escaped in `x` mode.
+* [BUG #524](https://github.com/rust-lang/regex/issues/524):
+  Add support for empty sub-expressions, including empty alternations.
+* [BUG #659](https://github.com/rust-lang/regex/issues/659):
+  Fix match bug caused by an empty sub-expression miscompilation.
 
 
 1.3.7 (2020-04-17)

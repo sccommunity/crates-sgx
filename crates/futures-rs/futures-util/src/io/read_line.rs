@@ -5,6 +5,7 @@ use std::io;
 use std::mem;
 use std::pin::Pin;
 use std::str;
+use std::prelude::v1::*;
 use super::read_until::read_until_internal;
 
 /// Future for the [`read_line`](super::AsyncBufReadExt::read_line) method.

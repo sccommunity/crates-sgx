@@ -3,7 +3,7 @@
 use std::error;
 use std::fmt::{self, Display};
 use std::io::Write;
-
+use std::prelude::v1::*;
 use serde;
 use serde::Serialize;
 use serde::ser::{SerializeMap, SerializeSeq, SerializeStruct, SerializeStructVariant,

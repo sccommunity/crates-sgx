@@ -2,7 +2,7 @@ use futures::{Async, Future, Poll};
 use std::{io, mem, path::Path};
 use tokio_io;
 use {file, File};
-
+use std::prelude::v1::Vec;
 /// Creates a future which will open a file for reading and read the entire
 /// contents into a buffer and return said buffer.
 ///

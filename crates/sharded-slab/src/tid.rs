@@ -9,7 +9,7 @@ use std::{
     marker::PhantomData,
     sync::{
         atomic::{AtomicUsize, Ordering},
-        Mutex,
+        SgxMutex as Mutex,
     },
 };
 

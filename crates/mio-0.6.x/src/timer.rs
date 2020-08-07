@@ -2,6 +2,7 @@
 
 #![allow(deprecated, missing_debug_implementations)]
 
+use std::prelude::v1::*;
 use {convert, io, Ready, Poll, PollOpt, Registration, SetReadiness, Token};
 use event::Evented;
 use lazycell::LazyCell;

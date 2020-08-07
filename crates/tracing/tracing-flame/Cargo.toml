@@ -21,13 +21,16 @@ categories = [
 keywords = ["tracing", "subscriber", "flamegraph", "profiling"]
 
 [features]
-default = ["smallvec"]
+default = ["smallvec", "mesalock_sgx"]
 smallvec = ["tracing-subscriber/smallvec"]
+mesalock_sgx = ["sgx_tstd"]
 
 [dependencies]
 tracing-subscriber = { path = "../tracing-subscriber", version = "0.2.3", default-features = false, features = ["registry", "fmt"] }
 tracing = { path = "../tracing", version = "0.1.12"}
-lazy_static = "1.3.0"
+#lazy_static = "1.3.0"
+lazy_static = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true, features = ["untrusted_fs", "untrusted_time"] }
 
 [dev-dependencies]
 tempdir = "0.3.7"

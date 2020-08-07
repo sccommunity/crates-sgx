@@ -14,7 +14,7 @@ use core::{
     fmt::{self, Formatter},
     num::{NonZeroU16, NonZeroU8},
 };
-
+use std::prelude::v1::*;
 /// Array of weekdays that corresponds to the localized values. This can be
 /// zipped via an iterator to perform parsing easily.
 const WEEKDAYS: [Weekday; 7] = [

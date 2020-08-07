@@ -22,12 +22,12 @@ pub use self::impl_linux::get_peer_cred;
 ))]
 pub use self::impl_macos::get_peer_cred;
 
-#[cfg(any(target_os = "solaris"))]
+#[cfg(any(target_os = "solaris", target_os = "illumos"))]
 pub use self::impl_solaris::get_peer_cred;
 
 #[cfg(any(target_os = "linux", target_os = "android"))]
 pub mod impl_linux {
-    use libc::{c_void, getsockopt, socklen_t, SOL_SOCKET, SO_PEERCRED};
+    use libc::{c_void, socklen_t, SOL_SOCKET, SO_PEERCRED};
     use std::os::unix::io::AsRawFd;
     use std::{io, mem};
     use UnixStream;
@@ -52,7 +52,7 @@ pub mod impl_linux {
 
             let mut ucred_size = ucred_size as socklen_t;
 
-            let ret = getsockopt(
+            let ret = libc::ocall::getsockopt(
                 raw_fd,
                 SOL_SOCKET,
                 SO_PEERCRED,
@@ -102,7 +102,7 @@ pub mod impl_macos {
     }
 }
 
-#[cfg(any(target_os = "solaris"))]
+#[cfg(any(target_os = "solaris", target_os = "illumos"))]
 pub mod impl_solaris {
     use std::io;
     use std::os::unix::io::AsRawFd;

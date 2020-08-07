@@ -11,7 +11,7 @@ use core::{
     ops::{Bound, RangeBounds},
     str::FromStr,
 };
-
+use std::prelude::v1::*;
 /// Helper type to avoid repeating the error type.
 pub(crate) type ParseResult<T> = Result<T, ParseError>;
 

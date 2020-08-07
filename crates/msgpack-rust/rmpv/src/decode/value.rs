@@ -1,6 +1,6 @@
 use std::cmp::min;
 use std::io::{self, Read};
-
+use std::prelude::v1::*;
 use rmp::Marker;
 use rmp::decode::{read_marker, read_data_u8, read_data_u16, read_data_u32, read_data_u64,
                   read_data_i8, read_data_i16, read_data_i32, read_data_i64, read_data_f32,

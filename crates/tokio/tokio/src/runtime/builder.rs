@@ -5,6 +5,7 @@ use crate::runtime::{blocking, io, time, Callback, Runtime, Spawner};
 use std::fmt;
 #[cfg(not(loom))]
 use std::sync::Arc;
+use std::prelude::v1::*;
 
 /// Builds Tokio Runtime with custom configuration values.
 ///
@@ -16,8 +17,8 @@ use std::sync::Arc;
 /// See function level documentation for details on the various configuration
 /// settings.
 ///
-/// [`build`]: #method.build
-/// [`Builder::new`]: #method.new
+/// [`build`]: method@Self::build
+/// [`Builder::new`]: method@Self::new
 ///
 /// # Examples
 ///
@@ -59,7 +60,7 @@ pub struct Builder {
     pub(super) thread_name: String,
 
     /// Stack size used for threads spawned by the runtime.
-    pub(super) thread_stack_size: Option<usize>,
+    //pub(super) thread_stack_size: Option<usize>,
 
     /// Callback to run after each thread starts.
     pub(super) after_start: Option<Callback>,
@@ -102,7 +103,7 @@ impl Builder {
             thread_name: "tokio-runtime-worker".into(),
 
             // Do not set a stack size by default
-            thread_stack_size: None,
+            //thread_stack_size: None,
 
             // No worker thread callbacks
             after_start: None,
@@ -234,10 +235,10 @@ impl Builder {
     ///     .build();
     /// # }
     /// ```
-    pub fn thread_stack_size(&mut self, val: usize) -> &mut Self {
-        self.thread_stack_size = Some(val);
-        self
-    }
+    //pub fn thread_stack_size(&mut self, val: usize) -> &mut Self {
+    //    self.thread_stack_size = Some(val);
+    //    self
+    //}
 
     /// Executes function `f` after each thread is started but before it starts
     /// doing work.
@@ -514,7 +515,7 @@ impl fmt::Debug for Builder {
             .field("core_threads", &self.core_threads)
             .field("max_threads", &self.max_threads)
             .field("thread_name", &self.thread_name)
-            .field("thread_stack_size", &self.thread_stack_size)
+            //.field("thread_stack_size", &self.thread_stack_size)
             .field("after_start", &self.after_start.as_ref().map(|_| "..."))
             .field("before_stop", &self.after_start.as_ref().map(|_| "..."))
             .finish()

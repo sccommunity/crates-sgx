@@ -8,29 +8,46 @@ name = "tokio-uds"
 #   - README.md
 # - Update CHANGELOG.md.
 # - Create "v0.2.x" git tag.
-version = "0.2.6"
+version = "0.2.7"
 authors = ["Carl Lerche <me@carllerche.com>"]
 license = "MIT"
 repository = "https://github.com/tokio-rs/tokio"
 homepage = "https://github.com/tokio-rs/tokio"
-documentation = "https://docs.rs/tokio-uds/0.2.5/tokio_uds/"
+documentation = "https://docs.rs/tokio-uds/0.2.7/tokio_uds/"
 description = """
 Unix Domain sockets for Tokio
 """
 categories = ["asynchronous"]
 
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd", "sgx_libc"]
+
 [dependencies]
-bytes = "0.4.8"
-futures = "0.1.21"
-iovec = "0.1.2"
-libc = "0.2.42"
-log = "0.4.2"
-mio = "0.6.14"
-mio-uds = "0.6.5"
-tokio-codec = "0.1.0"
-tokio-reactor = "0.1.1"
-tokio-io = "0.1.6"
+bytes = { path = "../../bytes-0.4.x" }
+futures = { path = "../../futures-rs_01"}
+iovec = { path = "../../iovec" }
+
+log = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2" }
+mio = { path = "../../mio-0.6.x"}
+mio-uds =  { path = "../../mio-uds"}
+tokio-codec = { path = "../tokio-codec"}
+tokio-reactor = { path = "../tokio-reactor"}
+tokio-io = { path = "../tokio-io"}
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+sgx_libc = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+
+#bytes = "0.4.8"
+#futures = "0.1.21"
+#iovec = "0.1.2"
+#libc = "0.2.42"
+#log = "0.4.2"
+#mio = "0.6.14"
+#mio-uds = "0.6.5"
+#tokio-codec = "0.1.0"
+#tokio-reactor = "0.1.1"
+#tokio-io = "0.1.6"
 
 [dev-dependencies]
-tokio = "0.1.6"
-tempfile = "~3.1.0"
+#tokio = "0.1.6"
+#tempfile = "~3.1.0"

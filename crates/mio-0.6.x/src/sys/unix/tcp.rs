@@ -4,7 +4,6 @@ use std::net::{self, SocketAddr};
 use std::os::unix::io::{RawFd, FromRawFd, IntoRawFd, AsRawFd};
 use std::time::Duration;
 
-use libc;
 use net2::TcpStreamExt;
 use iovec::IoVec;
 

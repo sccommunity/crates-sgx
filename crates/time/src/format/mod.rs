@@ -10,7 +10,7 @@ macro_rules! pad {
         }
     };
 }
-
+use std::prelude::v1::*;
 pub(crate) mod date;
 pub(crate) mod deferred_format;
 #[allow(clippy::module_inception)]

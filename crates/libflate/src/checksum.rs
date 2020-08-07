@@ -36,19 +36,19 @@ impl fmt::Debug for Crc32 {
         write!(f, "Crc32(_)")
     }
 }
-
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::*;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn crc32_works() {
         let mut crc32 = Crc32::new();
         crc32.update(b"abcde");
         assert_eq!(crc32.value(), 0x8587D865);
     }
 
-    #[test]
+    #[test_case]
     fn adler32_works() {
         let mut adler32 = Adler32::new();
         adler32.update(b"abcde");

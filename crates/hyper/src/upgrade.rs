@@ -10,7 +10,7 @@ use std::error::Error as StdError;
 use std::fmt;
 use std::io;
 use std::marker::Unpin;
-
+use std::prelude::v1::*;
 use bytes::{Buf, Bytes};
 use tokio::io::{AsyncRead, AsyncWrite};
 use tokio::sync::oneshot;

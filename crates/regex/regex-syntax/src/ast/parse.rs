@@ -2,6 +2,7 @@
 This module provides a regular expression parser.
 */
 
+use std::prelude::v1::*;
 use std::borrow::Borrow;
 use std::cell::{Cell, RefCell};
 use std::mem;

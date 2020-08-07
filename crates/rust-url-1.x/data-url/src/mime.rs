@@ -1,6 +1,6 @@
 use std::fmt::{self, Write};
 use std::str::FromStr;
-
+use std::prelude::v1::*;
 /// <https://mimesniff.spec.whatwg.org/#mime-type-representation>
 #[derive(Debug, PartialEq, Eq)]
 pub struct Mime {

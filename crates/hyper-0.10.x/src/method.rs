@@ -2,7 +2,7 @@
 use std::fmt;
 use std::str::FromStr;
 use std::convert::AsRef;
-
+use std::prelude::v1::*;
 use error::Error;
 use self::Method::{Options, Get, Post, Put, Delete, Head, Trace, Connect, Patch,
                    Extension};
@@ -126,28 +126,29 @@ impl fmt::Display for Method {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use std::collections::HashMap;
     use std::str::FromStr;
     use error::Error;
     use super::Method;
     use super::Method::{Get, Post, Put, Extension};
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn test_safe() {
         assert_eq!(true, Get.safe());
         assert_eq!(false, Post.safe());
     }
 
-    #[test]
+    #[test_case]
     fn test_idempotent() {
         assert_eq!(true, Get.idempotent());
         assert_eq!(true, Put.idempotent());
         assert_eq!(false, Post.idempotent());
     }
 
-    #[test]
+    #[test_case]
     fn test_from_str() {
         assert_eq!(Get, FromStr::from_str("GET").unwrap());
         assert_eq!(Extension("MOVE".to_owned()),
@@ -159,21 +160,21 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_fmt() {
         assert_eq!("GET".to_owned(), format!("{}", Get));
         assert_eq!("MOVE".to_owned(),
                    format!("{}", Extension("MOVE".to_owned())));
     }
 
-    #[test]
+    #[test_case]
     fn test_hashable() {
         let mut counter: HashMap<Method,usize> = HashMap::new();
         counter.insert(Get, 1);
         assert_eq!(Some(&1), counter.get(&Get));
     }
 
-    #[test]
+    #[test_case]
     fn test_as_str() {
         assert_eq!(Get.as_ref(), "GET");
         assert_eq!(Post.as_ref(), "POST");

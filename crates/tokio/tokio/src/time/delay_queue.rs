@@ -111,17 +111,17 @@ use std::task::{self, Poll};
 /// }
 /// ```
 ///
-/// [`insert`]: #method.insert
-/// [`insert_at`]: #method.insert_at
+/// [`insert`]: method@Self::insert
+/// [`insert_at`]: method@Self::insert_at
 /// [`Key`]: struct@Key
 /// [`Stream`]: https://docs.rs/futures/0.1/futures/stream/trait.Stream.html
-/// [`poll`]: #method.poll
-/// [`Stream::poll`]: #method.poll
+/// [`poll`]: method@Self::poll
+/// [`Stream::poll`]: method@Self::poll
 /// [`DelayQueue`]: struct@DelayQueue
 /// [`delay_for`]: fn@super::delay_for
-/// [`slab`]: https://docs.rs/slab
-/// [`capacity`]: #method.capacity
-/// [`reserve`]: #method.reserve
+/// [`slab`]: slab
+/// [`capacity`]: method@Self::capacity
+/// [`reserve`]: method@Self::reserve
 #[derive(Debug)]
 pub struct DelayQueue<T> {
     /// Stores data associated with entries
@@ -295,9 +295,9 @@ impl<T> DelayQueue<T> {
     /// # }
     /// ```
     ///
-    /// [`poll`]: #method.poll
-    /// [`remove`]: #method.remove
-    /// [`reset`]: #method.reset
+    /// [`poll`]: method@Self::poll
+    /// [`remove`]: method@Self::remove
+    /// [`reset`]: method@Self::reset
     /// [`Key`]: struct@Key
     /// [type]: #
     pub fn insert_at(&mut self, value: T, when: Instant) -> Key {
@@ -403,9 +403,9 @@ impl<T> DelayQueue<T> {
     /// # }
     /// ```
     ///
-    /// [`poll`]: #method.poll
-    /// [`remove`]: #method.remove
-    /// [`reset`]: #method.reset
+    /// [`poll`]: method@Self::poll
+    /// [`remove`]: method@Self::remove
+    /// [`reset`]: method@Self::reset
     /// [`Key`]: struct@Key
     /// [type]: #
     pub fn insert(&mut self, value: T, timeout: Duration) -> Key {
@@ -424,6 +424,22 @@ impl<T> DelayQueue<T> {
                 self.expired.push(key, &mut self.slab);
             }
             Err((_, err)) => panic!("invalid deadline; err={:?}", err),
+        }
+    }
+
+    /// Removes the key fom the expired queue or the timer wheel
+    /// depending on its expiration status
+    ///
+    /// # Panics
+    /// Panics if the key is not contained in the expired queue or the wheel
+    fn remove_key(&mut self, key: &Key) {
+        use crate::time::wheel::Stack;
+
+        // Special case the `expired` queue
+        if self.slab[key.index].expired {
+            self.expired.remove(&key.index, &mut self.slab);
+        } else {
+            self.wheel.remove(&key.index, &mut self.slab);
         }
     }
 
@@ -456,15 +472,7 @@ impl<T> DelayQueue<T> {
     /// # }
     /// ```
     pub fn remove(&mut self, key: &Key) -> Expired<T> {
-        use crate::time::wheel::Stack;
-
-        // Special case the `expired` queue
-        if self.slab[key.index].expired {
-            self.expired.remove(&key.index, &mut self.slab);
-        } else {
-            self.wheel.remove(&key.index, &mut self.slab);
-        }
-
+        self.remove_key(key);
         let data = self.slab.remove(key.index);
 
         Expired {
@@ -508,7 +516,7 @@ impl<T> DelayQueue<T> {
     /// # }
     /// ```
     pub fn reset_at(&mut self, key: &Key, when: Instant) {
-        self.wheel.remove(&key.index, &mut self.slab);
+        self.remove_key(key);
 
         // Normalize the deadline. Values cannot be set to expire in the past.
         let when = self.normalize_deadline(when);
@@ -574,7 +582,7 @@ impl<T> DelayQueue<T> {
     ///
     /// Note that this method has no effect on the allocated capacity.
     ///
-    /// [`poll`]: #method.poll
+    /// [`poll`]: method@Self::poll
     ///
     /// # Examples
     ///

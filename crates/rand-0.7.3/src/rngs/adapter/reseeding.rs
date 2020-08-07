@@ -279,7 +279,7 @@ where
 }
 
 
-#[cfg(all(unix, feature = "std", not(target_os = "emscripten")))]
+#[cfg(all(unix, not(target_os="emscripten"),not(feature="mesalock_sgx")))]
 mod fork {
     use core::sync::atomic::{AtomicUsize, Ordering};
     use std::sync::Once;
@@ -316,7 +316,7 @@ mod fork {
     }
 }
 
-#[cfg(not(all(unix, feature = "std", not(target_os = "emscripten"))))]
+#[cfg(not(all(unix, not(target_os="emscripten"), not(feature="mesalock_sgx"))))]
 mod fork {
     pub fn get_fork_counter() -> usize {
         0
@@ -325,14 +325,15 @@ mod fork {
 }
 
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod test {
     use super::ReseedingRng;
     use crate::rngs::mock::StepRng;
     use crate::rngs::std::Core;
     use crate::{Rng, SeedableRng};
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn test_reseeding() {
         let mut zero = StepRng::new(0, 0);
         let rng = Core::from_rng(&mut zero).unwrap();
@@ -352,7 +353,7 @@ mod test {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_clone_reseeding() {
         let mut zero = StepRng::new(0, 0);
         let rng = Core::from_rng(&mut zero).unwrap();

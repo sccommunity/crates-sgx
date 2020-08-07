@@ -40,6 +40,15 @@
 //! [`PollEvented`]: struct.PollEvented.html
 //! [reactor module]: https://docs.rs/tokio/0.1/tokio/reactor/index.html
 
+
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
+
 extern crate crossbeam_utils;
 #[macro_use]
 extern crate futures;
@@ -48,7 +57,7 @@ extern crate lazy_static;
 #[macro_use]
 extern crate log;
 extern crate mio;
-extern crate num_cpus;
+//extern crate num_cpus;
 extern crate parking_lot;
 extern crate slab;
 extern crate tokio_executor;

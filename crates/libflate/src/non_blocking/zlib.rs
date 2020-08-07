@@ -151,14 +151,14 @@ impl<R: Read> Read for Decoder<R> {
         }
     }
 }
-
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::*;
     use crate::util::{nb_read_to_end, WouldBlockReader};
     use crate::zlib::{EncodeOptions, Encoder};
     use std::io;
-
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
     fn decode_all(buf: &[u8]) -> io::Result<Vec<u8>> {
         let decoder = Decoder::new(WouldBlockReader::new(buf));
         nb_read_to_end(decoder)
@@ -178,7 +178,7 @@ mod tests {
     const DECODE_WORKS_TESTDATA: [u8; 20] = [
         120, 156, 243, 72, 205, 201, 201, 87, 8, 207, 47, 202, 73, 81, 4, 0, 28, 73, 4, 62,
     ];
-    #[test]
+    #[test_case]
     fn decode_works() {
         let encoded = DECODE_WORKS_TESTDATA;
         let buf = decode_all(&encoded[..]).unwrap();
@@ -186,7 +186,7 @@ mod tests {
         assert_eq!(buf, expected);
     }
 
-    #[test]
+    #[test_case]
     fn default_encode_works() {
         let plain = b"Hello World! Hello ZLIB!!";
         let mut encoder = Encoder::new(Vec::new()).unwrap();
@@ -195,7 +195,7 @@ mod tests {
         assert_eq!(decode_all(&encoded).unwrap(), plain);
     }
 
-    #[test]
+    #[test_case]
     fn best_speed_encode_works() {
         let plain = b"Hello World! Hello ZLIB!!";
         let mut encoder =
@@ -210,7 +210,7 @@ mod tests {
         120, 1, 1, 12, 0, 243, 255, 72, 101, 108, 108, 111, 32, 87, 111, 114, 108, 100, 33, 28, 73,
         4, 62,
     ];
-    #[test]
+    #[test_case]
     fn raw_encode_works() {
         let plain = b"Hello World!";
         let mut encoder =
@@ -222,7 +222,7 @@ mod tests {
         assert_eq!(decode_all(&encoded).unwrap(), plain);
     }
 
-    #[test]
+    #[test_case]
     fn test_issue_2() {
         // See: https://github.com/sile/libflate/issues/2
         assert_encode_decode!([

@@ -14,6 +14,7 @@
 //! <http://www.unicode.org/reports/tr9/#BD2>
 
 use std::convert::{From, Into};
+use std::prelude::v1::*;
 
 use super::char_data::BidiClass;
 
@@ -234,11 +235,13 @@ impl<'a> PartialEq<String> for Level {
     }
 }
 
-#[cfg(test)]
+
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::*;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn test_new() {
         assert_eq!(Level::new(0), Ok(Level(0)));
         assert_eq!(Level::new(1), Ok(Level(1)));
@@ -249,7 +252,7 @@ mod tests {
         assert_eq!(Level::new(255), Err(Error::OutOfRangeNumber));
     }
 
-    #[test]
+    #[test_case]
     fn test_new_explicit() {
         assert_eq!(Level::new_explicit(0), Ok(Level(0)));
         assert_eq!(Level::new_explicit(1), Ok(Level(1)));
@@ -259,7 +262,7 @@ mod tests {
         assert_eq!(Level::new_explicit(255), Err(Error::OutOfRangeNumber));
     }
 
-    #[test]
+    #[test_case]
     fn test_is_ltr() {
         assert_eq!(Level(0).is_ltr(), true);
         assert_eq!(Level(1).is_ltr(), false);
@@ -269,7 +272,7 @@ mod tests {
         assert_eq!(Level(125).is_ltr(), false);
     }
 
-    #[test]
+    #[test_case]
     fn test_is_rtl() {
         assert_eq!(Level(0).is_rtl(), false);
         assert_eq!(Level(1).is_rtl(), true);
@@ -279,7 +282,7 @@ mod tests {
         assert_eq!(Level(125).is_rtl(), true);
     }
 
-    #[test]
+    #[test_case]
     fn test_raise() {
         let mut level = Level::ltr();
         assert_eq!(level.number(), 0);
@@ -292,7 +295,7 @@ mod tests {
         assert_eq!(level.number(), 126);
     }
 
-    #[test]
+    #[test_case]
     fn test_raise_explicit() {
         let mut level = Level::ltr();
         assert_eq!(level.number(), 0);
@@ -305,7 +308,7 @@ mod tests {
         assert_eq!(level.number(), 125);
     }
 
-    #[test]
+    #[test_case]
     fn test_lower() {
         let mut level = Level::rtl();
         assert_eq!(level.number(), 1);
@@ -316,7 +319,7 @@ mod tests {
         assert_eq!(level.number(), 0);
     }
 
-    #[test]
+    #[test_case]
     fn test_has_rtl() {
         assert_eq!(has_rtl(&Level::vec(&[0, 0, 0])), false);
         assert_eq!(has_rtl(&Level::vec(&[0, 1, 0])), true);
@@ -325,13 +328,13 @@ mod tests {
         assert_eq!(has_rtl(&Level::vec(&[0, 126, 0])), false);
     }
 
-    #[test]
+    #[test_case]
     fn test_into() {
         let level = Level::rtl();
         assert_eq!(1u8, level.into());
     }
 
-    #[test]
+    #[test_case]
     fn test_vec() {
         assert_eq!(
             Level::vec(&[0, 1, 125]),
@@ -339,13 +342,13 @@ mod tests {
         );
     }
 
-    #[test]
+    #[test_case]
     fn test_str_eq() {
         assert_eq!(Level::vec(&[0, 1, 4, 125]), vec!["0", "1", "x", "125"]);
         assert_ne!(Level::vec(&[0, 1, 4, 125]), vec!["0", "1", "5", "125"]);
     }
 
-    #[test]
+    #[test_case]
     fn test_string_eq() {
         assert_eq!(
             Level::vec(&[0, 1, 4, 125]),
@@ -359,7 +362,7 @@ mod serde_tests {
     use serde_test::{Token, assert_tokens};
     use super::*;
 
-    #[test]
+    #[test_case]
     fn test_statics() {
         assert_tokens(
             &Level::ltr(),
@@ -371,7 +374,7 @@ mod serde_tests {
         );
     }
 
-    #[test]
+    #[test_case]
     fn test_new() {
         let level = Level::new(42).unwrap();
         assert_tokens(

@@ -192,35 +192,37 @@ impl TimeZone for Local {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
+
 mod tests {
     use super::Local;
     use offset::TimeZone;
     use Datelike;
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;	
+    // #[test_case]
+    // fn test_local_date_sanity_check() {
+    //     // issue #27
+    //     assert_eq!(Local.ymd(2999, 12, 28).day(), 28);
+    // }
 
-    #[test]
-    fn test_local_date_sanity_check() {
-        // issue #27
-        assert_eq!(Local.ymd(2999, 12, 28).day(), 28);
-    }
+    // #[test_case]
+    // fn test_leap_second() {
+    //     // issue #123
+    //     let today = Local::today();
 
-    #[test]
-    fn test_leap_second() {
-        // issue #123
-        let today = Local::today();
+    //     let dt = today.and_hms_milli(1, 2, 59, 1000);
+    //     let timestr = dt.time().to_string();
+    //     // the OS API may or may not support the leap second,
+    //     // but there are only two sensible options.
+    //     assert!(timestr == "01:02:60" || timestr == "01:03:00", "unexpected timestr {:?}", timestr);
 
-        let dt = today.and_hms_milli(1, 2, 59, 1000);
-        let timestr = dt.time().to_string();
-        // the OS API may or may not support the leap second,
-        // but there are only two sensible options.
-        assert!(timestr == "01:02:60" || timestr == "01:03:00", "unexpected timestr {:?}", timestr);
-
-        let dt = today.and_hms_milli(1, 2, 3, 1234);
-        let timestr = dt.time().to_string();
-        assert!(
-            timestr == "01:02:03.234" || timestr == "01:02:04.234",
-            "unexpected timestr {:?}",
-            timestr
-        );
-    }
+    //     let dt = today.and_hms_milli(1, 2, 3, 1234);
+    //     let timestr = dt.time().to_string();
+    //     assert!(
+    //         timestr == "01:02:03.234" || timestr == "01:02:04.234",
+    //         "unexpected timestr {:?}",
+    //         timestr
+    //     );
+    // }
 }

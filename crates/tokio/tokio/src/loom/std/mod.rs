@@ -56,7 +56,7 @@ pub(crate) mod sync {
     #[cfg(not(feature = "parking_lot"))]
     #[allow(unused_imports)]
     pub(crate) use std::sync::{
-        Condvar, Mutex, MutexGuard, RwLock, RwLockReadGuard, WaitTimeoutResult,
+        SgxCondvar as Condvar, SgxMutex as Mutex, SgxMutexGuard as MutexGuard, SgxRwLock as RwLock, SgxRwLockReadGuard as RwLockReadGuard, WaitTimeoutResult,
     };
 
     pub(crate) mod atomic {
@@ -74,7 +74,8 @@ pub(crate) mod sync {
 pub(crate) mod sys {
     #[cfg(feature = "rt-threaded")]
     pub(crate) fn num_cpus() -> usize {
-        usize::max(1, num_cpus::get())
+        //usize::max(1, num_cpus::get_physical())
+        1
     }
 
     #[cfg(not(feature = "rt-threaded"))]

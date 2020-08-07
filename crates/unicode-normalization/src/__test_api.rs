@@ -9,6 +9,7 @@ use crate::no_std_prelude::*;
 
 use crate::stream_safe::StreamSafe;
 
+
 pub fn stream_safe(s: &str) -> String {
     StreamSafe::new(s.chars()).collect()
 }

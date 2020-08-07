@@ -101,14 +101,15 @@ impl<'a, 'b> Read for Request<'a, 'b> {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use buffer::BufReader;
     use header::{Host, TransferEncoding, Encoding};
     use net::NetworkStream;
     use mock::MockStream;
     use super::Request;
-
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
     use std::io::{self, Read};
     use std::net::SocketAddr;
 
@@ -122,7 +123,7 @@ mod tests {
         Ok(s)
     }
 
-    #[test]
+    #[test_case]
     fn test_get_empty_body() {
         let mut mock = MockStream::with_input(b"\
             GET / HTTP/1.1\r\n\
@@ -139,7 +140,7 @@ mod tests {
         assert_eq!(read_to_string(req).unwrap(), "".to_owned());
     }
 
-    #[test]
+    #[test_case]
     fn test_get_with_body() {
         let mut mock = MockStream::with_input(b"\
             GET / HTTP/1.1\r\n\
@@ -157,7 +158,7 @@ mod tests {
         assert_eq!(read_to_string(req).unwrap(), "I'm a good request.".to_owned());
     }
 
-    #[test]
+    #[test_case]
     fn test_head_empty_body() {
         let mut mock = MockStream::with_input(b"\
             HEAD / HTTP/1.1\r\n\
@@ -174,7 +175,7 @@ mod tests {
         assert_eq!(read_to_string(req).unwrap(), "".to_owned());
     }
 
-    #[test]
+    #[test_case]
     fn test_post_empty_body() {
         let mut mock = MockStream::with_input(b"\
             POST / HTTP/1.1\r\n\
@@ -191,7 +192,7 @@ mod tests {
         assert_eq!(read_to_string(req).unwrap(), "".to_owned());
     }
 
-    #[test]
+    #[test_case]
     fn test_parse_chunked_request() {
         let mut mock = MockStream::with_input(b"\
             POST / HTTP/1.1\r\n\
@@ -234,7 +235,7 @@ mod tests {
 
     /// Tests that when a chunk size is not a valid radix-16 number, an error
     /// is returned.
-    #[test]
+    #[test_case]
     fn test_invalid_chunk_size_not_hex_digit() {
         let mut mock = MockStream::with_input(b"\
             POST / HTTP/1.1\r\n\
@@ -258,7 +259,7 @@ mod tests {
 
     /// Tests that when a chunk size contains an invalid extension, an error is
     /// returned.
-    #[test]
+    #[test_case]
     fn test_invalid_chunk_size_extension() {
         let mut mock = MockStream::with_input(b"\
             POST / HTTP/1.1\r\n\
@@ -282,7 +283,7 @@ mod tests {
 
     /// Tests that when a valid extension that contains a digit is appended to
     /// the chunk size, the chunk is correctly read.
-    #[test]
+    #[test_case]
     fn test_chunk_size_with_extension() {
         let mut mock = MockStream::with_input(b"\
             POST / HTTP/1.1\r\n\

@@ -2,7 +2,7 @@ use futures::FutureExt;
 use std::future::Future;
 use std::pin::Pin;
 use std::task::{Context, Poll};
-
+use std::prelude::v1::*;
 /// Future extension helpers that are useful for tests
 pub trait TestFuture: Future {
     /// Drive `other` by polling `self`.

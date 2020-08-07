@@ -63,11 +63,12 @@ impl RngCore for EntropyRng {
 impl CryptoRng for EntropyRng {}
 
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod test {
     use super::*;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn test_entropy() {
         let mut rng = EntropyRng::new();
         let n = (rng.next_u32() ^ rng.next_u32()).count_ones();

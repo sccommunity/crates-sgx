@@ -5,7 +5,7 @@
 //! This module provides the [`Registry`] type, a [`Subscriber`] implementation
 //! which tracks per-span data and exposes it to [`Layer`]s. When a `Registry`
 //! is used as the base `Subscriber` of a `Layer` stack, the
-//! [`layer::Context`][ctx] type will  provide methods allowing `Layer`s to
+//! [`layer::Context`][ctx] type will provide methods allowing `Layer`s to
 //! [look up span data][lookup] stored in the registry. While [`Registry`] is a
 //! reasonable default for storing spans and events, other stores that implement
 //! [`LookupSpan`] and [`Subscriber`] themselves (with [`SpanData`] implemented
@@ -87,20 +87,26 @@ pub use sharded::Registry;
 ///
 /// [`Layer`]: ../layer/trait.Layer.html
 /// [`Context`]: ../layer/struct.Context.html
-/// [`span()`]: ../layer/struct.Context.html#method.metadata
+/// [`span()`]: ../layer/struct.Context.html#method.span
 pub trait LookupSpan<'a> {
     /// The type of span data stored in this registry.
     type Data: SpanData<'a>;
 
     /// Returns the [`SpanData`] for a given `Id`, if it exists.
     ///
-    /// **Note**: users of the `LookupSpan` trait should typically call the
-    /// [`span`] method rather than this method. The `span` method is
-    /// implemented by calling `span_data`, but returns a reference which is
+    /// <div class="information">
+    ///     <div class="tooltip ignore" style="">ⓘ<span class="tooltiptext">Note</span></div>
+    /// </div>
+    /// <div class="example-wrap" style="display:inline-block">
+    /// <pre class="ignore" style="white-space:normal;font:inherit;">
+    /// <strong>Note</strong>: users of the <code>LookupSpan</code> trait should
+    /// typically call the <a href="#method.span"><code>span</code></a> method rather
+    /// than this method. The <code>span</code> method is implemented by
+    /// <em>calling</em> <code>span_data</code>, but returns a reference which is
     /// capable of performing more sophisiticated queries.
+    /// </pre></div>
     ///
     /// [`SpanData`]: trait.SpanData.html
-    /// [`span`]: #method.span
     fn span_data(&'a self, id: &Id) -> Option<Self::Data>;
 
     /// Returns a [`SpanRef`] for the span with the given `Id`, if it exists.

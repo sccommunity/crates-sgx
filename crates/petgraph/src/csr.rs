@@ -5,7 +5,7 @@ use std::iter::{Enumerate, Zip};
 use std::marker::PhantomData;
 use std::ops::{Index, IndexMut, Range};
 use std::slice::Windows;
-
+use std::prelude::v1::*;
 use crate::visit::{Data, GraphProp, IntoEdgeReferences, NodeCount};
 use crate::visit::{EdgeRef, GraphBase, IntoEdges, IntoNeighbors, NodeIndexable};
 use crate::visit::{IntoNodeIdentifiers, NodeCompactIndexable, Visitable};

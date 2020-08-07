@@ -11,25 +11,27 @@ name = "num-iter"
 version = "0.1.41"
 readme = "README.md"
 build = "build.rs"
-exclude = ["/bors.toml", "/ci/*", "/.github/*"]
+exclude = ["/ci/*", "/.travis.yml", "/bors.toml", "/sgx/*"]
 
 [package.metadata.docs.rs]
 features = ["std"]
 
 [dependencies]
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+crates_unittest = { git = "https://github.com/Zha0Chan/crates-sgx-unittest.git", optional = true, default-features = false }
+inventory = { version = "0.1.6", optional = true }
+num-traits = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2" }
 
 [dependencies.num-integer]
-version = "0.1.42"
-default-features = false
-
-[dependencies.num-traits]
-version = "0.2.11"
-default-features = false
+#version = "0.1.38"
+#default-features = false
+path = "../num-integer"
 
 [features]
-default = ["std"]
+default = ["std", "mesalock_sgx", "i128"]
 i128 = ["num-integer/i128", "num-traits/i128"]
-std = ["num-integer/std", "num-traits/std"]
-
+std = ["num-integer/std", "num-integer/mesalock_sgx", "num-traits/std", "num-traits/mesalock_sgx", "mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+enclave_unit_test = ["crates_unittest", "inventory"]
 [build-dependencies]
-autocfg = "1"
+#autocfg = "0.1.3"

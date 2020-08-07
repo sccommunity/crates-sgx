@@ -52,11 +52,12 @@ impl Distribution<[f64; 2]> for UnitCircle {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::UnitCircle;
     use crate::distributions::Distribution;
-
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
     /// Assert that two numbers are almost equal to each other.
     ///
     /// On panic, this macro will print the values of the expressions with their
@@ -74,7 +75,7 @@ mod tests {
         };
     }
 
-    #[test]
+    #[test_case]
     fn norm() {
         let mut rng = crate::test::rng(1);
         let dist = UnitCircle::new();
@@ -84,7 +85,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn value_stability() {
         let mut rng = crate::test::rng(2);
         let expected = [

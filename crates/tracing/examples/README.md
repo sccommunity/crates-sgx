@@ -10,6 +10,8 @@ This directory contains a collection of examples that demonstrate the use of the
     `slog-term`'s `Compact` formatter.
 - **tracing-attributes**:
   + `attrs-basic`: A simple example of the `#[instrument]` attribute.
+  + `attrs-literal-field-names`: Demonstrates using literal field names rather
+    than rust tokens..
   + `attrs-args`: An example implementing a simple recursive calculation of
     Fibonacci numbers, to demonstrate how the `#[instrument]` attribute can
     record function arguments.
@@ -27,13 +29,23 @@ This directory contains a collection of examples that demonstrate the use of the
     implementation.
   + `tower-load`: Demonstrates how dynamically reloadable filters can be used to
     debug a server under load in production.
+  + `journald`: Demonstrates how to use `fmt` and `journald` layers to output to
+    both the terminal and the system journal.
 - **tracing-futures**:
+  + `spawny-thing`: Demonstrates the use of the `#[instrument]` attribute macro
+    asynchronous functions.
+  + `tokio-spawny-thing.rs`: Similar to `spawny-thingy`, but with the additional
+    demonstration instrumenting [concurrent tasks][tasks] created with 
+    `tokio::spawn`.
   + `futures-proxy-server`: Demonstrates the use of `tracing-futures` by
     implementing a simple proxy server, based on [this example][tokio-proxy]
     from `tokio`.
   + `async_fn`: Demonstrates how asynchronous functions can be
      instrumented.
   + `echo`: Demonstrates a `tracing`-instrumented variant of Tokio's `echo` example.
+- **tracing-flame**:
+  + `infero-flame`: Demonstrates the use of `tracing-flame` to generate a flamegraph
+     from spans.
 - **tracing-tower**:
   + `tower-client`: Demonstrates the use of `tracing-tower` to instrument a
     simple `tower` HTTP/1.1 client.
@@ -50,10 +62,10 @@ This directory contains a collection of examples that demonstrate the use of the
 - **tracing-opentelemetry**:
   + `opentelemetry`: Demonstrates how `tracing-opentelemetry` can be used to
     export and visualize `tracing` span data.
-  + `opentelemetry_remote_context`: Demonstrates how `tracing-opentelemetry`
+  + `opentelemetry-remote-context`: Demonstrates how `tracing-opentelemetry`
     can be used to extract and inject remote context when traces span multiple
     systems.
 
-
+[tasks]: (https://docs.rs/tokio/0.2.21/tokio/task/index.html)
 [tokio-proxy]: https://github.com/tokio-rs/tokio/blob/v0.1.x/tokio/examples/proxy.rs
 [echo]: https://github.com/hyperium/hyper/blob/0.12.x/examples/echo.rs

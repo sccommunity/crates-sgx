@@ -20,7 +20,7 @@ use crate::server::common::{HandshakeDetails, ServerKXDetails, ClientCertDetails
 use crate::server::hs;
 
 use ring::constant_time;
-
+use std::prelude::v1::*;
 // --- Process client's Certificate for client auth ---
 pub struct ExpectCertificate {
     pub handshake: HandshakeDetails,

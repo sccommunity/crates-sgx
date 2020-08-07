@@ -1,18 +1,26 @@
 #![doc(html_root_url = "https://docs.rs/tokio-mock-task/0.1.1")]
 #![deny(missing_debug_implementations, missing_docs)]
 #![cfg_attr(test, deny(warnings))]
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
 
 //! Wrap Tokio based code with a mock task.
 //!
 //! This allows writing tests that are able to assert that a task is notified on
 //! an event.
 
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
+
 extern crate futures;
 
 use futures::{future, Async};
 use futures::executor::{spawn, Notify};
 
-use std::sync::{Arc, Mutex, Condvar};
+use std::sync::{Arc, SgxMutex as Mutex, SgxCondvar as Condvar};
 use std::sync::atomic::{AtomicUsize, Ordering};
 
 /// Mock task

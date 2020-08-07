@@ -3,10 +3,10 @@ use crate::server::ProducesTickets;
 use crate::rand;
 
 use std::mem;
-use std::sync::{Mutex, Arc};
+use std::sync::{SgxMutex as Mutex, Arc};
 use std::time;
 use ring::aead;
-
+use std::prelude::v1::*;
 /// The timebase for expiring and rolling tickets and ticketing
 /// keys.  This is UNIX wall time in seconds.
 pub fn timebase() -> u64 {

@@ -1,12 +1,12 @@
 use crate::{tables, Config};
+#[cfg(feature = "std")]
+use std::prelude::v1::*;
 
 #[cfg(any(feature = "alloc", feature = "std", test))]
 use crate::STANDARD;
-#[cfg(any(feature = "alloc", feature = "std", test))]
-use alloc::vec::Vec;
-use core::fmt;
-#[cfg(any(feature = "std", test))]
+#[cfg(feature = "std")]
 use std::error;
+use core::fmt;
 
 // decode logic operates on chunks of 8 input bytes without padding
 const INPUT_CHUNK_LEN: usize = 8;

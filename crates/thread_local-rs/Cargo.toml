@@ -12,5 +12,12 @@ keywords = ["thread_local", "concurrent", "thread"]
 [badges]
 travis-ci = { repository = "Amanieu/thread_local-rs" }
 
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+enclave_unit_test = ["crates_unittest", "inventory"]
 [dependencies]
-lazy_static = "1.0"
+lazy_static = { version = "1.0", features = ["spin_no_std"] }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true, features = ["thread"] }
+crates_unittest = { git = "https://github.com/Zha0Chan/crates-sgx-unittest.git", optional = true, default-features = false }
+inventory = { version = "0.1.6", optional = true }

@@ -1,0 +1,31 @@
+[package]
+name = "run-tests-enclave"
+version = "1.0.0"
+edition = "2018"
+
+[lib]
+name = "run_tests_enclave"
+crate-type = ["staticlib"]
+
+[workspace] 
+
+
+[features]
+default = ["crates_unittest", "inventory", "sgx_tstd", "sgx_trts"]
+
+
+[dependencies]
+crossbeam-utils = { path = "../../crossbeam-utils", default-features = true}
+crossbeam-channel = { path = "../../crossbeam-channel", default-features = true }
+crossbeam-deque = { path = "../../crossbeam-deque", default-features = true}
+crossbeam-queue = { path = "../../crossbeam-queue", default-features = true}
+crossbeam-epoch = { path = "../../crossbeam-epoch", default-features = true}
+crossbeam-skiplist = { path = "../../crossbeam-skiplist", default-features = true}
+
+crates_unittest = { git = "https://github.com/Zha0Chan/crates-sgx-unittest.git", optional = true, default-features = false }
+inventory = { version = "0.1.6", optional = true }
+rand = { path = "../../../rand-0.7.3" }
+[target.'cfg(not(target_env = "sgx"))'.dependencies]
+sgx_types = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true, features = ["thread", "untrusted_time"] }
+sgx_trts = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }

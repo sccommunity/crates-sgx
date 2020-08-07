@@ -51,7 +51,7 @@
 use std::fmt;
 use std::mem;
 use std::time::Duration;
-
+use std::prelude::v1::Box;
 use futures_channel::oneshot;
 use futures_util::future::{self, Either, FutureExt as _, TryFutureExt as _};
 use http::header::{HeaderValue, HOST};

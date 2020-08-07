@@ -27,6 +27,8 @@ use core::fmt;
 // Note that this whole module is only imported if feature="alloc" is enabled.
 #[cfg(not(feature = "std"))] use crate::alloc::vec::Vec;
 
+#[cfg(feature="mesalock_sgx")] use std::prelude::v1::*;
+
 /// A distribution using weighted sampling to pick a discretely selected
 /// item.
 ///
@@ -241,11 +243,12 @@ where X: SampleUniform + PartialOrd
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod test {
     use super::*;
-
-    #[test]
+  
+    use crates_unittest::test_case;
+    #[test_case]
     #[cfg_attr(miri, ignore)] // Miri is too slow
     fn test_weightedindex() {
         let mut r = crate::test::rng(700);
@@ -321,7 +324,7 @@ mod test {
         );
     }
 
-    #[test]
+    #[test_case]
     fn test_update_weights() {
         let data = [
             (
@@ -350,7 +353,7 @@ mod test {
         }
     }
 
-    #[test]
+    #[test_case]
     fn value_stability() {
         fn test_samples<X: SampleUniform + PartialOrd, I>(
             weights: I, buf: &mut [usize], expected: &[usize],

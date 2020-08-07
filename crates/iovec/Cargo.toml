@@ -12,6 +12,7 @@ description = """
 Portable buffer type for scatter/gather I/O operations
 """
 categories = ["network-programming", "api-bindings"]
+exclude = ["/sgx/*"]
 
-[target.'cfg(unix)'.dependencies]
-libc   = "0.2"
+[target.'cfg(not(target_env = "sgx"))'.dependencies]
+sgx_libc   = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2" }

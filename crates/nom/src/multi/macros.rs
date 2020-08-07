@@ -1,7 +1,7 @@
 //! Parsers for applying parsers multiple times
 
 /// `separated_list0!(I -> IResult<I,T>, I -> IResult<I,O>) => I -> IResult<I, Vec<O>>`
-/// separated_list0(sep, X) returns a Vec<X>
+/// `separated_list0(sep, X)` returns a `Vec<X>`.
 ///
 /// ```rust
 /// # #[macro_use] extern crate nom;
@@ -40,9 +40,9 @@ macro_rules! separated_list0(
 );
 
 /// `separated_list1!(I -> IResult<I,T>, I -> IResult<I,O>) => I -> IResult<I, Vec<O>>`
-/// separated_list1(sep, X) returns a Vec<X>
+/// `separated_list1(sep, X)` returns a `Vec<X>`.
 ///
-/// it will return an error if there is no element in the list
+/// It will return an error if there is no element in the list.
 /// ```rust
 /// # #[macro_use] extern crate nom;
 /// # use nom::{Err, error::ErrorKind, Needed, IResult};
@@ -80,9 +80,9 @@ macro_rules! separated_list1(
 );
 
 /// `many0!(I -> IResult<I,O>) => I -> IResult<I, Vec<O>>`
-/// Applies the parser 0 or more times and returns the list of results in a Vec.
+/// Applies the parser 0 or more times and returns the list of results in a `Vec`.
 ///
-/// The embedded parser may return Incomplete.
+/// The embedded parser may return `Incomplete`.
 ///
 /// `many0` will only return `Error` if the embedded parser does not consume any input
 /// (to avoid infinite loops).
@@ -113,9 +113,9 @@ macro_rules! many0(
 );
 
 /// `many1!(I -> IResult<I,O>) => I -> IResult<I, Vec<O>>`
-/// Applies the parser 1 or more times and returns the list of results in a Vec
+/// Applies the parser 1 or more times and returns the list of results in a `Vec`.
 ///
-/// the embedded parser may return Incomplete
+/// The embedded parser may return `Incomplete`.
 ///
 /// ```
 /// # #[macro_use] extern crate nom;
@@ -147,7 +147,7 @@ macro_rules! many1(
 /// Applies the first parser until the second applies. Returns a tuple containing the list
 /// of results from the first in a Vec and the result of the second.
 ///
-/// The first embedded parser may return Incomplete
+/// The first embedded parser may return `Incomplete`.
 ///
 /// ```
 /// # #[macro_use] extern crate nom;
@@ -190,7 +190,7 @@ macro_rules! many_till(
 
 /// `many_m_n!(usize, usize, I -> IResult<I,O>) => I -> IResult<I, Vec<O>>`
 /// Applies the parser between m and n times (n included) and returns the list of
-/// results in a Vec
+/// results in a `Vec`.
 ///
 /// the embedded parser may return Incomplete
 ///
@@ -277,7 +277,7 @@ macro_rules! many1_count {
 }
 
 /// `count!(I -> IResult<I,O>, nb) => I -> IResult<I, Vec<O>>`
-/// Applies the child parser a specified number of times
+/// Applies the child parser a specified number of times.
 ///
 /// ```
 /// # #[macro_use] extern crate nom;
@@ -307,7 +307,7 @@ macro_rules! count(
 );
 
 /// `length_count!(I -> IResult<I, nb>, I -> IResult<I,O>) => I -> IResult<I, Vec<O>>`
-/// gets a number from the first parser, then applies the second parser that many times
+/// Gets a number from the first parser, then applies the second parser that many times.
 ///
 /// ```rust
 /// # #[macro_use] extern crate nom;
@@ -357,7 +357,7 @@ macro_rules! length_count(
 /// `length_data!(I -> IResult<I, nb>) => O`
 ///
 /// `length_data` gets a number from the first parser, then takes a subslice of the input
-/// of that size and returns that subslice
+/// of that size and returns that subslice.
 ///
 /// ```rust
 /// # #[macro_use] extern crate nom;
@@ -386,7 +386,7 @@ macro_rules! length_data(
 ///
 /// Gets a number from the first parser, takes a subslice of the input of that size,
 /// then applies the second parser on that subslice. If the second parser returns
-/// `Incomplete`, `length_value` will return an error
+/// `Incomplete`, `length_value` will return an error.
 ///
 /// ```rust
 /// # #[macro_use] extern crate nom;
@@ -422,9 +422,9 @@ macro_rules! length_value(
 );
 
 /// `fold_many0!(I -> IResult<I,O>, R, Fn(R, O) -> R) => I -> IResult<I, R>`
-/// Applies the parser 0 or more times and folds the list of return values
+/// Applies the parser 0 or more times and folds the list of return values.
 ///
-/// the embedded parser may return Incomplete
+/// The embedded parser may return `Incomplete`.
 ///
 /// ```
 /// # #[macro_use] extern crate nom;
@@ -455,9 +455,9 @@ macro_rules! fold_many0(
 );
 
 /// `fold_many1!(I -> IResult<I,O>, R, Fn(R, O) -> R) => I -> IResult<I, R>`
-/// Applies the parser 1 or more times and folds the list of return values
+/// Applies the parser 1 or more times and folds the list of return values.
 ///
-/// the embedded parser may return Incomplete
+/// The embedded parser may return `Incomplete`.
 ///
 /// ```
 /// # #[macro_use] extern crate nom;
@@ -492,9 +492,9 @@ macro_rules! fold_many1(
 );
 
 /// `fold_many_m_n!(usize, usize, I -> IResult<I,O>, R, Fn(R, O) -> R) => I -> IResult<I, R>`
-/// Applies the parser between m and n times (n included) and folds the list of return value
+/// Applies the parser between m and n times (n included) and folds the list of return value.
 ///
-/// the embedded parser may return Incomplete
+/// The embedded parser may return `Incomplete`.
 ///
 /// ```
 /// # #[macro_use] extern crate nom;
@@ -528,7 +528,7 @@ macro_rules! fold_many_m_n(
   );
 );
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
   use crate::character::streaming::digit1 as digit;
   use crate::error::ErrorKind;
@@ -538,7 +538,8 @@ mod tests {
   #[cfg(feature = "alloc")]
   use crate::lib::std::vec::Vec;
   use crate::number::streaming::{be_u16, be_u8};
-
+  use std::string::ToString;
+  use crates_unittest::test_case;
   // reproduce the tag and take macros, because of module import order
   macro_rules! tag (
     ($i:expr, $inp: expr) => (
@@ -578,7 +579,7 @@ mod tests {
     );
   );
 
-  #[test]
+  #[test_case]
   #[cfg(feature = "alloc")]
   fn separated_list0() {
     named!(multi<&[u8],Vec<&[u8]> >, separated_list0!(tag!(","), tag!("abcd")));
@@ -613,7 +614,7 @@ mod tests {
     assert_eq!(multi(h), Err(Err::Incomplete(Needed::new(4))));
   }
 
-  #[test]
+  #[test_case]
   #[cfg(feature = "alloc")]
   fn separated_list1() {
     named!(multi<&[u8],Vec<&[u8]> >, separated_list1!(tag!(","), tag!("abcd")));
@@ -644,7 +645,7 @@ mod tests {
     assert_eq!(multi(h), Err(Err::Incomplete(Needed::new(4))));
   }
 
-  #[test]
+  #[test_case]
   #[cfg(feature = "alloc")]
   fn many0() {
     named!(tag_abcd, tag!("abcd"));
@@ -680,7 +681,7 @@ mod tests {
     b.iter(|| multi(&b"abcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcd"[..]));
   }
 
-  #[test]
+  #[test_case]
   #[cfg(feature = "alloc")]
   fn many1() {
     named!(multi<&[u8],Vec<&[u8]> >, many1!(tag!("abcd")));
@@ -701,7 +702,7 @@ mod tests {
     assert_eq!(multi(d), Err(Err::Incomplete(Needed::new(4))));
   }
 
-  #[test]
+  #[test_case]
   #[cfg(feature = "alloc")]
   fn many_till() {
     named!(multi<&[u8], (Vec<&[u8]>, &[u8]) >, many_till!( tag!( "abcd" ), tag!( "efgh" ) ) );
@@ -724,7 +725,7 @@ mod tests {
     );
   }
 
-  #[test]
+  #[test_case]
   #[cfg(feature = "std")]
   fn infinite_many() {
     fn tst(input: &[u8]) -> IResult<&[u8], &[u8]> {
@@ -745,7 +746,7 @@ mod tests {
     );
   }
 
-  #[test]
+  #[test_case]
   #[cfg(feature = "alloc")]
   fn many_m_n() {
     named!(multi<&[u8],Vec<&[u8]> >, many_m_n!(2, 4, tag!("Abcd")));
@@ -769,7 +770,7 @@ mod tests {
     assert_eq!(multi(e), Err(Err::Incomplete(Needed::new(4))));
   }
 
-  #[test]
+  #[test_case]
   #[cfg(feature = "alloc")]
   fn count() {
     const TIMES: usize = 2;
@@ -802,7 +803,7 @@ mod tests {
     );
   }
 
-  #[test]
+  #[test_case]
   #[cfg(feature = "alloc")]
   fn count_zero() {
     const TIMES: usize = 0;
@@ -866,7 +867,7 @@ mod tests {
     FromStr::from_str
   ));
 
-  #[test]
+  #[test_case]
   #[cfg(feature = "alloc")]
   fn length_count() {
     named!(tag_abc, tag!(&b"abc"[..]));
@@ -888,7 +889,7 @@ mod tests {
     );
   }
 
-  #[test]
+  #[test_case]
   fn length_data() {
     named!( take<&[u8], &[u8]>, length_data!(number) );
 
@@ -904,7 +905,7 @@ mod tests {
     assert_eq!(take(&b"2abcxxx"[..]), Ok((&b"cxxx"[..], &b"ab"[..])));
   }
 
-  #[test]
+  #[test_case]
   fn length_value_test() {
     named!(length_value_1<&[u8], u16 >, length_value!(be_u8, be_u16));
     named!(length_value_2<&[u8], (u8, u8) >, length_value!(be_u8, tuple!(be_u8, be_u8)));
@@ -938,7 +939,7 @@ mod tests {
     assert_eq!(length_value_2(&i4), Ok((&i4[4..], (5, 6))));
   }
 
-  #[test]
+  #[test_case]
   #[cfg(feature = "alloc")]
   fn fold_many0() {
     fn fold_into_vec<T>(mut acc: Vec<T>, item: T) -> Vec<T> {
@@ -968,7 +969,7 @@ mod tests {
     );
   }
 
-  #[test]
+  #[test_case]
   #[cfg(feature = "alloc")]
   fn fold_many1() {
     fn fold_into_vec<T>(mut acc: Vec<T>, item: T) -> Vec<T> {
@@ -993,7 +994,7 @@ mod tests {
     assert_eq!(multi(d), Err(Err::Incomplete(Needed::new(4))));
   }
 
-  #[test]
+  #[test_case]
   #[cfg(feature = "alloc")]
   fn fold_many_m_n() {
     fn fold_into_vec<T>(mut acc: Vec<T>, item: T) -> Vec<T> {
@@ -1021,7 +1022,7 @@ mod tests {
     assert_eq!(multi(e), Err(Err::Incomplete(Needed::new(4))));
   }
 
-  #[test]
+  #[test_case]
   fn many0_count() {
     named!(
       count0_nums(&[u8]) -> usize,
@@ -1040,7 +1041,7 @@ mod tests {
     assert_eq!(count0_nums(&b"hello"[..]), Ok((&b"hello"[..], 0)));
   }
 
-  #[test]
+  #[test_case]
   fn many1_count() {
     named!(
       count1_nums(&[u8]) -> usize,

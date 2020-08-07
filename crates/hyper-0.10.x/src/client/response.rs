@@ -1,6 +1,6 @@
 //! Client Responses
 use std::io::{self, Read};
-
+use std::prelude::v1::*;
 use url::Url;
 
 use header;
@@ -101,7 +101,7 @@ impl Drop for Response {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use std::io::{self, Read};
 
@@ -114,7 +114,8 @@ mod tests {
     use status;
     use version;
     use http::h1::Http11Message;
-
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
     use super::Response;
 
     fn read_to_string(mut r: Response) -> io::Result<String> {
@@ -124,7 +125,7 @@ mod tests {
     }
 
 
-    #[test]
+    #[test_case]
     fn test_into_inner() {
         let message: Box<HttpMessage> = Box::new(
             Http11Message::with_stream(Box::new(MockStream::new())));
@@ -133,7 +134,7 @@ mod tests {
         assert_eq!(b, Box::new(MockStream::new()));
     }
 
-    #[test]
+    #[test_case]
     fn test_parse_chunked_response() {
         let stream = MockStream::with_input(b"\
             HTTP/1.1 200 OK\r\n\
@@ -169,7 +170,7 @@ mod tests {
 
     /// Tests that when a chunk size is not a valid radix-16 number, an error
     /// is returned.
-    #[test]
+    #[test_case]
     fn test_invalid_chunk_size_not_hex_digit() {
         let stream = MockStream::with_input(b"\
             HTTP/1.1 200 OK\r\n\
@@ -189,7 +190,7 @@ mod tests {
 
     /// Tests that when a chunk size contains an invalid extension, an error is
     /// returned.
-    #[test]
+    #[test_case]
     fn test_invalid_chunk_size_extension() {
         let stream = MockStream::with_input(b"\
             HTTP/1.1 200 OK\r\n\
@@ -209,7 +210,7 @@ mod tests {
 
     /// Tests that when a valid extension that contains a digit is appended to
     /// the chunk size, the chunk is correctly read.
-    #[test]
+    #[test_case]
     fn test_chunk_size_with_extension() {
         let stream = MockStream::with_input(b"\
             HTTP/1.1 200 OK\r\n\
@@ -227,7 +228,7 @@ mod tests {
         assert_eq!(read_to_string(res).unwrap(), "1".to_owned());
     }
 
-    #[test]
+    #[test_case]
     fn test_parse_error_closes() {
         let url = Url::parse("http://hyper.rs").unwrap();
         let stream = MockStream::with_input(b"\

@@ -205,6 +205,15 @@
 //! Whenever in doubt, look at the source code and specifications for detailed explanations.
 
 #![cfg_attr(test, feature(test))] // lib stability features as per RFC #507
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
+#[cfg(feature = "enclave_unit_test")]
+extern crate crates_unittest;
 
 extern crate encoding_index_singlebyte as index_singlebyte;
 extern crate encoding_index_korean as index_korean;
@@ -212,7 +221,7 @@ extern crate encoding_index_japanese as index_japanese;
 extern crate encoding_index_simpchinese as index_simpchinese;
 extern crate encoding_index_tradchinese as index_tradchinese;
 
-#[cfg(test)] extern crate test;
+//#[cfg(feature = "enclave_unit_test")] extern crate test;
 
 pub use self::types::{CodecError, ByteWriter, StringWriter,
                       RawEncoder, RawDecoder, EncodingRef, Encoding,
@@ -220,7 +229,7 @@ pub use self::types::{CodecError, ByteWriter, StringWriter,
                       EncoderTrap, decode}; // reexport
 
 #[macro_use] mod util;
-#[cfg(test)] #[macro_use] mod testutils;
+#[cfg(feature = "enclave_unit_test")] #[macro_use] mod testutils;
 
 pub mod types;
 
@@ -241,11 +250,17 @@ pub mod codec {
 pub mod all;
 pub mod label;
 
-#[cfg(test)]
-mod tests {
+#[cfg(feature = "enclave_unit_test")]
+pub mod tests {
     use super::*;
+    use std::prelude::v1::*;
+    use crates_unittest::{ test_case, run_inventory_tests };
 
-    #[test]
+    pub fn run_tests() {
+        run_inventory_tests!();
+    }
+
+    #[test_case]
     fn test_decode() {
         fn test_one(input: &[u8], expected_result: &str, expected_encoding: &str) {
             let (result, used_encoding) = decode(

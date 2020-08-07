@@ -7,6 +7,7 @@ pub(crate) use self::stack::Stack;
 
 use std::borrow::Borrow;
 use std::usize;
+use std::prelude::v1::*;
 
 /// Timing wheel implementation.
 ///

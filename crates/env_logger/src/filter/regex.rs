@@ -1,5 +1,6 @@
 extern crate regex;
 
+use std::prelude::v1::*;
 use std::fmt;
 
 use self::regex::Regex;

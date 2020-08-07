@@ -108,6 +108,14 @@
 //!
 //! ```
 
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
+
 extern crate net2;
 extern crate iovec;
 extern crate slab;
@@ -118,7 +126,8 @@ extern crate fuchsia_zircon as zircon;
 extern crate fuchsia_zircon_sys as zircon_sys;
 
 #[cfg(unix)]
-extern crate libc;
+//extern crate libc;
+extern crate sgx_libc as libc;
 
 #[cfg(windows)]
 extern crate miow;

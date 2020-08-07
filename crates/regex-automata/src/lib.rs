@@ -283,9 +283,39 @@ With some of the downsides out of the way, here are some positive differences:
 */
 
 #![deny(missing_docs)]
-#![cfg_attr(not(feature = "std"), no_std)]
+//#![cfg_attr(not(feature = "std"), no_std)]
+#![cfg_attr(not(
+  all(
+      any(feature = "std", feature = "mesalock_sgx"),
+      target_env = "sgx",
+      target_vendor = "mesalock",
+  )),
+  no_std
+)]
 
-#[cfg(feature = "std")]
+#![cfg_attr(
+  all(
+      any(feature = "std", feature = "mesalock_sgx"),
+      target_env = "sgx",
+      target_vendor = "mesalock",
+  ),
+  feature(rustc_private)
+)]
+
+#[cfg(all(
+  any(feature = "std", feature = "mesalock_sgx"),
+  not(target_env = "sgx"),
+  not(target_vendor = "mesalock"),
+))]
+#[macro_use]
+extern crate sgx_tstd as std;
+
+//#[cfg(feature = "std")]
+#[cfg(all(
+  any(feature = "std", feature = "mesalock_sgx"),
+  target_env = "sgx",
+  target_vendor = "mesalock",
+))]
 extern crate core;
 
 #[cfg(all(test, feature = "transducer"))]

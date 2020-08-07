@@ -300,7 +300,13 @@
 //! It's possible to declare internal enum as public too.
 //!
 //!
-
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
 
 /// Main macro that does all the work
 #[macro_export]
@@ -1015,15 +1021,22 @@ impl<T, E> ResultExt<T, E> for Result<T, E> {
 
 
 
-#[cfg(test)]
-mod test {
+#[cfg(feature = "enclave_unit_test")]
+extern crate crates_unittest;
+#[cfg(feature = "enclave_unit_test")]
+pub mod tests {
     use std::num::{ParseFloatError, ParseIntError};
     use std::str::Utf8Error;
     use std::string::FromUtf8Error;
     use std::error::Error;
     use std::path::{Path, PathBuf};
-
+    use std::prelude::v1::*;
+    use crates_unittest::{ test_case, run_inventory_tests };
     use super::ResultExt;
+
+    pub fn run_tests() {
+        run_inventory_tests!();
+    }
 
     quick_error! {
         #[derive(Debug)]
@@ -1033,14 +1046,14 @@ mod test {
         }
     }
 
-    #[test]
+    #[test_case]
     fn bare_item_direct() {
         assert_eq!(format!("{}", Bare::One), "One".to_string());
         assert_eq!(format!("{:?}", Bare::One), "One".to_string());
         assert_eq!(Bare::One.description(), "One".to_string());
         assert!(Bare::One.cause().is_none());
     }
-    #[test]
+    #[test_case]
     fn bare_item_trait() {
         let err: &Error = &Bare::Two;
         assert_eq!(format!("{}", err), "Two".to_string());
@@ -1060,7 +1073,7 @@ mod test {
         }
     }
 
-    #[test]
+    #[test_case]
     fn wrapper() {
         assert_eq!(format!("{}", Wrapper::from(Wrapped::One)),
             "One".to_string());
@@ -1103,7 +1116,7 @@ mod test {
         }
     }
 
-    #[test]
+    #[test_case]
     fn tuple_wrapper_err() {
         let cause = "one and a half times pi".parse::<f32>().unwrap_err();
         let err = TupleWrapper::ParseFloatError(cause.clone());
@@ -1113,7 +1126,7 @@ mod test {
         assert_eq!(format!("{:?}", err.cause().unwrap()), format!("{:?}", cause));
     }
 
-    #[test]
+    #[test_case]
     fn tuple_wrapper_trait_str() {
         let desc = "hello";
         let err: &Error = &TupleWrapper::Other(desc);
@@ -1123,7 +1136,7 @@ mod test {
         assert!(err.cause().is_none());
     }
 
-    #[test]
+    #[test_case]
     fn tuple_wrapper_trait_two_fields() {
         let invalid_utf8: Vec<u8> = vec![0, 159, 146, 150];
         let cause = String::from_utf8(invalid_utf8.clone()).unwrap_err().utf8_error();
@@ -1134,7 +1147,7 @@ mod test {
         assert_eq!(format!("{:?}", err.cause().unwrap()), format!("{:?}", cause));
     }
 
-    #[test]
+    #[test_case]
     fn tuple_wrapper_from() {
         let cause = "one and a half times pi".parse::<f32>().unwrap_err();
         let err = TupleWrapper::ParseFloatError(cause.clone());
@@ -1142,7 +1155,7 @@ mod test {
         assert_eq!(err_from, err);
     }
 
-    #[test]
+    #[test_case]
     fn tuple_wrapper_custom_from() {
         let invalid_utf8: Vec<u8> = vec![0, 159, 146, 150];
         let cause = String::from_utf8(invalid_utf8.clone()).unwrap_err();
@@ -1151,7 +1164,7 @@ mod test {
         assert_eq!(err_from, err);
     }
 
-    #[test]
+    #[test_case]
     fn tuple_wrapper_discard() {
         let err: TupleWrapper = From::from("hello");
         assert_eq!(format!("{}", err), format!("Discard"));
@@ -1160,7 +1173,7 @@ mod test {
         assert!(err.cause().is_none());
     }
 
-    #[test]
+    #[test_case]
     fn tuple_wrapper_singleton() {
         let err: TupleWrapper = TupleWrapper::Singleton;
         assert_eq!(format!("{}", err), format!("Just a string"));
@@ -1187,7 +1200,7 @@ mod test {
         }
     }
 
-    #[test]
+    #[test_case]
     fn struct_wrapper_err() {
         let invalid_utf8: Vec<u8> = vec![0, 159, 146, 150];
         let cause = String::from_utf8(invalid_utf8.clone()).unwrap_err().utf8_error();
@@ -1198,7 +1211,7 @@ mod test {
         assert_eq!(format!("{:?}", err.cause().unwrap()), format!("{:?}", cause));
     }
 
-    #[test]
+    #[test_case]
     fn struct_wrapper_struct_from() {
         let invalid_utf8: Vec<u8> = vec![0, 159, 146, 150];
         let cause = String::from_utf8(invalid_utf8.clone()).unwrap_err().utf8_error();
@@ -1207,7 +1220,7 @@ mod test {
         assert_eq!(err_from, err);
     }
 
-    #[test]
+    #[test_case]
     fn struct_wrapper_excess_comma() {
         let descr = "hello";
         let err = StructWrapper::ExcessComma { descr: descr };
@@ -1242,7 +1255,7 @@ mod test {
         }
     }
 
-    #[test]
+    #[test_case]
     fn parse_float_error() {
         fn parse_float(s: &str) -> Result<f32, ContextErr> {
             Ok(try!(s.parse().context(s)))
@@ -1251,7 +1264,7 @@ mod test {
             r#"Float error "12ab": invalid float literal"#);
     }
 
-    #[test]
+    #[test_case]
     fn parse_int_error() {
         fn parse_int(s: &str) -> Result<i32, ContextErr> {
             Ok(try!(s.parse().context(s)))
@@ -1260,7 +1273,7 @@ mod test {
             r#"Int error "12.5": invalid digit found in string"#);
     }
 
-    #[test]
+    #[test_case]
     fn debug_context() {
         fn parse_int(s: &str) -> i32 {
             s.parse().context(s).unwrap()
@@ -1270,7 +1283,7 @@ mod test {
             r#"Err(Context("x", ParseIntError { kind: InvalidDigit }))"#);
     }
 
-    #[test]
+    #[test_case]
     fn path_context() {
         fn parse_utf<P: AsRef<Path>>(s: &[u8], p: P)
             -> Result<(), ContextErr>
@@ -1287,7 +1300,7 @@ mod test {
             "Path error at \"/tmp\": invalid utf-8"));
     }
 
-    #[test]
+    #[test_case]
     fn conditional_compilation() {
         quick_error! {
             #[allow(dead_code)]

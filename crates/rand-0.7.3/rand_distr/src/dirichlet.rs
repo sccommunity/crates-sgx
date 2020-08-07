@@ -9,6 +9,9 @@
 
 //! The dirichlet distribution.
 
+#[cfg(all(feature="mesalock_sgx", not(target_env="sgx")))]
+use std::prelude::v1::*;
+
 use crate::utils::Float;
 use crate::{Distribution, Exp1, Gamma, Open01, StandardNormal};
 use rand::Rng;
@@ -125,11 +128,12 @@ where
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod test {
     use super::*;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;    
+    #[test_case]
     fn test_dirichlet() {
         let d = Dirichlet::new(vec![1.0, 2.0, 3.0]).unwrap();
         let mut rng = crate::test::rng(221);
@@ -143,7 +147,7 @@ mod test {
             .collect();
     }
 
-    #[test]
+    #[test_case]
     fn test_dirichlet_with_param() {
         let alpha = 0.5f64;
         let size = 2;
@@ -159,19 +163,19 @@ mod test {
             .collect();
     }
 
-    #[test]
-    #[should_panic]
+    // #[test_case]
+    // #[should_panic]
     fn test_dirichlet_invalid_length() {
         Dirichlet::new_with_size(0.5f64, 1).unwrap();
     }
 
-    #[test]
-    #[should_panic]
+    // #[test_case]
+    // #[should_panic]
     fn test_dirichlet_invalid_alpha() {
         Dirichlet::new_with_size(0.0f64, 2).unwrap();
     }
 
-    #[test]
+    #[test_case]
     fn value_stability() {
         let mut rng = crate::test::rng(223);
         assert_eq!(

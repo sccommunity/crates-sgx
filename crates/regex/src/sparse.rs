@@ -1,7 +1,7 @@
-use std::fmt;
+use std::prelude::v1::*;
 use std::ops::Deref;
 use std::slice;
-
+use std::fmt;
 /// A sparse set used for representing ordered NFA states.
 ///
 /// This supports constant time addition and membership testing. Clearing an

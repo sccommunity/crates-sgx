@@ -1,5 +1,5 @@
 use std::io;
-
+use std::prelude::v1::*;
 use crate::bytes;
 use crate::error::Result;
 use crate::raw::counting_writer::CountingWriter;

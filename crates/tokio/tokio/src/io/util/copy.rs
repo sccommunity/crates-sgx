@@ -4,6 +4,7 @@ use std::future::Future;
 use std::io;
 use std::pin::Pin;
 use std::task::{Context, Poll};
+use std::prelude::v1::*;
 
 cfg_io_util! {
     /// A future that asynchronously copies the entire contents of a reader into a
@@ -70,7 +71,7 @@ cfg_io_util! {
             amt: 0,
             pos: 0,
             cap: 0,
-            buf: Box::new([0; 2048]),
+            buf: vec![0; 2048].into_boxed_slice(),
         }
     }
 }

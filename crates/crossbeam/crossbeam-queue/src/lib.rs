@@ -16,8 +16,27 @@
     )
 ))]
 #![warn(missing_docs, missing_debug_implementations, rust_2018_idioms)]
-#![cfg_attr(not(feature = "std"), no_std)]
+//#![cfg_attr(not(feature = "std"), no_std)]
 #![cfg_attr(feature = "nightly", feature(cfg_target_has_atomic))]
+#![cfg_attr(not(
+    all(
+        any(feature = "std", feature = "mesalock_sgx"),
+        target_env = "sgx",
+        target_vendor = "mesalock",
+    )),
+    no_std
+)]
+
+#![cfg_attr(
+    all(
+        any(feature = "std", feature = "mesalock_sgx"),
+        target_env = "sgx",
+        target_vendor = "mesalock",
+    ),
+    feature(rustc_private)
+)]
+
+
 
 #[cfg_attr(feature = "nightly", cfg(target_has_atomic = "ptr"))]
 cfg_if::cfg_if! {
@@ -33,3 +52,10 @@ cfg_if::cfg_if! {
         pub use self::seg_queue::SegQueue;
     }
 }
+#[cfg(all(
+    any(feature = "std", feature = "mesalock_sgx"),
+    not(target_env = "sgx"),
+    not(target_vendor = "mesalock"),
+))]
+#[macro_use]
+extern crate sgx_tstd as std;

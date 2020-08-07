@@ -6,8 +6,8 @@ use crate::error::TLSError;
 use crate::server::ClientHello;
 
 use std::collections;
-use std::sync::{Arc, Mutex};
-
+use std::sync::{Arc, SgxMutex as Mutex};
+use std::prelude::v1::*;
 /// Something which never stores sessions.
 pub struct NoServerSessionStorage {}
 

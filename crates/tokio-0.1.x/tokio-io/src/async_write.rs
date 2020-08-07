@@ -1,7 +1,7 @@
 use bytes::Buf;
 use futures::{Async, Poll};
 use std::io as std_io;
-
+use std::prelude::v1::*;
 use AsyncRead;
 
 /// Writes bytes asynchronously.

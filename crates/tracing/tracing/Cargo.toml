@@ -8,7 +8,7 @@ name = "tracing"
 #   - README.md
 # - Update CHANGELOG.md.
 # - Create "v0.1.x" git tag
-version = "0.1.13"
+version = "0.1.18"
 authors = ["Eliza Weisman <eliza@buoyant.io>", "Tokio Contributors <team@tokio.rs>"]
 license = "MIT"
 readme = "README.md"
@@ -27,18 +27,24 @@ keywords = ["logging", "tracing", "metrics", "async"]
 edition = "2018"
 
 [dependencies]
-tracing-core = { path = "../tracing-core", version = "0.1.10", default-features = false }
-log = { version = "0.4", optional = true }
-tracing-attributes = { path = "../tracing-attributes", version = "0.1.7", optional = true }
-cfg-if = "0.1.10"
+tracing-core = { path = "../tracing-core", version = "0.1.12", default-features = false }
+#log = { version = "0.4", optional = true }
+tracing-attributes = { path = "../tracing-attributes", version = "0.1.9", optional = true }
+#cfg-if = "0.1.10"
+log = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2", optional = true }
+
+cfg-if = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+
 
 [dev-dependencies]
-futures = "0.1"
-criterion = { version = "0.3", default_features = false }
-log = "0.4"
+#futures = "0.1"
+#criterion = { version = "0.3", default_features = false }
+#log = "0.4"
 
 [features]
-default = ["std", "attributes"]
+default = ["mesalock_sgx", "std", "attributes"]
+mesalock_sgx = ["sgx_tstd", "std"]
 
 max_level_off   = []
 max_level_error = []
@@ -57,7 +63,7 @@ release_max_level_trace = []
 # This feature flag is no longer necessary.
 async-await = []
 
-std = ["tracing-core/std"]
+std = ["tracing-core/std", "mesalock_sgx"]
 log-always = ["log"]
 attributes = ["tracing-attributes"]
 

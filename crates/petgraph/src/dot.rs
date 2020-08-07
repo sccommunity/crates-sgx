@@ -1,7 +1,7 @@
 //! Simple graphviz dot file format output.
 
 use std::fmt::{self, Display, Write};
-
+use std::prelude::v1::*;
 use crate::visit::{
     Data, EdgeRef, GraphBase, GraphProp, GraphRef, IntoEdgeReferences, IntoNodeReferences,
     NodeIndexable, NodeRef,

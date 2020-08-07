@@ -1,5 +1,5 @@
 use std::fmt::{self, Display};
-
+use std::prelude::v1::*;
 use header::{Header, HeaderFormat};
 
 /// The `Access-Control-Allow-Origin` response header,
@@ -88,7 +88,7 @@ impl Display for AccessControlAllowOrigin {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod test_access_control_allow_orgin {
     use header::*;
     use super::AccessControlAllowOrigin as HeaderField;

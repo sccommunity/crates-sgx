@@ -86,6 +86,13 @@
 //!
 //! [`blocking`]: fn.blocking.html
 //! [`runtime`]: https://docs.rs/tokio/0.1/tokio/runtime/
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
 
 extern crate tokio_executor;
 
@@ -96,7 +103,7 @@ extern crate crossbeam_utils;
 extern crate futures;
 #[macro_use]
 extern crate lazy_static;
-extern crate num_cpus;
+//extern crate num_cpus;
 extern crate slab;
 
 #[macro_use]

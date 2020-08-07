@@ -5,7 +5,7 @@ use rle_decode_fast::rle_decode;
 use std::cmp;
 use std::io;
 use std::io::Read;
-
+use std::prelude::v1::*;
 /// DEFLATE decoder which supports non-blocking I/O.
 #[derive(Debug)]
 pub struct Decoder<R> {
@@ -270,14 +270,15 @@ impl Read for BlockDecoder {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::*;
     use crate::deflate::{EncodeOptions, Encoder};
     use crate::util::{nb_read_to_end, WouldBlockReader};
     use std::io::{self, Read};
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn it_works() {
         let mut encoder = Encoder::new(Vec::new());
         io::copy(&mut &b"Hello World!"[..], &mut encoder).unwrap();
@@ -290,7 +291,7 @@ mod tests {
         assert_eq!(decoded_data, b"Hello World!");
     }
 
-    #[test]
+    #[test_case]
     fn non_blocking_io_works() {
         let mut encoder = Encoder::new(Vec::new());
         io::copy(&mut &b"Hello World!"[..], &mut encoder).unwrap();
@@ -302,7 +303,7 @@ mod tests {
         assert_eq!(decoded_data, b"Hello World!");
     }
 
-    #[test]
+    #[test_case]
     fn non_blocking_io_for_large_text_works() {
         let text: String = (0..10000)
             .into_iter()
@@ -318,7 +319,7 @@ mod tests {
         assert_eq!(decoded_data, text.as_bytes());
     }
 
-    #[test]
+    #[test_case]
     fn non_compressed_non_blocking_io_works() {
         let mut encoder = Encoder::with_options(Vec::new(), EncodeOptions::new().no_compression());
         io::copy(&mut &b"Hello World!"[..], &mut encoder).unwrap();

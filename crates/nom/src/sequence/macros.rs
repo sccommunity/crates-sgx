@@ -471,12 +471,13 @@ macro_rules! nom_compile_error (
   (( $($args:tt)* )) => ( compile_error!($($args)*) );
 );
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
   use crate::error::ErrorKind;
   use crate::internal::{Err, IResult, Needed};
   use crate::number::streaming::be_u16;
-
+  use std::string::ToString;
+  use crates_unittest::test_case;
   // reproduce the tag and take macros, because of module import order
   macro_rules! tag (
     ($i:expr, $inp: expr) => (
@@ -584,7 +585,7 @@ mod tests {
 
   #[cfg_attr(rustfmt, rustfmt_skip)]
   #[allow(unused_variables)]
-  #[test]
+  #[test_case]
   fn add_err() {
     named!(err_test,
       preceded!(
@@ -623,7 +624,7 @@ mod tests {
   }
 
   #[cfg_attr(rustfmt, rustfmt_skip)]
-  #[test]
+  #[test_case]
   fn complete() {
     named!(err_test,
       do_parse!(
@@ -639,7 +640,7 @@ mod tests {
                Err(Err::Error(error_position!(&b"mn"[..], ErrorKind::Complete))));
   }
 
-  #[test]
+  #[test_case]
   fn pair() {
     named!(tag_abc, tag!("abc"));
     named!(tag_def, tag!("def"));
@@ -671,7 +672,7 @@ mod tests {
     );
   }
 
-  #[test]
+  #[test_case]
   fn separated_pair() {
     named!(tag_abc, tag!("abc"));
     named!(tag_def, tag!("def"));
@@ -704,7 +705,7 @@ mod tests {
     );
   }
 
-  #[test]
+  #[test_case]
   fn preceded() {
     named!(tag_abcd, tag!("abcd"));
     named!(tag_efgh, tag!("efgh"));
@@ -736,7 +737,7 @@ mod tests {
     );
   }
 
-  #[test]
+  #[test_case]
   fn terminated() {
     named!(tag_abcd, tag!("abcd"));
     named!(tag_efgh, tag!("efgh"));
@@ -768,7 +769,7 @@ mod tests {
     );
   }
 
-  #[test]
+  #[test_case]
   fn delimited() {
     named!(tag_abc, tag!("abc"));
     named!(tag_def, tag!("def"));
@@ -812,7 +813,7 @@ mod tests {
     );
   }
 
-  #[test]
+  #[test_case]
   fn tuple_test() {
     named!(tuple_3<&[u8], (u16, &[u8], &[u8]) >,
     tuple!( be_u16 , take!(3), tag!("fg") ) );
@@ -829,7 +830,7 @@ mod tests {
     );
   }
 
-  #[test]
+  #[test_case]
   fn do_parse() {
     fn ret_int1(i: &[u8]) -> IResult<&[u8], u8> {
       Ok((i, 1))
@@ -874,7 +875,7 @@ mod tests {
   }
 
   #[cfg_attr(rustfmt, rustfmt_skip)]
-  #[test]
+  #[test_case]
   fn do_parse_dependency() {
     use crate::number::streaming::be_u8;
 

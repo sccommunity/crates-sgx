@@ -29,6 +29,7 @@
 //! [`Builder::format`]: ../struct.Builder.html#method.format
 //! [`Write`]: https://doc.rust-lang.org/stable/std/io/trait.Write.html
 
+use std::prelude::v1::*;
 use std::cell::RefCell;
 use std::fmt::Display;
 use std::io::prelude::*;
@@ -364,10 +365,11 @@ impl<'a> DefaultFormat<'a> {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::*;
-
+   
+    use crates_unittest::test_case;
     use log::{Level, Record};
 
     fn write(fmt: DefaultFormat) -> String {
@@ -387,7 +389,7 @@ mod tests {
         String::from_utf8(buf.bytes().to_vec()).expect("failed to read record")
     }
 
-    #[test]
+    #[test_case]
     fn format_with_header() {
         let writer = writer::Builder::new()
             .write_style(WriteStyle::Never)
@@ -407,7 +409,7 @@ mod tests {
         assert_eq!("[INFO  test::path] log\nmessage\n", written);
     }
 
-    #[test]
+    #[test_case]
     fn format_no_header() {
         let writer = writer::Builder::new()
             .write_style(WriteStyle::Never)
@@ -427,7 +429,7 @@ mod tests {
         assert_eq!("log\nmessage\n", written);
     }
 
-    #[test]
+    #[test_case]
     fn format_indent_spaces() {
         let writer = writer::Builder::new()
             .write_style(WriteStyle::Never)
@@ -447,7 +449,7 @@ mod tests {
         assert_eq!("[INFO  test::path] log\n    message\n", written);
     }
 
-    #[test]
+    #[test_case]
     fn format_indent_zero_spaces() {
         let writer = writer::Builder::new()
             .write_style(WriteStyle::Never)
@@ -467,7 +469,7 @@ mod tests {
         assert_eq!("[INFO  test::path] log\nmessage\n", written);
     }
 
-    #[test]
+    #[test_case]
     fn format_indent_spaces_no_header() {
         let writer = writer::Builder::new()
             .write_style(WriteStyle::Never)

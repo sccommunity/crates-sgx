@@ -9,12 +9,21 @@
 
 #![doc(html_root_url = "https://docs.rs/futures-test/0.3.5")]
 
+#![cfg_attr(any(all(feature = "mesalock_sgx",
+                    not(target_env = "sgx")),
+                not(feature = "std")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"), feature(rustc_private))]
+
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
+
 #[cfg(not(feature = "std"))]
 compile_error!("`futures-test` must have the `std` feature activated, this is a default-active feature");
 
 #[doc(hidden)]
 #[cfg(feature = "std")]
-pub use std as std_reexport;
+pub use sgx_tstd as std_reexport;
 
 #[doc(hidden)]
 #[cfg(feature = "std")]

@@ -12,16 +12,17 @@ Common utilities and extension traits for the futures-rs library.
 """
 
 [features]
-default = ["std", "async-await", "async-await-macro"]
-std = ["alloc", "futures-core/std", "futures-task/std", "slab"]
+default = ["std", "async-await", "async-await-macro", "mesalock_sgx"]
+std = ["mesalock_sgx", "alloc", "futures-core/std", "futures-task/std", "slab"]
 alloc = ["futures-core/alloc", "futures-task/alloc"]
 async-await = []
 async-await-macro = ["async-await", "futures-macro", "proc-macro-hack", "proc-macro-nested"]
-compat = ["std", "futures_01"]
-io-compat = ["io", "compat", "tokio-io"]
+#compat = ["std", "futures_01"]
+#io-compat = ["io", "compat", "tokio-io"]
 sink = ["futures-sink"]
 io = ["std", "futures-io", "memchr"]
 channel = ["std", "futures-channel"]
+mesalock_sgx = ["sgx_tstd", "std"]
 
 # Unstable features
 # These features are outside of the normal semver guarantees and require the
@@ -41,12 +42,16 @@ futures-sink = { path = "../futures-sink", version = "0.3.5", default-features =
 futures-macro = { path = "../futures-macro", version = "0.3.5", default-features = false, optional = true }
 proc-macro-hack = { version = "0.5.9", optional = true }
 proc-macro-nested = { version = "0.1.2", optional = true }
-slab = { version = "0.4.2", optional = true }
-memchr = { version = "2.2", optional = true }
-futures_01 = { version = "0.1.25", optional = true, package = "futures" }
-tokio-io = { version = "0.1.9", optional = true }
+#slab = { version = "0.4.2", optional = true }
+#memchr = { version = "2.2", optional = true }
+#futures_01 = { version = "0.1.25", optional = true, package = "futures" }
+#tokio-io = { version = "0.1.9", optional = true }
 pin-utils = "0.1.0"
-pin-project = "0.4.15"
+pin-project = "0.4.20"
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true, features = ["thread"] }
+
+slab = { path = "../../slab", optional = true  }
+memchr = { path = "../../rust-memchr", optional = true  }
 
 [dev-dependencies]
 futures = { path = "../futures", version = "0.3.5", features = ["async-await", "thread-pool"] }

@@ -1,7 +1,8 @@
 use futures::future::join;
 use h2_support::prelude::*;
-
-#[tokio::test]
+use std::string::ToString;
+use crates_unittest::{ test_case };
+#[crates_unittest::test]
 async fn read_none() {
     let mut codec = Codec::from(mock_io::Builder::new().build());
 
@@ -14,7 +15,7 @@ fn read_frame_too_big() {}
 
 // ===== DATA =====
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn read_data_no_padding() {
     let mut codec = raw_codec! {
         read => [
@@ -31,7 +32,7 @@ async fn read_data_no_padding() {
     assert_closed!(codec);
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn read_data_empty_payload() {
     let mut codec = raw_codec! {
         read => [
@@ -47,7 +48,7 @@ async fn read_data_empty_payload() {
     assert_closed!(codec);
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn read_data_end_stream() {
     let mut codec = raw_codec! {
         read => [
@@ -63,7 +64,7 @@ async fn read_data_end_stream() {
     assert_closed!(codec);
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn read_data_padding() {
     let mut codec = raw_codec! {
         read => [
@@ -82,7 +83,7 @@ async fn read_data_padding() {
     assert_closed!(codec);
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn read_push_promise() {
     let mut codec = raw_codec! {
         read => [
@@ -102,7 +103,7 @@ async fn read_push_promise() {
     assert_closed!(codec);
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn read_data_stream_id_zero() {
     let mut codec = raw_codec! {
         read => [
@@ -128,7 +129,7 @@ fn read_headers_with_pseudo() {}
 #[ignore]
 fn read_headers_empty_payload() {}
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn read_continuation_frames() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -187,7 +188,7 @@ async fn read_continuation_frames() {
     join(srv, client).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn update_max_frame_len_at_rest() {
     use futures::StreamExt;
 
@@ -213,7 +214,7 @@ async fn update_max_frame_len_at_rest() {
     );
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn read_goaway_with_debug_data() {
     let mut codec = raw_codec! {
         read => [

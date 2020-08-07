@@ -1,0 +1,47 @@
+[package]
+name = "run-tests-enclave"
+version = "1.0.0"
+edition = "2018"
+
+[lib]
+name = "run_tests_enclave"
+crate-type = ["staticlib"]
+
+[features]
+default = ["runtime", "stream","mesalock_sgx", "crates_unittest", "inventory"]
+mesalock_sgx = ["sgx_tstd"]
+
+runtime = [
+    "tcp",
+    "tokio/rt-core",
+]
+tcp = [
+    "net2",
+    "tokio/blocking",
+    "tokio/tcp",
+    "tokio/time",
+]
+
+# `impl Stream` for things
+stream = []
+[dependencies]
+hyper = { path = "../..", features = ["stream", "runtime"]}
+crates_unittest = { git = "https://github.com/Zha0Chan/crates-sgx-unittest.git", optional = true, default-features = true }
+inventory = { version = "0.1.6", optional = true }
+matches = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2" }
+tokio = { path = "../../../tokio/tokio", features = ["sync"] }
+net2 = { path = "../../../net2-rs", optional = true }
+futures-util = { path = "../../../futures-rs/futures-util", version = "0.3", default-features = false, features = ["alloc"] }
+pretty_env_logger = { path = "../../../pretty-env-logger" }
+futures-core = { path = "../../../futures-rs/futures-core", default-features = false }
+futures-channel = { path = "../../../futures-rs/futures-channel" }
+tower-service = { path = "../../../tower/tower-service" }
+http = { path = "../../../http" }
+http-body = { path = "../../../http-body" }
+httparse = { path = "../../../httparse"}
+h2 = { path = "../../../h2"}
+spmc = { path = "../../../spmc" }
+[target.'cfg(not(target_env = "sgx"))'.dependencies]
+sgx_types = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true, features = ["thread", "untrusted_time"] }
+

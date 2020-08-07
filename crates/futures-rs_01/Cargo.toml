@@ -19,12 +19,15 @@ travis-ci = { repository = "rust-lang-nursery/futures-rs" }
 appveyor = { repository = "rust-lang-nursery/futures-rs" }
 
 [dependencies]
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true, features = ["thread", "untrusted_time"] }
 
 [features]
 nightly = []
-use_std = []
+use_std = ["mesalock_sgx"]
 with-deprecated = []
-default = ["use_std", "with-deprecated"]
+default = ["use_std", "with-deprecated", "mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd", "use_std"]
 
 [workspace]
 members = ["futures01", "futures-cpupool"]
+exclude = ["sgx-tests"]

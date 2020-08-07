@@ -23,7 +23,7 @@ use std::error::Error;
 use std::str::FromStr;
 use std::convert::TryFrom;
 use std::{fmt, str};
-
+use std::prelude::v1::*;
 /// The Request Method (VERB)
 ///
 /// This type also contains constants for a number of common HTTP methods such
@@ -312,7 +312,7 @@ impl Error for InvalidMethod {}
 mod extension {
     use super::InvalidMethod;
     use std::str;
-
+    use std::prelude::v1::*;
     #[derive(Clone, PartialEq, Eq, Hash)]
     // Invariant: the first self.1 bytes of self.0 are valid UTF-8.
     pub struct InlineExtension([u8; InlineExtension::MAX], u8);

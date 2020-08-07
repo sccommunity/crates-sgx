@@ -1,3 +1,5 @@
+use std::prelude::v1::*;
+
 header! {
     /// `Server` header, defined in [RFC7231](http://tools.ietf.org/html/rfc7231#section-7.4.2)
     ///
@@ -25,6 +27,7 @@ header! {
     /// headers.set(Server("hyper/0.5.2".to_owned()));
     /// ```
     // TODO: Maybe parse as defined in the spec?
+    
     (Server, "Server") => [String]
 
     test_server {

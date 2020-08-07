@@ -4,12 +4,26 @@ version = "0.1.0"
 authors = ["Carl Lerche <me@carllerche.com>"]
 edition = "2018"
 
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+
 [dependencies]
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 h2 = { path = "../..", features = ["stream", "unstable"] }
 
-bytes = "0.5"
-env_logger = "0.5.9"
-futures = { version = "0.3", default-features = false }
-http = "0.2"
-tokio = { version = "0.2", features = ["time"] }
-tokio-test = "0.2"
+bytes = { path = "../../../bytes" }
+env_logger = { path = "../../../env_logger" }
+futures = { path = "../../../futures-rs/futures", version = "0.3", default-features = false }
+http = { path = "../../../http" }
+tokio = { path = "../../../tokio/tokio", version = "0.2", features = ["time"] }
+tokio-test = { path = "../../../tokio/tokio-test" }
+
+# h2 = { path = "../..", features = ["stream", "unstable"] }
+
+# bytes = "0.5"
+# env_logger = "0.5.9"
+# futures = { version = "0.3", default-features = false }
+# http = "0.2"
+# tokio = { version = "0.2", features = ["time"] }
+# tokio-test = "0.2"

@@ -2,6 +2,7 @@
 This module provides a regular expression printer for `Hir`.
 */
 
+use std::prelude::v1::*;
 use std::fmt;
 
 use hir::visitor::{self, Visitor};

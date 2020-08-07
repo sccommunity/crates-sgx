@@ -3,7 +3,7 @@
 // See README.md and LICENSE.txt for details.
 
 //! Asymmetric or special encoding constructions required by the WHATWG Encoding standard.
-
+use std::prelude::v1::*;
 use codec;
 use types::*;
 

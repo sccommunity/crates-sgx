@@ -1,5 +1,5 @@
 //! `MatrixGraph<N, E, Ty, NullN, NullE, Ix>` is a graph datastructure backed by an adjacency matrix.
-
+use std::prelude::v1::*;
 use std::marker::PhantomData;
 use std::ops::{Index, IndexMut};
 

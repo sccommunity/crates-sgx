@@ -141,7 +141,7 @@
 //! | `0`              | Pad with zeros  | `%0d` => `05` |
 
 #![cfg_attr(docs, feature(doc_cfg))]
-#![cfg_attr(not(std), no_std)]
+//#![cfg_attr(not(std), no_std)]
 #![deny(
     anonymous_parameters,
     clippy::all,
@@ -199,6 +199,26 @@
 // Because we have a macro named `time`, this can cause conflicts. MSRV
 // guarantees that edition 2018 is available.
 #![doc(test(no_crate_inject))]
+
+
+#![cfg_attr(not(
+    all(
+        any(feature = "std", feature = "mesalock_sgx"),
+        target_env = "sgx",
+        target_vendor = "mesalock",
+    )),
+    no_std
+)]
+
+#![cfg_attr(
+    all(
+        any(feature = "std", feature = "mesalock_sgx"),
+        target_env = "sgx",
+        target_vendor = "mesalock",
+    ),
+    feature(rustc_private)
+)]
+
 
 #[cfg(panicking_api)]
 #[cfg_attr(docs, doc(cfg(feature = "panicking-api")))]
@@ -286,7 +306,8 @@ macro_rules! ensure_value_in_range {
     };
 }
 
-#[cfg(all(test, std))]
+//#[cfg(all(test, std))]
+#[cfg(feature = "enclave_unit_test")]
 macro_rules! assert_panics {
     ($e:expr $(, $message:literal)?) => {
         #[allow(box_pointers)]
@@ -303,8 +324,17 @@ macro_rules! assert_panics {
     };
 }
 
+#[cfg(all(
+    any(feature = "std", feature = "mesalock_sgx"),
+    not(target_env = "sgx"),
+    not(target_vendor = "mesalock"),
+))]
+#[macro_use]
+extern crate sgx_tstd as std;
+
 /// A macro to generate `Time`s at runtime, usable for tests.
-#[cfg(test)]
+//#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 macro_rules! time {
     ($hour:literal : $minute:literal) => {
         crate::Time::try_from_hms($hour, $minute, 0)?
@@ -319,7 +349,8 @@ macro_rules! time {
 
 /// A macro to generate `UtcOffset`s with *no data verification*, usable for
 /// tests.
-#[cfg(test)]
+//#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 macro_rules! offset {
     (UTC) => {
         crate::UtcOffset::UTC
@@ -342,7 +373,8 @@ macro_rules! offset {
 }
 
 /// A macro to generate `Date`s at runtime, usable for tests.
-#[cfg(test)]
+//#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 macro_rules! date {
     ($(+)? $year:literal - $ordinal:literal) => {
         crate::Date::try_from_yo($year, $ordinal)?
@@ -351,6 +383,8 @@ macro_rules! date {
         crate::Date::try_from_ymd($year, $month, $day)?
     };
 }
+
+
 
 /// The `Date` struct and its associated `impl`s.
 mod date;
@@ -382,6 +416,15 @@ mod time_mod;
 mod utc_offset;
 /// Days of the week.
 mod weekday;
+
+#[cfg(feature = "enclave_unit_test")]
+use std::prelude::v1::*;
+
+#[cfg(feature = "enclave_unit_test")]
+pub fn run_tests() {
+    use crates_unittest::run_inventory_tests;
+    run_inventory_tests!();
+} 
 
 pub use date::{days_in_year, is_leap_year, weeks_in_year, Date};
 pub use duration::Duration;

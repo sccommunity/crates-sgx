@@ -25,6 +25,13 @@ Trait representing an asynchronous, streaming, HTTP request or response body.
 keywords = ["http"]
 categories = ["web-programming"]
 
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+
 [dependencies]
-bytes = "0.5"
-http = "0.2"
+#bytes = "0.5"
+#http = "0.2"
+bytes = { path = "../bytes" }
+http = { path = "../http" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }

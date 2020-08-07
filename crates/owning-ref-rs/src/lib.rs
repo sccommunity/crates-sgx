@@ -243,6 +243,14 @@ fn main() {
 ```
 */
 
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
+use std::prelude::v1::*;
 extern crate stable_deref_trait;
 pub use stable_deref_trait::{StableDeref as StableAddress, CloneStableDeref as CloneStableAddress};
 
@@ -1145,7 +1153,7 @@ impl<O, T: ?Sized> Hash for OwningRefMut<O, T> where T: Hash {
 use std::boxed::Box;
 use std::rc::Rc;
 use std::sync::Arc;
-use std::sync::{MutexGuard, RwLockReadGuard, RwLockWriteGuard};
+use std::sync::{SgxMutexGuard as MutexGuard, SgxRwLockReadGuard as RwLockReadGuard, SgxRwLockWriteGuard as RwLockWriteGuard};
 use std::cell::{Ref, RefCell, RefMut};
 
 impl<T: 'static> ToHandle for RefCell<T> {
@@ -1228,8 +1236,16 @@ pub type ErasedArcRef<U> = OwningRef<Arc<dyn Erased>, U>;
 /// Typedef of a mutable owning reference that uses an erased `Box` as the owner.
 pub type ErasedBoxRefMut<U> = OwningRefMut<Box<dyn Erased>, U>;
 
-#[cfg(test)]
-mod tests {
+#[cfg(feature = "enclave_unit_test")]
+extern crate crates_unittest;
+#[cfg(feature = "enclave_unit_test")]
+pub mod tests {
+    use std::prelude::v1::*;
+        use crates_unittest::run_inventory_tests;
+        
+        pub fn run_tests() {
+            run_inventory_tests!();
+        }
     mod owning_ref {
         use super::super::OwningRef;
         use super::super::{RcRef, BoxRef, Erased, ErasedBoxRef};
@@ -1238,26 +1254,29 @@ mod tests {
         use std::collections::hash_map::DefaultHasher;
         use std::collections::HashMap;
         use std::rc::Rc;
+        use std::prelude::v1::*;
+        use crates_unittest::{ test_case };
 
+      
         #[derive(Debug, PartialEq)]
         struct Example(u32, String, [u8; 3]);
         fn example() -> Example {
             Example(42, "hello world".to_string(), [1, 2, 3])
         }
 
-        #[test]
+        #[test_case]
         fn new_deref() {
             let or: OwningRef<Box<()>, ()> = OwningRef::new(Box::new(()));
             assert_eq!(&*or, &());
         }
 
-        #[test]
+        #[test_case]
         fn into() {
             let or: OwningRef<Box<()>, ()> = Box::new(()).into();
             assert_eq!(&*or, &());
         }
 
-        #[test]
+        #[test_case]
         fn map_offset_ref() {
             let or: BoxRef<Example> = Box::new(example()).into();
             let or: BoxRef<_, u32> = or.map(|x| &x.0);
@@ -1268,21 +1287,21 @@ mod tests {
             assert_eq!(&*or, &2);
         }
 
-        #[test]
+        #[test_case]
         fn map_heap_ref() {
             let or: BoxRef<Example> = Box::new(example()).into();
             let or: BoxRef<_, str> = or.map(|x| &x.1[..5]);
             assert_eq!(&*or, "hello");
         }
 
-        #[test]
+        #[test_case]
         fn map_static_ref() {
             let or: BoxRef<()> = Box::new(()).into();
             let or: BoxRef<_, str> = or.map(|_| "hello");
             assert_eq!(&*or, "hello");
         }
 
-        #[test]
+        #[test_case]
         fn map_chained() {
             let or: BoxRef<String> = Box::new(example().1).into();
             let or: BoxRef<_, str> = or.map(|x| &x[1..5]);
@@ -1290,7 +1309,7 @@ mod tests {
             assert_eq!(&*or, "el");
         }
 
-        #[test]
+        #[test_case]
         fn map_chained_inference() {
             let or = BoxRef::new(Box::new(example().1))
                 .map(|x| &x[..5])
@@ -1298,7 +1317,7 @@ mod tests {
             assert_eq!(&*or, "el");
         }
 
-        #[test]
+        #[test_case]
         fn as_owner() {
             let or: BoxRef<String> = Box::new(example().1).into();
             let or = or.map(|x| &x[..5]);
@@ -1306,7 +1325,7 @@ mod tests {
             assert_eq!(&**or.as_owner(), "hello world");
         }
 
-        #[test]
+        #[test_case]
         fn into_owner() {
             let or: BoxRef<String> = Box::new(example().1).into();
             let or = or.map(|x| &x[..5]);
@@ -1315,7 +1334,7 @@ mod tests {
             assert_eq!(&s, "hello world");
         }
 
-        #[test]
+        #[test_case]
         fn fmt_debug() {
             let or: BoxRef<String> = Box::new(example().1).into();
             let or = or.map(|x| &x[..5]);
@@ -1323,7 +1342,7 @@ mod tests {
             assert_eq!(&s, "OwningRef { owner: \"hello world\", reference: \"hello\" }");
         }
 
-        #[test]
+        #[test_case]
         fn erased_owner() {
             let o1: BoxRef<Example, str> = BoxRef::new(Box::new(example()))
                 .map(|x| &x.1[..]);
@@ -1335,7 +1354,7 @@ mod tests {
             assert!(os.iter().all(|e| &e[..] == "hello world"));
         }
 
-        #[test]
+        #[test_case]
         fn non_static_erased_owner() {
             let foo = [413, 612];
             let bar = &foo;
@@ -1354,12 +1373,12 @@ mod tests {
             assert_eq!(*o, 413);
         }
 
-        #[test]
+        #[test_case]
         fn raii_locks() {
             use super::super::{RefRef, RefMutRef};
             use std::cell::RefCell;
             use super::super::{MutexGuardRef, RwLockReadGuardRef, RwLockWriteGuardRef};
-            use std::sync::{Mutex, RwLock};
+            use std::sync::{SgxMutex as Mutex, SgxRwLock as RwLock};
 
             {
                 let a = RefCell::new(1);
@@ -1413,28 +1432,28 @@ mod tests {
             }
         }
 
-        #[test]
+        #[test_case]
         fn eq() {
             let or1: BoxRef<[u8]> = BoxRef::new(vec![1, 2, 3].into_boxed_slice());
             let or2: BoxRef<[u8]> = BoxRef::new(vec![1, 2, 3].into_boxed_slice());
             assert_eq!(or1.eq(&or2), true);
         }
 
-        #[test]
+        #[test_case]
         fn cmp() {
             let or1: BoxRef<[u8]> = BoxRef::new(vec![1, 2, 3].into_boxed_slice());
             let or2: BoxRef<[u8]> = BoxRef::new(vec![4, 5, 6].into_boxed_slice());
             assert_eq!(or1.cmp(&or2), Ordering::Less);
         }
 
-        #[test]
+        #[test_case]
         fn partial_cmp() {
             let or1: BoxRef<[u8]> = BoxRef::new(vec![4, 5, 6].into_boxed_slice());
             let or2: BoxRef<[u8]> = BoxRef::new(vec![1, 2, 3].into_boxed_slice());
             assert_eq!(or1.partial_cmp(&or2), Some(Ordering::Greater));
         }
 
-        #[test]
+        #[test_case]
         fn hash() {
             let mut h1 = DefaultHasher::new();
             let mut h2 = DefaultHasher::new();
@@ -1448,7 +1467,7 @@ mod tests {
             assert_eq!(h1.finish(), h2.finish());
         }
 
-        #[test]
+        #[test_case]
         fn borrow() {
             let mut hash = HashMap::new();
             let     key  = RcRef::<String>::new(Rc::new("foo-bar".to_string())).map(|s| &s[..]);
@@ -1460,7 +1479,7 @@ mod tests {
             assert_eq!(hash.get("bar"), Some(&23));
         }
 
-        #[test]
+        #[test_case]
         fn total_erase() {
             let a: OwningRef<Vec<u8>, [u8]>
                 = OwningRef::new(vec![]).map(|x| &x[..]);
@@ -1477,7 +1496,7 @@ mod tests {
             let _h = f.clone();
         }
 
-        #[test]
+        #[test_case]
         fn total_erase_box() {
             let a: OwningRef<Vec<u8>, [u8]>
                 = OwningRef::new(vec![]).map(|x| &x[..]);
@@ -1491,7 +1510,7 @@ mod tests {
             let _f: OwningRef<Box<dyn Erased>, [u8]> = d.erase_owner();
         }
 
-        #[test]
+        #[test_case]
         fn try_map1() {
             use std::any::Any;
 
@@ -1501,7 +1520,7 @@ mod tests {
             OwningRef::new(y).try_map(|x| x.downcast_ref::<i32>().ok_or(())).unwrap();
         }
 
-        #[test]
+        #[test_case]
         fn try_map2() {
             use std::any::Any;
 
@@ -1511,7 +1530,7 @@ mod tests {
             OwningRef::new(y).try_map(|x| x.downcast_ref::<i32>().ok_or(())).unwrap_err();
         }
 
-        #[test]
+        #[test_case]
         fn map_with_owner() {
             let owning_ref: BoxRef<Example> = Box::new(example()).into();
             let owning_ref = owning_ref.map(|owner| &owner.1);
@@ -1522,7 +1541,7 @@ mod tests {
             });
         }
 
-        #[test]
+        #[test_case]
         fn try_map_with_owner_ok() {
             let owning_ref: BoxRef<Example> = Box::new(example()).into();
             let owning_ref = owning_ref.map(|owner| &owner.1);
@@ -1533,7 +1552,7 @@ mod tests {
             }).unwrap();
         }
 
-        #[test]
+        #[test_case]
         fn try_map_with_owner_err() {
             let owning_ref: BoxRef<Example> = Box::new(example()).into();
             let owning_ref = owning_ref.map(|owner| &owner.1);
@@ -1551,9 +1570,10 @@ mod tests {
         use std::rc::Rc;
         use std::cell::RefCell;
         use std::sync::Arc;
-        use std::sync::RwLock;
-
-        #[test]
+        use std::sync::SgxRwLock as RwLock;
+        use std::prelude::v1::*;
+        use crates_unittest::test_case;
+        #[test_case]
         fn owning_handle() {
             use std::cell::RefCell;
             let cell = Rc::new(RefCell::new(2));
@@ -1564,7 +1584,7 @@ mod tests {
             assert_eq!(*handle, 3);
         }
 
-        #[test]
+        #[test_case]
         fn try_owning_handle_ok() {
             use std::cell::RefCell;
             let cell = Rc::new(RefCell::new(2));
@@ -1579,7 +1599,7 @@ mod tests {
             assert_eq!(*handle, 3);
         }
 
-        #[test]
+        #[test_case]
         fn try_owning_handle_err() {
             use std::cell::RefCell;
             let cell = Rc::new(RefCell::new(2));
@@ -1595,10 +1615,10 @@ mod tests {
             assert!(handle.is_err());
         }
 
-        #[test]
+        #[test_case]
         fn nested() {
             use std::cell::RefCell;
-            use std::sync::{Arc, RwLock};
+            use std::sync::{Arc, SgxRwLock as RwLock};
 
             let result = {
                 let complex = Rc::new(RefCell::new(Arc::new(RwLock::new("someString"))));
@@ -1612,7 +1632,7 @@ mod tests {
             assert_eq!(*result, "someOtherString");
         }
 
-        #[test]
+        #[test_case]
         fn owning_handle_safe() {
             use std::cell::RefCell;
             let cell = Rc::new(RefCell::new(2));
@@ -1621,7 +1641,7 @@ mod tests {
             assert_eq!(*handle, 2);
         }
 
-        #[test]
+        #[test_case]
         fn owning_handle_mut_safe() {
             use std::cell::RefCell;
             let cell = Rc::new(RefCell::new(2));
@@ -1632,7 +1652,7 @@ mod tests {
             assert_eq!(*handle, 3);
         }
 
-        #[test]
+        #[test_case]
         fn owning_handle_safe_2() {
             let result = {
                 let complex = Rc::new(RefCell::new(Arc::new(RwLock::new("someString"))));
@@ -1654,26 +1674,27 @@ mod tests {
         use std::hash::{Hash, Hasher};
         use std::collections::hash_map::DefaultHasher;
         use std::collections::HashMap;
-
+        use std::prelude::v1::*;
+        use crates_unittest::test_case;
         #[derive(Debug, PartialEq)]
         struct Example(u32, String, [u8; 3]);
         fn example() -> Example {
             Example(42, "hello world".to_string(), [1, 2, 3])
         }
 
-        #[test]
+        #[test_case]
         fn new_deref() {
             let or: OwningRefMut<Box<()>, ()> = OwningRefMut::new(Box::new(()));
             assert_eq!(&*or, &());
         }
 
-        #[test]
+        #[test_case]
         fn new_deref_mut() {
             let mut or: OwningRefMut<Box<()>, ()> = OwningRefMut::new(Box::new(()));
             assert_eq!(&mut *or, &mut ());
         }
 
-        #[test]
+        #[test_case]
         fn mutate() {
             let mut or: OwningRefMut<Box<usize>, usize> = OwningRefMut::new(Box::new(0));
             assert_eq!(&*or, &0);
@@ -1681,13 +1702,13 @@ mod tests {
             assert_eq!(&*or, &1);
         }
 
-        #[test]
+        #[test_case]
         fn into() {
             let or: OwningRefMut<Box<()>, ()> = Box::new(()).into();
             assert_eq!(&*or, &());
         }
 
-        #[test]
+        #[test_case]
         fn map_offset_ref() {
             let or: BoxRefMut<Example> = Box::new(example()).into();
             let or: BoxRef<_, u32> = or.map(|x| &mut x.0);
@@ -1698,21 +1719,21 @@ mod tests {
             assert_eq!(&*or, &2);
         }
 
-        #[test]
+        #[test_case]
         fn map_heap_ref() {
             let or: BoxRefMut<Example> = Box::new(example()).into();
             let or: BoxRef<_, str> = or.map(|x| &mut x.1[..5]);
             assert_eq!(&*or, "hello");
         }
 
-        #[test]
+        #[test_case]
         fn map_static_ref() {
             let or: BoxRefMut<()> = Box::new(()).into();
             let or: BoxRef<_, str> = or.map(|_| "hello");
             assert_eq!(&*or, "hello");
         }
 
-        #[test]
+        #[test_case]
         fn map_mut_offset_ref() {
             let or: BoxRefMut<Example> = Box::new(example()).into();
             let or: BoxRefMut<_, u32> = or.map_mut(|x| &mut x.0);
@@ -1723,14 +1744,14 @@ mod tests {
             assert_eq!(&*or, &2);
         }
 
-        #[test]
+        #[test_case]
         fn map_mut_heap_ref() {
             let or: BoxRefMut<Example> = Box::new(example()).into();
             let or: BoxRefMut<_, str> = or.map_mut(|x| &mut x.1[..5]);
             assert_eq!(&*or, "hello");
         }
 
-        #[test]
+        #[test_case]
         fn map_mut_static_ref() {
             static mut MUT_S: [u8; 5] = *b"hello";
 
@@ -1741,7 +1762,7 @@ mod tests {
             assert_eq!(&*or, b"hello");
         }
 
-        #[test]
+        #[test_case]
         fn map_mut_chained() {
             let or: BoxRefMut<String> = Box::new(example().1).into();
             let or: BoxRefMut<_, str> = or.map_mut(|x| &mut x[1..5]);
@@ -1749,7 +1770,7 @@ mod tests {
             assert_eq!(&*or, "el");
         }
 
-        #[test]
+        #[test_case]
         fn map_chained_inference() {
             let or = BoxRefMut::new(Box::new(example().1))
                 .map_mut(|x| &mut x[..5])
@@ -1757,7 +1778,7 @@ mod tests {
             assert_eq!(&*or, "el");
         }
 
-        #[test]
+        #[test_case]
         fn try_map_mut() {
             let or: BoxRefMut<String> = Box::new(example().1).into();
             let or: Result<BoxRefMut<_, str>, ()> = or.try_map_mut(|x| Ok(&mut x[1..5]));
@@ -1768,7 +1789,7 @@ mod tests {
             assert!(or.is_err());
         }
 
-        #[test]
+        #[test_case]
         fn as_owner() {
             let or: BoxRefMut<String> = Box::new(example().1).into();
             let or = or.map_mut(|x| &mut x[..5]);
@@ -1776,7 +1797,7 @@ mod tests {
             assert_eq!(&**or.as_owner(), "hello world");
         }
 
-        #[test]
+        #[test_case]
         fn into_owner() {
             let or: BoxRefMut<String> = Box::new(example().1).into();
             let or = or.map_mut(|x| &mut x[..5]);
@@ -1785,7 +1806,7 @@ mod tests {
             assert_eq!(&s, "hello world");
         }
 
-        #[test]
+        #[test_case]
         fn fmt_debug() {
             let or: BoxRefMut<String> = Box::new(example().1).into();
             let or = or.map_mut(|x| &mut x[..5]);
@@ -1794,7 +1815,7 @@ mod tests {
                        "OwningRefMut { owner: \"hello world\", reference: \"hello\" }");
         }
 
-        #[test]
+        #[test_case]
         fn erased_owner() {
             let o1: BoxRefMut<Example, str> = BoxRefMut::new(Box::new(example()))
                 .map_mut(|x| &mut x.1[..]);
@@ -1806,7 +1827,7 @@ mod tests {
             assert!(os.iter().all(|e| &e[..] == "hello world"));
         }
 
-        #[test]
+        #[test_case]
         fn non_static_erased_owner() {
             let mut foo = [413, 612];
             let bar = &mut foo;
@@ -1825,12 +1846,12 @@ mod tests {
             assert_eq!(*o, 413);
         }
 
-        #[test]
+        #[test_case]
         fn raii_locks() {
             use super::super::RefMutRefMut;
             use std::cell::RefCell;
             use super::super::{MutexGuardRefMut, RwLockWriteGuardRefMut};
-            use std::sync::{Mutex, RwLock};
+            use std::sync::{SgxMutex as Mutex, SgxRwLock as RwLock};
 
             {
                 let a = RefCell::new(1);
@@ -1864,28 +1885,28 @@ mod tests {
             }
         }
 
-        #[test]
+        #[test_case]
         fn eq() {
             let or1: BoxRefMut<[u8]> = BoxRefMut::new(vec![1, 2, 3].into_boxed_slice());
             let or2: BoxRefMut<[u8]> = BoxRefMut::new(vec![1, 2, 3].into_boxed_slice());
             assert_eq!(or1.eq(&or2), true);
         }
 
-        #[test]
+        #[test_case]
         fn cmp() {
             let or1: BoxRefMut<[u8]> = BoxRefMut::new(vec![1, 2, 3].into_boxed_slice());
             let or2: BoxRefMut<[u8]> = BoxRefMut::new(vec![4, 5, 6].into_boxed_slice());
             assert_eq!(or1.cmp(&or2), Ordering::Less);
         }
 
-        #[test]
+        #[test_case]
         fn partial_cmp() {
             let or1: BoxRefMut<[u8]> = BoxRefMut::new(vec![4, 5, 6].into_boxed_slice());
             let or2: BoxRefMut<[u8]> = BoxRefMut::new(vec![1, 2, 3].into_boxed_slice());
             assert_eq!(or1.partial_cmp(&or2), Some(Ordering::Greater));
         }
 
-        #[test]
+        #[test_case]
         fn hash() {
             let mut h1 = DefaultHasher::new();
             let mut h2 = DefaultHasher::new();
@@ -1899,7 +1920,7 @@ mod tests {
             assert_eq!(h1.finish(), h2.finish());
         }
 
-        #[test]
+        #[test_case]
         fn borrow() {
             let mut hash = HashMap::new();
             let     key1 = BoxRefMut::<String>::new(Box::new("foo".to_string())).map(|s| &s[..]);
@@ -1912,7 +1933,7 @@ mod tests {
             assert_eq!(hash.get("bar"), Some(&23));
         }
 
-        #[test]
+        #[test_case]
         fn total_erase() {
             let a: OwningRefMut<Vec<u8>, [u8]>
                 = OwningRefMut::new(vec![]).map_mut(|x| &mut x[..]);
@@ -1926,7 +1947,7 @@ mod tests {
             let _f: OwningRefMut<Box<dyn Erased>, [u8]> = d.erase_owner();
         }
 
-        #[test]
+        #[test_case]
         fn total_erase_box() {
             let a: OwningRefMut<Vec<u8>, [u8]>
                 = OwningRefMut::new(vec![]).map_mut(|x| &mut x[..]);
@@ -1940,7 +1961,7 @@ mod tests {
             let _f: OwningRefMut<Box<dyn Erased>, [u8]> = d.erase_owner();
         }
 
-        #[test]
+        #[test_case]
         fn try_map1() {
             use std::any::Any;
 
@@ -1950,7 +1971,7 @@ mod tests {
             OwningRefMut::new(y).try_map_mut(|x| x.downcast_mut::<i32>().ok_or(())).unwrap();
         }
 
-        #[test]
+        #[test_case]
         fn try_map2() {
             use std::any::Any;
 
@@ -1960,7 +1981,7 @@ mod tests {
             OwningRefMut::new(y).try_map_mut(|x| x.downcast_mut::<i32>().ok_or(())).unwrap_err();
         }
 
-        #[test]
+        #[test_case]
         fn try_map3() {
             use std::any::Any;
 
@@ -1970,7 +1991,7 @@ mod tests {
             OwningRefMut::new(y).try_map(|x| x.downcast_ref::<i32>().ok_or(())).unwrap();
         }
 
-        #[test]
+        #[test_case]
         fn try_map4() {
             use std::any::Any;
 
@@ -1980,7 +2001,7 @@ mod tests {
             OwningRefMut::new(y).try_map(|x| x.downcast_ref::<i32>().ok_or(())).unwrap_err();
         }
 
-        #[test]
+        #[test_case]
         fn into_owning_ref() {
             use super::super::BoxRef;
 
@@ -1996,7 +2017,7 @@ mod tests {
             f: Foo,
         }
 
-        #[test]
+        #[test_case]
         fn ref_mut() {
             use std::cell::RefCell;
 

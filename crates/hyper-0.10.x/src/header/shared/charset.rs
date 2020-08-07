@@ -3,9 +3,12 @@ use std::str::FromStr;
 
 #[allow(unused_imports)]
 use std::ascii::AsciiExt;
-
+use std::prelude::v1::*;
 use self::Charset::*;
 
+
+#[cfg(feature = "enclave_unit_test")]
+use crates_unittest::test_case;
 /// A Mime charset.
 ///
 /// The string representation is normalised to upper case.
@@ -137,7 +140,7 @@ impl FromStr for Charset {
     }
 }
 
-#[test]
+#[test_case]
 fn test_parse() {
     assert_eq!(Us_Ascii,"us-ascii".parse().unwrap());
     assert_eq!(Us_Ascii,"US-Ascii".parse().unwrap());
@@ -146,7 +149,7 @@ fn test_parse() {
     assert_eq!(Ext("ABCD".to_owned()),"abcd".parse().unwrap());
 }
 
-#[test]
+#[test_case]
 fn test_display() {
     assert_eq!("US-ASCII", format!("{}", Us_Ascii));
     assert_eq!("ABCD", format!("{}", Ext("ABCD".to_owned())));

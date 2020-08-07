@@ -21,14 +21,23 @@ Filesystem API for Tokio.
 keywords = ["tokio", "futures", "fs", "file", "async"]
 categories = ["asynchronous", "network-programming", "filesystem"]
 
+
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+
 [dependencies]
-futures = "0.1.21"
-tokio-threadpool = "0.1.3"
-tokio-io = "0.1.6"
+futures = { path = "../../futures-rs_01"}
+tokio-threadpool = { path = "../tokio-threadpool" }
+tokio-io = { path = "../tokio-io" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true, features = ["untrusted_fs"] }
+#futures = "0.1.21"
+#tokio-threadpool = "0.1.3"
+#tokio-io = "0.1.6"
 
 [dev-dependencies]
-rand = "0.7"
-tempfile = "~3.1.0"
-tokio-io = "0.1.6"
-tokio-codec = "0.1.0"
-tokio = "0.1.7"
+#rand = "0.7"
+#tempfile = "~3.1.0"
+#tokio-io = "0.1.6"
+#tokio-codec = "0.1.0"
+#tokio = "0.1.7"

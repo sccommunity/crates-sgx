@@ -14,5 +14,8 @@ members = [
     "tracing-subscriber",
     "tracing-serde",
     "tracing-appender",
+    "tracing-journald",
     "examples"
 ]
+
+exclude = ["sgx-tests"]

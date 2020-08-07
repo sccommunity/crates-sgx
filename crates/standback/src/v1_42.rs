@@ -2,7 +2,7 @@ use crate::Sealed;
 use core::{mem::ManuallyDrop, ptr};
 #[cfg(std)]
 use std::{
-    sync::{Condvar, LockResult, MutexGuard, WaitTimeoutResult},
+    sync::{SgxCondvar as Condvar, LockResult, SgxMutexGuard as MutexGuard, WaitTimeoutResult},
     time::{Duration, Instant},
 };
 

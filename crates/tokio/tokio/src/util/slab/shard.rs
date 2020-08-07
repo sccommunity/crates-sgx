@@ -1,6 +1,7 @@
 use crate::util::slab::{page, Address, Entry, MAX_PAGES};
 
 use std::fmt;
+use std::prelude::v1::*;
 
 // ┌─────────────┐      ┌────────┐
 // │ page 1      │      │        │

@@ -16,7 +16,11 @@
 
 #![doc(html_root_url = "https://docs.rs/num-iter/0.1")]
 #![no_std]
-#[cfg(feature = "std")]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"), feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", feature = "std", not(target_env = "sgx")))]
+extern crate sgx_tstd as std;
+
+#[cfg(all(feature = "mesalock_sgx", target_env = "sgx"))]
 extern crate std;
 
 extern crate num_integer as integer;
@@ -399,15 +403,22 @@ where
     }
 }
 
-#[cfg(test)]
-mod tests {
+#[cfg(feature = "enclave_unit_test")]
+extern crate crates_unittest;
+#[cfg(feature = "enclave_unit_test")]
+pub mod tests {
     use core::cmp::Ordering;
     use core::iter;
     use core::ops::{Add, Mul};
     use core::{isize, usize};
     use traits::{One, ToPrimitive};
+    use std::prelude::v1::*;
+    use crates_unittest::{ test_case, run_inventory_tests };
 
-    #[test]
+    pub fn run_tests() {
+        run_inventory_tests!();
+    }
+    #[test_case]
     fn test_range() {
         /// A mock type to check Range when ToPrimitive returns None
         struct Foo;
@@ -482,7 +493,7 @@ mod tests {
         );
     }
 
-    #[test]
+    #[test_case]
     #[cfg(has_i128)]
     fn test_range_128() {
         use core::{i128, u128};
@@ -521,7 +532,7 @@ mod tests {
         assert_eq!(super::range(0, i128::MAX).size_hint(), (usize::MAX, None));
     }
 
-    #[test]
+    #[test_case]
     fn test_range_inclusive() {
         assert!(super::range_inclusive(0, 5).eq([0, 1, 2, 3, 4, 5].iter().cloned()));
         assert!(super::range_inclusive(0, 5)
@@ -541,7 +552,7 @@ mod tests {
         );
     }
 
-    #[test]
+    #[test_case]
     #[cfg(has_i128)]
     fn test_range_inclusive_128() {
         use core::i128;
@@ -574,7 +585,7 @@ mod tests {
         );
     }
 
-    #[test]
+    #[test_case]
     fn test_range_step() {
         assert!(super::range_step(0, 20, 5).eq([0, 5, 10, 15].iter().cloned()));
         assert!(super::range_step(20, 0, -5).eq([20, 15, 10, 5].iter().cloned()));
@@ -584,7 +595,7 @@ mod tests {
         assert!(super::range_step(200, 200, 1).eq(iter::empty()));
     }
 
-    #[test]
+    #[test_case]
     #[cfg(has_i128)]
     fn test_range_step_128() {
         use core::u128::MAX as UMAX;
@@ -597,7 +608,7 @@ mod tests {
         assert!(super::range_step(200i128, 200, 1).eq(iter::empty()));
     }
 
-    #[test]
+    #[test_case]
     fn test_range_step_inclusive() {
         assert!(super::range_step_inclusive(0, 20, 5).eq([0, 5, 10, 15, 20].iter().cloned()));
         assert!(super::range_step_inclusive(20, 0, -5).eq([20, 15, 10, 5, 0].iter().cloned()));
@@ -607,7 +618,7 @@ mod tests {
         assert!(super::range_step_inclusive(200, 200, 1).eq(iter::once(200)));
     }
 
-    #[test]
+    #[test_case]
     #[cfg(has_i128)]
     fn test_range_step_inclusive_128() {
         use core::u128::MAX as UMAX;
@@ -621,7 +632,7 @@ mod tests {
         assert!(super::range_step_inclusive(200i128, 200, 1).eq(iter::once(200)));
     }
 
-    #[test]
+    #[test_case]
     fn test_range_from() {
         assert!(super::range_from(10u8)
             .take(5)
@@ -629,7 +640,7 @@ mod tests {
         assert_eq!(super::range_from(10u8).size_hint(), (usize::MAX, None));
     }
 
-    #[test]
+    #[test_case]
     fn test_range_step_from() {
         assert!(super::range_step_from(10u8, 2u8)
             .take(5)

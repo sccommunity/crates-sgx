@@ -1,6 +1,6 @@
 use std::cmp;
 use std::io::{self, Read, BufRead};
-
+use std::prelude::v1::*;
 pub struct BufReader<R> {
     inner: R,
     buf: Vec<u8>,
@@ -149,9 +149,10 @@ impl<R: Read> BufRead for BufReader<R> {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
-
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
     use std::io::{self, Read, BufRead};
     use super::BufReader;
 
@@ -169,7 +170,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_consume_and_get_buf() {
         let mut rdr = BufReader::new(SlowRead(0));
         rdr.read_into_buf().unwrap();
@@ -186,7 +187,7 @@ mod tests {
         assert_eq!(rdr.cap, 0);
     }
 
-    #[test]
+    #[test_case]
     fn test_resize() {
         let raw = b"hello world";
         let mut rdr = BufReader::with_capacity(&raw[..], 5);

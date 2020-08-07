@@ -8,12 +8,20 @@
 //!
 //! [`Body`]: trait.Body.html
 
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
+
 mod next;
 mod size_hint;
 
 pub use self::next::{Data, Trailers};
 pub use self::size_hint::SizeHint;
-
+use std::prelude::v1::*;
 use bytes::Buf;
 use http::HeaderMap;
 use std::ops;

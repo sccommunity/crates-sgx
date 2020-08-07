@@ -3,9 +3,9 @@ use crate::sign;
 use crate::key;
 use crate::client;
 use crate::error::TLSError;
-
+use std::prelude::v1::*;
 use std::collections;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, SgxMutex as Mutex};
 
 /// An implementor of `StoresClientSessions` which does nothing.
 pub struct NoClientSessionStorage {}

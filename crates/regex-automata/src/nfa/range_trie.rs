@@ -144,7 +144,7 @@ use std::fmt;
 use std::mem;
 use std::ops::RangeInclusive;
 use std::u32;
-
+use std::prelude::v1::*;
 use regex_syntax::utf8::Utf8Range;
 
 /// A smaller state ID means more effective use of the CPU cache and less

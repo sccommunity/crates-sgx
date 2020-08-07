@@ -1,0 +1,11 @@
+[package]
+name = "run-tests"
+version = "1.0.0"
+build = "build.rs"
+edition = "2018"
+
+[workspace]
+
+[dependencies]
+sgx_types = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2" }
+sgx_urts = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", features = ["global_init", "signal"]}

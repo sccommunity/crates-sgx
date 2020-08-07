@@ -8,7 +8,7 @@ pub mod str {
   use crate::lib::regex::Regex;
   use crate::traits::{InputLength, Slice};
   use crate::{Err, IResult};
-
+  use std::prelude::v1::*;
   /// Compares the input with a regular expression and returns the
   /// whole input if a match is found.
   ///
@@ -192,13 +192,14 @@ pub mod str {
     }
   }
 
-  #[cfg(test)]
+  #[cfg(feature = "enclave_unit_test")]
   mod tests {
     use super::*;
     use crate::error::ErrorKind;
     use crate::internal::Err;
     use crate::lib::regex::Regex;
-
+    use std::string::ToString;
+    use crates_unittest::test_case;
     macro_rules! assert_parse(
     ($left: expr, $right: expr) => {
       let res: $crate::IResult<_, _, (_, ErrorKind)> = $left;
@@ -206,7 +207,7 @@ pub mod str {
     };
   );
 
-    #[test]
+    #[test_case]
     fn re_match_str() {
       let re = Regex::new(r"^\d{4}-\d{2}-\d{2}").unwrap();
       let rm = re_match(re);
@@ -218,7 +219,7 @@ pub mod str {
       assert_eq!(rm("2015-09-07blah"), Ok(("", "2015-09-07blah")));
     }
 
-    #[test]
+    #[test_case]
     fn re_find_str() {
       let re = Regex::new(r"^\d{4}-\d{2}-\d{2}").unwrap();
       let rm = re_find(re);
@@ -231,7 +232,7 @@ pub mod str {
     }
 
     #[cfg(feature = "alloc")]
-    #[test]
+    #[test_case]
     fn re_matches_str() {
       let re = Regex::new(r"\d{4}-\d{2}-\d{2}").unwrap();
       let rm = re_matches(re);
@@ -247,7 +248,7 @@ pub mod str {
     }
 
     #[cfg(feature = "alloc")]
-    #[test]
+    #[test_case]
     fn re_capture_str() {
       let re = Regex::new(r"([[:alpha:]]+)\s+((\d+).(\d+).(\d+))").unwrap();
       let rm = re_capture(re);
@@ -269,7 +270,7 @@ pub mod str {
     }
 
     #[cfg(feature = "alloc")]
-    #[test]
+    #[test_case]
     fn re_captures_str() {
       let re = Regex::new(r"([[:alpha:]]+)\s+((\d+).(\d+).(\d+))").unwrap();
       let rm = re_captures(re);
@@ -304,7 +305,7 @@ pub mod bytes {
   use crate::lib::regex::bytes::Regex;
   use crate::traits::{InputLength, Slice};
   use crate::{Err, IResult};
-
+  use std::prelude::v1::*;
   /// Compares the input with a regular expression and returns the
   /// whole input if a match is found.
   ///
@@ -504,7 +505,7 @@ pub mod bytes {
     };
   );
 
-    #[test]
+    #[test_case]
     fn re_match_bytes() {
       let re = Regex::new(r"^\d{4}-\d{2}-\d{2}").unwrap();
       let rm = re_match(re);
@@ -519,7 +520,7 @@ pub mod bytes {
       );
     }
 
-    #[test]
+    #[test_case]
     fn re_find_bytes() {
       let re = Regex::new(r"^\d{4}-\d{2}-\d{2}").unwrap();
       let rm = re_find(re);
@@ -535,7 +536,7 @@ pub mod bytes {
     }
 
     #[cfg(feature = "alloc")]
-    #[test]
+    #[test_case]
     fn re_matches_bytes() {
       let re = Regex::new(r"\d{4}-\d{2}-\d{2}").unwrap();
       let rm = re_matches(re);
@@ -554,7 +555,7 @@ pub mod bytes {
     }
 
     #[cfg(feature = "alloc")]
-    #[test]
+    #[test_case]
     fn re_capture_bytes() {
       let re = Regex::new(r"([[:alpha:]]+)\s+((\d+).(\d+).(\d+))").unwrap();
       let rm = re_capture(re);
@@ -593,7 +594,7 @@ pub mod bytes {
     }
 
     #[cfg(feature = "alloc")]
-    #[test]
+    #[test_case]
     fn re_captures_bytes() {
       let re = Regex::new(r"([[:alpha:]]+)\s+((\d+).(\d+).(\d+))").unwrap();
       let rm = re_captures(re);

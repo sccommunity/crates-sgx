@@ -137,13 +137,14 @@ impl Distribution<bool> for Bernoulli {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod test {
     use super::Bernoulli;
     use crate::distributions::Distribution;
     use crate::Rng;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn test_trivial() {
         let mut r = crate::test::rng(1);
         let always_false = Bernoulli::new(0.0).unwrap();
@@ -156,7 +157,7 @@ mod test {
         }
     }
 
-    #[test]
+    #[test_case]
     #[cfg_attr(miri, ignore)] // Miri is too slow
     fn test_average() {
         const P: f64 = 0.3;
@@ -184,7 +185,7 @@ mod test {
         assert!((avg2 - (NUM as f64) / (DENOM as f64)).abs() < 5e-3);
     }
 
-    #[test]
+    #[test_case]
     fn value_stability() {
         let mut rng = crate::test::rng(3);
         let distr = Bernoulli::new(0.4532).unwrap();

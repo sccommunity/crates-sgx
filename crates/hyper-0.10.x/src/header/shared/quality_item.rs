@@ -2,7 +2,7 @@ use std::cmp;
 use std::default::Default;
 use std::fmt;
 use std::str;
-
+use std::prelude::v1::*;
 /// Represents a quality used in quality values.
 ///
 /// Can be created with the `q` function.
@@ -126,22 +126,23 @@ pub fn q(f: f32) -> Quality {
     from_f32(f)
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::*;
     use super::super::encoding::*;
-
-    #[test]
+   
+    use crates_unittest::test_case;
+    #[test_case]
     fn test_quality_item_show1() {
         let x = qitem(Chunked);
         assert_eq!(format!("{}", x), "chunked");
     }
-    #[test]
+    #[test_case]
     fn test_quality_item_show2() {
         let x = QualityItem::new(Chunked, Quality(1));
         assert_eq!(format!("{}", x), "chunked; q=0.001");
     }
-    #[test]
+    #[test_case]
     fn test_quality_item_show3() {
         // Custom value
         let x = QualityItem{
@@ -151,37 +152,37 @@ mod tests {
         assert_eq!(format!("{}", x), "identity; q=0.5");
     }
 
-    #[test]
+    #[test_case]
     fn test_quality_item_from_str1() {
         let x: ::Result<QualityItem<Encoding>> = "chunked".parse();
         assert_eq!(x.unwrap(), QualityItem{ item: Chunked, quality: Quality(1000), });
     }
-    #[test]
+    #[test_case]
     fn test_quality_item_from_str2() {
         let x: ::Result<QualityItem<Encoding>> = "chunked; q=1".parse();
         assert_eq!(x.unwrap(), QualityItem{ item: Chunked, quality: Quality(1000), });
     }
-    #[test]
+    #[test_case]
     fn test_quality_item_from_str3() {
         let x: ::Result<QualityItem<Encoding>> = "gzip; q=0.5".parse();
         assert_eq!(x.unwrap(), QualityItem{ item: Gzip, quality: Quality(500), });
     }
-    #[test]
+    #[test_case]
     fn test_quality_item_from_str4() {
         let x: ::Result<QualityItem<Encoding>> = "gzip; q=0.273".parse();
         assert_eq!(x.unwrap(), QualityItem{ item: Gzip, quality: Quality(273), });
     }
-    #[test]
+    #[test_case]
     fn test_quality_item_from_str5() {
         let x: ::Result<QualityItem<Encoding>> = "gzip; q=0.2739999".parse();
         assert!(x.is_err());
     }
-    #[test]
+    #[test_case]
     fn test_quality_item_from_str6() {
         let x: ::Result<QualityItem<Encoding>> = "gzip; q=2".parse();
         assert!(x.is_err());
     }
-    #[test]
+    #[test_case]
     fn test_quality_item_ordering() {
         let x: QualityItem<Encoding> = "gzip; q=0.5".parse().ok().unwrap();
         let y: QualityItem<Encoding> = "gzip; q=0.273".parse().ok().unwrap();
@@ -189,24 +190,24 @@ mod tests {
         assert!(comparision_result)
     }
 
-    #[test]
+    #[test_case]
     fn test_quality() {
         assert_eq!(q(0.5), Quality(500));
     }
 
-    #[test]
+    #[test_case]
     fn test_quality2() {
         assert_eq!(format!("{}", q(0.0)), "; q=0");
     }
 
-    #[test]
+    //#[test_case]
     #[should_panic] // FIXME - 32-bit msvc unwinding broken
     #[cfg_attr(all(target_arch="x86", target_env="msvc"), ignore)]
     fn test_quality_invalid() {
         q(-1.0);
     }
 
-    #[test]
+    //#[test_case]
     #[should_panic] // FIXME - 32-bit msvc unwinding broken
     #[cfg_attr(all(target_arch="x86", target_env="msvc"), ignore)]
     fn test_quality_invalid2() {

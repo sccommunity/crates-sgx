@@ -147,11 +147,12 @@ where Standard: Distribution<N>
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod test {
     use super::*;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn test_poisson_10() {
         let poisson = Poisson::new(10.0).unwrap();
         let mut rng = crate::test::rng(123);
@@ -171,7 +172,7 @@ mod test {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_poisson_15() {
         // Take the 'high expected values' path
         let poisson = Poisson::new(15.0).unwrap();
@@ -192,7 +193,7 @@ mod test {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_poisson_10_f32() {
         let poisson = Poisson::new(10.0f32).unwrap();
         let mut rng = crate::test::rng(123);
@@ -212,7 +213,7 @@ mod test {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_poisson_15_f32() {
         // Take the 'high expected values' path
         let poisson = Poisson::new(15.0f32).unwrap();
@@ -233,19 +234,19 @@ mod test {
         }
     }
 
-    #[test]
-    #[should_panic]
+    // #[test_case]
+    // #[should_panic]
     fn test_poisson_invalid_lambda_zero() {
         Poisson::new(0.0).unwrap();
     }
 
-    #[test]
-    #[should_panic]
+    // #[test_case]
+    // #[should_panic]
     fn test_poisson_invalid_lambda_neg() {
         Poisson::new(-10.0).unwrap();
     }
 
-    #[test]
+    #[test_case]
     fn value_stability() {
         fn test_samples<N: Float + core::fmt::Debug, D: Distribution<N>>(
             distr: D, zero: N, expected: &[N],

@@ -180,13 +180,15 @@ where Standard: Distribution<T>
 }
 
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
     use super::*;
     use crate::RngCore;
     #[cfg(all(not(feature = "std"), feature = "alloc"))] use alloc::string::String;
 
-    #[test]
+    #[test_case]
     fn test_misc() {
         let rng: &mut dyn RngCore = &mut crate::test::rng(820);
 
@@ -195,7 +197,7 @@ mod tests {
     }
 
     #[cfg(feature = "alloc")]
-    #[test]
+    #[test_case]
     fn test_chars() {
         use core::iter;
         let mut rng = crate::test::rng(805);
@@ -209,7 +211,7 @@ mod tests {
         assert!(word.len() != 0);
     }
 
-    #[test]
+    #[test_case]
     fn test_alphanumeric() {
         let mut rng = crate::test::rng(806);
 
@@ -225,7 +227,7 @@ mod tests {
         assert!(incorrect == false);
     }
 
-    #[test]
+    #[test_case]
     fn value_stability() {
         fn test_samples<T: Copy + core::fmt::Debug + PartialEq, D: Distribution<T>>(
             distr: &D, zero: T, expected: &[T],

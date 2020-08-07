@@ -33,14 +33,19 @@ keywords = [
 ]
 edition = "2018"
 
+
 [features]
-default = ["traced-error"]
+default = ["traced-error", "mesalock_sgx"]
 traced-error = []
+mesalock_sgx = ["sgx_tstd"]
+enclave_unit_test = ["crates_unittest", "inventory"]
 
 [dependencies]
-tracing-subscriber = { path = "../tracing-subscriber", version = "0.2.4", default-features = false, features = ["registry", "fmt"] }
+tracing-subscriber = { path = "../tracing-subscriber", version = "0.2.7", default-features = false, features = ["registry", "fmt"] }
 tracing = { path = "../tracing", version = "0.1.12"}
-
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+crates_unittest = { git = "https://github.com/Zha0Chan/crates-sgx-unittest.git", optional = true, default-features = false }
+inventory = { version = "0.1.6", optional = true }
 [badges]
 maintenance = { status = "experimental" }
 

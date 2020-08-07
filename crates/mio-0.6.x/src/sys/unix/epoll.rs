@@ -12,7 +12,8 @@ use libc::{EPOLLET, EPOLLOUT, EPOLLIN, EPOLLPRI};
 use {io, Ready, PollOpt, Token};
 use event_imp::Event;
 use sys::unix::{cvt, UnixReady};
-use sys::unix::io::set_cloexec;
+//use sys::unix::io::set_cloexec;
+use std::prelude::v1::*;
 
 /// Each Selector has a globally unique(ish) ID associated with it. This ID
 /// gets tracked by `TcpStream`, `TcpListener`, etc... when they are first
@@ -33,18 +34,19 @@ impl Selector {
             // Emulate `epoll_create` by using `epoll_create1` if it's available
             // and otherwise falling back to `epoll_create` followed by a call to
             // set the CLOEXEC flag.
-            dlsym!(fn epoll_create1(c_int) -> c_int);
+            //dlsym!(fn epoll_create1(c_int) -> c_int);
 
-            match epoll_create1.get() {
-                Some(epoll_create1_fn) => {
-                    cvt(epoll_create1_fn(libc::EPOLL_CLOEXEC))?
-                }
-                None => {
-                    let fd = cvt(libc::epoll_create(1024))?;
-                    drop(set_cloexec(fd));
-                    fd
-                }
-            }
+            // match epoll_create1.get() {
+            //     Some(epoll_create1_fn) => {
+            //         cvt(epoll_create1_fn(libc::EPOLL_CLOEXEC))?
+            //     }
+            //     None => {
+            //         let fd = cvt(libc::epoll_create(1024))?;
+            //         drop(set_cloexec(fd));
+            //         fd
+            //     }
+            // }
+            cvt(libc::ocall::epoll_create1(libc::EPOLL_CLOEXEC))?
         };
 
         // offset by 1 to avoid choosing 0 as the id of a selector
@@ -69,7 +71,7 @@ impl Selector {
         // Wait for epoll events for at most timeout_ms milliseconds
         evts.clear();
         unsafe {
-            let cnt = cvt(libc::epoll_wait(self.epfd,
+            let cnt = cvt(libc::ocall::epoll_wait(self.epfd,
                                            evts.events.as_mut_ptr(),
                                            evts.events.capacity() as i32,
                                            timeout_ms))?;
@@ -95,7 +97,7 @@ impl Selector {
         };
 
         unsafe {
-            cvt(libc::epoll_ctl(self.epfd, libc::EPOLL_CTL_ADD, fd, &mut info))?;
+            cvt(libc::ocall::epoll_ctl(self.epfd, libc::EPOLL_CTL_ADD, fd, &mut info))?;
             Ok(())
         }
     }
@@ -108,7 +110,7 @@ impl Selector {
         };
 
         unsafe {
-            cvt(libc::epoll_ctl(self.epfd, libc::EPOLL_CTL_MOD, fd, &mut info))?;
+            cvt(libc::ocall::epoll_ctl(self.epfd, libc::EPOLL_CTL_MOD, fd, &mut info))?;
             Ok(())
         }
     }
@@ -124,7 +126,7 @@ impl Selector {
         };
 
         unsafe {
-            cvt(libc::epoll_ctl(self.epfd, libc::EPOLL_CTL_DEL, fd, &mut info))?;
+            cvt(libc::ocall::epoll_ctl(self.epfd, libc::EPOLL_CTL_DEL, fd, &mut info))?;
             Ok(())
         }
     }
@@ -169,7 +171,7 @@ impl AsRawFd for Selector {
 impl Drop for Selector {
     fn drop(&mut self) {
         unsafe {
-            let _ = libc::close(self.epfd);
+            let _ = libc::ocall::close(self.epfd);
         }
     }
 }

@@ -25,6 +25,7 @@
 //! # fn main() {}
 //! ```
 
+use std::prelude::v1::*;
 use std::cell::Cell;
 use std::error;
 use std::fmt::{self, Write};

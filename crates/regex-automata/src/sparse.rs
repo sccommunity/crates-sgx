@@ -1,3 +1,4 @@
+use std::prelude::v1::*;
 #[cfg(feature = "std")]
 use core::fmt;
 #[cfg(feature = "std")]

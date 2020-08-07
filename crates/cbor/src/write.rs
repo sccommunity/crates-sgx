@@ -1,5 +1,8 @@
 #[cfg(feature = "alloc")]
 use alloc::vec::Vec;
+
+use std::prelude::v1::*;
+
 #[cfg(not(feature = "std"))]
 use core::fmt;
 #[cfg(feature = "std")]

@@ -14,8 +14,12 @@ categories = ["network-programming", "no-std", "parser-implementations", "web-pr
 build = "build.rs"
 
 [features]
-default = ["std"]
-std = []
+default = ["std", "mesalock_sgx"]
+std = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd", "std"]
+[dependencies]
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+
 
 [dev-dependencies]
 pico-sys = "0.0"

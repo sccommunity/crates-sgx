@@ -2,6 +2,7 @@ use crate::fs::asyncify;
 
 use std::io;
 use std::path::Path;
+use std::prelude::v1::*;
 
 /// Recursively creates a directory and all of its parent components if they
 /// are missing.

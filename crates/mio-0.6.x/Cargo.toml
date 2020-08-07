@@ -26,21 +26,31 @@ include       = [
 
 [features]
 with-deprecated = []
-default = ["with-deprecated"]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd", "sgx_trts", "sgx_libc"]
 
 [dependencies]
-log      = "0.4"
-slab     = "0.4.0"
-net2     = "0.2.29"
-iovec    = "0.1.1"
-cfg-if   = "0.1.9"
+log = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2" }
+slab     = { path = "../slab" }
+net2     = { path = "../net2-rs" }
+iovec    = { path  = "../iovec" }
+cfg-if = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true, features = ["untrusted_time", "net"] }
+sgx_trts = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+#log      = "0.4"
+#slab     = "0.4.0"
+#net2     = "0.2.29"
+#iovec    = "0.1.1"
+#cfg-if   = "0.1.9"
 
 [target.'cfg(target_os = "fuchsia")'.dependencies]
 fuchsia-zircon = "0.3.2"
 fuchsia-zircon-sys = "0.3.2"
 
 [target.'cfg(unix)'.dependencies]
-libc   = "0.2.54"
+#libc   = "0.2.54"
+sgx_libc = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+
 
 [target.'cfg(windows)'.dependencies]
 winapi = "0.2.6"

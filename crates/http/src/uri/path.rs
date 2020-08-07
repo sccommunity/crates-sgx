@@ -1,7 +1,8 @@
+
 use std::convert::TryFrom;
 use std::str::FromStr;
 use std::{cmp, fmt, str};
-
+use std::prelude::v1::*;
 use bytes::Bytes;
 
 use super::{ErrorKind, InvalidUri};

@@ -12,7 +12,7 @@ use std::fmt;
 use std::io::{self, Read, Write};
 use std::sync::atomic::AtomicUsize;
 use std::sync::atomic::Ordering::Relaxed;
-use std::sync::Mutex;
+use std::sync::SgxMutex as Mutex;
 
 use futures::{task, Async, Poll};
 use mio::event::Evented;

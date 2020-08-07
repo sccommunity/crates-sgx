@@ -6,7 +6,7 @@ use tokio_reactor::{Handle, PollEvented};
 use bytes::{Buf, BufMut};
 use futures::{Async, Future, Poll};
 use iovec::{self, IoVec};
-use libc;
+
 use mio::Ready;
 use mio_uds;
 
@@ -16,7 +16,7 @@ use std::net::Shutdown;
 use std::os::unix::io::{AsRawFd, RawFd};
 use std::os::unix::net::{self, SocketAddr};
 use std::path::Path;
-
+use libc::ocall::{readv, writev};
 /// A structure representing a connected Unix socket.
 ///
 /// This socket can be connected directly with `UnixStream::connect` or accepted
@@ -330,7 +330,7 @@ unsafe fn read_ready<B: BufMut>(buf: &mut B, raw_fd: RawFd) -> isize {
 unsafe fn read_ready_vecs(bufs: &mut [&mut IoVec], raw_fd: RawFd) -> isize {
     let iovecs = iovec::unix::as_os_slice_mut(bufs);
 
-    libc::readv(raw_fd, iovecs.as_ptr(), iovecs.len() as i32)
+    readv(raw_fd, iovecs.as_ptr(), iovecs.len() as i32)
 }
 
 unsafe fn write_ready<B: Buf>(buf: &mut B, raw_fd: RawFd) -> isize {
@@ -351,5 +351,5 @@ unsafe fn write_ready<B: Buf>(buf: &mut B, raw_fd: RawFd) -> isize {
 unsafe fn write_ready_vecs(bufs: &[&IoVec], raw_fd: RawFd) -> isize {
     let iovecs = iovec::unix::as_os_slice(bufs);
 
-    libc::writev(raw_fd, iovecs.as_ptr(), iovecs.len() as i32)
+    writev(raw_fd, iovecs.as_ptr(), iovecs.len() as i32)
 }

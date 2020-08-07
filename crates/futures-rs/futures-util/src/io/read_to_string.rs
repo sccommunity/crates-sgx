@@ -5,6 +5,7 @@ use futures_io::AsyncRead;
 use std::pin::Pin;
 use std::vec::Vec;
 use std::{io, mem, str};
+use std::prelude::v1::*;
 
 /// Future for the [`read_to_string`](super::AsyncReadExt::read_to_string) method.
 #[derive(Debug)]

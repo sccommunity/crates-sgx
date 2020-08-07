@@ -3,7 +3,7 @@ use std::marker::PhantomData;
 use std::io::{self, Write};
 
 use std::time::Duration;
-
+use std::prelude::v1::*;
 use url::Url;
 
 use method::Method;
@@ -170,7 +170,7 @@ impl Write for Request<Streaming> {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use std::io::Write;
     use std::str::from_utf8;
@@ -182,7 +182,9 @@ mod tests {
     use url::form_urlencoded;
     use super::Request;
     use http::h1::Http11Message;
-
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    
     fn run_request(req: Request<Fresh>) -> Vec<u8> {
         let req = req.start().unwrap();
         let message = req.message;
@@ -198,7 +200,7 @@ mod tests {
         assert!(!s.contains("Transfer-Encoding:"));
     }
 
-    #[test]
+    #[test_case]
     fn test_get_empty_body() {
         let req = Request::with_connector(
             Get, Url::parse("http://example.dom").unwrap(), &mut MockConnector
@@ -208,7 +210,7 @@ mod tests {
         assert_no_body(s);
     }
 
-    #[test]
+    #[test_case]
     fn test_head_empty_body() {
         let req = Request::with_connector(
             Head, Url::parse("http://example.dom").unwrap(), &mut MockConnector
@@ -218,7 +220,7 @@ mod tests {
         assert_no_body(s);
     }
 
-    #[test]
+    #[test_case]
     fn test_url_query() {
         let url = Url::parse("http://example.dom?q=value").unwrap();
         let req = Request::with_connector(
@@ -229,7 +231,7 @@ mod tests {
         assert!(s.contains("?q=value"));
     }
 
-    #[test]
+    #[test_case]
     fn test_post_content_length() {
         let url = Url::parse("http://example.dom").unwrap();
         let mut req = Request::with_connector(
@@ -243,7 +245,7 @@ mod tests {
         assert!(s.contains("Content-Length:"));
     }
 
-    #[test]
+    #[test_case]
     fn test_post_chunked() {
         let url = Url::parse("http://example.dom").unwrap();
         let req = Request::with_connector(
@@ -254,7 +256,7 @@ mod tests {
         assert!(!s.contains("Content-Length:"));
     }
 
-    #[test]
+    #[test_case]
     fn test_host_header() {
         let url = Url::parse("http://example.dom").unwrap();
         let req = Request::with_connector(
@@ -265,7 +267,7 @@ mod tests {
         assert!(s.contains("Host: example.dom"));
     }
 
-    #[test]
+    #[test_case]
     fn test_proxy() {
         let url = Url::parse("http://example.dom").unwrap();
         let mut req = Request::with_connector(
@@ -279,7 +281,7 @@ mod tests {
         assert!(s.contains("Host: example.dom"));
     }
 
-    #[test]
+    #[test_case]
     fn test_post_chunked_with_encoding() {
         let url = Url::parse("http://example.dom").unwrap();
         let mut req = Request::with_connector(
@@ -292,7 +294,7 @@ mod tests {
         assert!(s.contains("Transfer-Encoding:"));
     }
 
-    #[test]
+    #[test_case]
     fn test_write_error_closes() {
         let url = Url::parse("http://hyper.rs").unwrap();
         let req = Request::with_connector(

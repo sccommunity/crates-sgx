@@ -13,6 +13,10 @@
 ))]
 #![cfg_attr(docsrs, feature(doc_cfg))]
 
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"), feature(rustc_private))]
+
 //! Utilities for working with Tokio.
 //!
 //! This crate is not versioned in lockstep with the core
@@ -20,6 +24,12 @@
 //! semantic versioning policy, especially with regard to breaking changes.
 //!
 //! [`tokio`]: https://docs.rs/tokio
+
+
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
+
 
 #[macro_use]
 mod cfg;

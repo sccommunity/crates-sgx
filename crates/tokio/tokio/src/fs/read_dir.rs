@@ -11,6 +11,7 @@ use std::pin::Pin;
 use std::sync::Arc;
 use std::task::Context;
 use std::task::Poll;
+use std::prelude::v1::*;
 
 /// Returns a stream over the entries within a directory.
 ///

@@ -118,9 +118,10 @@ use std::io;
 use std::marker::PhantomData;
 use std::mem;
 use std::panic;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, SgxMutex as Mutex};
 use std::thread;
-
+use std::prelude::v1::*;
+use std::thread::SgxThread;
 use crate::sync::WaitGroup;
 use cfg_if::cfg_if;
 
@@ -353,7 +354,7 @@ impl<'scope, 'env> ScopedThreadBuilder<'scope, 'env> {
     /// }).unwrap();
     /// ```
     pub fn stack_size(mut self, size: usize) -> ScopedThreadBuilder<'scope, 'env> {
-        self.builder = self.builder.stack_size(size);
+        //self.builder = self.builder.stack_size(size);
         self
     }
 
@@ -453,7 +454,7 @@ pub struct ScopedJoinHandle<'scope, T> {
     result: SharedOption<T>,
 
     /// A handle to the the spawned thread.
-    thread: thread::Thread,
+    thread: SgxThread,
 
     /// Borrows the parent scope with lifetime `'scope`.
     _marker: PhantomData<&'scope ()>,
@@ -510,7 +511,7 @@ impl<T> ScopedJoinHandle<'_, T> {
     ///     println!("The child thread ID: {:?}", handle.thread().id());
     /// }).unwrap();
     /// ```
-    pub fn thread(&self) -> &thread::Thread {
+    pub fn thread(&self) -> &SgxThread {
         &self.thread
     }
 }

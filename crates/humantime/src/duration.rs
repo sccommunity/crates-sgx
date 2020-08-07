@@ -2,6 +2,7 @@ use std::error::Error as StdError;
 use std::fmt;
 use std::str::Chars;
 use std::time::Duration;
+use std::prelude::v1::*;
 
 /// Error parsing human-friendly duration
 #[derive(Debug, PartialEq, Clone)]

@@ -12,7 +12,17 @@ keywords = ["search", "information", "retrieval", "dictionary", "map"]
 license = "Unlicense/MIT"
 edition = "2018"
 
+
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+
 [dependencies]
-fst = { version = "0.3.1", default-features = false }
-regex-syntax = "0.3"
-utf8-ranges = "1"
+#fst = { version = "0.3.1", default-features = false }
+#regex-syntax = "0.3"
+#utf8-ranges = "1"
+fst = { path = "../fst", default-features = false }
+
+regex-syntax = { path = "../regex/regex-syntax" } 
+utf8-ranges = { path = "../utf8-ranges" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }

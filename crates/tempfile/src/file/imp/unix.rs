@@ -8,7 +8,7 @@ use std::path::Path;
 use crate::util;
 
 #[cfg(not(target_os = "redox"))]
-use libc::{c_char, c_int, link, rename, unlink};
+use libc::{c_char, c_int, ocall::{ link, rename, unlink }};
 
 #[cfg(not(target_os = "redox"))]
 #[inline(always)]
@@ -60,7 +60,9 @@ fn create_unlinked(path: &Path) -> io::Result<File> {
 
 #[cfg(target_os = "linux")]
 pub fn create(dir: &Path) -> io::Result<File> {
-    use libc::{EISDIR, ENOENT, EOPNOTSUPP, O_EXCL, O_TMPFILE};
+    //use libc::{EISDIR, ENOENT, EOPNOTSUPP, O_EXCL, O_TMPFILE};
+    use libc::{c_int, EISDIR, ENOENT, EOPNOTSUPP, O_EXCL, O_DIRECTORY};
+    pub const O_TMPFILE: c_int = 0o20000000 | O_DIRECTORY;
     OpenOptions::new()
         .read(true)
         .write(true)
@@ -110,14 +112,14 @@ pub fn persist(old_path: &Path, new_path: &Path, overwrite: bool) -> io::Result<
         let new_path = cstr(new_path)?;
         if overwrite {
             cvt_err(rename(
-                old_path.as_ptr() as *const c_char,
-                new_path.as_ptr() as *const c_char,
-            ))?;
+                 old_path.as_ptr() as *const c_char,
+                 new_path.as_ptr() as *const c_char,
+             ))?;
         } else {
             cvt_err(link(
                 old_path.as_ptr() as *const c_char,
-                new_path.as_ptr() as *const c_char,
-            ))?;
+                 new_path.as_ptr() as *const c_char,
+             ))?;
             // Ignore unlink errors. Can we do better?
             // On recent linux, we can use renameat2 to do this atomically.
             let _ = unlink(old_path.as_ptr() as *const c_char);

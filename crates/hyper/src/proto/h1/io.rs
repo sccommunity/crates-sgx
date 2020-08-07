@@ -2,6 +2,7 @@ use std::cell::Cell;
 use std::cmp;
 use std::fmt;
 use std::io::{self, IoSlice};
+use std::prelude::v1::Vec;
 
 use bytes::{Buf, BufMut, Bytes, BytesMut};
 use tokio::io::{AsyncRead, AsyncWrite};

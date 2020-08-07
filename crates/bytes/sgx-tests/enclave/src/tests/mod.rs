@@ -1,0 +1,11 @@
+mod test_buf;
+mod test_buf_mut;
+mod test_bytes;
+mod test_bytes_odd_alloc;
+mod test_bytes_vec_alloc;
+mod test_chain;
+mod test_debug;
+mod test_iter;
+mod test_reader;
+mod test_serde;
+mod test_take;

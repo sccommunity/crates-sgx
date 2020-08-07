@@ -3,7 +3,7 @@ use task::Task;
 
 use std::sync::atomic::Ordering::{AcqRel, Acquire};
 use std::sync::Arc;
-
+use std::prelude::v1::Box;
 use futures::{future, Future};
 use tokio_executor::{self, SpawnError};
 

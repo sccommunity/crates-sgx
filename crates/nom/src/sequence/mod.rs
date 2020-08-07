@@ -1,4 +1,4 @@
-//! combinators applying parsers in sequence
+//! Combinators applying parsers in sequence
 
 #[macro_use]
 mod macros;
@@ -255,11 +255,11 @@ where
   delimited(first, sep, second)(input)
 }
 
-/// helper trait for the tuple combinator
+/// Helper trait for the tuple combinator.
 ///
-/// this trait is implemented for tuples of parsers of up to 21 elements
+/// This trait is implemented for tuples of parsers of up to 21 elements.
 pub trait Tuple<I, O, E> {
-  /// parses the input and returns a tuple of results of each parser
+  /// Parses the input and returns a tuple of results of each parser.
   fn parse(&mut self, input: I) -> IResult<I, O, E>;
 }
 
@@ -321,7 +321,7 @@ macro_rules! tuple_trait_inner(
 tuple_trait!(FnA A, FnB B, FnC C, FnD D, FnE E, FnF F, FnG G, FnH H, FnI I, FnJ J, FnK K, FnL L,
   FnM M, FnN N, FnO O, FnP P, FnQ Q, FnR R, FnS S, FnT T, FnU U);
 
-/// applies a tuple of parsers one by one and returns their results as a tuple
+///Aapplies a tuple of parsers one by one and returns their results as a tuple.
 ///
 /// ```rust
 /// # use nom::{Err, error::ErrorKind};
@@ -338,11 +338,12 @@ pub fn tuple<I, O, E: ParseError<I>, List: Tuple<I, O, E>>(
   move |i: I| l.parse(i)
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
   use super::*;
-
-  #[test]
+  use std::string::ToString;
+  use crates_unittest::test_case;
+  #[test_case]
   fn single_element_tuples() {
     use crate::character::complete::alpha1;
     use crate::{error::ErrorKind, Err};

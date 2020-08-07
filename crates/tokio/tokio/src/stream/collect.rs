@@ -6,7 +6,7 @@ use core::mem;
 use core::pin::Pin;
 use core::task::{Context, Poll};
 use pin_project_lite::pin_project;
-
+use std::prelude::v1::*;
 // Do not export this struct until `FromStream` can be unsealed.
 pin_project! {
     /// Future returned by the [`collect`](super::StreamExt::collect) method.
@@ -32,7 +32,7 @@ pin_project! {
 ///
 /// Currently, this trait may not be implemented by third parties. The trait is
 /// sealed in order to make changes in the future. Stabilization is pending
-/// enhancements to the Rust langague.
+/// enhancements to the Rust language.
 pub trait FromStream<T>: sealed::FromStreamPriv<T> {}
 
 impl<T, U> Collect<T, U>

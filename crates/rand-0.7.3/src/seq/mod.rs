@@ -30,6 +30,7 @@
 #[cfg(feature = "alloc")] use core::ops::Index;
 
 #[cfg(all(feature = "alloc", not(feature = "std")))] use crate::alloc::vec::Vec;
+#[cfg(feature="mesalock_sgx")] use std::prelude::v1::*;
 
 #[cfg(feature = "alloc")]
 use crate::distributions::uniform::{SampleBorrow, SampleUniform};
@@ -531,13 +532,15 @@ fn gen_index<R: Rng + ?Sized>(rng: &mut R, ubound: usize) -> usize {
 }
 
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod test {
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
     use super::*;
     #[cfg(feature = "alloc")] use crate::Rng;
     #[cfg(all(feature = "alloc", not(feature = "std")))] use alloc::vec::Vec;
 
-    #[test]
+    #[test_case]
     fn test_slice_choose() {
         let mut r = crate::test::rng(107);
         let chars = [
@@ -635,7 +638,7 @@ mod test {
         }
     }
 
-    #[test]
+    #[test_case]
     #[cfg_attr(miri, ignore)] // Miri is too slow
     fn test_iterator_choose() {
         let r = &mut crate::test::rng(109);
@@ -689,7 +692,7 @@ mod test {
         assert_eq!(UnhintedIterator { iter: 0..0 }.choose(r), None);
     }
 
-    #[test]
+    #[test_case]
     #[cfg_attr(miri, ignore)] // Miri is too slow
     fn test_shuffle() {
         let mut r = crate::test::rng(108);
@@ -739,7 +742,7 @@ mod test {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_partial_shuffle() {
         let mut r = crate::test::rng(118);
 
@@ -755,7 +758,7 @@ mod test {
         assert!(res.1[0] == 1 || res.1[1] == 2 || res.1[2] == 3);
     }
 
-    #[test]
+    #[test_case]
     #[cfg(feature = "alloc")]
     fn test_sample_iter() {
         let min_val = 1;
@@ -776,7 +779,7 @@ mod test {
             .all(|e| { **e >= min_val && **e <= max_val }));
     }
 
-    #[test]
+    #[test_case]
     #[cfg(feature = "alloc")]
     #[cfg_attr(miri, ignore)] // Miri is too slow
     fn test_weighted() {

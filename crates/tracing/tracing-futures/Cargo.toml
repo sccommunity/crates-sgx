@@ -1,6 +1,6 @@
 [package]
 name = "tracing-futures"
-version = "0.2.4"
+version = "0.2.6"
 authors = ["Eliza Weisman <eliza@buoyant.io>", "Tokio Contributors <team@tokio.rs>"]
 edition = "2018"
 repository = "https://github.com/tokio-rs/tracing"
@@ -18,25 +18,33 @@ keywords = ["logging", "profiling", "tracing", "futures", "async"]
 license = "MIT"
 
 [features]
-default = ["std-future", "std"]
+default = ["std-future", "std", "mesalock_sgx"]
 futures-01 = ["futures_01", "std"]
 futures-03 = ["std-future", "futures", "futures-task", "std"]
 std-future = ["pin-project"]
-std = ["tracing/std"]
+std = ["tracing/std", "mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd", "std"]
 
 [dependencies]
-futures_01 = { package = "futures", version = "0.1", optional = true }
-futures = { version = "0.3.0", optional = true }
-futures-task = { version = "0.3", optional = true }
+#futures_01 = { package = "futures", version = "0.1", optional = true }
+#futures = { version = "0.3.0", optional = true }
+#futures-task = { version = "0.3", optional = true }
 pin-project = { version = "0.4", optional = true }
 tracing = { path = "../tracing", version = "0.1", default-features = false }
-tokio-executor = { version = "0.1", optional = true }
-tokio = { version = "0.1", optional = true }
+#tokio-executor = { version = "0.1", optional = true }
+#tokio = { version = "0.1", optional = true }
+
+futures_01 = { package = "futures01", path = "../../futures-rs_01/futures01", version = "0.1", optional = true }
+futures = { path = "../../futures-rs/futures", version = "0.3.0", optional = true }
+futures-task = { path = "../../futures-rs/futures-task", version = "0.3", optional = true }
+tokio-executor = { path = "../../tokio-0.1.x/tokio-executor", optional = true }
+tokio = { path = "../../tokio-0.1.x/tokio", optional = true }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 
 [dev-dependencies]
-tokio = "0.1.22"
-tokio-test = "0.2"
-tracing-core = { path = "../tracing-core", version = "0.1.2" }
+#tokio = "0.1.22"
+#tokio-test = "0.2"
+#tracing-core = { path = "../tracing-core", version = "0.1.2" }
 
 [badges]
 maintenance = { status = "actively-developed" }

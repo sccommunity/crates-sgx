@@ -15,6 +15,7 @@ use super::char_data::{BidiClass, is_rtl};
 use super::level::Level;
 
 use BidiClass::*;
+use std::prelude::v1::*;
 
 /// Compute explicit embedding levels for one paragraph of text (X1-X8).
 ///

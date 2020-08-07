@@ -1,4 +1,5 @@
 use unicase::UniCase;
+use std::prelude::v1::*;
 
 header! {
     /// `Access-Control-Allow-Headers` header, part of

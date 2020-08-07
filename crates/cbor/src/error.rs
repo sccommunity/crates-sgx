@@ -1,4 +1,5 @@
 //! When serializing or deserializing CBOR goes wrong.
+use std::prelude::v1::*;
 use core::fmt;
 use core::result;
 use serde::de;

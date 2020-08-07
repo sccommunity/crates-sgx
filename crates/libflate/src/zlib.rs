@@ -630,12 +630,13 @@ where
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::*;
     use crate::finish::AutoFinish;
     use std::io;
-
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
     fn decode_all(buf: &[u8]) -> io::Result<Vec<u8>> {
         let mut decoder = Decoder::new(buf).unwrap();
         let mut buf = Vec::with_capacity(buf.len());
@@ -657,7 +658,7 @@ mod tests {
     const DECODE_WORKS_TESTDATA: [u8; 20] = [
         120, 156, 243, 72, 205, 201, 201, 87, 8, 207, 47, 202, 73, 81, 4, 0, 28, 73, 4, 62,
     ];
-    #[test]
+    #[test_case]
     fn decode_works() {
         let encoded = DECODE_WORKS_TESTDATA;
         let mut decoder = Decoder::new(&encoded[..]).unwrap();
@@ -676,7 +677,7 @@ mod tests {
         assert_eq!(buf, expected);
     }
 
-    #[test]
+    #[test_case]
     fn default_encode_works() {
         let plain = b"Hello World! Hello ZLIB!!";
         let mut encoder = Encoder::new(Vec::new()).unwrap();
@@ -685,7 +686,7 @@ mod tests {
         assert_eq!(decode_all(&encoded).unwrap(), plain);
     }
 
-    #[test]
+    #[test_case]
     fn best_speed_encode_works() {
         let plain = b"Hello World! Hello ZLIB!!";
         let mut encoder =
@@ -700,7 +701,7 @@ mod tests {
         120, 1, 1, 12, 0, 243, 255, 72, 101, 108, 108, 111, 32, 87, 111, 114, 108, 100, 33, 28, 73,
         4, 62,
     ];
-    #[test]
+    #[test_case]
     fn raw_encode_works() {
         let plain = b"Hello World!";
         let mut encoder =
@@ -712,7 +713,7 @@ mod tests {
         assert_eq!(decode_all(&encoded).unwrap(), plain);
     }
 
-    #[test]
+    #[test_case]
     fn encoder_auto_finish_works() {
         let plain = b"Hello World! Hello ZLIB!!";
         let mut buf = Vec::new();
@@ -723,7 +724,7 @@ mod tests {
         assert_eq!(decode_all(&buf).unwrap(), plain);
     }
 
-    #[test]
+    #[test_case]
     fn test_issue_2() {
         // See: https://github.com/sile/libflate/issues/2
         assert_encode_decode!([
@@ -744,7 +745,7 @@ mod tests {
         ]);
     }
 
-    #[test]
+    #[test_case]
     fn test_issues_16() {
         // See: https://github.com/sile/libflate/issues/16
 

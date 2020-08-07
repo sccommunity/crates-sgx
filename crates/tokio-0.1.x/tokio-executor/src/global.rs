@@ -3,7 +3,7 @@ use super::{Enter, Executor, SpawnError};
 use futures::{future, Future};
 
 use std::cell::Cell;
-
+use std::prelude::v1::Box;
 /// Executes futures on the default executor for the current execution context.
 ///
 /// `DefaultExecutor` implements `Executor` and can be used to spawn futures

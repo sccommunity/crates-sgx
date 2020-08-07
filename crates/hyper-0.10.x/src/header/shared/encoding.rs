@@ -1,6 +1,6 @@
 use std::fmt;
 use std::str;
-
+use std::prelude::v1::*;
 pub use self::Encoding::{Chunked, Gzip, Deflate, Compress, Identity, EncodingExt};
 
 /// A value to represent an encoding used in `Transfer-Encoding`

@@ -8,10 +8,15 @@ repository = "https://github.com/servo/heapsize"
 build = "build.rs"
 
 [target.'cfg(windows)'.dependencies]
-winapi = { version = "0.3.4", features = ["std", "heapapi"] }
+#winapi = { version = "0.3.4", features = ["std", "heapapi"] }
+
+[dependencies]
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 
 [features]
 unstable = []
 
 # https://github.com/servo/heapsize/issues/74
 flexible-tests = []
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]

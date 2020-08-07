@@ -8,7 +8,6 @@ use std::net::Shutdown;
 
 use iovec::IoVec;
 use iovec::unix as iovec;
-use libc;
 use mio::event::Evented;
 use mio::unix::EventedFd;
 use mio::{Poll, Token, Ready, PollOpt};
@@ -243,4 +242,9 @@ impl FromRawFd for UnixStream {
     unsafe fn from_raw_fd(fd: i32) -> UnixStream {
         UnixStream { inner: net::UnixStream::from_raw_fd(fd) }
     }
+}
+
+mod libc {
+    pub use sgx_libc::*;
+    pub use sgx_libc::ocall::*;
 }

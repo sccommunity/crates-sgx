@@ -20,21 +20,34 @@ A task scheduler backed by a work-stealing thread pool.
 keywords = ["futures", "tokio"]
 categories = ["concurrency", "asynchronous"]
 
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+
 [dependencies]
-tokio-executor = "0.1.8"
-futures = "0.1.19"
-crossbeam-deque = "0.7.0"
-crossbeam-queue = "0.2.0"
-crossbeam-utils = "0.7.0"
-num_cpus = "1.2"
-slab = "0.4.1"
-log = "0.4"
-lazy_static = "1"
+tokio-executor = { path = "../tokio-executor" }
+futures = { path = "../../futures-rs_01"}
+crossbeam-deque = { path = "../../crossbeam/crossbeam-deque"}
+crossbeam-queue = { path = "../../crossbeam/crossbeam-queue" }
+crossbeam-utils = { path = "../../crossbeam/crossbeam-utils"  }
+slab = { path = "../../slab" }
+log = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2" }
+lazy_static = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true, features = ["thread", "untrusted_time"] }
+#tokio-executor = "0.1.8"
+#futures = "0.1.19"
+#crossbeam-deque = "0.7.0"
+#crossbeam-queue = "0.2.0"
+#crossbeam-utils = "0.7.0"
+#num_cpus = "1.2"
+#slab = "0.4.1"
+#log = "0.4"
+#lazy_static = "1"
 
 [dev-dependencies]
-rand = "0.7"
-env_logger = { version = "0.6", default-features = false }
+#rand = "0.7"
+#env_logger = { version = "0.6", default-features = false }
 
 # For comparison benchmarks
-futures-cpupool = "0.1.7"
-threadpool = "1.7.1"
+#futures-cpupool = "0.1.7"
+#threadpool = "1.7.1"

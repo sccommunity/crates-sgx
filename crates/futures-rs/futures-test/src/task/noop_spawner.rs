@@ -1,5 +1,5 @@
 use futures_task::{FutureObj, Spawn, SpawnError};
-
+use std::prelude::v1::*;
 /// An implementation of [`Spawn`](futures_task::Spawn) that
 /// discards spawned futures when used.
 ///

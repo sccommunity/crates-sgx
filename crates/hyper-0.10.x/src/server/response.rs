@@ -269,12 +269,14 @@ impl<'a, T: Any> Drop for Response<'a, T> {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use header::Headers;
     use mock::MockStream;
     use super::Response;
-
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    
     macro_rules! lines {
         ($s:ident = $($line:pat),+) => ({
             let s = String::from_utf8($s.write).unwrap();
@@ -291,7 +293,7 @@ mod tests {
         })
     }
 
-    #[test]
+    #[test_case]
     fn test_fresh_start() {
         let mut headers = Headers::new();
         let mut stream = MockStream::new();
@@ -308,7 +310,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_streaming_end() {
         let mut headers = Headers::new();
         let mut stream = MockStream::new();
@@ -327,7 +329,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_fresh_drop() {
         use status::StatusCode;
         let mut headers = Headers::new();
@@ -350,10 +352,10 @@ mod tests {
     // x86 windows msvc does not support unwinding
     // See https://github.com/rust-lang/rust/issues/25869
     #[cfg(not(all(windows, target_arch="x86", target_env="msvc")))]
-    #[test]
+    #[test_case]
     fn test_fresh_drop_panicing() {
         use std::thread;
-        use std::sync::{Arc, Mutex};
+        use std::sync::{Arc, SgxMutex as Mutex};
 
         use status::StatusCode;
 
@@ -387,7 +389,7 @@ mod tests {
     }
 
 
-    #[test]
+    #[test_case]
     fn test_streaming_drop() {
         use std::io::Write;
         use status::StatusCode;
@@ -412,7 +414,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_no_content() {
         use status::StatusCode;
         let mut headers = Headers::new();

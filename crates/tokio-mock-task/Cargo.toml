@@ -14,5 +14,12 @@ description = """
 Mock a Tokio task
 """
 
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+
 [dependencies]
-futures = "0.1.21"
+#futures = "0.1.21"
+futures = { path = "../futures-rs_01"}
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+

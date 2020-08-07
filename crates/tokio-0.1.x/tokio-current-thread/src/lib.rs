@@ -33,6 +33,15 @@
 //! [`block_on_all`]: fn.block_on_all.html
 //! [executor module]: https://docs.rs/tokio/0.1/tokio/executor/index.html
 
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
+
+
 extern crate futures;
 extern crate tokio_executor;
 
@@ -53,7 +62,7 @@ use std::rc::Rc;
 use std::sync::{atomic, mpsc, Arc};
 use std::thread;
 use std::time::{Duration, Instant};
-
+use std::prelude::v1::Box;
 /// Executes tasks on the current thread
 pub struct CurrentThread<P: Park = ParkThread> {
     /// Execute futures and receive unpark notifications.

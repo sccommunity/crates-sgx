@@ -3,8 +3,9 @@ use futures::{FutureExt, StreamExt};
 use h2_support::prelude::*;
 use h2_support::DEFAULT_WINDOW_SIZE;
 use std::task::Context;
-
-#[tokio::test]
+use std::string::ToString;
+use crates_unittest::{ test_case };
+#[crates_unittest::test]
 async fn single_stream_send_large_body() {
     let _ = env_logger::try_init();
 
@@ -64,7 +65,7 @@ async fn single_stream_send_large_body() {
     h2.await.unwrap();
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn multiple_streams_with_payload_greater_than_default_window() {
     let _ = env_logger::try_init();
 
@@ -127,7 +128,7 @@ async fn multiple_streams_with_payload_greater_than_default_window() {
     join(srv, client).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn single_stream_send_extra_large_body_multi_frames_one_buffer() {
     let _ = env_logger::try_init();
 
@@ -191,7 +192,7 @@ async fn single_stream_send_extra_large_body_multi_frames_one_buffer() {
     h2.await.unwrap();
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn single_stream_send_body_greater_than_default_window() {
     let _ = env_logger::try_init();
 
@@ -277,7 +278,7 @@ async fn single_stream_send_body_greater_than_default_window() {
     h2.await.unwrap();
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn single_stream_send_extra_large_body_multi_frames_multi_buffer() {
     let _ = env_logger::try_init();
 
@@ -339,7 +340,7 @@ async fn single_stream_send_extra_large_body_multi_frames_multi_buffer() {
     h2.await.unwrap();
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn send_data_receive_window_update() {
     let _ = env_logger::try_init();
     let (m, mut mock) = mock::new();

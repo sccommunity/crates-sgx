@@ -112,9 +112,11 @@ impl RngCore for ThreadRng {
 impl CryptoRng for ThreadRng {}
 
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod test {
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn test_thread_rng() {
         use crate::Rng;
         let mut r = crate::thread_rng();

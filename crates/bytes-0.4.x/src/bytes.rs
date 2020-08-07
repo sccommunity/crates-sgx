@@ -8,7 +8,8 @@ use std::io::Cursor;
 use std::sync::atomic::{self, AtomicUsize, AtomicPtr};
 use std::sync::atomic::Ordering::{Relaxed, Acquire, Release, AcqRel};
 use std::iter::{FromIterator, Iterator};
-
+use std::prelude::v1::*;
+use std::mem::MaybeUninit;
 /// A reference counted contiguous slice of memory.
 ///
 /// `Bytes` is an efficient container for storing and operating on contiguous
@@ -1629,7 +1630,7 @@ impl<'a> From<&'a [u8]> for BytesMut {
             BytesMut::new()
         } else if len <= INLINE_CAP {
             unsafe {
-                let mut inner: Inner = mem::uninitialized();
+                let mut inner: Inner = MaybeUninit::uninit().assume_init();
 
                 // Set inline mask
                 inner.arc = AtomicPtr::new(KIND_INLINE as *mut Shared);
@@ -1821,7 +1822,7 @@ impl Inner {
         if capacity <= INLINE_CAP {
             unsafe {
                 // Using uninitialized memory is ~30% faster
-                let mut inner: Inner = mem::uninitialized();
+                let mut inner: Inner = MaybeUninit::uninit().assume_init();
                 inner.arc = AtomicPtr::new(KIND_INLINE as *mut Shared);
                 inner
             }
@@ -1917,6 +1918,7 @@ impl Inner {
         debug_assert!(len <= INLINE_CAP);
         let p = self.arc.get_mut();
         *p = ((*p as usize & !INLINE_LEN_MASK) | (len << INLINE_LEN_OFFSET)) as _;
+        //*p = ((*p as usize & !INLINE_LEN_MASK) | (len <uninitialized< INLINE_LEN_OFFSET)) as _;
     }
 
     /// slice.
@@ -2114,7 +2116,7 @@ impl Inner {
 
         if self.is_inline_or_static() {
             // In this case, a shallow_clone still involves copying the data.
-            let mut inner: Inner = mem::uninitialized();
+            let mut inner: Inner = MaybeUninit::uninit().assume_init();
             ptr::copy_nonoverlapping(
                 self,
                 &mut inner,

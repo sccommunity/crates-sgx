@@ -1,7 +1,8 @@
 use crate::future::poll_fn;
 use crate::io::{AsyncRead, AsyncWrite, PollEvented};
 use crate::net::unix::split::{split, ReadHalf, WriteHalf};
-use crate::net::unix::ucred::{self, UCred};
+use crate::net::unix::split_owned::{split_owned, OwnedReadHalf, OwnedWriteHalf};
+//use crate::net::unix::ucred::{self, UCred};
 
 use std::convert::TryFrom;
 use std::fmt;
@@ -91,9 +92,9 @@ impl UnixStream {
     }
 
     /// Returns effective credentials of the process which called `connect` or `pair`.
-    pub fn peer_cred(&self) -> io::Result<UCred> {
-        ucred::get_peer_cred(self)
-    }
+    // pub fn peer_cred(&self) -> io::Result<UCred> {
+    //     ucred::get_peer_cred(self)
+    // }
 
     /// Returns the value of the `SO_ERROR` option.
     pub fn take_error(&self) -> io::Result<Option<io::Error>> {
@@ -109,10 +110,33 @@ impl UnixStream {
         self.io.get_ref().shutdown(how)
     }
 
+    // These lifetime markers also appear in the generated documentation, and make
+    // it more clear that this is a *borrowed* split.
+    #[allow(clippy::needless_lifetimes)]
     /// Split a `UnixStream` into a read half and a write half, which can be used
     /// to read and write the stream concurrently.
-    pub fn split(&mut self) -> (ReadHalf<'_>, WriteHalf<'_>) {
+    ///
+    /// This method is more efficient than [`into_split`], but the halves cannot be
+    /// moved into independently spawned tasks.
+    ///
+    /// [`into_split`]: Self::into_split()
+    pub fn split<'a>(&'a mut self) -> (ReadHalf<'a>, WriteHalf<'a>) {
         split(self)
+    }
+
+    /// Splits a `UnixStream` into a read half and a write half, which can be used
+    /// to read and write the stream concurrently.
+    ///
+    /// Unlike [`split`], the owned halves can be moved to separate tasks, however
+    /// this comes at the cost of a heap allocation.
+    ///
+    /// **Note:** Dropping the write half will shut down the write half of the
+    /// stream. This is equivalent to calling [`shutdown(Write)`] on the `UnixStream`.
+    ///
+    /// [`split`]: Self::split()
+    /// [`shutdown(Write)`]: fn@Self::shutdown
+    pub fn into_split(self) -> (OwnedReadHalf, OwnedWriteHalf) {
+        split_owned(self)
     }
 }
 

@@ -1,3 +1,4 @@
+use std::prelude::v1::*;
 use std::char;
 use std::collections::{
     BTreeMap, BTreeSet, BinaryHeap, HashMap, HashSet, LinkedList, VecDeque,
@@ -720,6 +721,7 @@ impl Arbitrary for char {
 macro_rules! unsigned_shrinker {
     ($ty:ty) => {
         mod shrinker {
+            use std::prelude::v1::*;
             pub struct UnsignedShrinker {
                 x: $ty,
                 i: $ty,
@@ -785,6 +787,7 @@ unsigned_arbitrary! {
 macro_rules! signed_shrinker {
     ($ty:ty) => {
         mod shrinker {
+            use std::prelude::v1::*;
             pub struct SignedShrinker {
                 x: $ty,
                 i: $ty,
@@ -867,6 +870,7 @@ impl Arbitrary for f32 {
 macro_rules! unsigned_non_zero_shrinker {
     ($ty:tt) => {
         mod shrinker {
+            use std::prelude::v1::*;
             pub struct UnsignedNonZeroShrinker {
                 x: $ty,
                 i: $ty,

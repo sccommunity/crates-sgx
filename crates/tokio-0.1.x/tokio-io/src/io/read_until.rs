@@ -1,6 +1,6 @@
 use std::io::{self, BufRead};
 use std::mem;
-
+use std::prelude::v1::*;
 use futures::{Future, Poll};
 
 use AsyncRead;

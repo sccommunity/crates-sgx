@@ -1,6 +1,6 @@
 [package]
 name = "tracing-subscriber"
-version = "0.2.5"
+version = "0.2.10"
 authors = [
     "Eliza Weisman <eliza@buoyant.io>",
     "David Barsky <me@davidbarsky.com>",
@@ -22,44 +22,57 @@ categories = [
 keywords = ["logging", "tracing", "metrics", "subscriber"]
 
 [features]
-
-default = ["env-filter", "smallvec", "fmt", "ansi", "chrono", "tracing-log", "json"]
+default = ["mesalock_sgx", "env-filter", "smallvec", "fmt", "ansi", "chrono", "tracing-log", "json"]
+#default = ["mesalock_sgx", "env-filter", "smallvec", "fmt", "ansi", "tracing-log", "json"]
 env-filter = ["matchers", "regex", "lazy_static"]
 fmt = ["registry"]
 ansi = ["fmt", "ansi_term"]
 registry = ["sharded-slab"]
 json = ["tracing-serde", "serde", "serde_json"]
+mesalock_sgx = ["sgx_tstd"]
 
 [dependencies]
-tracing-core = { path = "../tracing-core", version = "0.1.2" }
+tracing-core = { path = "../tracing-core", version = "0.1.13" }
 
 # only required by the filter feature
-matchers = { optional = true, version = "0.0.1" }
-regex = { optional = true, version = "1" }
-smallvec = { optional = true, version = "1"}
-lazy_static = { optional = true, version = "1" }
+matchers = { path = "../../matchers", optional = true, version = "0.0.1" }
+#regex = { optional = true, version = "1" } 
+regex = { path = "../../regex", optional = true, version = "1" }
+#smallvec = { optional = true, version = "1"}
+smallvec = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2", features = ["write", "union", "specialization", "may_dangle", "serde"], optional = true }
+#lazy_static = { optional = true, version = "1" }
+lazy_static = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2", optional = true }
+
 
 # fmt
 tracing-log = { path = "../tracing-log", version = "0.1", optional = true, default-features = false, features = ["log-tracer", "std"] }
-ansi_term = { version = "0.11", optional = true }
-chrono = { version = "0.4", optional = true }
+ansi_term = { path = "../../rust-ansi-term", optional = true }
+#ansi_term = { path = "../../rust-ansi-term", version = "0.11", optional = true }
+chrono = { path = "../../chrono", version = "0.4", optional = true }
+
 
 # only required by the json feature
-serde_json = { version = "1.0", optional = true }
-serde = { version = "1.0", optional = true }
+#serde_json = { version = "1.0", optional = true }
+#serde = { version = "1.0", optional = true }
+serde_json = { path = "../../json", optional = true }
+serde = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2", features = ["derive"], optional = true }
+
 tracing-serde = { path = "../tracing-serde", version = "0.1.1", optional = true }
 
 # opt-in deps
-parking_lot = { version = ">= 0.7, < 0.10", optional = true }
+parking_lot = { path = "../../parking_lot", optional = true }
 
 # registry
-sharded-slab = { version = "^0.0.9", optional = true }
+#sharded-slab = { version = "^0.0.9", optional = true }
+sharded-slab = { path = "../../sharded-slab", version = "^0.0.9", optional = true }
+
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true, features = ["untrusted_time"] }
 
 [dev-dependencies]
-tracing = { path = "../tracing", version = "0.1"}
-log = "0.4"
-tracing-log = { path = "../tracing-log", version = "0.1" }
-criterion = { version = "0.3", default_features = false }
+#tracing = { path = "../tracing", version = "0.1"}
+#log = "0.4"
+#tracing-log = { path = "../tracing-log", version = "0.1" }
+#criterion = { version = "0.3", default_features = false }
 
 [badges]
 maintenance = { status = "experimental" }

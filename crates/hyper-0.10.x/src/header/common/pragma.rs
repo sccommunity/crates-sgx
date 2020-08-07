@@ -1,10 +1,12 @@
 use std::fmt;
-
+use std::prelude::v1::*;
 #[allow(unused_imports)]
 use std::ascii::AsciiExt;
 
 use header::{Header, HeaderFormat, parsing};
 
+#[cfg(feature = "enclave_unit_test")]
+use crates_unittest::test_case;
 /// The `Pragma` header defined by HTTP/1.0.
 ///
 /// > The "Pragma" header field allows backwards compatibility with
@@ -71,7 +73,7 @@ impl fmt::Display for Pragma {
     }
 }
 
-#[test]
+#[test_case]
 fn test_parse_header() {
     let a: Pragma = Header::parse_header([b"no-cache".to_vec()].as_ref()).unwrap();
     let b = Pragma::NoCache;

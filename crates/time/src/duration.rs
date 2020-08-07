@@ -1213,11 +1213,17 @@ impl Ord for Duration {
     }
 }
 
-#[cfg(test)]
-mod test {
+#[cfg(feature = "enclave_unit_test")]
+//#[cfg(test)]
+pub(crate) mod test {
+    use std::prelude::v1::*;
+    use std::string::ToString;
+    
     use super::*;
 
-    #[test]
+
+    #[crates_unittest::test_case]
+    //#[cfg(test)]
     fn unit_values() {
         assert_eq!(Duration::zero(), 0.seconds());
         assert_eq!(Duration::nanosecond(), 1.nanoseconds());
@@ -1229,45 +1235,45 @@ mod test {
         assert_eq!(Duration::day(), 86_400.seconds());
         assert_eq!(Duration::week(), 604_800.seconds());
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn is_zero() {
         assert!(!(-1).nanoseconds().is_zero());
         assert!(0.seconds().is_zero());
         assert!(!1.nanoseconds().is_zero());
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn is_negative() {
         assert!((-1).seconds().is_negative());
         assert!(!0.seconds().is_negative());
         assert!(!1.seconds().is_negative());
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn is_positive() {
         assert!(!(-1).seconds().is_positive());
         assert!(!0.seconds().is_positive());
         assert!(1.seconds().is_positive());
     }
-
+    #[crates_unittest::test_case]
     #[allow(deprecated)]
-    #[test]
+    //#[test]
     fn sign() {
         use crate::Sign::*;
         assert_eq!(1.seconds().sign(), Positive);
         assert_eq!((-1).seconds().sign(), Negative);
         assert_eq!(0.seconds().sign(), Zero);
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn abs() {
         assert_eq!(1.seconds().abs(), 1.seconds());
         assert_eq!(0.seconds().abs(), 0.seconds());
         assert_eq!((-1).seconds().abs(), 1.seconds());
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn new() {
         assert_eq!(Duration::new(1, 0), 1.seconds());
         assert_eq!(Duration::new(-1, 0), (-1).seconds());
@@ -1278,94 +1284,94 @@ mod test {
         assert!(Duration::new(-1, 1_000_000_000).is_zero());
         assert!(Duration::new(-2, 1_000_000_000).is_negative());
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn weeks() {
         assert_eq!(Duration::weeks(1), 604_800.seconds());
         assert_eq!(Duration::weeks(2), (2 * 604_800).seconds());
         assert_eq!(Duration::weeks(-1), (-604_800).seconds());
         assert_eq!(Duration::weeks(-2), (2 * -604_800).seconds());
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn whole_weeks() {
         assert_eq!(Duration::weeks(1).whole_weeks(), 1);
         assert_eq!(Duration::weeks(-1).whole_weeks(), -1);
         assert_eq!(Duration::days(6).whole_weeks(), 0);
         assert_eq!(Duration::days(-6).whole_weeks(), 0);
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn days() {
         assert_eq!(Duration::days(1), 86_400.seconds());
         assert_eq!(Duration::days(2), (2 * 86_400).seconds());
         assert_eq!(Duration::days(-1), (-86_400).seconds());
         assert_eq!(Duration::days(-2), (2 * -86_400).seconds());
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn whole_days() {
         assert_eq!(Duration::days(1).whole_days(), 1);
         assert_eq!(Duration::days(-1).whole_days(), -1);
         assert_eq!(Duration::hours(23).whole_days(), 0);
         assert_eq!(Duration::hours(-23).whole_days(), 0);
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn hours() {
         assert_eq!(Duration::hours(1), 3_600.seconds());
         assert_eq!(Duration::hours(2), (2 * 3_600).seconds());
         assert_eq!(Duration::hours(-1), (-3_600).seconds());
         assert_eq!(Duration::hours(-2), (2 * -3_600).seconds());
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn whole_hours() {
         assert_eq!(Duration::hours(1).whole_hours(), 1);
         assert_eq!(Duration::hours(-1).whole_hours(), -1);
         assert_eq!(Duration::minutes(59).whole_hours(), 0);
         assert_eq!(Duration::minutes(-59).whole_hours(), 0);
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn minutes() {
         assert_eq!(Duration::minutes(1), 60.seconds());
         assert_eq!(Duration::minutes(2), (2 * 60).seconds());
         assert_eq!(Duration::minutes(-1), (-60).seconds());
         assert_eq!(Duration::minutes(-2), (2 * -60).seconds());
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn whole_minutes() {
         assert_eq!(1.minutes().whole_minutes(), 1);
         assert_eq!((-1).minutes().whole_minutes(), -1);
         assert_eq!(59.seconds().whole_minutes(), 0);
         assert_eq!((-59).seconds().whole_minutes(), 0);
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn seconds() {
         assert_eq!(Duration::seconds(1), 1_000.milliseconds());
         assert_eq!(Duration::seconds(2), (2 * 1_000).milliseconds());
         assert_eq!(Duration::seconds(-1), (-1_000).milliseconds());
         assert_eq!(Duration::seconds(-2), (2 * -1_000).milliseconds());
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn whole_seconds() {
         assert_eq!(1.seconds().whole_seconds(), 1);
         assert_eq!((-1).seconds().whole_seconds(), -1);
         assert_eq!(1.minutes().whole_seconds(), 60);
         assert_eq!((-1).minutes().whole_seconds(), -60);
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn seconds_f64() {
         assert_eq!(Duration::seconds_f64(0.5), 0.5.seconds());
         assert_eq!(Duration::seconds_f64(-0.5), (-0.5).seconds());
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     #[allow(clippy::float_cmp)]
     fn as_seconds_f64() {
         assert_eq!(1.seconds().as_seconds_f64(), 1.0);
@@ -1375,14 +1381,14 @@ mod test {
         assert_eq!(1.5.seconds().as_seconds_f64(), 1.5);
         assert_eq!((-1.5).seconds().as_seconds_f64(), -1.5);
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn seconds_f32() {
         assert_eq!(Duration::seconds_f32(0.5), 0.5.seconds());
         assert_eq!(Duration::seconds_f32(-0.5), (-0.5).seconds());
     }
-
-    #[test]
+    #[crates_unittest::test_case]    
+    //#[test]
     #[allow(clippy::float_cmp)]
     fn as_seconds_f32() {
         assert_eq!(1.seconds().as_seconds_f32(), 1.0);
@@ -1392,84 +1398,84 @@ mod test {
         assert_eq!(1.5.seconds().as_seconds_f32(), 1.5);
         assert_eq!((-1.5).seconds().as_seconds_f32(), -1.5);
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn milliseconds() {
         assert_eq!(Duration::milliseconds(1), 1_000.microseconds());
         assert_eq!(Duration::milliseconds(-1), (-1000).microseconds());
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn whole_milliseconds() {
         assert_eq!(1.seconds().whole_milliseconds(), 1_000);
         assert_eq!((-1).seconds().whole_milliseconds(), -1_000);
         assert_eq!(1.milliseconds().whole_milliseconds(), 1);
         assert_eq!((-1).milliseconds().whole_milliseconds(), -1);
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+   // #[test]
     fn subsec_milliseconds() {
         assert_eq!(1.4.seconds().subsec_milliseconds(), 400);
         assert_eq!((-1.4).seconds().subsec_milliseconds(), -400);
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn microseconds() {
         assert_eq!(Duration::microseconds(1), 1_000.nanoseconds());
         assert_eq!(Duration::microseconds(-1), (-1_000).nanoseconds());
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn whole_microseconds() {
         assert_eq!(1.milliseconds().whole_microseconds(), 1_000);
         assert_eq!((-1).milliseconds().whole_microseconds(), -1_000);
         assert_eq!(1.microseconds().whole_microseconds(), 1);
         assert_eq!((-1).microseconds().whole_microseconds(), -1);
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn subsec_microseconds() {
         assert_eq!(1.0004.seconds().subsec_microseconds(), 400);
         assert_eq!((-1.0004).seconds().subsec_microseconds(), -400);
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn nanoseconds() {
         assert_eq!(Duration::nanoseconds(1), 1.microseconds() / 1_000);
         assert_eq!(Duration::nanoseconds(-1), (-1).microseconds() / 1_000);
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn whole_nanoseconds() {
         assert_eq!(1.microseconds().whole_nanoseconds(), 1_000);
         assert_eq!((-1).microseconds().whole_nanoseconds(), -1_000);
         assert_eq!(1.nanoseconds().whole_nanoseconds(), 1);
         assert_eq!((-1).nanoseconds().whole_nanoseconds(), -1);
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn subsec_nanoseconds() {
         assert_eq!(1.000_000_4.seconds().subsec_nanoseconds(), 400);
         assert_eq!((-1.000_000_4).seconds().subsec_nanoseconds(), -400);
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     #[allow(deprecated)]
     fn checked_add() {
         assert_eq!(5.seconds().checked_add(5.seconds()), Some(10.seconds()));
         assert_eq!(Duration::max_value().checked_add(1.nanoseconds()), None);
         assert_eq!((-5).seconds().checked_add(5.seconds()), Some(0.seconds()));
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     #[allow(deprecated)]
     fn checked_sub() {
         assert_eq!(5.seconds().checked_sub(5.seconds()), Some(0.seconds()));
         assert_eq!(Duration::min_value().checked_sub(1.nanoseconds()), None);
         assert_eq!(5.seconds().checked_sub(10.seconds()), Some((-5).seconds()));
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     #[allow(deprecated)]
     fn checked_mul() {
         assert_eq!(5.seconds().checked_mul(2), Some(10.seconds()));
@@ -1478,15 +1484,15 @@ mod test {
         assert_eq!(Duration::max_value().checked_mul(2), None);
         assert_eq!(Duration::min_value().checked_mul(2), None);
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn checked_div() {
         assert_eq!(10.seconds().checked_div(2), Some(5.seconds()));
         assert_eq!(10.seconds().checked_div(-2), Some((-5).seconds()));
         assert_eq!(1.seconds().checked_div(0), None);
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     #[cfg(std)]
     fn time_fn() {
         let (time, value) = Duration::time_fn(|| {
@@ -1497,42 +1503,42 @@ mod test {
         assert!(time >= 100.milliseconds());
         assert_eq!(value, 0);
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn try_from_std_duration() {
         assert_eq!(Duration::try_from(0.std_seconds()), Ok(0.seconds()));
         assert_eq!(Duration::try_from(1.std_seconds()), Ok(1.seconds()));
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn try_to_std_duration() {
         assert_eq!(StdDuration::try_from(0.seconds()), Ok(0.std_seconds()));
         assert_eq!(StdDuration::try_from(1.seconds()), Ok(1.std_seconds()));
         assert!(StdDuration::try_from((-1).seconds()).is_err());
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn add() {
         assert_eq!(1.seconds() + 1.seconds(), 2.seconds());
         assert_eq!(500.milliseconds() + 500.milliseconds(), 1.seconds());
         assert_eq!(1.seconds() + (-1).seconds(), 0.seconds());
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn add_std() {
         assert_eq!(1.seconds() + 1.std_seconds(), 2.seconds());
         assert_eq!(500.milliseconds() + 500.std_milliseconds(), 1.seconds());
         assert_eq!((-1).seconds() + 1.std_seconds(), 0.seconds());
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn std_add() {
         assert_eq!(1.std_seconds() + 1.seconds(), 2.seconds());
         assert_eq!(500.std_milliseconds() + 500.milliseconds(), 1.seconds());
         assert_eq!(1.std_seconds() + (-1).seconds(), 0.seconds());
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn add_assign() {
         let mut duration = 1.seconds();
         duration += 1.seconds();
@@ -1546,8 +1552,8 @@ mod test {
         duration += (-1).seconds();
         assert_eq!(duration, 0.seconds());
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn add_assign_std() {
         let mut duration = 1.seconds();
         duration += 1.std_seconds();
@@ -1561,36 +1567,36 @@ mod test {
         duration += 1.std_seconds();
         assert_eq!(duration, 0.seconds());
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn neg() {
         assert_eq!(-(1.seconds()), (-1).seconds());
         assert_eq!(-(-1).seconds(), 1.seconds());
         assert_eq!(-(0.seconds()), 0.seconds());
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn sub() {
         assert_eq!(1.seconds() - 1.seconds(), 0.seconds());
         assert_eq!(1_500.milliseconds() - 500.milliseconds(), 1.seconds());
         assert_eq!(1.seconds() - (-1).seconds(), 2.seconds());
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn sub_std() {
         assert_eq!(1.seconds() - 1.std_seconds(), 0.seconds());
         assert_eq!(1_500.milliseconds() - 500.std_milliseconds(), 1.seconds());
         assert_eq!((-1).seconds() - 1.std_seconds(), (-2).seconds());
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn std_sub() {
         assert_eq!(1.std_seconds() - 1.seconds(), 0.seconds());
         assert_eq!(1_500.std_milliseconds() - 500.milliseconds(), 1.seconds());
         assert_eq!(1.std_seconds() - (-1).seconds(), 2.seconds());
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn sub_assign() {
         let mut duration = 1.seconds();
         duration -= 1.seconds();
@@ -1604,8 +1610,8 @@ mod test {
         duration -= (-1).seconds();
         assert_eq!(duration, 2.seconds());
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn sub_assign_std() {
         let mut duration = 1.seconds();
         duration -= 1.std_seconds();
@@ -1619,8 +1625,8 @@ mod test {
         duration -= 1.std_seconds();
         assert_eq!(duration, (-2).seconds());
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn std_sub_assign() {
         let mut duration = 1.std_seconds();
         duration -= 1.seconds();
@@ -1636,14 +1642,14 @@ mod test {
             assert_panics!(duration -= 2.seconds());
         }
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn mul_int() {
         assert_eq!(1.seconds() * 2, 2.seconds());
         assert_eq!(1.seconds() * -2, (-2).seconds());
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn mul_int_assign() {
         let mut duration = 1.seconds();
         duration *= 2;
@@ -1653,20 +1659,20 @@ mod test {
         duration *= -2;
         assert_eq!(duration, (-2).seconds());
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn int_mul() {
         assert_eq!(2 * 1.seconds(), 2.seconds());
         assert_eq!(-2 * 1.seconds(), (-2).seconds());
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn div_int() {
         assert_eq!(1.seconds() / 2, 500.milliseconds());
         assert_eq!(1.seconds() / -2, (-500).milliseconds());
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn div_int_assign() {
         let mut duration = 1.seconds();
         duration /= 2;
@@ -1676,8 +1682,8 @@ mod test {
         duration /= -2;
         assert_eq!(duration, (-500).milliseconds());
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn mul_float() {
         assert_eq!(1.seconds() * 1.5_f32, 1_500.milliseconds());
         assert_eq!(1.seconds() * 2.5_f32, 2_500.milliseconds());
@@ -1689,8 +1695,8 @@ mod test {
         assert_eq!(1.seconds() * -1.5_f64, (-1_500).milliseconds());
         assert_eq!(1.seconds() * 0_f64, 0.seconds());
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn float_mul() {
         assert_eq!(1.5_f32 * 1.seconds(), 1_500.milliseconds());
         assert_eq!(2.5_f32 * 1.seconds(), 2_500.milliseconds());
@@ -1702,8 +1708,8 @@ mod test {
         assert_eq!(-1.5_f64 * 1.seconds(), (-1_500).milliseconds());
         assert_eq!(0_f64 * 1.seconds(), 0.seconds());
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn mul_float_assign() {
         let mut duration = 1.seconds();
         duration *= 1.5_f32;
@@ -1737,8 +1743,8 @@ mod test {
         duration *= 0_f64;
         assert_eq!(duration, 0.seconds());
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn div_float() {
         assert_eq!(1.seconds() / 1_f32, 1.seconds());
         assert_eq!(1.seconds() / 2_f32, 500.milliseconds());
@@ -1748,8 +1754,8 @@ mod test {
         assert_eq!(1.seconds() / 2_f64, 500.milliseconds());
         assert_eq!(1.seconds() / -1_f64, (-1).seconds());
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn div_float_assign() {
         let mut duration = 1.seconds();
         duration /= 1_f32;
@@ -1775,8 +1781,8 @@ mod test {
         duration /= -1_f64;
         assert_eq!(duration, (-1).seconds());
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn partial_eq() {
         assert_eq!(1.seconds(), 1.seconds());
         assert_eq!(0.seconds(), 0.seconds());
@@ -1784,8 +1790,8 @@ mod test {
         assert_ne!(1.minutes(), (-1).minutes());
         assert_ne!(40.seconds(), 1.minutes());
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn partial_eq_std() {
         assert_eq!(1.seconds(), 1.std_seconds());
         assert_eq!(0.seconds(), 0.std_seconds());
@@ -1793,8 +1799,8 @@ mod test {
         assert_ne!((-1).minutes(), 1.std_minutes());
         assert_ne!(40.seconds(), 1.std_minutes());
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn std_partial_eq() {
         assert_eq!(1.std_seconds(), 1.seconds());
         assert_eq!(0.std_seconds(), 0.seconds());
@@ -1802,8 +1808,8 @@ mod test {
         assert_ne!(1.std_minutes(), (-1).minutes());
         assert_ne!(40.std_seconds(), 1.minutes());
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn partial_ord() {
         assert_eq!(0.seconds().partial_cmp(&0.seconds()), Some(Equal));
         assert_eq!(1.seconds().partial_cmp(&0.seconds()), Some(Greater));
@@ -1815,8 +1821,8 @@ mod test {
         assert_eq!(1.minutes().partial_cmp(&1.seconds()), Some(Greater));
         assert_eq!((-1).minutes().partial_cmp(&(-1).seconds()), Some(Less));
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn partial_ord_std() {
         assert_eq!(0.seconds().partial_cmp(&0.std_seconds()), Some(Equal));
         assert_eq!(1.seconds().partial_cmp(&0.std_seconds()), Some(Greater));
@@ -1825,8 +1831,8 @@ mod test {
         assert_eq!((-1).seconds().partial_cmp(&0.std_seconds()), Some(Less));
         assert_eq!(1.minutes().partial_cmp(&1.std_seconds()), Some(Greater));
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn std_partial_ord() {
         assert_eq!(0.std_seconds().partial_cmp(&0.seconds()), Some(Equal));
         assert_eq!(1.std_seconds().partial_cmp(&0.seconds()), Some(Greater));
@@ -1835,8 +1841,8 @@ mod test {
         assert_eq!(0.std_seconds().partial_cmp(&1.seconds()), Some(Less));
         assert_eq!(1.std_minutes().partial_cmp(&1.seconds()), Some(Greater));
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn ord() {
         assert_eq!(0.seconds(), 0.seconds());
         assert!(1.seconds() > 0.seconds());
@@ -1848,8 +1854,8 @@ mod test {
         assert!(1.minutes() > 1.seconds());
         assert!((-1).minutes() < (-1).seconds());
     }
-
-    #[test]
+    #[crates_unittest::test_case]
+    //#[test]
     fn arithmetic_regression() {
         let added = 1.6.seconds() + 1.6.seconds();
         assert_eq!(added.whole_seconds(), 3);

@@ -15,6 +15,7 @@
 pub use self::FromBase64Error::*;
 pub use self::CharacterSet::*;
 
+use std::prelude::v1::*;
 use std::fmt;
 use std::error;
 
@@ -375,11 +376,14 @@ const EQUALS_CODE: u8 = 0xFE;
 const NEWLINE_CODE: u8 = 0xFD;
 const SPECIAL_CODES_START: u8 = NEWLINE_CODE;
 
-#[cfg(test)]
+
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use base64::{Config, Newline, FromBase64, ToBase64, STANDARD, URL_SAFE};
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
 
-    #[test]
+    #[test_case]
     fn test_to_base64_basic() {
         assert_eq!("".as_bytes().to_base64(STANDARD), "");
         assert_eq!("f".as_bytes().to_base64(STANDARD), "Zg==");
@@ -390,7 +394,7 @@ mod tests {
         assert_eq!("foobar".as_bytes().to_base64(STANDARD), "Zm9vYmFy");
     }
 
-    #[test]
+    #[test_case]
     fn test_to_base64_crlf_line_break() {
         assert!(![0; 1000].to_base64(Config {line_length: None, ..STANDARD})
                               .contains("\r\n"));
@@ -399,7 +403,7 @@ mod tests {
                    "Zm9v\r\nYmFy");
     }
 
-    #[test]
+    #[test_case]
     fn test_to_base64_lf_line_break() {
         assert!(![0; 1000].to_base64(Config {line_length: None,
                                                  newline: Newline::LF,
@@ -411,24 +415,24 @@ mod tests {
                    "Zm9v\nYmFy");
     }
 
-    #[test]
+    #[test_case]
     fn test_to_base64_padding() {
         assert_eq!("f".as_bytes().to_base64(Config {pad: false, ..STANDARD}), "Zg");
         assert_eq!("fo".as_bytes().to_base64(Config {pad: false, ..STANDARD}), "Zm8");
     }
 
-    #[test]
+    #[test_case]
     fn test_to_base64_url_safe() {
         assert_eq!([251, 255].to_base64(URL_SAFE), "-_8");
         assert_eq!([251, 255].to_base64(STANDARD), "+/8=");
     }
 
-    #[test]
+    #[test_case]
     fn test_to_base64_empty_line_length() {
         [].to_base64(Config {line_length: Some(72), ..STANDARD});
     }
 
-    #[test]
+    #[test_case]
     fn test_from_base64_basic() {
         assert_eq!("".from_base64().unwrap(), b"");
         assert_eq!("Zg==".from_base64().unwrap(), b"f");
@@ -439,12 +443,12 @@ mod tests {
         assert_eq!("Zm9vYmFy".from_base64().unwrap(), b"foobar");
     }
 
-    #[test]
+    #[test_case]
     fn test_from_base64_bytes() {
         assert_eq!(b"Zm9vYmFy".from_base64().unwrap(), b"foobar");
     }
 
-    #[test]
+    #[test_case]
     fn test_from_base64_newlines() {
         assert_eq!("Zm9v\r\nYmFy".from_base64().unwrap(),
                    b"foobar");
@@ -456,34 +460,34 @@ mod tests {
                    b"foob");
     }
 
-    #[test]
+    #[test_case]
     fn test_from_base64_urlsafe() {
         assert_eq!("-_8".from_base64().unwrap(), "+/8=".from_base64().unwrap());
     }
 
-    #[test]
+    #[test_case]
     fn test_from_base64_invalid_char() {
         assert!("Zm$=".from_base64().is_err());
         assert!("Zg==$".from_base64().is_err());
     }
 
-    #[test]
+    #[test_case]
     fn test_from_base64_invalid_padding() {
         assert!("Z===".from_base64().is_err());
     }
 
-    #[test]
-    fn test_base64_random() {
-        use rand::{thread_rng, Rng};
+    // #[test_case]
+    // fn test_base64_random() {
+    //     use rand::{thread_rng, Rng};
 
-        for _ in 0..1000 {
-            let times = thread_rng().gen_range(1, 100);
-            let v = thread_rng().gen_iter::<u8>().take(times)
-                                .collect::<Vec<_>>();
-            assert_eq!(v.to_base64(STANDARD)
-                        .from_base64()
-                        .unwrap(),
-                       v);
-        }
-    }
+    //     for _ in 0..1000 {
+    //         let times = thread_rng().gen_range(1, 100);
+    //         let v = thread_rng().gen_iter::<u8>().take(times)
+    //                             .collect::<Vec<_>>();
+    //         assert_eq!(v.to_base64(STANDARD)
+    //                     .from_base64()
+    //                     .unwrap(),
+    //                    v);
+    //     }
+    // }
 }

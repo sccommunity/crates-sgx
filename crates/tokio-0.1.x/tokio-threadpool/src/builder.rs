@@ -12,9 +12,9 @@ use std::error::Error;
 use std::fmt;
 use std::sync::Arc;
 use std::time::Duration;
-
+use std::prelude::v1::*;
 use crossbeam_deque::Injector;
-use num_cpus;
+//use num_cpus;
 use tokio_executor::park::Park;
 use tokio_executor::Enter;
 
@@ -92,7 +92,7 @@ impl Builder {
     /// # }
     /// ```
     pub fn new() -> Builder {
-        let num_cpus = max(1, num_cpus::get());
+        let num_cpus = 1;//max(1, num_cpus::get());
 
         let new_park =
             Box::new(|_: &WorkerId| Box::new(BoxedPark::new(DefaultPark::new())) as BoxPark);
@@ -278,7 +278,7 @@ impl Builder {
     /// # }
     /// ```
     pub fn stack_size(&mut self, val: usize) -> &mut Self {
-        self.config.stack_size = Some(val);
+        //self.config.stack_size = Some(val);
         self
     }
 

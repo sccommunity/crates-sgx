@@ -1,12 +1,13 @@
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 use std::io::{self, Read};
-
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
+use std::prelude::v1::*;
+#[cfg(feature = "enclave_unit_test")]
 pub struct WouldBlockReader<R> {
     inner: R,
     do_block: bool,
 }
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 impl<R: Read> WouldBlockReader<R> {
     pub fn new(inner: R) -> Self {
         WouldBlockReader {
@@ -15,7 +16,7 @@ impl<R: Read> WouldBlockReader<R> {
         }
     }
 }
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 impl<R: Read> Read for WouldBlockReader<R> {
     fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
         self.do_block = !self.do_block;
@@ -35,7 +36,7 @@ impl<R: Read> Read for WouldBlockReader<R> {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 pub fn nb_read_to_end<R: Read>(mut reader: R) -> io::Result<Vec<u8>> {
     let mut buf = vec![0; 1024];
     let mut offset = 0;

@@ -33,7 +33,7 @@
 
 use std::cell::RefCell;
 use std::mem;
-
+use std::prelude::v1::*;
 use regex_syntax::hir::{self, Hir, HirKind};
 use regex_syntax::utf8::{Utf8Range, Utf8Sequences};
 

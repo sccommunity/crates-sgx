@@ -1,3 +1,4 @@
+use std::prelude::v1::*;
 /// Slot is a single saved capture location. Note that there are two slots for
 /// every capture in a regular expression (one slot each for the start and end
 /// of the capture).

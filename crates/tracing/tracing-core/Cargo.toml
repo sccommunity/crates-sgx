@@ -8,7 +8,7 @@ name = "tracing-core"
 #   - README.md
 # - Update CHANGELOG.md.
 # - Create "v0.1.x" git tag.
-version = "0.1.10"
+version = "0.1.13"
 authors = ["Tokio Contributors <team@tokio.rs>"]
 license = "MIT"
 readme = "README.md"
@@ -25,16 +25,20 @@ categories = [
 keywords = ["logging", "tracing", "profiling"]
 edition = "2018"
 
+
 [features]
-default = ["std"]
-std = ["lazy_static"]
+default = ["std", "mesalock_sgx"]
+std = ["lazy_static", "mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
 
 [badges]
 maintenance = { status = "actively-developed" }
 
 [dependencies]
-lazy_static = { version = "1", optional = true }
+#lazy_static = { version = "1", optional = true }
+lazy_static = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2", optional = true }
 
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 [package.metadata.docs.rs]
 all-features = true
 rustdoc-args = ["--cfg", "docsrs"]

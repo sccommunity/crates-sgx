@@ -421,19 +421,38 @@ impl Future for Want<'_> {
     }
 }
 
-#[cfg(test)]
-mod tests {
+#[cfg(feature = "enclave_unit_test")]
+//#[cfg(test)]
+pub mod tests {
+    use std::prelude::v1::*;
     use std::thread;
-    use tokio_sync::oneshot;
+    use tokio::sync::oneshot;
     use super::*;
-
-    fn block_on<F: Future>(f: F) -> F::Output {
-        tokio_executor::enter()
-            .expect("block_on enter")
-            .block_on(f)
+    use std::string::ToString;
+    use crates_unittest::{ test_case, run_inventory_tests };
+  
+    pub fn run_tests() {
+        run_inventory_tests!();
     }
 
-    #[test]
+    pub fn block_on<F: std::future::Future>(future: F) -> F::Output {
+        use tokio::runtime;
+    
+        let mut rt = runtime::Builder::new()
+            .basic_scheduler()
+            .enable_all()
+            .build()
+            .unwrap();
+    
+        rt.block_on(future)
+    }
+    // fn block_on<F: Future>(f: F) -> F::Output {
+    //     tokio_executor::enter()
+    //         .expect("block_on enter")
+    //         .block_on(f)
+    // }
+
+    #[test_case]
     fn want_ready() {
         let (mut gv, mut tk) = new();
 
@@ -442,7 +461,7 @@ mod tests {
         block_on(gv.want()).unwrap();
     }
 
-    #[test]
+    #[test_case]
     fn want_notify_0() {
         let (mut gv, mut tk) = new();
         let (tx, rx) = oneshot::channel();
@@ -506,7 +525,7 @@ mod tests {
     }
     */
 
-    #[test]
+    #[test_case]
     fn cancel() {
         // explicit
         let (mut gv, mut tk) = new();
@@ -539,54 +558,54 @@ mod tests {
         block_on(gv.want()).unwrap_err();
     }
 
-    /*
-    #[test]
-    fn stress() {
-        let nthreads = 5;
-        let nwants = 100;
+    
+    // #[test]
+    // fn stress() {
+    //     let nthreads = 5;
+    //     let nwants = 100;
 
-        for _ in 0..nthreads {
-            let (mut gv, mut tk) = new();
-            let (mut tx, mut rx) = mpsc::channel(0);
+    //     for _ in 0..nthreads {
+    //         let (mut gv, mut tk) = new();
+    //         let (mut tx, mut rx) = mpsc::channel(0);
 
-            // rx thread
-            thread::spawn(move || {
-                let mut cnt = 0;
-                poll_fn(move || {
-                    while cnt < nwants {
-                        let n = match rx.poll().expect("rx poll") {
-                            Async::Ready(n) => n.expect("rx opt"),
-                            Async::NotReady => {
-                                tk.want();
-                                return Ok(Async::NotReady);
-                            },
-                        };
-                        assert_eq!(cnt, n);
-                        cnt += 1;
-                    }
-                    Ok::<_, ()>(Async::Ready(()))
-                }).wait().expect("rx wait");
-            });
+    //         // rx thread
+    //         thread::spawn(move || {
+    //             let mut cnt = 0;
+    //             poll_fn(move || {
+    //                 while cnt < nwants {
+    //                     let n = match rx.poll().expect("rx poll") {
+    //                         Async::Ready(n) => n.expect("rx opt"),
+    //                         Async::NotReady => {
+    //                             tk.want();
+    //                             return Ok(Async::NotReady);
+    //                         },
+    //                     };
+    //                     assert_eq!(cnt, n);
+    //                     cnt += 1;
+    //                 }
+    //                 Ok::<_, ()>(Async::Ready(()))
+    //             }).wait().expect("rx wait");
+    //         });
 
-            // tx thread
-            thread::spawn(move || {
-                let mut cnt = 0;
-                let nsent = poll_fn(move || {
-                    loop {
-                        while let Ok(()) = tx.try_send(cnt) {
-                            cnt += 1;
-                        }
-                        match gv.poll_want() {
-                            Ok(Async::Ready(_)) => (),
-                            Ok(Async::NotReady) => return Ok::<_, ()>(Async::NotReady),
-                            Err(_) => return Ok(Async::Ready(cnt)),
-                        }
-                    }
-                }).wait().expect("tx wait");
+    //         // tx thread
+    //         thread::spawn(move || {
+    //             let mut cnt = 0;
+    //             let nsent = poll_fn(move || {
+    //                 loop {
+    //                     while let Ok(()) = tx.try_send(cnt) {
+    //                         cnt += 1;
+    //                     }
+    //                     match gv.poll_want() {
+    //                         Ok(Async::Ready(_)) => (),
+    //                         Ok(Async::NotReady) => return Ok::<_, ()>(Async::NotReady),
+    //                         Err(_) => return Ok(Async::Ready(cnt)),
+    //                     }
+    //                 }
+    //             }).wait().expect("tx wait");
 
-                assert_eq!(nsent, nwants);
-            }).join().expect("thread join");
-        }
-    }
-    */
+    //             assert_eq!(nsent, nwants);
+    //         }).join().expect("thread join");
+    //     }
+    // }
+
 }

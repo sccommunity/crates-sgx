@@ -59,6 +59,7 @@ mod tcp;
 
 use std::error::Error as StdError;
 use std::fmt;
+use std::prelude::v1::*;
 #[cfg(feature = "tcp")]
 use std::net::{SocketAddr, TcpListener as StdTcpListener};
 

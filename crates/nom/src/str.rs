@@ -1,8 +1,9 @@
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod test {
   use crate::{error::ErrorKind, Err, IResult};
-
-  #[test]
+  use std::string::ToString;
+  use crates_unittest::test_case;
+  #[test_case]
   fn tagtr_succeed() {
     const INPUT: &str = "Hello World!";
     const TAG: &str = "Hello";
@@ -29,7 +30,7 @@ mod test {
     };
   }
 
-  #[test]
+  #[test_case]
   fn tagtr_incomplete() {
     const INPUT: &str = "Hello";
     const TAG: &str = "Hello World!";
@@ -47,7 +48,7 @@ mod test {
     };
   }
 
-  #[test]
+  #[test_case]
   fn tagtr_error() {
     const INPUT: &str = "Hello World!";
     const TAG: &str = "Random"; // TAG must be closer than INPUT.
@@ -64,7 +65,7 @@ mod test {
     };
   }
 
-  #[test]
+  #[test_case]
   fn take_s_succeed() {
     const INPUT: &str = "βèƒôřèÂßÇáƒƭèř";
     const CONSUMED: &str = "βèƒôřèÂßÇ";
@@ -93,7 +94,7 @@ mod test {
     };
   }
 
-  #[test]
+  #[test_case]
   fn take_until_succeed() {
     const INPUT: &str = "βèƒôřèÂßÇ∂áƒƭèř";
     const FIND: &str = "ÂßÇ∂";
@@ -125,7 +126,7 @@ mod test {
     };
   }
 
-  #[test]
+  #[test_case]
   fn take_s_incomplete() {
     const INPUT: &str = "βèƒôřèÂßÇá";
 
@@ -146,7 +147,7 @@ mod test {
     (c as u8 >= 0x41 && c as u8 <= 0x5A) || (c as u8 >= 0x61 && c as u8 <= 0x7A)
   }
 
-  #[test]
+  #[test_case]
   fn take_while() {
     named!(f<&str,&str>, take_while!(is_alphabetic));
     let a = "";
@@ -160,7 +161,7 @@ mod test {
     assert_eq!(f(&d[..]), Ok((&d[..], &a[..])));
   }
 
-  #[test]
+  #[test_case]
   fn take_while1() {
     named!(f<&str,&str>, take_while1!(is_alphabetic));
     let a = "";
@@ -177,7 +178,7 @@ mod test {
     );
   }
 
-  #[test]
+  #[test_case]
   fn take_till_s_succeed() {
     const INPUT: &str = "βèƒôřèÂßÇáƒƭèř";
     const CONSUMED: &str = "βèƒôřèÂßÇ";
@@ -210,7 +211,7 @@ mod test {
     };
   }
 
-  #[test]
+  #[test_case]
   fn take_while_succeed_none() {
     const INPUT: &str = "βèƒôřèÂßÇáƒƭèř";
     const CONSUMED: &str = "";
@@ -243,7 +244,7 @@ mod test {
     };
   }
 
-  #[test]
+  #[test_case]
   fn is_not_succeed() {
     const INPUT: &str = "βèƒôřèÂßÇáƒƭèř";
     const AVOID: &str = "£úçƙ¥á";
@@ -274,7 +275,7 @@ mod test {
     };
   }
 
-  #[test]
+  #[test_case]
   fn take_while_succeed_some() {
     const INPUT: &str = "βèƒôřèÂßÇáƒƭèř";
     const CONSUMED: &str = "βèƒôřèÂßÇ";
@@ -315,7 +316,7 @@ mod test {
     };
   }
 
-  #[test]
+  #[test_case]
   fn is_not_fail() {
     const INPUT: &str = "βèƒôřèÂßÇáƒƭèř";
     const AVOID: &str = "βúçƙ¥";
@@ -331,7 +332,7 @@ mod test {
     };
   }
 
-  #[test]
+  #[test_case]
   fn take_while1_succeed() {
     const INPUT: &str = "βèƒôřèÂßÇáƒƭèř";
     const CONSUMED: &str = "βèƒôřèÂßÇ";
@@ -372,7 +373,7 @@ mod test {
     };
   }
 
-  #[test]
+  #[test_case]
   fn take_until_incomplete() {
     const INPUT: &str = "βèƒôřè";
     const FIND: &str = "βèƒôřèÂßÇ";
@@ -388,7 +389,7 @@ mod test {
     };
   }
 
-  #[test]
+  #[test_case]
   fn is_a_succeed() {
     const INPUT: &str = "βèƒôřèÂßÇáƒƭèř";
     const MATCH: &str = "βèƒôřèÂßÇ";
@@ -419,7 +420,7 @@ mod test {
     };
   }
 
-  #[test]
+  #[test_case]
   fn take_while1_fail() {
     const INPUT: &str = "βèƒôřèÂßÇáƒƭèř";
     fn while1_s(c: char) -> bool {
@@ -438,7 +439,7 @@ mod test {
     };
   }
 
-  #[test]
+  #[test_case]
   fn is_a_fail() {
     const INPUT: &str = "βèƒôřèÂßÇáƒƭèř";
     const MATCH: &str = "Ûñℓúçƙ¥";
@@ -454,7 +455,7 @@ mod test {
     };
   }
 
-  #[test]
+  #[test_case]
   fn take_until_error() {
     const INPUT: &str = "βèƒôřèÂßÇáƒƭèř";
     const FIND: &str = "Ráñδô₥";
@@ -470,7 +471,7 @@ mod test {
     };
   }
 
-  #[test]
+  #[test_case]
   #[cfg(feature = "alloc")]
   fn recognize_is_a() {
     let a = "aabbab";
@@ -482,7 +483,7 @@ mod test {
     assert_eq!(f(&b[..]), Ok((&b[4..], &b[..4])));
   }
 
-  #[test]
+  #[test_case]
   fn utf8_indexing() {
     named!(dot(&str) -> &str,
       tag!(".")
@@ -492,7 +493,7 @@ mod test {
   }
 
   #[cfg(feature = "alloc")]
-  #[test]
+  #[test_case]
   fn case_insensitive() {
     named!(test<&str,&str>, tag_no_case!("ABcd"));
     assert_eq!(test("aBCdefgh"), Ok(("efgh", "aBCd")));

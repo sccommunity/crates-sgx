@@ -2,6 +2,7 @@ use crate::future;
 
 use std::io;
 use std::net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr, SocketAddrV4, SocketAddrV6};
+use std::prelude::v1::*;
 
 /// Converts or resolves without blocking to one or more `SocketAddr` values.
 ///
@@ -18,7 +19,7 @@ use std::net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr, SocketAddrV4, SocketAddrV
 /// conversion directly, use [`lookup_host()`](super::lookup_host()).
 ///
 /// This trait is sealed and is intended to be opaque. The details of the trait
-/// will change. Stabilization is pending enhancements to the Rust langague.
+/// will change. Stabilization is pending enhancements to the Rust language.
 pub trait ToSocketAddrs: sealed::ToSocketAddrsPriv {}
 
 type ReadyFuture<T> = future::Ready<io::Result<T>>;
@@ -121,6 +122,20 @@ impl sealed::ToSocketAddrsPriv for (Ipv6Addr, u16) {
     }
 }
 
+// ===== impl &[SocketAddr] =====
+
+impl ToSocketAddrs for &[SocketAddr] {}
+
+impl sealed::ToSocketAddrsPriv for &[SocketAddr] {
+    type Iter = std::vec::IntoIter<SocketAddr>;
+    type Future = ReadyFuture<Self::Iter>;
+
+    fn to_socket_addrs(&self) -> Self::Future {
+        let iter = self.to_vec().into_iter();
+        future::ok(iter)
+    }
+}
+
 cfg_dns! {
     // ===== impl str =====
 
@@ -184,6 +199,19 @@ cfg_dns! {
             MaybeReady::Blocking(spawn_blocking(move || {
                 std::net::ToSocketAddrs::to_socket_addrs(&(&host[..], port))
             }))
+        }
+    }
+
+    // ===== impl (String, u16) =====
+
+    impl ToSocketAddrs for (String, u16) {}
+
+    impl sealed::ToSocketAddrsPriv for (String, u16) {
+        type Iter = sealed::OneOrMore;
+        type Future = sealed::MaybeReady;
+
+        fn to_socket_addrs(&self) -> Self::Future {
+            (self.0.as_str(), self.1).to_socket_addrs()
         }
     }
 

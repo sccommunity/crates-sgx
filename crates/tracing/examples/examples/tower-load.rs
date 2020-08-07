@@ -318,8 +318,8 @@ async fn load_gen(addr: SocketAddr) -> Result<(), Err> {
         .layer(request_span::layer(req_span))
         .timeout(Duration::from_millis(200))
         .service(Client::new());
-
-    while let Some(_) = time::interval(Duration::from_millis(50)).next().await {
+    let mut interval = time::interval(Duration::from_millis(50));
+    while interval.next().await.is_some() {
         let authority = format!("{}", addr);
         let mut svc = svc.clone().ready_oneshot().await?;
 
@@ -383,6 +383,11 @@ fn req_span<A>(req: &Request<A>) -> Span {
         req.method = ?req.method(),
         req.path = ?req.uri().path(),
     );
-    debug!(message = "received request.", req.headers = ?req.headers(), req.version = ?req.version());
+    debug!(
+        parent: &span,
+        message = "received request.",
+        req.headers = ?req.headers(),
+        req.version = ?req.version(),
+    );
     span
 }

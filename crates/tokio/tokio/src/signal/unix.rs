@@ -9,6 +9,8 @@ use crate::io::{AsyncRead, PollEvented};
 use crate::signal::registry::{globals, EventId, EventInfo, Globals, Init, Storage};
 use crate::sync::mpsc::{channel, Receiver};
 
+use sgx_signal::signal::register;
+use sgx_libc as libc;
 use libc::c_int;
 use mio_uds::UnixStream;
 use std::io::{self, Error, ErrorKind, Write};
@@ -16,7 +18,7 @@ use std::pin::Pin;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Once;
 use std::task::{Context, Poll};
-
+use std::prelude::v1::*;
 pub(crate) type OsStorage = Vec<SignalInfo>;
 
 // Number of different unix signals
@@ -220,7 +222,7 @@ fn action(globals: Pin<&'static Globals>, signal: c_int) {
 /// This will register the signal handler if it hasn't already been registered,
 /// returning any error along the way if that fails.
 fn signal_enable(signal: c_int) -> io::Result<()> {
-    if signal < 0 || signal_hook_registry::FORBIDDEN.contains(&signal) {
+    if signal < 0 || sgx_signal::FORBIDDEN.contains(&signal) {
         return Err(Error::new(
             ErrorKind::Other,
             format!("Refusing to register signal {}", signal),
@@ -234,9 +236,7 @@ fn signal_enable(signal: c_int) -> io::Result<()> {
     };
     let mut registered = Ok(());
     siginfo.init.call_once(|| {
-        registered = unsafe {
-            signal_hook_registry::register(signal, move || action(globals, signal)).map(|_| ())
-        };
+        registered = register(signal, move || action(globals, signal)).map(|_| ());
         if registered.is_ok() {
             siginfo.initialized.store(true, Ordering::Relaxed);
         }
@@ -401,7 +401,7 @@ pub struct Signal {
 /// * If the lower-level C functions fail for some reason.
 /// * If the previous initialization of this specific signal failed.
 /// * If the signal is one of
-///   [`signal_hook::FORBIDDEN`](https://docs.rs/signal-hook/*/signal_hook/fn.register.html#panics)
+///   [`signal_hook::FORBIDDEN`](fn@signal_hook_registry::register#panics)
 pub fn signal(kind: SignalKind) -> io::Result<Signal> {
     let signal = kind.0;
 

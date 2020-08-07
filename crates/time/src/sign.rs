@@ -218,9 +218,13 @@ impl Sign {
     }
 }
 
-#[cfg(test)]
-mod test {
+#[cfg(feature = "enclave_unit_test")]
+pub(crate)mod test {
     use super::*;
+    use std::prelude::v1::*;
+    use std::string::ToString;
+
+
 
     macro_rules! op_assign {
         ($a:ident $op:tt $b:ident) => {{
@@ -230,19 +234,19 @@ mod test {
         }};
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn default() {
         assert_eq!(Sign::default(), Zero);
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn sign_mul_int() {
         assert_eq!(Positive * 2, 2);
         assert_eq!(Negative * 2, -2);
         assert_eq!(Zero * 2, 0);
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     #[allow(clippy::float_cmp)]
     fn sign_mul_float() {
         assert_eq!(Positive * 2., 2.);
@@ -250,7 +254,7 @@ mod test {
         assert_eq!(Zero * 2., 0.);
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn sign_mul_sign() {
         assert_eq!(Zero * Positive, Zero);
         assert_eq!(Zero * Negative, Zero);
@@ -263,7 +267,7 @@ mod test {
         assert_eq!(Negative * Negative, Positive);
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn sign_mul_assign_sign() {
         assert_eq!(op_assign!(Zero *= Positive), Zero);
         assert_eq!(op_assign!(Zero *= Negative), Zero);
@@ -276,7 +280,7 @@ mod test {
         assert_eq!(op_assign!(Negative *= Negative), Positive);
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     #[allow(clippy::eq_op)]
     fn sign_div_sign() {
         assert_eq!(Zero / Positive, Zero);
@@ -290,7 +294,7 @@ mod test {
         assert_eq!(Negative / Negative, Positive);
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn sign_div_assign_sign() {
         assert_eq!(op_assign!(Zero /= Positive), Zero);
         assert_eq!(op_assign!(Zero /= Negative), Zero);
@@ -303,42 +307,42 @@ mod test {
         assert_eq!(op_assign!(Negative /= Negative), Positive);
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn neg() {
         assert_eq!(-Positive, Negative);
         assert_eq!(-Negative, Positive);
         assert_eq!(-Zero, Zero);
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn not() {
         assert_eq!(!Positive, Negative);
         assert_eq!(!Negative, Positive);
         assert_eq!(!Zero, Zero);
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn negate() {
         assert_eq!(Positive.negate(), Negative);
         assert_eq!(Negative.negate(), Positive);
         assert_eq!(Zero.negate(), Zero);
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn is_positive() {
         assert!(Positive.is_positive());
         assert!(!Negative.is_positive());
         assert!(!Zero.is_positive());
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn is_negative() {
         assert!(!Positive.is_negative());
         assert!(Negative.is_negative());
         assert!(!Zero.is_negative());
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn is_zero() {
         assert!(!Positive.is_zero());
         assert!(!Negative.is_zero());

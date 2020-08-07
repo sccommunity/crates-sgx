@@ -1,4 +1,5 @@
 use header::EntityTag;
+use std::prelude::v1::*;
 
 header! {
     /// `If-None-Match` header, defined in
@@ -57,13 +58,15 @@ header! {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::IfNoneMatch;
     use header::Header;
     use header::EntityTag;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    
+    #[test_case]
     fn test_if_none_match() {
         let mut if_none_match: ::Result<IfNoneMatch>;
 

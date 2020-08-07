@@ -12,7 +12,7 @@ Random number generators and other randomness functionality.
 """
 keywords = ["random", "rng"]
 categories = ["algorithms", "no-std"]
-exclude = ["/utils/*", "/.travis.yml", "/appveyor.yml", ".gitignore"]
+exclude = ["/utils/*", "/.travis.yml", "/appveyor.yml", ".gitignore", "/sgx/*"]
 autobenches = true
 edition = "2018"
 
@@ -21,20 +21,22 @@ travis-ci = { repository = "rust-random/rand" }
 appveyor = { repository = "rust-random/rand" }
 
 [features]
+default = ["std", "mesalock_sgx"] # without "std" rand uses libcore
 # Meta-features:
-default = ["std"] # without "std" rand uses libcore
 nightly = ["simd_support"] # enables all features requiring nightly rust
 serde1 = [] # does nothing, deprecated
 
 # Optional dependencies:
-std = ["rand_core/std", "rand_chacha/std", "alloc", "getrandom", "libc"]
+std = ["rand_core/std", "rand_core/mesalock_sgx", "rand_chacha/std", "rand_chacha/mesalock_sgx", "alloc", "getrandom"]
 alloc = ["rand_core/alloc"]  # enables Vec and Box support (without std)
 # re-export optional WASM dependencies to avoid breakage:
 # Warning: wasm-bindgen and stdweb features will be removed in rand 0.8;
 # recommended to activate via the getrandom crate instead.
-wasm-bindgen = ["getrandom_package/wasm-bindgen"]
-stdweb = ["getrandom_package/stdweb"]
+#wasm-bindgen = ["getrandom_package/wasm-bindgen"]
+#stdweb = ["getrandom_package/stdweb"]
 getrandom = ["getrandom_package", "rand_core/getrandom"]
+mesalock_sgx = ["sgx_tstd"]
+enclave_unit_test = ["crates_unittest", "inventory", "small_rng"]
 
 # Configuration:
 simd_support = ["packed_simd"] # enables SIMD support
@@ -47,8 +49,9 @@ members = [
     "rand_chacha",
     "rand_hc",
     "rand_pcg",
-    "tests/wasm_bindgen",
+    #"tests/wasm_bindgen",
 ]
+exclude = ["sgx-tests"] 
 
 [dependencies]
 rand_core = { path = "rand_core", version = "0.5.1" }
@@ -56,8 +59,12 @@ rand_pcg = { path = "rand_pcg", version = "0.2", optional = true }
 # Do not depend on 'getrandom_package' directly; use the 'getrandom' feature!
 # This is a dependency because: we forward wasm feature flags
 # This is renamed because: we need getrandom to depend on rand_core/getrandom
-getrandom_package = { version = "0.1.1", package = "getrandom", optional = true }
-log = { version = "0.4.4", optional = true }
+getrandom_package = { package = "getrandom", git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2", optional = true }
+log = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2", optional = true }
+
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+crates_unittest = { git = "https://github.com/Zha0Chan/crates-sgx-unittest.git", optional = true, default-features = false }
+inventory = { version = "0.1.6", optional = true }
 
 [dependencies.packed_simd]
 # NOTE: so far no version works reliably due to dependence on unstable features
@@ -68,19 +75,20 @@ features = ["into_bits"]
 
 [target.'cfg(unix)'.dependencies]
 # Used for fork protection (reseeding.rs)
-libc = { version = "0.2.22", optional = true, default-features = false }
+# SGX does not provide fork. No need for fork protection
+#libc = { version = "0.2.22", optional = true, default-features = false }
 
 # Emscripten does not support 128-bit integers, which are used by ChaCha code.
 # We work around this by using a different RNG.
 [target.'cfg(not(target_os = "emscripten"))'.dependencies]
 rand_chacha = { path = "rand_chacha", version = "0.2.1", default-features = false }
-[target.'cfg(target_os = "emscripten")'.dependencies]
-rand_hc = { path = "rand_hc", version = "0.2" }
+#[target.'cfg(target_os = "emscripten")'.dependencies]
+#rand_hc = { path = "rand_hc", version = "0.2" }
 
 [dev-dependencies]
-rand_pcg = { path = "rand_pcg", version = "0.2" }
+#rand_pcg = { path = "rand_pcg", version = "0.2" }
 # Only for benches:
-rand_hc = { path = "rand_hc", version = "0.2" }
+#rand_hc = { path = "rand_hc", version = "0.2" }
 
 [package.metadata.docs.rs]
 all-features = true

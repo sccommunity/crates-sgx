@@ -1,5 +1,5 @@
 use std::fmt;
-
+use std::prelude::v1::*;
 /// This type contains a private key by value.
 ///
 /// The private key must be DER-encoded ASN.1 in either

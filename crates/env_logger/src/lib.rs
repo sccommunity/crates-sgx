@@ -153,7 +153,7 @@
 //!         let _ = env_logger::builder().is_test(true).try_init();
 //!     }
 //!
-//!     #[test]
+//!     #[test_case]
 //!     fn it_works() {
 //!         init();
 //!
@@ -244,8 +244,19 @@
 // an unstable crate
 #![cfg_attr(rustbuild, feature(staged_api, rustc_private))]
 #![cfg_attr(rustbuild, unstable(feature = "rustc_private", issue = "27812"))]
-#![deny(missing_debug_implementations, missing_docs, warnings)]
+//#![deny(missing_debug_implementations, missing_docs, warnings)]
 
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"), feature(rustc_private))]
+
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
+
+extern crate log;
+
+use std::prelude::v1::*;
 use std::{borrow::Cow, cell::RefCell, env, io};
 
 use log::{LevelFilter, Log, Metadata, Record, SetLoggerError};
@@ -1184,6 +1195,9 @@ where
 /// Create a new builder with the default environment variables.
 ///
 /// The builder can be configured before being initialized.
+/// This is a convenient way of calling [`Builder::from_default_env`].
+///
+/// [`Builder::from_default_env`]: struct.Builder.html#method.from_default_env
 pub fn builder() -> Builder {
     Builder::from_default_env()
 }
@@ -1198,11 +1212,15 @@ where
     Builder::from_env(env)
 }
 
-#[cfg(test)]
-mod tests {
+#[cfg(feature = "enclave_unit_test")]
+pub mod tests {
     use super::*;
+    use crates_unittest::{ test_case, run_inventory_tests };
 
-    #[test]
+    pub fn run_tests() {
+        run_inventory_tests!();
+    }
+    #[test_case]
     fn env_get_filter_reads_from_var_if_set() {
         env::set_var("env_get_filter_reads_from_var_if_set", "from var");
 
@@ -1211,7 +1229,7 @@ mod tests {
         assert_eq!(Some("from var".to_owned()), env.get_filter());
     }
 
-    #[test]
+    #[test_case]
     fn env_get_filter_reads_from_default_if_var_not_set() {
         env::remove_var("env_get_filter_reads_from_default_if_var_not_set");
 
@@ -1223,7 +1241,7 @@ mod tests {
         assert_eq!(Some("from default".to_owned()), env.get_filter());
     }
 
-    #[test]
+    #[test_case]
     fn env_get_write_style_reads_from_var_if_set() {
         env::set_var("env_get_write_style_reads_from_var_if_set", "from var");
 
@@ -1233,7 +1251,7 @@ mod tests {
         assert_eq!(Some("from var".to_owned()), env.get_write_style());
     }
 
-    #[test]
+    #[test_case]
     fn env_get_write_style_reads_from_default_if_var_not_set() {
         env::remove_var("env_get_write_style_reads_from_default_if_var_not_set");
 

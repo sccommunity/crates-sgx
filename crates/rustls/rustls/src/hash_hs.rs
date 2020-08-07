@@ -1,5 +1,6 @@
 use ring::digest;
 use std::mem;
+use std::prelude::v1::*;
 use crate::msgs::codec::Codec;
 use crate::msgs::message::{Message, MessagePayload};
 use crate::msgs::handshake::HandshakeMessagePayload;

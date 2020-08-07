@@ -761,11 +761,14 @@ impl NumericalStdDurationShort for f64 {
     }
 }
 
-#[cfg(test)]
-mod test_numerical_duration {
+//#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
+pub(crate)mod test_numerical_duration {
     use super::{Duration, NumericalDuration};
-
-    #[test]
+    use std::prelude::v1::*;
+    use std::string::ToString;
+ 
+    #[crates_unittest::test_case]
     fn unsigned() {
         assert_eq!(5.nanoseconds(), Duration::nanoseconds(5));
         assert_eq!(5.microseconds(), Duration::microseconds(5));
@@ -777,7 +780,7 @@ mod test_numerical_duration {
         assert_eq!(5.weeks(), Duration::weeks(5));
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn signed() {
         assert_eq!((-5).nanoseconds(), Duration::nanoseconds(-5));
         assert_eq!((-5).microseconds(), Duration::microseconds(-5));
@@ -789,7 +792,7 @@ mod test_numerical_duration {
         assert_eq!((-5).weeks(), Duration::weeks(-5));
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn float() {
         // Ensure values truncate rather than round.
         assert_eq!(1.9.nanoseconds(), Duration::nanoseconds(1));
@@ -813,19 +816,21 @@ mod test_numerical_duration {
         assert_eq!(1.5.weeks(), Duration::hours(252));
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn arithmetic() {
         assert_eq!(2.seconds() + 500.milliseconds(), 2_500.milliseconds());
         assert_eq!(2.seconds() - 500.milliseconds(), 1_500.milliseconds());
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod test_numerical_std_duration {
     use super::NumericalStdDuration;
     use core::time::Duration;
+    use std::prelude::v1::*;
+    use std::string::ToString;
 
-    #[test]
+    #[crates_unittest::test_case]
     fn unsigned() {
         assert_eq!(5.std_nanoseconds(), Duration::from_nanos(5));
         assert_eq!(5.std_microseconds(), Duration::from_micros(5));
@@ -837,7 +842,7 @@ mod test_numerical_std_duration {
         assert_eq!(5.std_weeks(), Duration::from_secs(5 * 604_800));
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn float() {
         // Ensure values truncate rather than round.
         assert_eq!(1.9.std_nanoseconds(), Duration::from_nanos(1));
@@ -861,7 +866,7 @@ mod test_numerical_std_duration {
         assert_eq!(1.5.std_weeks(), Duration::from_secs(252 * 3_600));
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn arithmetic() {
         assert_eq!(
             2.std_seconds() + 500.std_milliseconds(),
@@ -874,12 +879,14 @@ mod test_numerical_std_duration {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod test_numerical_std_duration_short {
     use super::NumericalStdDurationShort;
     use core::time::Duration;
+    use std::prelude::v1::*;
+    use std::string::ToString;
 
-    #[test]
+    #[crates_unittest::test_case]
     fn unsigned() {
         assert_eq!(5.nanoseconds(), Duration::from_nanos(5));
         assert_eq!(5.microseconds(), Duration::from_micros(5));
@@ -891,7 +898,7 @@ mod test_numerical_std_duration_short {
         assert_eq!(5.weeks(), Duration::from_secs(5 * 604_800));
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn float() {
         // Ensure values truncate rather than round.
         assert_eq!(1.9.nanoseconds(), Duration::from_nanos(1));
@@ -915,7 +922,7 @@ mod test_numerical_std_duration_short {
         assert_eq!(1.5.weeks(), Duration::from_secs(252 * 3_600));
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn arithmetic() {
         assert_eq!(2.seconds() + 500.milliseconds(), 2_500.milliseconds());
         assert_eq!(2.seconds() - 500.milliseconds(), 1_500.milliseconds());

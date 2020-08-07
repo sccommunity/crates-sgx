@@ -5,6 +5,7 @@ use std::panic::{catch_unwind, UnwindSafe, AssertUnwindSafe};
 use futures_core::future::Future;
 use futures_core::task::{Context, Poll};
 use pin_project::pin_project;
+use std::prelude::v1::*;
 
 /// Future for the [`catch_unwind`](super::FutureExt::catch_unwind) method.
 #[pin_project]

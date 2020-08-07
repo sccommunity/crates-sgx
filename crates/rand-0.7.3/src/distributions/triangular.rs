@@ -51,12 +51,13 @@ impl Distribution<f64> for Triangular {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod test {
     use super::Triangular;
     use crate::distributions::Distribution;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn test_new() {
         for &(min, max, mode) in &[
             (-1., 1., 0.),
@@ -72,7 +73,7 @@ mod test {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_sample() {
         let norm = Triangular::new(0., 1., 0.5);
         let mut rng = crate::test::rng(1);

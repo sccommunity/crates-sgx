@@ -1,4 +1,5 @@
 use header::{Encoding, QualityItem};
+use std::prelude::v1::*;
 
 header! {
     /// `Accept-Encoding` header, defined in

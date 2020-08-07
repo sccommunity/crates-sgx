@@ -3,7 +3,7 @@
 // See README.md and LICENSE.txt for details.
 
 //! A placeholder encoding that returns encoder/decoder error for every case.
-
+use std::prelude::v1::*;
 use std::convert::Into;
 use types::*;
 
@@ -67,12 +67,13 @@ impl RawDecoder for ErrorDecoder {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::ErrorEncoding;
     use types::*;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::{ test_case };
+    #[test_case]
     fn test_encoder() {
         let mut e = ErrorEncoding.raw_encoder();
         assert_feed_err!(e, "", "A", "", []);
@@ -82,7 +83,7 @@ mod tests {
         assert_finish_ok!(e, []);
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder() {
         let mut d = ErrorEncoding.raw_decoder();
         assert_feed_err!(d, [], [0x41], [], "");

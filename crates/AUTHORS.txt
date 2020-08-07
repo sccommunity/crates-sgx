@@ -1,0 +1,7 @@
+Chrono is mainly written by Kang Seonghoon <public+rust@mearie.org>,
+and also the following people (in ascending order):
+
+Mingshen Sun <bob@mssun.me>
+Sammy <lixiangmin01@baidu.com>
+Zha0Chan <42883733@qq.com>
+zhaochan <zhaochan@baidu.com>

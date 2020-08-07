@@ -1,6 +1,6 @@
 use loom::sync::Notify;
 
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, SgxMutex as Mutex};
 
 pub(crate) fn channel<T>() -> (Sender<T>, Receiver<T>) {
     let inner = Arc::new(Inner {

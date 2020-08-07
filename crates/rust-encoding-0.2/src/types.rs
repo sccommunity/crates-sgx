@@ -52,7 +52,7 @@
  * It still has to feed the input bytes starting at the second offset again.
  */
 use std::borrow::Cow;
-
+use std::prelude::v1::*;
 /// Error information from either encoder or decoder.
 pub struct CodecError {
     /// The byte position of the first remaining byte, with respect to the *current* input.
@@ -423,13 +423,14 @@ pub fn decode(input: &[u8], trap: DecoderTrap, fallback_encoding: EncodingRef)
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::*;
     use super::EncoderTrap::NcrEscape;
     use util::StrCharIndex;
     use std::convert::Into;
-
+    use std::prelude::v1::*;
+    use crates_unittest::{ test_case };
     // a contrived encoding example: same as ASCII, but inserts `prepend` between each character
     // within two "e"s (so that `widespread` becomes `wide*s*p*r*ead` and `eeeeasel` becomes
     // `e*ee*ease*l` where `*` is substituted by `prepend`) and prohibits `prohibit` character.
@@ -475,7 +476,7 @@ mod tests {
         fn raw_decoder(&self) -> Box<RawDecoder> { panic!("not supported") }
     }
 
-    #[test]
+    #[test_case]
     fn test_reencoding_trap_with_ascii_compatible_encoding() {
         static COMPAT: &'static MyEncoding =
             &MyEncoding { flag: true, prohibit: '\u{80}', prepend: "" };
@@ -488,7 +489,7 @@ mod tests {
                    Ok(b"Hello&#8253; I'm fine.".to_vec()));
     }
 
-    #[test]
+    #[test_case]
     fn test_reencoding_trap_with_ascii_incompatible_encoding() {
         static COMPAT: &'static MyEncoding =
             &MyEncoding { flag: true, prohibit: '\u{80}', prepend: "*" };
@@ -502,8 +503,8 @@ mod tests {
                    Ok(b"He*l*l*o*&*#*8*2*5*3*;* *I*'*m* *f*i*n*e.".to_vec()));
     }
 
-    #[test]
-    #[should_panic]
+    // #[test_case]
+    // #[should_panic]
     fn test_reencoding_trap_can_fail() {
         static FAIL: &'static MyEncoding = &MyEncoding { flag: false, prohibit: '&', prepend: "" };
 

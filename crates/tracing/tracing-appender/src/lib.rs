@@ -33,7 +33,7 @@
 //! This creates an hourly rotating file appender that writes to `/some/directory/prefix.log.YYYY-MM-DD-HH`.
 //! [`Rotation::DAILY`] and [`Rotation::NEVER`] are the other available options.
 //!
-//! The file appender implements [`std::io::Write`][write]. To be used with [`tracing_subscriber::FmtSubscriber`][fmt_subscrier],
+//! The file appender implements [`std::io::Write`][write]. To be used with [`tracing_subscriber::FmtSubscriber`][fmt_subscriber],
 //! it must be combined with a [`MakeWriter`][make_writer] implementation to be able to record tracing spans/event.
 //!
 //! The [`rolling` module][rolling]'s documentation provides more detail on how to use this file appender.
@@ -104,7 +104,11 @@
 //!     .init();
 //! # }
 //! ```
-#![doc(html_root_url = "https://docs.rs/tracing-appender/0.1.0")]
+#![doc(html_root_url = "https://docs.rs/tracing-appender/0.1.1")]
+#![doc(
+    html_logo_url = "https://raw.githubusercontent.com/tokio-rs/tracing/master/assets/logo.svg",
+    issue_tracker_base_url = "https://github.com/tokio-rs/tracing/issues/"
+)]
 #![warn(
     missing_debug_implementations,
     missing_docs,
@@ -127,10 +131,19 @@
     unused_parens,
     while_true
 )]
+
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
+
 use crate::non_blocking::{NonBlocking, WorkerGuard};
 
 use std::io::Write;
-
+use std::prelude::v1::*;
 mod inner;
 
 pub mod non_blocking;

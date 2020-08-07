@@ -1,5 +1,6 @@
 use std::fmt::{self, Display};
 use std::str::FromStr;
+use std::prelude::v1::*;
 
 header! {
     /// `Content-Range` header, defined in

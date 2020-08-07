@@ -238,6 +238,15 @@
 #![warn(trivial_casts, trivial_numeric_casts)]
 #![warn(unused_extern_crates, unused_qualifications)]
 
+
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
+
 #[cfg(target_os="windows")]
 extern crate winapi;
 #[cfg(test)]
@@ -269,3 +278,16 @@ mod util;
 pub use util::*;
 
 mod debug;
+
+#[cfg(feature = "enclave_unit_test")]
+extern crate crates_unittest;
+#[cfg(feature = "enclave_unit_test")]
+pub mod tests {
+    use std::prelude::v1::*;
+
+    use crates_unittest::{ run_inventory_tests };
+  
+    pub fn run_tests() {
+        run_inventory_tests!();
+    }
+}

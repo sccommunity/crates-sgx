@@ -105,6 +105,14 @@
 //!
 #![doc(html_root_url = "https://docs.rs/petgraph/0.4/")]
 
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
+
 extern crate fixedbitset;
 #[cfg(feature = "graphmap")]
 extern crate indexmap;
@@ -146,6 +154,7 @@ pub mod graphmap;
 mod isomorphism;
 mod iter_format;
 mod iter_utils;
+mod k_shortest_path;
 #[cfg(feature = "matrix_graph")]
 pub mod matrix_graph;
 #[cfg(feature = "quickcheck")]

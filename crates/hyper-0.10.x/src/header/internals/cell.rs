@@ -4,7 +4,7 @@ use std::collections::HashMap;
 use std::fmt;
 use std::mem;
 use std::ops::Deref;
-
+use std::prelude::v1::*;
 pub struct OptCell<T>(UnsafeCell<Option<T>>);
 
 impl<T> OptCell<T> {
@@ -130,19 +130,20 @@ impl<V: ?Sized + fmt::Debug + Any + 'static> Clone for PtrMapCell<V> where Box<V
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod test {
     use std::any::TypeId;
     use super::*;
-
-    #[test]
+  
+    use crates_unittest::test_case;
+    #[test_case]
     fn test_opt_cell_set() {
         let one:OptCell<u32> = OptCell::new(None);
         one.set(1);
         assert_eq!(*one,Some(1));
     }
 
-    #[test]
+    #[test_case]
     fn test_opt_cell_clone() {
         let one:OptCell<u32> = OptCell::new(Some(3));
         let stored = *one.clone();
@@ -150,14 +151,14 @@ mod test {
     }
 
 
-    #[test]
+    #[test_case]
     fn test_ptr_map_cell_none() {
         let type_id = TypeId::of::<u32>();
         let pm:PtrMapCell<u32> = PtrMapCell::new();
         assert_eq!(pm.get(type_id),None);
     }
 
-    #[test]
+    #[test_case]
     fn test_ptr_map_cell_one() {
         let type_id = TypeId::of::<String>();
         let pm:PtrMapCell<String> = PtrMapCell::new();
@@ -166,7 +167,7 @@ mod test {
         assert_eq!(unsafe {pm.one()}, "a");
     }
 
-    #[test]
+    #[test_case]
     fn test_ptr_map_cell_two() {
         let type_id = TypeId::of::<String>();
         let type_id2 = TypeId::of::<Vec<u8>>();
@@ -177,7 +178,7 @@ mod test {
         assert_eq!(pm.get(type_id2), Some(&"b".to_string()));
     }
 
-    #[test]
+    #[test_case]
     fn test_ptr_map_cell_many() {
         let id1 = TypeId::of::<String>();
         let id2 = TypeId::of::<Vec<u8>>();
@@ -192,7 +193,7 @@ mod test {
     }
 
 
-    #[test]
+    #[test_case]
     fn test_ptr_map_cell_clone() {
         let type_id = TypeId::of::<String>();
         let pm:PtrMapCell<String> = PtrMapCell::new();

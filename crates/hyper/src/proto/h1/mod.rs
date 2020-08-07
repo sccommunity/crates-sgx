@@ -1,5 +1,6 @@
 use bytes::BytesMut;
 use http::{HeaderMap, Method};
+use std::prelude::v1::Vec;
 
 use crate::proto::{BodyLength, DecodedLength, MessageHead};
 

@@ -1,6 +1,6 @@
 use std::collections::hash_map::Entry::{Occupied, Vacant};
 use std::collections::{BinaryHeap, HashMap};
-
+use std::prelude::v1::*;
 use std::hash::Hash;
 
 use super::visit::{EdgeRef, GraphBase, IntoEdges, VisitMap, Visitable};

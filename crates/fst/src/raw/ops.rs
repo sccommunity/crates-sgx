@@ -1,7 +1,7 @@
 use std::cmp;
 use std::collections::BinaryHeap;
 use std::iter::FromIterator;
-
+use std::prelude::v1::*;
 use crate::raw::Output;
 use crate::stream::{IntoStreamer, Streamer};
 

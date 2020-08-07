@@ -93,13 +93,14 @@ where Standard: Distribution<N>
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod test {
     use super::*;
     use rand::{rngs::mock, Rng};
     use std::f64;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn test_triangular() {
         let mut half_rng = mock::StepRng::new(0x8000_0000_0000_0000, 0);
         assert_eq!(half_rng.gen::<f64>(), 0.5);
@@ -126,7 +127,7 @@ mod test {
         }
     }
 
-    #[test]
+    #[test_case]
     fn value_stability() {
         let rng = crate::test::rng(860);
         let distr = Triangular::new(2., 10., 3.).unwrap();

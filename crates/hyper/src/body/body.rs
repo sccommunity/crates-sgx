@@ -2,7 +2,7 @@ use std::borrow::Cow;
 #[cfg(feature = "stream")]
 use std::error::Error as StdError;
 use std::fmt;
-
+use std::prelude::v1::*;
 use bytes::Bytes;
 use futures_channel::{mpsc, oneshot};
 use futures_core::Stream; // for mpsc::Receiver

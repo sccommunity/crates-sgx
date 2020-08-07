@@ -2,7 +2,7 @@
 use std::error::Error as StdError;
 use std::fmt;
 use std::io;
-
+use std::prelude::v1::Box;
 /// Result type often returned from methods that can have hyper `Error`s.
 pub type Result<T> = std::result::Result<T, Error>;
 

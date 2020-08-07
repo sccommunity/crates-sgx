@@ -5,6 +5,7 @@ use crate::loom::sync::Mutex;
 
 use std::fmt;
 use std::sync::atomic::Ordering::{self, SeqCst};
+use std::prelude::v1::*;
 
 pub(super) struct Idle {
     /// Tracks both the number of searching workers and the number of unparked

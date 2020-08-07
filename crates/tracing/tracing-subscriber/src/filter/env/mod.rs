@@ -17,6 +17,7 @@ use crate::{
     sync::RwLock,
 };
 use std::{cell::RefCell, collections::HashMap, env, error::Error, fmt, str::FromStr};
+use std::prelude::v1::*;
 use tracing_core::{
     callsite,
     field::Field,
@@ -275,6 +276,13 @@ impl<S: Subscriber> Layer<S> for EnvFilter {
         } else {
             self.base_interest()
         }
+    }
+
+    fn max_level_hint(&self) -> Option<LevelFilter> {
+        std::cmp::max(
+            self.statics.max_level.clone().into(),
+            self.dynamics.max_level.clone().into(),
+        )
     }
 
     fn enabled(&self, metadata: &Metadata<'_>, _: Context<'_, S>) -> bool {

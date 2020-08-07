@@ -1,7 +1,7 @@
 use header::{Header, HeaderFormat};
 use std::fmt::{self, Display};
 use std::str::from_utf8;
-
+use std::prelude::v1::*;
 /// `Cookie` header, defined in [RFC6265](http://tools.ietf.org/html/rfc6265#section-5.4)
 ///
 /// If the user agent does attach a Cookie header field to an HTTP

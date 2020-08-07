@@ -159,9 +159,26 @@
 #![deny(missing_docs, missing_debug_implementations)]
 #![doc(html_root_url = "https://docs.rs/futures/0.1")]
 
+
+#![cfg_attr(
+    all(
+    any(feature = "use_std", feature = "mesalock_sgx"),
+    target_env = "sgx",
+    target_vendor = "mesalock", 
+    ),
+    feature(rustc_private)  
+)]
+
+#[cfg(all(
+    any(feature = "use_std", feature = "mesalock_sgx"),
+    not(target_env = "sgx"),
+    not(target_vendor = "mesalock"),
+    ))]
 #[macro_use]
-#[cfg(feature = "use_std")]
-extern crate std;
+extern crate sgx_tstd as std;    
+// #[macro_use]
+// #[cfg(feature = "use_std")]
+// extern crate std;
 
 macro_rules! if_std {
     ($($i:item)*) => ($(

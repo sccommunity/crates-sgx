@@ -9,7 +9,7 @@ use core::{
     ops::{Add, AddAssign, Sub, SubAssign},
     time::Duration as StdDuration,
 };
-
+use std::prelude::v1::*;
 /// The number of nanoseconds in one day.
 pub(crate) const NANOS_PER_DAY: u64 = 24 * 60 * 60 * 1_000_000_000;
 
@@ -868,12 +868,17 @@ impl Ord for Time {
     }
 }
 
-#[cfg(test)]
-mod test {
+#[cfg(feature = "enclave_unit_test")]
+pub(crate)mod test {
     use super::*;
+    
+    use std::string::ToString;
 
-    #[test]
-    fn nanoseconds_since_midnight() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn nanoseconds_since_midnight() {
+        assert!(nanoseconds_since_midnight_inner().is_ok());
+    }
+    fn nanoseconds_since_midnight_inner() -> crate::Result<()> {
         let time = time!(0:00);
         assert_eq!(time.nanoseconds_since_midnight(), 0);
         assert_eq!(Time::from_nanoseconds_since_midnight(0), time);
@@ -887,13 +892,17 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn midnight() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn midnight() {
+        assert!(midnight_inner().is_ok());
+    }
+
+    fn midnight_inner() -> crate::Result<()> {
         assert_eq!(Time::midnight(), time!(0:00));
         Ok(())
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     #[cfg(panicking_api)]
     #[allow(deprecated)]
     fn from_hms() {
@@ -911,8 +920,12 @@ mod test {
         }
     }
 
-    #[test]
-    fn try_from_hms() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn try_from_hms() {
+        assert!(try_from_hms_inner().is_ok());
+    }
+
+    fn try_from_hms_inner() -> crate::Result<()> {
         let time = Time::try_from_hms(1, 2, 3)?;
         assert_eq!(time.hour(), 1);
         assert_eq!(time.minute(), 2);
@@ -925,7 +938,7 @@ mod test {
         Ok(())
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     #[cfg(panicking_api)]
     #[allow(deprecated)]
     fn from_hms_milli() {
@@ -948,8 +961,11 @@ mod test {
         }
     }
 
-    #[test]
-    fn try_from_hms_milli() -> crate::Result<()> {
+    #[crates_unittest::test_case] 
+    fn try_from_hms_milli() {
+        assert!(try_from_hms_milli_inner().is_ok());
+    }
+    fn try_from_hms_milli_inner() -> crate::Result<()> {
         let time = Time::try_from_hms_milli(1, 2, 3, 4)?;
         assert_eq!(time.hour(), 1);
         assert_eq!(time.minute(), 2);
@@ -964,7 +980,7 @@ mod test {
         Ok(())
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     #[cfg(panicking_api)]
     #[allow(deprecated)]
     fn from_hms_micro() {
@@ -987,8 +1003,11 @@ mod test {
         }
     }
 
-    #[test]
-    fn try_from_hms_micro() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn try_from_hms_micro() {
+        assert!(try_from_hms_micro_inner().is_ok());
+    }
+    fn try_from_hms_micro_inner() -> crate::Result<()> {
         let time = Time::try_from_hms_micro(1, 2, 3, 4)?;
         assert_eq!(time.hour(), 1);
         assert_eq!(time.minute(), 2);
@@ -1003,7 +1022,7 @@ mod test {
         Ok(())
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     #[cfg(panicking_api)]
     #[allow(deprecated)]
     fn from_hms_nano() {
@@ -1025,8 +1044,11 @@ mod test {
         }
     }
 
-    #[test]
-    fn try_from_hms_nano() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn try_from_hms_nano() {
+        assert!(try_from_hms_nano_inner().is_ok());
+    }
+    fn try_from_hms_nano_inner() -> crate::Result<()> {
         let time = Time::try_from_hms_nano(1, 2, 3, 4)?;
         assert_eq!(time.hour(), 1);
         assert_eq!(time.minute(), 2);
@@ -1040,8 +1062,12 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn hour() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn hour() {
+        assert!(hour_inner().is_ok());
+    }
+
+    fn hour_inner() -> crate::Result<()> {
         for hour in 0..24 {
             assert_eq!(Time::try_from_hms(hour, 0, 0)?.hour(), hour);
             assert_eq!(Time::try_from_hms(hour, 59, 59)?.hour(), hour);
@@ -1049,8 +1075,11 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn minute() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn minute() {
+        assert!(minute_inner().is_ok());
+    }
+    fn minute_inner() -> crate::Result<()> {
         for minute in 0..60 {
             assert_eq!(Time::try_from_hms(0, minute, 0)?.minute(), minute);
             assert_eq!(Time::try_from_hms(23, minute, 59)?.minute(), minute);
@@ -1058,8 +1087,11 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn second() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn second() {
+        assert!(second_inner().is_ok());
+    }
+    fn second_inner() -> crate::Result<()> {
         for second in 0..60 {
             assert_eq!(Time::try_from_hms(0, 0, second)?.second(), second);
             assert_eq!(Time::try_from_hms(23, 59, second)?.second(), second);
@@ -1067,8 +1099,12 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn millisecond() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn millisecond() {
+        assert!(millisecond_inner().is_ok());
+    }
+
+    fn millisecond_inner() -> crate::Result<()> {
         for milli in 0..1_000 {
             assert_eq!(
                 Time::try_from_hms_milli(0, 0, 0, milli)?.millisecond(),
@@ -1082,8 +1118,11 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn microsecond() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn microsecond() {
+        assert!(microsecond_inner().is_ok());
+    }
+    fn microsecond_inner() -> crate::Result<()> {
         for micro in (0..1_000_000).step_by(1_000) {
             assert_eq!(
                 Time::try_from_hms_micro(0, 0, 0, micro)?.microsecond(),
@@ -1097,8 +1136,11 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn nanosecond() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn nanosecond() {
+        assert!(nanosecond_inner().is_ok());
+    }
+    fn nanosecond_inner() -> crate::Result<()> {
         for nano in (0..1_000_000_000).step_by(1_000_000) {
             assert_eq!(Time::try_from_hms_nano(0, 0, 0, nano)?.nanosecond(), nano);
             assert_eq!(
@@ -1109,8 +1151,11 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn format() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn format() {
+        assert!(format_inner().is_ok());
+    }
+    fn format_inner() -> crate::Result<()> {
         assert_eq!(time!(0:00).format("%T"), "0:00:00");
         assert_eq!(time!(0:00).format("%r"), "12:00:00 am");
         assert_eq!(time!(23:59:59).format("%T"), "23:59:59");
@@ -1118,8 +1163,11 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn parse() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn parse() {
+        assert!(parse_inner().is_ok());
+    }
+    fn parse_inner() -> crate::Result<()> {
         assert_eq!(Time::parse("0:00:00", "%T"), Ok(time!(0:00)));
         assert_eq!(Time::parse("23:59:59", "%T"), Ok(time!(23:59:59)));
         assert_eq!(Time::parse("1:00:00 am", "%r"), Ok(time!(1:00)));
@@ -1145,8 +1193,11 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn parse_missing_seconds() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn parse_missing_seconds() {
+        assert!(parse_missing_seconds_inner().is_ok());
+    }
+    fn parse_missing_seconds_inner() -> crate::Result<()> {
         // Missing seconds defaults to zero.
         assert_eq!(Time::parse("0:00", "%-H:%M"), Ok(time!(0:00)));
         assert_eq!(Time::parse("23:59", "%H:%M"), Ok(time!(23:59)));
@@ -1155,8 +1206,11 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn parse_missing_minutes() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn parse_missing_minutes() {
+        assert!(parse_missing_minutes_inner().is_ok());
+    }
+    fn parse_missing_minutes_inner() -> crate::Result<()> {
         // Missing minutes defaults to zero.
         assert_eq!(Time::parse("0", "%-H"), Ok(time!(0:00)));
         assert_eq!(Time::parse("23", "%H"), Ok(time!(23:00)));
@@ -1165,8 +1219,11 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn display() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn display() {
+        assert!(display_inner().is_ok());
+    }
+    fn display_inner() -> crate::Result<()> {
         assert_eq!(time!(0:00).to_string(), "0:00");
         assert_eq!(time!(23:59).to_string(), "23:59");
         assert_eq!(time!(23:59:59).to_string(), "23:59:59");
@@ -1177,8 +1234,11 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn add_duration() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn add_duration() {
+        assert!(add_duration_inner().is_ok());
+    }
+    fn add_duration_inner() -> crate::Result<()> {
         assert_eq!(time!(0:00) + 1.seconds(), time!(0:00:01));
         assert_eq!(time!(0:00) + 1.minutes(), time!(0:01));
         assert_eq!(time!(0:00) + 1.hours(), time!(1:00));
@@ -1186,8 +1246,11 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn add_assign_duration() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn add_assign_duration() {
+        assert!(add_assign_duration_inner().is_ok());
+    }
+    fn add_assign_duration_inner() -> crate::Result<()> {
         let mut time = time!(0:00);
 
         time += 1.seconds();
@@ -1204,8 +1267,11 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn sub_duration() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn sub_duration() {
+        assert!(sub_duration_inner().is_ok());
+    }
+    fn sub_duration_inner() -> crate::Result<()> {
         assert_eq!(time!(12:00) - 1.hours(), time!(11:00));
 
         // Underflow
@@ -1216,8 +1282,11 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn sub_assign_duration() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn sub_assign_duration() {
+        assert!(sub_assign_duration_inner().is_ok());
+    }
+    fn sub_assign_duration_inner() -> crate::Result<()> {
         let mut time = time!(0:00);
 
         time -= 1.seconds();
@@ -1234,8 +1303,11 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn add_std_duration() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn add_std_duration() {
+        assert!(add_std_duration_inner().is_ok());
+    }
+    fn add_std_duration_inner() -> crate::Result<()> {
         assert_eq!(
             time!(0:00) + 1.std_milliseconds(),
             time!(0:00:00:001_000_000)
@@ -1247,8 +1319,11 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn add_assign_std_duration() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn add_assign_std_duration() {
+        assert!(add_assign_std_duration_inner().is_ok());
+    }
+    fn add_assign_std_duration_inner() -> crate::Result<()> {
         let mut time = time!(0:00);
 
         time += 1.std_seconds();
@@ -1265,8 +1340,11 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn sub_std_duration() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn sub_std_duration() {
+        assert!(sub_std_duration_inner().is_ok());
+    }
+    fn sub_std_duration_inner() -> crate::Result<()> {
         assert_eq!(time!(12:00) - 1.std_hours(), time!(11:00));
 
         // Underflow
@@ -1281,8 +1359,11 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn sub_assign_std_duration() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn sub_assign_std_duration() {
+        assert!(sub_assign_std_duration_inner().is_ok());
+    }
+    fn sub_assign_std_duration_inner() -> crate::Result<()> {
         let mut time = time!(0:00);
 
         time -= 1.std_seconds();
@@ -1299,16 +1380,22 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn sub_time() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn sub_time() {
+        assert!(sub_time_inner().is_ok());
+    }
+    fn sub_time_inner() -> crate::Result<()> {
         assert_eq!(time!(0:00) - time!(0:00), 0.seconds());
         assert_eq!(time!(1:00) - time!(0:00), 1.hours());
         assert_eq!(time!(1:00) - time!(0:00:01), 59.minutes() + 59.seconds());
         Ok(())
     }
 
-    #[test]
-    fn ordering() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn ordering() {
+        assert!(ordering_inner().is_ok());
+    }
+    fn ordering_inner() -> crate::Result<()> {
         assert!(time!(0:00) < time!(0:00:00:000_000_001));
         assert!(time!(0:00) < time!(0:00:01));
         assert!(time!(12:00) > time!(11:00));

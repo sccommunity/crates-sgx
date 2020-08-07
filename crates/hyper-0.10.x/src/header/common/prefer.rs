@@ -1,4 +1,5 @@
 use std::fmt;
+use std::prelude::v1::*;
 use std::str::FromStr;
 use header::{Header, HeaderFormat};
 use header::parsing::{from_comma_delimited, fmt_comma_delimited};
@@ -160,19 +161,20 @@ impl FromStr for Preference {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use header::Header;
     use super::*;
-
-    #[test]
+   
+    use crates_unittest::test_case;
+    #[test_case]
     fn test_parse_multiple_headers() {
         let prefer = Header::parse_header(&[b"respond-async, return=representation".to_vec()]);
         assert_eq!(prefer.ok(), Some(Prefer(vec![Preference::RespondAsync,
                                            Preference::ReturnRepresentation])))
     }
 
-    #[test]
+    #[test_case]
     fn test_parse_argument() {
         let prefer = Header::parse_header(&[b"wait=100, handling=leniant, respond-async".to_vec()]);
         assert_eq!(prefer.ok(), Some(Prefer(vec![Preference::Wait(100),
@@ -180,14 +182,14 @@ mod tests {
                                            Preference::RespondAsync])))
     }
 
-    #[test]
+    #[test_case]
     fn test_parse_quote_form() {
         let prefer = Header::parse_header(&[b"wait=\"200\", handling=\"strict\"".to_vec()]);
         assert_eq!(prefer.ok(), Some(Prefer(vec![Preference::Wait(200),
                                            Preference::HandlingStrict])))
     }
 
-    #[test]
+    #[test_case]
     fn test_parse_extension() {
         let prefer = Header::parse_header(&[b"foo, bar=baz, baz; foo; bar=baz, bux=\"\"; foo=\"\", buz=\"some parameter\"".to_vec()]);
         assert_eq!(prefer.ok(), Some(Prefer(vec![
@@ -198,7 +200,7 @@ mod tests {
             Preference::Extension("buz".to_owned(), "some parameter".to_owned(), vec![])])))
     }
 
-    #[test]
+    #[test_case]
     fn test_fail_with_args() {
         let prefer: ::Result<Prefer> = Header::parse_header(&[b"respond-async; foo=bar".to_vec()]);
         assert_eq!(prefer.ok(), None);

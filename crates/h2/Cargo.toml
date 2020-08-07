@@ -21,6 +21,8 @@ exclude = ["fixtures/**", "ci/**"]
 edition = "2018"
 
 [features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
 # Enables `futures::Stream` implementations for various types.
 stream = []
 
@@ -38,19 +40,33 @@ members = [
     "util/genfixture",
     "util/genhuff",
 ]
+exclude = ["sgx-tests"]
 
 [dependencies]
-futures-core = { version = "0.3", default-features = false }
-futures-sink = { version = "0.3", default-features = false }
-futures-util = { version = "0.3", default-features = false }
-tokio-util = { version = "0.3.1", features = ["codec"] }
-tokio = { version = "0.2", features = ["io-util"] }
-bytes = "0.5.2"
-http = "0.2"
-log = "0.4.1"
-fnv = "1.0.5"
-slab = "0.4.0"
-indexmap = "1.0"
+futures-core = { path = "../futures-rs/futures-core", default-features = false }
+futures-sink = { path = "../futures-rs/futures-sink", default-features = false }
+futures-util = { path = "../futures-rs/futures-util", default-features = false }
+tokio-util = { path = "../tokio/tokio-util", features = ["codec"] }
+tokio = { path = "../tokio/tokio", features = ["io-util"] }
+bytes = { path = "../bytes" }
+http = { path = "../http" }
+log = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2" }
+fnv = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2" }
+slab = { path = "../slab" }
+indexmap = { path = "../indexmap" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+
+#futures-core = { version = "0.3", default-features = false }
+#futures-sink = { version = "0.3", default-features = false }
+#futures-util = { version = "0.3", default-features = false }
+#tokio-util = { version = "0.3.1", features = ["codec"] }
+#tokio = { version = "0.2", features = ["io-util"] }
+#bytes = "0.5.2"
+#http = "0.2"
+#log = "0.4.1"
+#fnv = "1.0.5"
+#slab = "0.4.0"
+#indexmap = "1.0"
 
 [dev-dependencies]
 
@@ -65,9 +81,9 @@ serde = "1.0.0"
 serde_json = "1.0.0"
 
 # Examples
-tokio = { version = "0.2", features = ["dns", "macros", "rt-core", "sync", "tcp"] }
+#tokio = { version = "0.2", features = ["dns", "macros", "rt-core", "sync", "tcp"] }
 env_logger = { version = "0.5.3", default-features = false }
 rustls = "0.16"
-tokio-rustls = "0.12.0"
+#tokio-rustls = "0.12.0"
 webpki = "0.21"
 webpki-roots = "0.17"

@@ -66,7 +66,7 @@ pub fn backward(code: u32) -> u8 {
     BACKWARD_TABLE_LOWER[offset + ((code & 63) as usize)]
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 single_byte_tests!(
     mod = iso_8859_10
 );

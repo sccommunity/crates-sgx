@@ -4,6 +4,7 @@ use futures_io::Initializer;
 use futures_io::{AsyncRead, AsyncWrite, AsyncSeek, AsyncBufRead, IoSlice, IoSliceMut, SeekFrom};
 use std::{fmt, io};
 use std::pin::Pin;
+use std::prelude::v1::*;
 
 /// A simple wrapper type which allows types which implement only
 /// implement `std::io::Read` or `std::io::Write`

@@ -85,7 +85,7 @@ use std::borrow::{Cow, ToOwned};
 use std::iter::{FromIterator, IntoIterator};
 use std::ops::{Deref, DerefMut};
 use std::{mem, fmt};
-
+use std::prelude::v1::*;
 use {httparse, traitobject};
 use typeable::Typeable;
 use unicase::UniCase;
@@ -226,7 +226,7 @@ impl<T: Sealed> HeaderClone for T {}
 
 mod sealed {
     use super::HeaderFormat;
-
+    use std::prelude::v1::*;
     #[doc(hidden)]
     pub trait Sealed {
         #[doc(hidden)]
@@ -612,8 +612,10 @@ impl AsRef<str> for CowStr {
 }
 
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
     use std::fmt;
     use mime::Mime;
     use mime::TopLevel::Text;
@@ -648,19 +650,19 @@ mod tests {
         })
     }
 
-    #[test]
+    #[test_case]
     fn test_from_raw() {
         let headers = Headers::from_raw(&raw!(b"Content-Length: 10")).unwrap();
         assert_eq!(headers.get(), Some(&ContentLength(10)));
     }
 
-    #[test]
+    #[test_case]
     fn test_content_type() {
         let content_type = Header::parse_header([b"text/plain".to_vec()].as_ref());
         assert_eq!(content_type.ok(), Some(ContentType(Mime(Text, Plain, vec![]))));
     }
 
-    #[test]
+    #[test_case]
     fn test_accept() {
         let text_plain = qitem(Mime(Text, Plain, vec![]));
         let application_vendor = "application/vnd.github.v3.full+json; q=0.5".parse().unwrap();
@@ -705,20 +707,20 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_different_structs_for_same_header() {
         let headers = Headers::from_raw(&raw!(b"Content-Length: 10")).unwrap();
         assert_eq!(headers.get::<ContentLength>(), Some(&ContentLength(10)));
         assert_eq!(headers.get::<CrazyLength>(), Some(&CrazyLength(Some(false), 10)));
     }
 
-    #[test]
+    #[test_case]
     fn test_trailing_whitespace() {
         let headers = Headers::from_raw(&raw!(b"Content-Length: 10   ")).unwrap();
         assert_eq!(headers.get::<ContentLength>(), Some(&ContentLength(10)));
     }
 
-    #[test]
+    #[test_case]
     fn test_multiple_reads() {
         let headers = Headers::from_raw(&raw!(b"Content-Length: 10")).unwrap();
         let ContentLength(one) = *headers.get::<ContentLength>().unwrap();
@@ -726,7 +728,7 @@ mod tests {
         assert_eq!(one, two);
     }
 
-    #[test]
+    #[test_case]
     fn test_different_reads() {
         let headers = Headers::from_raw(
             &raw!(b"Content-Length: 10", b"Content-Type: text/plain")).unwrap();
@@ -734,7 +736,7 @@ mod tests {
         let ContentType(_) = *headers.get::<ContentType>().unwrap();
     }
 
-    #[test]
+    #[test_case]
     fn test_get_mutable() {
         let mut headers = Headers::from_raw(&raw!(b"Content-Length: 10")).unwrap();
         *headers.get_mut::<ContentLength>().unwrap() = ContentLength(20);
@@ -742,7 +744,7 @@ mod tests {
         assert_eq!(*headers.get::<ContentLength>().unwrap(), ContentLength(20));
     }
 
-    #[test]
+    #[test_case]
     fn test_headers_fmt() {
         let mut headers = Headers::new();
         headers.set(ContentLength(15));
@@ -753,7 +755,7 @@ mod tests {
         assert!(s.contains("Content-Length: 15\r\n"));
     }
 
-    #[test]
+    #[test_case]
     fn test_headers_fmt_raw() {
         let mut headers = Headers::from_raw(&raw!(b"Content-Length: 10")).unwrap();
         headers.set_raw("x-foo", vec![b"foo".to_vec(), b"bar".to_vec()]);
@@ -761,7 +763,7 @@ mod tests {
         assert_eq!(s, "Content-Length: 10\r\nx-foo: foo\r\nx-foo: bar\r\n");
     }
 
-    #[test]
+    #[test_case]
     fn test_set_raw() {
         let mut headers = Headers::new();
         headers.set(ContentLength(10));
@@ -770,7 +772,7 @@ mod tests {
         assert_eq!(headers.get(), Some(&ContentLength(20)));
     }
 
-    #[test]
+    #[test_case]
     fn test_append_raw() {
         let mut headers = Headers::new();
         headers.set(ContentLength(10));
@@ -780,7 +782,7 @@ mod tests {
         assert_eq!(headers.get_raw("x-foo"), Some(&[b"bar".to_vec()][..]));
     }
 
-    #[test]
+    #[test_case]
     fn test_remove_raw() {
         let mut headers = Headers::new();
         headers.set_raw("content-LENGTH", vec![b"20".to_vec()]);
@@ -788,7 +790,7 @@ mod tests {
         assert_eq!(headers.get_raw("Content-length"), None);
     }
 
-    #[test]
+    #[test_case]
     fn test_len() {
         let mut headers = Headers::new();
         headers.set(ContentLength(10));
@@ -800,7 +802,7 @@ mod tests {
         assert_eq!(headers.len(), 2);
     }
 
-    #[test]
+    #[test_case]
     fn test_clear() {
         let mut headers = Headers::new();
         headers.set(ContentLength(10));
@@ -810,7 +812,7 @@ mod tests {
         assert_eq!(headers.len(), 0);
     }
 
-    #[test]
+    #[test_case]
     fn test_iter() {
         let mut headers = Headers::new();
         headers.set(ContentLength(11));
@@ -822,7 +824,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_header_view_value_string() {
         let mut headers = Headers::new();
         headers.set_raw("foo", vec![b"one".to_vec(), b"two".to_vec()]);
@@ -832,7 +834,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_eq() {
         let mut headers1 = Headers::new();
         let mut headers2 = Headers::new();

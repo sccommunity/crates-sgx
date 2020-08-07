@@ -1,7 +1,7 @@
 use crate::file::tempfile;
 use std::fs::File;
 use std::io::{self, Cursor, Read, Seek, SeekFrom, Write};
-
+use std::prelude::v1::*;
 #[derive(Debug)]
 enum SpooledInner {
     InMemory(Cursor<Vec<u8>>),

@@ -82,6 +82,7 @@ which uses it for executing automata on their term index.
 
 #![deny(missing_docs)]
 
+use std::prelude::v1::*;
 use std::char;
 use std::fmt;
 use std::slice;

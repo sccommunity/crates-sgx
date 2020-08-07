@@ -16,7 +16,13 @@
         unused_import_braces,
         unused_extern_crates,
         unused_qualifications)]
-
+#![cfg_attr(all(feature = "mesalock_sgx", not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+    feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
+use std::prelude::v1::*;
 /// Describes a CT log
 ///
 /// This structure contains some metadata fields not used by the library.

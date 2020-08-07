@@ -3,7 +3,7 @@ use std::error::Error as StdError;
 use bytes::{Buf, Bytes};
 use http::{Request, Response, StatusCode};
 use tokio::io::{AsyncRead, AsyncWrite};
-
+use std::prelude::v1::Box;
 use super::{Http1Transaction, Wants};
 use crate::body::{Body, Payload};
 use crate::common::{task, Future, Never, Pin, Poll, Unpin};

@@ -5,6 +5,7 @@ use std::{
     fmt,
     marker::PhantomData,
 };
+use std::prelude::v1::*;
 pub(crate) struct Local<T> {
     // TODO(eliza): this once used a `crossbeam_util::ShardedRwLock`. We may
     // eventually wish to replace it with a sharded lock implementation on top

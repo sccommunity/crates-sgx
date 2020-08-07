@@ -70,6 +70,16 @@
 
 #![warn(missing_docs)]
 
+#![cfg_attr(not(target_env = "sgx"), no_std)]
+#![cfg_attr(target_env = "sgx", feature(rustc_private))]
+
+#[cfg(not(target_env = "sgx"))]
+#[macro_use]
+extern crate sgx_tstd as std;
+
+use std::prelude::v1::*;
+
+
 #[macro_use]
 extern crate lazy_static;
 
@@ -84,7 +94,7 @@ use std::fmt;
 use std::marker::PhantomData;
 use std::panic::UnwindSafe;
 use std::sync::atomic::{AtomicPtr, AtomicUsize, Ordering};
-use std::sync::Mutex;
+use std::sync::SgxMutex as Mutex;
 use unreachable::{UncheckedOptionExt, UncheckedResultExt};
 
 /// Thread-local variable wrapper
@@ -450,8 +460,12 @@ impl<T: Send> Iterator for IntoIter<T> {
 
 impl<T: Send> ExactSizeIterator for IntoIter<T> {}
 
-#[cfg(test)]
-mod tests {
+#[cfg(feature = "enclave_unit_test")]
+extern crate crates_unittest;
+#[cfg(feature = "enclave_unit_test")]
+pub mod tests {
+    use std::prelude::v1::*;
+    use crates_unittest::{ test_case, run_inventory_tests };
     use super::{CachedThreadLocal, ThreadLocal};
     use std::cell::RefCell;
     use std::sync::atomic::AtomicUsize;
@@ -459,12 +473,16 @@ mod tests {
     use std::sync::Arc;
     use std::thread;
 
+    pub fn run_tests() {
+        run_inventory_tests!();
+    }
+
     fn make_create() -> Arc<dyn Fn() -> usize + Send + Sync> {
         let count = AtomicUsize::new(0);
         Arc::new(move || count.fetch_add(1, Relaxed))
     }
 
-    #[test]
+    #[test_case]
     fn same_thread() {
         let create = make_create();
         let mut tls = ThreadLocal::new();
@@ -481,7 +499,7 @@ mod tests {
         assert_eq!(None, tls.get());
     }
 
-    #[test]
+    #[test_case]
     fn same_thread_cached() {
         let create = make_create();
         let mut tls = CachedThreadLocal::new();
@@ -498,7 +516,7 @@ mod tests {
         assert_eq!(None, tls.get());
     }
 
-    #[test]
+    #[test_case]
     fn different_thread() {
         let create = make_create();
         let tls = Arc::new(ThreadLocal::new());
@@ -520,7 +538,7 @@ mod tests {
         assert_eq!(0, *tls.get_or(|| create()));
     }
 
-    #[test]
+    #[test_case]
     fn different_thread_cached() {
         let create = make_create();
         let tls = Arc::new(CachedThreadLocal::new());
@@ -542,7 +560,7 @@ mod tests {
         assert_eq!(0, *tls.get_or(|| create()));
     }
 
-    #[test]
+    #[test_case]
     fn iter() {
         let tls = Arc::new(ThreadLocal::new());
         tls.get_or(|| Box::new(1));
@@ -569,7 +587,7 @@ mod tests {
         assert_eq!(vec![1, 2, 3], v);
     }
 
-    #[test]
+    #[test_case]
     fn iter_cached() {
         let tls = Arc::new(CachedThreadLocal::new());
         tls.get_or(|| Box::new(1));
@@ -596,7 +614,7 @@ mod tests {
         assert_eq!(vec![1, 2, 3], v);
     }
 
-    #[test]
+    #[test_case]
     fn is_sync() {
         fn foo<T: Sync>() {}
         foo::<ThreadLocal<String>>();

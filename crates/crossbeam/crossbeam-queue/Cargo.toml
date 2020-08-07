@@ -17,11 +17,11 @@ keywords = ["queue", "mpmc", "lock-free", "producer", "consumer"]
 categories = ["concurrency", "data-structures"]
 
 [features]
-default = ["std"]
-
+default = ["mesalock_sgx", "std"]
+mesalock_sgx = ["sgx_tstd", "std"]
 # Enable to use APIs that require `std`.
 # This is enabled by default.
-std = ["alloc", "crossbeam-utils/std"]
+std = ["alloc", "crossbeam-utils/std", "mesalock_sgx"]
 
 # Enable to use APIs that require `alloc`.
 # This is enabled by default and also enabled if the `std` feature is enabled.
@@ -34,7 +34,8 @@ alloc = []
 nightly = ["crossbeam-utils/nightly"]
 
 [dependencies]
-cfg-if = "0.1.10"
+cfg-if = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 
 [dependencies.crossbeam-utils]
 version = "0.7"

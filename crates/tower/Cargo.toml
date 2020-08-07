@@ -6,3 +6,4 @@ members = [
   "tower-service",
   "tower-test",
 ]
+exclude = ["sgx-tests"]

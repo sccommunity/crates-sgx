@@ -7,7 +7,7 @@ pub(crate) use self::stack::Stack;
 
 use std::borrow::Borrow;
 use std::usize;
-
+use std::prelude::v1::Vec;
 /// Timing wheel implementation.
 ///
 /// This type provides the hashed timing wheel implementation that backs `Timer`

@@ -15,19 +15,27 @@ name = "ansi_term"
 
 [features]
 derive_serde_style = ["serde"]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+enclave_unit_test = ["crates_unittest", "inventory", "regex"]
 
-[dependencies.serde]
-version = "1.0.90"
-features = ["derive"]
-optional = true
+[dependencies]
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+crates_unittest = { git = "https://github.com/Zha0Chan/crates-sgx-unittest.git", optional = true, default-features = false}
+inventory = { version = "0.1.6", optional = true }
+regex = { path = "../regex", optional = true }
+
+serde = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2", features = ["derive"], optional = true }
+
+
 
 [target.'cfg(target_os="windows")'.dependencies.winapi]
 version = "0.3.4"
 features = ["consoleapi", "errhandlingapi", "fileapi", "handleapi", "processenv"]
 
-[dev-dependencies]
-doc-comment = "0.3"
-regex = "1.1.9"
+#[dev-dependencies]
+#doc-comment = "0.3"
+#regex = "1.1.9"
 
-[dev-dependencies.serde_json]
-version = "1.0.39"
+#[dev-dependencies.serde_json]
+#version = "1.0.39"

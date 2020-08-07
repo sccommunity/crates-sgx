@@ -1,6 +1,7 @@
 use std::fmt::{self, Display};
 use std::str::FromStr;
 use unicase::UniCase;
+use std::prelude::v1::*;
 
 pub use self::ConnectionOption::{KeepAlive, Close, ConnectionHeader};
 
@@ -120,19 +121,20 @@ bench_header!(close, Connection, { vec![b"close".to_vec()] });
 bench_header!(keep_alive, Connection, { vec![b"keep-alive".to_vec()] });
 bench_header!(header, Connection, { vec![b"authorization".to_vec()] });
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::{Connection,ConnectionHeader};
     use header::Header;
     use unicase::UniCase;
-
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
     fn parse_option(header: Vec<u8>) -> Connection {
         let val = vec![header];
         let connection: Connection = Header::parse_header(&val[..]).unwrap();
         connection
     }
 
-    #[test]
+    #[test_case]
     fn test_parse() {
         assert_eq!(Connection::close(),parse_option(b"close".to_vec()));
         assert_eq!(Connection::keep_alive(),parse_option(b"keep-alive".to_vec()));

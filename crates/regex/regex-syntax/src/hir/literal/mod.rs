@@ -2,6 +2,7 @@
 Provides routines for extracting literal prefixes and suffixes from an `Hir`.
 */
 
+use std::prelude::v1::*;
 use std::cmp;
 use std::fmt;
 use std::iter;

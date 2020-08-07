@@ -5,7 +5,7 @@ use crate::error::TLSError;
 use crate::cipher::{Iv, IvLen};
 use crate::msgs::base::PayloadU8;
 use crate::KeyLog;
-
+use std::prelude::v1::*;
 /// The kinds of secret we can extract from `KeySchedule`.
 #[derive(Debug, Clone, Copy, PartialEq)]
 enum SecretKind {

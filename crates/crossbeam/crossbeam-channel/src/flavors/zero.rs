@@ -6,6 +6,7 @@ use std::cell::UnsafeCell;
 use std::marker::PhantomData;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::Instant;
+use std::prelude::v1::*;
 
 use crossbeam_utils::Backoff;
 

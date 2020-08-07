@@ -94,7 +94,7 @@
 ///
 /// **BE CAREFUL** there is a case where the behaviour of `alt!` can be confusing:
 ///
-/// when the alternatives have different lengths, like this case:
+/// When the alternatives have different lengths, like this case:
 ///
 /// ```ignore
 ///  named!( test, alt!( tag!( "abcd" ) | tag!( "ef" ) | tag!( "ghi" ) | tag!( "kl" ) ) );
@@ -138,7 +138,7 @@
 ///  named!( test, alt!( tag!( "abcd" ) | tag!( "ab" ) | tag!( "ef" ) ) );
 /// ```
 ///
-/// in that case, if you order by size, passing `"abcd"` as input will always be matched by the
+/// In that case, if you order by size, passing `"abcd"` as input will always be matched by the
 /// smallest parser, so the solution using `complete!` is better suited.
 ///
 /// You can also nest multiple `alt!`, like this:
@@ -382,13 +382,11 @@ macro_rules! switch (
   );
 );
 
-///
-///
 /// `permutation!(I -> IResult<I,A>, I -> IResult<I,B>, ... I -> IResult<I,X> ) => I -> IResult<I, (A,B,...X)>`
 /// applies its sub parsers in a sequence, but independent from their order
-/// this parser will only succeed if all of its sub parsers succeed
+/// this parser will only succeed if all of its sub parsers succeed.
 ///
-/// the tuple of results is in the same order as the parsers are declared
+/// The tuple of results is in the same order as the parsers are declared
 ///
 /// ```
 /// # #[macro_use] extern crate nom;
@@ -717,10 +715,12 @@ macro_rules! permutation_iterator (
   });
 );
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
   use crate::error::ErrorKind;
   use crate::internal::{Err, IResult, Needed};
+  
+  use crates_unittest::test_case;
   #[cfg(feature = "alloc")]
   use crate::{
     error::ParseError,
@@ -818,7 +818,7 @@ mod tests {
   }
 
   #[cfg(feature = "alloc")]
-  #[test]
+  #[test_case]
   fn alt() {
     fn work(input: &[u8]) -> IResult<&[u8], &[u8], ErrorStr> {
       Ok((&b""[..], input))
@@ -870,7 +870,7 @@ mod tests {
     let _ = (alt_eof1, alt_eof2);
   }
 
-  #[test]
+  #[test_case]
   fn alt_incomplete() {
     named!(alt1, alt!(tag!("a") | tag!("bc") | tag!("def")));
 
@@ -889,7 +889,7 @@ mod tests {
   }
 
   #[allow(unused_variables)]
-  #[test]
+  #[test_case]
   fn switch() {
     named!(
       sw,
@@ -917,7 +917,7 @@ mod tests {
     assert_eq!(sw(a), Ok((&b"gh"[..], &b"ef"[..])));
   }
 
-  #[test]
+  #[test_case]
   fn permutation() {
     named!(
       perm<(&[u8], &[u8], &[u8])>,

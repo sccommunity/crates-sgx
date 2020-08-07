@@ -1,0 +1,139 @@
+use bytes::RingBuf;
+use crates_unittest::test_case;
+use std::prelude::v1::*;
+
+#[test_case]
+pub fn test_initial_buf_empty() {
+    use bytes::traits::{Buf, BufExt, MutBuf, MutBufExt};
+
+    let mut buf = RingBuf::new(16);
+    assert_eq!(MutBuf::remaining(&buf), 16);
+    assert_eq!(Buf::remaining(&buf), 0);
+
+    let bytes_written = buf.write(&[1, 2, 3][..]).unwrap();
+    assert_eq!(bytes_written, 3);
+
+    let bytes_written = buf.write(&[][..]).unwrap();
+    assert_eq!(bytes_written, 0);
+    assert_eq!(MutBuf::remaining(&buf), 13);
+    assert_eq!(Buf::remaining(&buf), 3);
+    assert_eq!(buf.bytes(), [1, 2, 3]);
+
+    let mut out = [0u8; 3];
+
+    buf.mark();
+    let bytes_read = buf.read(&mut out[..]).unwrap();;
+    assert_eq!(bytes_read, 3);
+    assert_eq!(out, [1, 2, 3]);
+    buf.reset();
+    let bytes_read = buf.read(&mut out[..]).unwrap();;
+    assert_eq!(bytes_read, 3);
+    assert_eq!(out, [1, 2, 3]);
+
+    assert_eq!(MutBuf::remaining(&buf), 16);
+    assert_eq!(Buf::remaining(&buf), 0);
+}
+
+#[test_case]
+fn test_wrapping_write() {
+    use bytes::traits::{BufExt, MutBufExt};
+    let mut buf = RingBuf::new(16);
+    let mut out = [0;10];
+
+    buf.write(&[42;12][..]).unwrap();
+    let bytes_read = buf.read(&mut out[..]).unwrap();
+    assert_eq!(bytes_read, 10);
+
+    let bytes_written = buf.write(&[23;8][..]).unwrap();
+    assert_eq!(bytes_written, 8);
+
+    buf.mark();
+    let bytes_read = buf.read(&mut out[..]).unwrap();
+    assert_eq!(bytes_read, 10);
+    assert_eq!(out, [42, 42, 23, 23, 23, 23, 23, 23, 23, 23]);
+    buf.reset();
+    let bytes_read = buf.read(&mut out[..]).unwrap();
+    assert_eq!(bytes_read, 10);
+    assert_eq!(out, [42, 42, 23, 23, 23, 23, 23, 23, 23, 23]);
+}
+
+#[test_case]
+fn test_io_write_and_read() {
+    use std::io::{Read, Write};
+
+    let mut buf = RingBuf::new(16);
+    let mut out = [0;8];
+
+    let written = buf.write(&[1;8][..]).unwrap();
+    assert_eq!(written, 8);
+
+    buf.read(&mut out).unwrap();
+    assert_eq!(out, [1;8]);
+
+    let written = buf.write(&[2;8][..]).unwrap();
+    assert_eq!(written, 8);
+
+    let bytes_read = buf.read(&mut out).unwrap();
+    assert_eq!(bytes_read, 8);
+    assert_eq!(out, [2;8]);
+}
+
+// #[test_case]
+// #[should_panic]
+// fn test_wrap_reset() {
+//     use std::io::{Read, Write};
+
+//     let mut buf = RingBuf::new(8);
+//     buf.write(&[1, 2, 3, 4, 5, 6, 7]).unwrap();
+//     buf.mark();
+//     buf.read(&mut [0; 4]).unwrap();
+//     buf.write(&[1, 2, 3, 4]).unwrap();
+//     buf.reset();
+// }
+
+#[test_case]
+// Test that writes across a mark/reset are preserved.
+fn test_mark_write() {
+    use std::io::{Read, Write};
+
+    let mut buf = RingBuf::new(8);
+    buf.write(&[1, 2, 3, 4, 5, 6, 7]).unwrap();
+    buf.mark();
+    buf.write(&[8]).unwrap();
+    buf.reset();
+
+    let mut buf2 = [0; 8];
+    buf.read(&mut buf2).unwrap();
+    assert_eq!(buf2, [1, 2, 3, 4, 5, 6, 7, 8]);
+}
+
+#[test_case]
+// Test that "RingBuf::reset" does not reset the length of a
+// full buffer to zero.
+fn test_reset_full() {
+    use bytes::traits::MutBuf;
+    use std::io::Write;
+
+    let mut buf = RingBuf::new(8);
+    buf.write(&[1, 2, 3, 4, 5, 6, 7, 8]).unwrap();
+    assert_eq!(MutBuf::remaining(&buf), 0);
+    buf.mark();
+    buf.reset();
+    assert_eq!(MutBuf::remaining(&buf), 0);
+}
+
+
+#[test_case]
+// Test that "RingBuf::clear" does the full reset
+fn test_clear() {
+    use bytes::traits::{Buf, MutBuf};
+    use std::io::Write;
+
+    let mut buf = RingBuf::new(8);
+    buf.write(&[0; 8]).unwrap();
+    assert_eq!(MutBuf::remaining(&buf), 0);
+    assert_eq!(Buf::remaining(&buf), 8);
+    buf.clear();
+    assert_eq!(MutBuf::remaining(&buf), 8);
+    assert_eq!(Buf::remaining(&buf), 0);
+}

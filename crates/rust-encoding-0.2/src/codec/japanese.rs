@@ -3,7 +3,7 @@
 // See README.md and LICENSE.txt for details.
 
 //! Legacy Japanese encodings based on JIS X 0208 and JIS X 0212.
-
+use std::prelude::v1::*;
 use std::convert::Into;
 use std::default::Default;
 use util::StrCharIndex;
@@ -187,14 +187,15 @@ transient:
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod eucjp_tests {
-    extern crate test;
+    //extern crate test;
     use super::EUCJPEncoding;
     use testutils;
     use types::*;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::{ test_case };
+    #[test_case]
     fn test_encoder_valid() {
         let mut e = EUCJPEncoding.raw_encoder();
         assert_feed_ok!(e, "A", "", [0x41]);
@@ -208,7 +209,7 @@ mod eucjp_tests {
         assert_finish_ok!(e, []);
     }
 
-    #[test]
+    #[test_case]
     fn test_encoder_double_mapped() {
         // these characters are double-mapped to both EUDC area and Shift_JIS extension area
         // but only the former should be used. (note that U+FFE2 is triple-mapped!)
@@ -217,7 +218,7 @@ mod eucjp_tests {
         assert_finish_ok!(e, []);
     }
 
-    #[test]
+    #[test_case]
     fn test_encoder_invalid() {
         let mut e = EUCJPEncoding.raw_encoder();
         assert_feed_err!(e, "", "\u{ffff}", "", []);
@@ -227,7 +228,7 @@ mod eucjp_tests {
         assert_finish_ok!(e, []);
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_valid() {
         let mut d = EUCJPEncoding.raw_decoder();
         assert_feed_ok!(d, [0x41], [], "A");
@@ -242,7 +243,7 @@ mod eucjp_tests {
         assert_finish_ok!(d, "");
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_valid_partial() {
         let mut d = EUCJPEncoding.raw_decoder();
         assert_feed_ok!(d, [], [0xa4], "");
@@ -265,7 +266,7 @@ mod eucjp_tests {
         assert_finish_ok!(d, "");
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_invalid_lone_lead_immediate_test_finish() {
         for i in 0x8e..0x90 {
             let mut d = EUCJPEncoding.raw_decoder();
@@ -291,7 +292,7 @@ mod eucjp_tests {
         assert_finish_ok!(d, "");
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_invalid_lone_lead_followed_by_space() {
         for i in 0x80..0x100 {
             let i = i as u8;
@@ -301,7 +302,7 @@ mod eucjp_tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_invalid_lead_followed_by_invalid_trail() {
         for i in 0x80..0x100 {
             let i = i as u8;
@@ -312,7 +313,7 @@ mod eucjp_tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_invalid_lone_lead_for_0212_immediate_test_finish() {
         for i in 0xa1..0xff {
             let mut d = EUCJPEncoding.raw_decoder();
@@ -321,7 +322,7 @@ mod eucjp_tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_invalid_lone_lead_for_0212_immediate_test_finish_partial() {
         for i in 0xa1..0xff {
             let mut d = EUCJPEncoding.raw_decoder();
@@ -331,7 +332,7 @@ mod eucjp_tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_invalid_trail_for_0201() {
         for i in 0..0xa1 {
             let mut d = EUCJPEncoding.raw_decoder();
@@ -346,7 +347,7 @@ mod eucjp_tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_invalid_trail_for_0201_partial() {
         for i in 0..0xa1 {
             let mut d = EUCJPEncoding.raw_decoder();
@@ -363,7 +364,7 @@ mod eucjp_tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_invalid_middle_for_0212() {
         for i in 0..0xa1 {
             let mut d = EUCJPEncoding.raw_decoder();
@@ -372,7 +373,7 @@ mod eucjp_tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_invalid_middle_for_0212_partial() {
         for i in 0..0xa1 {
             let mut d = EUCJPEncoding.raw_decoder();
@@ -382,7 +383,7 @@ mod eucjp_tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_invalid_trail_for_0212() {
         for i in 0..0xa1 {
             let mut d = EUCJPEncoding.raw_decoder();
@@ -391,7 +392,7 @@ mod eucjp_tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_invalid_trail_for_0212_partial() {
         for i in 0..0xa1 {
             let mut d = EUCJPEncoding.raw_decoder();
@@ -402,7 +403,7 @@ mod eucjp_tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_feed_after_finish() {
         let mut d = EUCJPEncoding.raw_decoder();
         assert_feed_ok!(d, [0xa4, 0xa2], [0xa4], "\u{3042}");
@@ -411,24 +412,24 @@ mod eucjp_tests {
         assert_finish_ok!(d, "");
     }
 
-    #[bench]
-    fn bench_encode_short_text(bencher: &mut test::Bencher) {
-        let s = testutils::JAPANESE_TEXT;
-        bencher.bytes = s.len() as u64;
-        bencher.iter(|| test::black_box({
-            EUCJPEncoding.encode(&s, EncoderTrap::Strict)
-        }))
-    }
+    // #[bench]
+    // fn bench_encode_short_text(bencher: &mut test::Bencher) {
+    //     let s = testutils::JAPANESE_TEXT;
+    //     bencher.bytes = s.len() as u64;
+    //     bencher.iter(|| test::black_box({
+    //         EUCJPEncoding.encode(&s, EncoderTrap::Strict)
+    //     }))
+    // }
 
-    #[bench]
-    fn bench_decode_short_text(bencher: &mut test::Bencher) {
-        let s = EUCJPEncoding.encode(testutils::JAPANESE_TEXT,
-                                     EncoderTrap::Strict).ok().unwrap();
-        bencher.bytes = s.len() as u64;
-        bencher.iter(|| test::black_box({
-            EUCJPEncoding.decode(&s, DecoderTrap::Strict)
-        }))
-    }
+    // #[bench]
+    // fn bench_decode_short_text(bencher: &mut test::Bencher) {
+    //     let s = EUCJPEncoding.encode(testutils::JAPANESE_TEXT,
+    //                                  EncoderTrap::Strict).ok().unwrap();
+    //     bencher.bytes = s.len() as u64;
+    //     bencher.iter(|| test::black_box({
+    //         EUCJPEncoding.decode(&s, DecoderTrap::Strict)
+    //     }))
+    // }
 }
 
 /**
@@ -574,14 +575,15 @@ transient:
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod windows31j_tests {
-    extern crate test;
+    //extern crate test;
     use super::Windows31JEncoding;
     use testutils;
     use types::*;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::{ test_case };
+    #[test_case]
     fn test_encoder_valid() {
         let mut e = Windows31JEncoding.raw_encoder();
         assert_feed_ok!(e, "A", "", [0x41]);
@@ -595,7 +597,7 @@ mod windows31j_tests {
         assert_finish_ok!(e, []);
     }
 
-    #[test]
+    #[test_case]
     fn test_encoder_no_eudc() {
         let mut e = Windows31JEncoding.raw_encoder();
         assert_feed_err!(e, "", "\u{e000}", "", []);
@@ -604,7 +606,7 @@ mod windows31j_tests {
         assert_finish_ok!(e, []);
     }
 
-    #[test]
+    #[test_case]
     fn test_encoder_double_mapped() {
         // these characters are double-mapped to both EUDC area and Shift_JIS extension area
         // but only the latter should be used. (note that U+FFE2 is triple-mapped!)
@@ -613,7 +615,7 @@ mod windows31j_tests {
         assert_finish_ok!(e, []);
     }
 
-    #[test]
+    #[test_case]
     fn test_encoder_invalid() {
         let mut e = Windows31JEncoding.raw_encoder();
         assert_feed_err!(e, "", "\u{ffff}", "", []);
@@ -622,7 +624,7 @@ mod windows31j_tests {
         assert_finish_ok!(e, []);
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_valid() {
         let mut d = Windows31JEncoding.raw_decoder();
         assert_feed_ok!(d, [0x41], [], "A");
@@ -637,7 +639,7 @@ mod windows31j_tests {
         assert_finish_ok!(d, "");
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_eudc() {
         let mut d = Windows31JEncoding.raw_decoder();
         assert_feed_ok!(d, [], [0xf0], "");
@@ -648,7 +650,7 @@ mod windows31j_tests {
         assert_finish_ok!(d, "");
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_invalid_lone_lead_immediate_test_finish() {
         for i in 0x81..0xa0 {
             let mut d = Windows31JEncoding.raw_decoder();
@@ -671,7 +673,7 @@ mod windows31j_tests {
         assert_finish_ok!(d, "");
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_invalid_lone_lead_followed_by_space() {
         for i in 0x81..0xa0 {
             let mut d = Windows31JEncoding.raw_decoder();
@@ -686,7 +688,7 @@ mod windows31j_tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_invalid_lead_followed_by_invalid_trail() {
         for i in 0x81..0xa0 {
             let mut d = Windows31JEncoding.raw_decoder();
@@ -709,7 +711,7 @@ mod windows31j_tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_invalid_lead_followed_by_invalid_trail_partial() {
         for i in 0x81..0xa0 {
             let mut d = Windows31JEncoding.raw_decoder();
@@ -726,7 +728,7 @@ mod windows31j_tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_feed_after_finish() {
         let mut d = Windows31JEncoding.raw_decoder();
         assert_feed_ok!(d, [0x82, 0xa0], [0x82], "\u{3042}");
@@ -735,24 +737,24 @@ mod windows31j_tests {
         assert_finish_ok!(d, "");
     }
 
-    #[bench]
-    fn bench_encode_short_text(bencher: &mut test::Bencher) {
-        let s = testutils::JAPANESE_TEXT;
-        bencher.bytes = s.len() as u64;
-        bencher.iter(|| test::black_box({
-            Windows31JEncoding.encode(&s, EncoderTrap::Strict)
-        }))
-    }
+    // #[bench]
+    // fn bench_encode_short_text(bencher: &mut test::Bencher) {
+    //     let s = testutils::JAPANESE_TEXT;
+    //     bencher.bytes = s.len() as u64;
+    //     bencher.iter(|| test::black_box({
+    //         Windows31JEncoding.encode(&s, EncoderTrap::Strict)
+    //     }))
+    // }
 
-    #[bench]
-    fn bench_decode_short_text(bencher: &mut test::Bencher) {
-        let s = Windows31JEncoding.encode(testutils::JAPANESE_TEXT,
-                                          EncoderTrap::Strict).ok().unwrap();
-        bencher.bytes = s.len() as u64;
-        bencher.iter(|| test::black_box({
-            Windows31JEncoding.decode(&s, DecoderTrap::Strict)
-        }))
-    }
+    // #[bench]
+    // fn bench_decode_short_text(bencher: &mut test::Bencher) {
+    //     let s = Windows31JEncoding.encode(testutils::JAPANESE_TEXT,
+    //                                       EncoderTrap::Strict).ok().unwrap();
+    //     bencher.bytes = s.len() as u64;
+    //     bencher.iter(|| test::black_box({
+    //         Windows31JEncoding.decode(&s, DecoderTrap::Strict)
+    //     }))
+    // }
 }
 
 /**
@@ -998,14 +1000,15 @@ transient:
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod iso2022jp_tests {
-    extern crate test;
+    //extern crate test;
     use super::ISO2022JPEncoding;
     use testutils;
     use types::*;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::{ test_case };
+    #[test_case]
     fn test_encoder_valid() {
         let mut e = ISO2022JPEncoding.raw_encoder();
         assert_feed_ok!(e, "A", "", [0x41]);
@@ -1042,7 +1045,7 @@ mod iso2022jp_tests {
         assert_finish_ok!(e, []);
     }
 
-    #[test]
+    #[test_case]
     fn test_encoder_invalid() {
         let mut e = ISO2022JPEncoding.raw_encoder();
         assert_feed_err!(e, "", "\u{ffff}", "", []);
@@ -1052,7 +1055,7 @@ mod iso2022jp_tests {
         assert_finish_ok!(e, []);
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_valid() {
         let mut d = ISO2022JPEncoding.raw_decoder();
         assert_feed_ok!(d, [0x41], [], "A");
@@ -1113,7 +1116,7 @@ mod iso2022jp_tests {
         assert_finish_ok!(d, "");
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_valid_partial() {
         let mut d = ISO2022JPEncoding.raw_decoder();
 
@@ -1148,7 +1151,7 @@ mod iso2022jp_tests {
         assert_finish_ok!(d, "");
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_carriage_return() {
         // CR in Lead state "resets to ASCII"
         let mut d = ISO2022JPEncoding.raw_decoder();
@@ -1169,7 +1172,7 @@ mod iso2022jp_tests {
         assert_finish_ok!(d, "");
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_invalid_partial() {
         let mut d = ISO2022JPEncoding.raw_decoder();
         assert_feed_ok!(d, [0x1b, 0x24, 0x42, 0x24, 0x4b], [0x24], "\u{306b}");
@@ -1180,7 +1183,7 @@ mod iso2022jp_tests {
         assert_finish_err!(d, "");
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_invalid_partial_escape() {
         let mut d = ISO2022JPEncoding.raw_decoder();
         assert_feed_ok!(d, [], [0x1b], "");
@@ -1208,7 +1211,7 @@ mod iso2022jp_tests {
                    Ok("\u{fffd}".to_string()));
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_invalid_escape() {
         // also tests allowed but never used escape codes in ISO 2022
         let mut d = ISO2022JPEncoding.raw_decoder();
@@ -1291,7 +1294,7 @@ mod iso2022jp_tests {
         assert_finish_ok!(d, "");
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_invalid_out_or_range() {
         let mut d = ISO2022JPEncoding.raw_decoder();
         assert_feed_err!(d, [], [0x80], [], "");
@@ -1309,7 +1312,7 @@ mod iso2022jp_tests {
         assert_finish_ok!(d, "");
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_feed_after_finish() {
         let mut d = ISO2022JPEncoding.raw_decoder();
         assert_feed_ok!(d, [0x24, 0x22,
@@ -1322,22 +1325,22 @@ mod iso2022jp_tests {
         assert_finish_ok!(d, "");
     }
 
-    #[bench]
-    fn bench_encode_short_text(bencher: &mut test::Bencher) {
-        let s = testutils::JAPANESE_TEXT;
-        bencher.bytes = s.len() as u64;
-        bencher.iter(|| test::black_box({
-            ISO2022JPEncoding.encode(&s, EncoderTrap::Strict)
-        }))
-    }
+    // #[bench]
+    // fn bench_encode_short_text(bencher: &mut test::Bencher) {
+    //     let s = testutils::JAPANESE_TEXT;
+    //     bencher.bytes = s.len() as u64;
+    //     bencher.iter(|| test::black_box({
+    //         ISO2022JPEncoding.encode(&s, EncoderTrap::Strict)
+    //     }))
+    // }
 
-    #[bench]
-    fn bench_decode_short_text(bencher: &mut test::Bencher) {
-        let s = ISO2022JPEncoding.encode(testutils::JAPANESE_TEXT,
-                                         EncoderTrap::Strict).ok().unwrap();
-        bencher.bytes = s.len() as u64;
-        bencher.iter(|| test::black_box({
-            ISO2022JPEncoding.decode(&s, DecoderTrap::Strict)
-        }))
-    }
+    // #[bench]
+    // fn bench_decode_short_text(bencher: &mut test::Bencher) {
+    //     let s = ISO2022JPEncoding.encode(testutils::JAPANESE_TEXT,
+    //                                      EncoderTrap::Strict).ok().unwrap();
+    //     bencher.bytes = s.len() as u64;
+    //     bencher.iter(|| test::black_box({
+    //         ISO2022JPEncoding.decode(&s, DecoderTrap::Strict)
+    //     }))
+    // }
 }

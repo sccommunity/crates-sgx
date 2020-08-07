@@ -1,3 +1,4 @@
+use std::prelude::v1::*;
 pub use serde::de::{Deserialize, IntoDeserializer};
 
 use crate::value::{Array, Table, Value};

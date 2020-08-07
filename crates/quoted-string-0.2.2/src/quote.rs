@@ -1,4 +1,5 @@
 use std::borrow::Cow;
+use std::prelude::v1::*;
 // this import will become unused in future rust versions
 // but won't be removed for now for supporting current
 // rust versions

@@ -1,3 +1,5 @@
+use std::prelude::v1::*;
+
 use super::Value;
 use crate::lib::iter::FromIterator;
 use crate::lib::*;

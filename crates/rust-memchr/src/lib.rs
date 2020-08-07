@@ -20,10 +20,26 @@ provides its own implementation of `memrchr` as well, on top of `memchr2`,
 instead of one. Similarly for `memchr3`.
 */
 
-#![cfg_attr(not(feature = "std"), no_std)]
+//#![cfg_attr(not(feature = "std"), no_std)]
 #![deny(missing_docs)]
 #![doc(html_root_url = "https://docs.rs/memchr/2.0.0")]
+#![cfg_attr(not(
+    all(
+        any(feature = "std", feature = "mesalock_sgx"),
+        target_env = "sgx",
+        target_vendor = "mesalock",
+    )),
+    no_std
+)]
 
+#![cfg_attr(
+    all(
+        any(feature = "std", feature = "mesalock_sgx"),
+        target_env = "sgx",
+        target_vendor = "mesalock",
+    ),
+    feature(rustc_private)
+)]
 // Supporting 8-bit (or others) would be fine. If you need it, please submit a
 // bug report at https://github.com/BurntSushi/rust-memchr
 #[cfg(not(any(
@@ -33,7 +49,17 @@ instead of one. Similarly for `memchr3`.
 )))]
 compile_error!("memchr currently not supported on non-32 or non-64 bit");
 
-#[cfg(feature = "std")]
+#[cfg(all(
+    any(feature = "std", feature = "mesalock_sgx"),
+    not(target_env = "sgx"),
+    not(target_vendor = "mesalock"),
+))]
+#[macro_use]
+extern crate sgx_tstd as std;
+
+#[cfg(all(feature = "std",
+          not(all(feature = "mesalock_sgx",
+                  not(target_env = "sgx")))))]
 extern crate core;
 
 #[cfg(all(test, all(not(miri), feature = "std")))]
@@ -56,7 +82,7 @@ mod tests;
 #[cfg(all(test, any(miri, not(feature = "std"))))]
 #[path = "tests/miri.rs"]
 mod tests;
-#[cfg(all(not(miri), target_arch = "x86_64", memchr_runtime_simd))]
+#[cfg(any(feature = "mesalock_sgx", all(not(miri), target_arch = "x86_64", memchr_runtime_simd)))]
 mod x86;
 
 /// An iterator over all occurrences of the needle in a haystack.
@@ -137,14 +163,14 @@ pub fn memchr(needle: u8, haystack: &[u8]) -> Option<usize> {
         naive::memchr(n1, haystack)
     }
 
-    #[cfg(all(target_arch = "x86_64", memchr_runtime_simd, not(miri)))]
+    #[cfg(any(feature = "mesalock_sgx", 
+    all(target_arch = "x86_64", memchr_runtime_simd, not(miri))))]
     #[inline(always)]
     fn imp(n1: u8, haystack: &[u8]) -> Option<usize> {
         x86::memchr(n1, haystack)
     }
-
     #[cfg(all(
-        memchr_libc,
+        all(feature = "libc", feature = "mesalock_sgx"),
         not(all(target_arch = "x86_64", memchr_runtime_simd)),
         not(miri),
     ))]
@@ -157,6 +183,7 @@ pub fn memchr(needle: u8, haystack: &[u8]) -> Option<usize> {
         not(memchr_libc),
         not(all(target_arch = "x86_64", memchr_runtime_simd)),
         not(miri),
+        not(feature = "mesalock_sgx"),
     ))]
     #[inline(always)]
     fn imp(n1: u8, haystack: &[u8]) -> Option<usize> {
@@ -200,16 +227,17 @@ pub fn memchr2(needle1: u8, needle2: u8, haystack: &[u8]) -> Option<usize> {
         naive::memchr2(n1, n2, haystack)
     }
 
-    #[cfg(all(target_arch = "x86_64", memchr_runtime_simd, not(miri)))]
+    #[cfg(any(feature = "mesalock_sgx",
+     all(target_arch = "x86_64", memchr_runtime_simd, not(miri))))]
     #[inline(always)]
     fn imp(n1: u8, n2: u8, haystack: &[u8]) -> Option<usize> {
         x86::memchr2(n1, n2, haystack)
     }
-
     #[cfg(all(
-        not(all(target_arch = "x86_64", memchr_runtime_simd)),
+        not(any(all(target_arch = "x86_64", memchr_runtime_simd),
+        feature = "mesalock_sgx",
         not(miri),
-    ))]
+    ))))]
     #[inline(always)]
     fn imp(n1: u8, n2: u8, haystack: &[u8]) -> Option<usize> {
         fallback::memchr2(n1, n2, haystack)
@@ -257,14 +285,15 @@ pub fn memchr3(
         naive::memchr3(n1, n2, n3, haystack)
     }
 
-    #[cfg(all(target_arch = "x86_64", memchr_runtime_simd, not(miri)))]
+    #[cfg(any(feature = "mesalock_sgx",
+    all(target_arch = "x86_64", memchr_runtime_simd, not(miri))))]
     #[inline(always)]
     fn imp(n1: u8, n2: u8, n3: u8, haystack: &[u8]) -> Option<usize> {
         x86::memchr3(n1, n2, n3, haystack)
     }
 
     #[cfg(all(
-        not(all(target_arch = "x86_64", memchr_runtime_simd)),
+        not(any(feature = "mesalock_sgx", all(target_arch = "x86_64", memchr_runtime_simd))),
         not(miri),
     ))]
     #[inline(always)]
@@ -307,17 +336,17 @@ pub fn memrchr(needle: u8, haystack: &[u8]) -> Option<usize> {
         naive::memrchr(n1, haystack)
     }
 
-    #[cfg(all(target_arch = "x86_64", memchr_runtime_simd, not(miri)))]
+    #[cfg(any(feature = "mesalock_sgx",
+     all(target_arch = "x86_64", memchr_runtime_simd, not(miri))))]
     #[inline(always)]
     fn imp(n1: u8, haystack: &[u8]) -> Option<usize> {
         x86::memrchr(n1, haystack)
     }
 
     #[cfg(all(
-        memchr_libc,
-        target_os = "linux",
+        all(feature = "libc", target_os = "linux", feature = "mesalock_sgx"),
         not(all(target_arch = "x86_64", memchr_runtime_simd)),
-        not(miri)
+        not(miri),
     ))]
     #[inline(always)]
     fn imp(n1: u8, haystack: &[u8]) -> Option<usize> {
@@ -328,6 +357,7 @@ pub fn memrchr(needle: u8, haystack: &[u8]) -> Option<usize> {
         not(all(memchr_libc, target_os = "linux")),
         not(all(target_arch = "x86_64", memchr_runtime_simd)),
         not(miri),
+	    not(feature = "mesalock_sgx"),
     ))]
     #[inline(always)]
     fn imp(n1: u8, haystack: &[u8]) -> Option<usize> {
@@ -371,14 +401,16 @@ pub fn memrchr2(needle1: u8, needle2: u8, haystack: &[u8]) -> Option<usize> {
         naive::memrchr2(n1, n2, haystack)
     }
 
-    #[cfg(all(target_arch = "x86_64", memchr_runtime_simd, not(miri)))]
+    #[cfg(any(feature = "mesalock_sgx",
+     all(target_arch = "x86_64", memchr_runtime_simd, not(miri))))]
     #[inline(always)]
     fn imp(n1: u8, n2: u8, haystack: &[u8]) -> Option<usize> {
         x86::memrchr2(n1, n2, haystack)
     }
 
     #[cfg(all(
-        not(all(target_arch = "x86_64", memchr_runtime_simd)),
+        not(any(feature = "mesalock_sgx", 
+        all(target_arch = "x86_64", memchr_runtime_simd))),
         not(miri),
     ))]
     #[inline(always)]
@@ -428,14 +460,16 @@ pub fn memrchr3(
         naive::memrchr3(n1, n2, n3, haystack)
     }
 
-    #[cfg(all(target_arch = "x86_64", memchr_runtime_simd, not(miri)))]
+    #[cfg(any(feature = "mesalock_sgx", 
+    all(target_arch = "x86_64", memchr_runtime_simd, not(miri))))]
     #[inline(always)]
     fn imp(n1: u8, n2: u8, n3: u8, haystack: &[u8]) -> Option<usize> {
         x86::memrchr3(n1, n2, n3, haystack)
     }
 
     #[cfg(all(
-        not(all(target_arch = "x86_64", memchr_runtime_simd)),
+        not(any(feature = "mesalock_sgx",
+        all(target_arch = "x86_64", memchr_runtime_simd))),
         not(miri),
     ))]
     #[inline(always)]

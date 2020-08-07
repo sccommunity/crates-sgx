@@ -3,7 +3,7 @@
 // See README.md and LICENSE.txt for details.
 
 //! Legacy simplified Chinese encodings based on GB 2312 and GB 18030.
-
+use std::prelude::v1::*;
 use std::convert::Into;
 use std::marker::PhantomData;
 use std::default::Default;
@@ -253,14 +253,15 @@ transient:
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod gb18030_tests {
-    extern crate test;
+    //extern crate test;
     use super::GB18030_ENCODING;
     use testutils;
     use types::*;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::{ test_case };
+    #[test_case]
     fn test_encoder() {
         let mut e = GB18030_ENCODING.raw_encoder();
         assert_feed_ok!(e, "A", "", [0x41]);
@@ -281,7 +282,7 @@ mod gb18030_tests {
         assert_finish_ok!(e, []);
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_valid() {
         let mut d = GB18030_ENCODING.raw_decoder();
         assert_feed_ok!(d, [0x41], [], "A");
@@ -302,7 +303,7 @@ mod gb18030_tests {
         assert_finish_ok!(d, "");
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_valid_partial() {
         let mut d = GB18030_ENCODING.raw_decoder();
         assert_feed_ok!(d, [], [0xa1], "");
@@ -329,7 +330,7 @@ mod gb18030_tests {
         assert_finish_ok!(d, "");
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_invalid_partial() {
         let mut d = GB18030_ENCODING.raw_decoder();
         assert_feed_ok!(d, [], [0xa1], "");
@@ -348,7 +349,7 @@ mod gb18030_tests {
         assert_finish_err!(d, "");
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_invalid_out_of_range() {
         let mut d = GB18030_ENCODING.raw_decoder();
         assert_feed_err!(d, [], [0xff], [], "");
@@ -365,7 +366,7 @@ mod gb18030_tests {
         assert_finish_ok!(d, "");
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_invalid_boundary() {
         // U+10FFFF (E3 32 9A 35) is the last Unicode codepoint, E3 32 9A 36 is invalid.
         // note that since the 2nd to 4th bytes may coincide with ASCII, bytes 32 9A 36 is
@@ -382,7 +383,7 @@ mod gb18030_tests {
         assert_finish_ok!(d, "");
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_feed_after_finish() {
         let mut d = GB18030_ENCODING.raw_decoder();
         assert_feed_ok!(d, [0xd2, 0xbb], [0xd2], "\u{4e00}");
@@ -401,36 +402,37 @@ mod gb18030_tests {
         assert_finish_ok!(d, "");
     }
 
-    #[bench]
-    fn bench_encode_short_text(bencher: &mut test::Bencher) {
-        let s = testutils::SIMPLIFIED_CHINESE_TEXT;
-        bencher.bytes = s.len() as u64;
-        bencher.iter(|| test::black_box({
-            GB18030_ENCODING.encode(&s, EncoderTrap::Strict)
-        }))
-    }
+    // #[bench]
+    // fn bench_encode_short_text(bencher: &mut test::Bencher) {
+    //     let s = testutils::SIMPLIFIED_CHINESE_TEXT;
+    //     bencher.bytes = s.len() as u64;
+    //     bencher.iter(|| test::black_box({
+    //         GB18030_ENCODING.encode(&s, EncoderTrap::Strict)
+    //     }))
+    // }
 
-    #[bench]
-    fn bench_decode_short_text(bencher: &mut test::Bencher) {
-        let s = GB18030_ENCODING.encode(testutils::SIMPLIFIED_CHINESE_TEXT,
-                                       EncoderTrap::Strict).ok().unwrap();
-        bencher.bytes = s.len() as u64;
-        bencher.iter(|| test::black_box({
-            GB18030_ENCODING.decode(&s, DecoderTrap::Strict)
-        }))
-    }
+    // #[bench]
+    // fn bench_decode_short_text(bencher: &mut test::Bencher) {
+    //     let s = GB18030_ENCODING.encode(testutils::SIMPLIFIED_CHINESE_TEXT,
+    //                                    EncoderTrap::Strict).ok().unwrap();
+    //     bencher.bytes = s.len() as u64;
+    //     bencher.iter(|| test::black_box({
+    //         GB18030_ENCODING.decode(&s, DecoderTrap::Strict)
+    //     }))
+    // }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod gbk_tests {
-    extern crate test;
+    //extern crate test;
     use super::GBK_ENCODING;
     use testutils;
     use types::*;
-
+    use std::prelude::v1::*;
+    use crates_unittest::{ test_case };
     // GBK and GB 18030 share the same decoder logic.
 
-    #[test]
+    #[test_case]
     fn test_encoder() {
         let mut e = GBK_ENCODING.raw_encoder();
         assert_feed_ok!(e, "A", "", [0x41]);
@@ -452,14 +454,14 @@ mod gbk_tests {
         assert_finish_ok!(e, []);
     }
 
-    #[bench]
-    fn bench_encode_short_text(bencher: &mut test::Bencher) {
-        let s = testutils::SIMPLIFIED_CHINESE_TEXT;
-        bencher.bytes = s.len() as u64;
-        bencher.iter(|| test::black_box({
-            GBK_ENCODING.encode(&s, EncoderTrap::Strict)
-        }))
-    }
+    // #[bench]
+    // fn bench_encode_short_text(bencher: &mut test::Bencher) {
+    //     let s = testutils::SIMPLIFIED_CHINESE_TEXT;
+    //     bencher.bytes = s.len() as u64;
+    //     bencher.iter(|| test::black_box({
+    //         GBK_ENCODING.encode(&s, EncoderTrap::Strict)
+    //     }))
+    // }
 }
 
 /**
@@ -641,14 +643,15 @@ transient:
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod hz_tests {
-    extern crate test;
+    //extern crate test;
     use super::HZEncoding;
     use testutils;
     use types::*;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::{ test_case };
+    #[test_case]
     fn test_encoder_valid() {
         let mut e = HZEncoding.raw_encoder();
         assert_feed_ok!(e, "A", "", *b"A");
@@ -662,7 +665,7 @@ mod hz_tests {
         assert_finish_ok!(e, []);
     }
 
-    #[test]
+    #[test_case]
     fn test_encoder_invalid() {
         let mut e = HZEncoding.raw_encoder();
         assert_feed_err!(e, "", "\u{ffff}", "", []);
@@ -672,7 +675,7 @@ mod hz_tests {
         assert_finish_ok!(e, []);
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_valid() {
         let mut d = HZEncoding.raw_decoder();
         assert_feed_ok!(d, *b"A", *b"", "A");
@@ -692,7 +695,7 @@ mod hz_tests {
         assert_finish_ok!(d, "");
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_invalid_out_or_range() {
         let mut d = HZEncoding.raw_decoder();
         assert_feed_ok!(d, *b"~{", *b"", "");
@@ -705,7 +708,7 @@ mod hz_tests {
         assert_finish_ok!(d, "");
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_invalid_carriage_return() {
         // CR in the multibyte mode is invalid but *also* resets the state
         let mut d = HZEncoding.raw_decoder();
@@ -717,7 +720,7 @@ mod hz_tests {
         assert_finish_ok!(d, "");
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_invalid_partial() {
         let mut d = HZEncoding.raw_decoder();
         assert_feed_ok!(d, *b"", *b"~", "");
@@ -732,7 +735,7 @@ mod hz_tests {
         assert_finish_err!(d, "");
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_invalid_escape() {
         let mut d = HZEncoding.raw_decoder();
         assert_feed_ok!(d, *b"#A", *b"", "#A");
@@ -749,7 +752,7 @@ mod hz_tests {
         assert_finish_ok!(d, "");
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_feed_after_finish() {
         let mut d = HZEncoding.raw_decoder();
         assert_feed_ok!(d, *b"R;~{R;", *b"R", "R;\u{4e00}");
@@ -758,23 +761,23 @@ mod hz_tests {
         assert_finish_ok!(d, "");
     }
 
-    #[bench]
-    fn bench_encode_short_text(bencher: &mut test::Bencher) {
-        let s = testutils::SIMPLIFIED_CHINESE_TEXT;
-        bencher.bytes = s.len() as u64;
-        bencher.iter(|| test::black_box({
-            HZEncoding.encode(&s, EncoderTrap::Strict)
-        }))
-    }
+    // #[bench]
+    // fn bench_encode_short_text(bencher: &mut test::Bencher) {
+    //     let s = testutils::SIMPLIFIED_CHINESE_TEXT;
+    //     bencher.bytes = s.len() as u64;
+    //     bencher.iter(|| test::black_box({
+    //         HZEncoding.encode(&s, EncoderTrap::Strict)
+    //     }))
+    // }
 
-    #[bench]
-    fn bench_decode_short_text(bencher: &mut test::Bencher) {
-        let s = HZEncoding.encode(testutils::SIMPLIFIED_CHINESE_TEXT,
-                                  EncoderTrap::Strict).ok().unwrap();
-        bencher.bytes = s.len() as u64;
-        bencher.iter(|| test::black_box({
-            HZEncoding.decode(&s, DecoderTrap::Strict)
-        }))
-    }
+    // #[bench]
+    // fn bench_decode_short_text(bencher: &mut test::Bencher) {
+    //     let s = HZEncoding.encode(testutils::SIMPLIFIED_CHINESE_TEXT,
+    //                               EncoderTrap::Strict).ok().unwrap();
+    //     bencher.bytes = s.len() as u64;
+    //     bencher.iter(|| test::black_box({
+    //         HZEncoding.decode(&s, DecoderTrap::Strict)
+    //     }))
+    // }
 }
 

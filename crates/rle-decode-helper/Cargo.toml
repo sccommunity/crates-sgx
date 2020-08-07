@@ -20,6 +20,8 @@ required-features = ["bench"]
 
 [features]
 bench = ["criterion"]
-
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
 [dependencies]
 criterion = { version = "0.2", optional = true }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }

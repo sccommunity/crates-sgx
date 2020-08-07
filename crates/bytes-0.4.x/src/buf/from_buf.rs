@@ -1,4 +1,5 @@
 use {Buf, BufMut, IntoBuf, Bytes, BytesMut};
+use std::prelude::v1::*;
 
 /// Conversion from a [`Buf`]
 ///

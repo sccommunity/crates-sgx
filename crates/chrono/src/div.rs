@@ -9,11 +9,13 @@
 
 pub use num_integer::{div_floor, div_mod_floor, div_rem, mod_floor};
 
-#[cfg(test)]
-mod tests {
+//#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
+pub mod tests {
     use super::{div_mod_floor, mod_floor};
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn test_mod_floor() {
         assert_eq!(mod_floor(8, 3), 2);
         assert_eq!(mod_floor(8, -3), -1);
@@ -26,7 +28,7 @@ mod tests {
         assert_eq!(mod_floor(-1, -2), -1);
     }
 
-    #[test]
+    #[test_case]
     fn test_div_mod_floor() {
         assert_eq!(div_mod_floor(8, 3), (2, 2));
         assert_eq!(div_mod_floor(8, -3), (-3, -1));

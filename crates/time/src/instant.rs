@@ -312,20 +312,25 @@ impl PartialOrd<Instant> for StdInstant {
     }
 }
 
-#[cfg(test)]
-mod test {
+#[cfg(feature = "enclave_unit_test")]
+pub(crate) mod test {
     use super::*;
     use crate::prelude::*;
     use std::thread;
+   
+    use std::string::ToString;
+    use std::prelude::v1::*;
+   
 
-    #[test]
+
+    #[crates_unittest::test_case]
     fn elapsed() {
         let instant = Instant::now();
         thread::sleep(100.std_milliseconds());
         assert!(instant.elapsed() >= 100.milliseconds());
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     #[cfg(instant_checked_ops)]
     fn checked_add() {
         let now = Instant::now();
@@ -333,7 +338,7 @@ mod test {
         assert_eq!(now.checked_add((-5).seconds()), Some(now + (-5).seconds()));
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     #[cfg(instant_checked_ops)]
     fn checked_sub() {
         let now = Instant::now();
@@ -341,63 +346,63 @@ mod test {
         assert_eq!(now.checked_sub((-5).seconds()), Some(now - (-5).seconds()));
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn from_std() {
         let now_time = Instant::now();
         let now_std = StdInstant::from(now_time);
         assert_eq!(now_time, now_std);
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn to_std() {
         let now_std = StdInstant::now();
         let now_time = Instant::from(now_std);
         assert_eq!(now_time, now_std);
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn sub() {
         let start = Instant::now();
         thread::sleep(100.std_milliseconds());
         assert!(Instant::now() - start >= 100.milliseconds());
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn sub_std() {
         let start = StdInstant::now();
         thread::sleep(100.std_milliseconds());
         assert!(Instant::now() - start >= 100.milliseconds());
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn std_sub() {
         let start = Instant::now();
         thread::sleep(100.std_milliseconds());
         assert!(StdInstant::now() - start >= 100.milliseconds());
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn add_duration() {
         let start = Instant::now();
         thread::sleep(100.std_milliseconds());
         assert!(start + 100.milliseconds() <= Instant::now());
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn std_add_duration() {
         let start = StdInstant::now();
         thread::sleep(100.std_milliseconds());
         assert!(start + 100.milliseconds() <= StdInstant::now());
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn add_std_duration() {
         let start = Instant::now();
         thread::sleep(100.std_milliseconds());
         assert!(start + 100.std_milliseconds() <= Instant::now());
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn add_assign_duration() {
         let mut start = Instant::now();
         thread::sleep(100.std_milliseconds());
@@ -405,7 +410,7 @@ mod test {
         assert!(start <= Instant::now());
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn std_add_assign_duration() {
         let mut start = StdInstant::now();
         thread::sleep(100.std_milliseconds());
@@ -413,7 +418,7 @@ mod test {
         assert!(start <= StdInstant::now());
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn add_assign_std_duration() {
         let mut start = Instant::now();
         thread::sleep(100.std_milliseconds());
@@ -421,60 +426,60 @@ mod test {
         assert!(start <= Instant::now());
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn sub_duration() {
         let instant = Instant::now();
         assert!(instant - 100.milliseconds() <= Instant::now());
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn std_sub_duration() {
         let instant = StdInstant::now();
         assert!(instant - 100.milliseconds() <= StdInstant::now());
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn sub_std_duration() {
         let instant = Instant::now();
         assert!(instant - 100.std_milliseconds() <= Instant::now());
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn sub_assign_duration() {
         let mut instant = Instant::now();
         instant -= 100.milliseconds();
         assert!(instant <= Instant::now());
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn std_sub_assign_duration() {
         let mut instant = StdInstant::now();
         instant -= 100.milliseconds();
         assert!(instant <= StdInstant::now());
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn sub_assign_std_duration() {
         let mut instant = Instant::now();
         instant -= 100.std_milliseconds();
         assert!(instant <= Instant::now());
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn eq_std() {
         let now_time = Instant::now();
         let now_std = StdInstant::from(now_time);
         assert_eq!(now_time, now_std);
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn std_eq() {
         let now_time = Instant::now();
         let now_std = StdInstant::from(now_time);
         assert_eq!(now_std, now_time);
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn ord_std() {
         let now_time = Instant::now();
         let now_std = StdInstant::from(now_time) + 1.seconds();
@@ -485,7 +490,7 @@ mod test {
         assert!(now_time > now_std);
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn std_ord() {
         let now_time = Instant::now();
         let now_std = StdInstant::from(now_time) + 1.seconds();
@@ -496,7 +501,7 @@ mod test {
         assert!(now_std < now_time);
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn sub_regression() {
         let now = Instant::now();
         let future = now + Duration::seconds(5);

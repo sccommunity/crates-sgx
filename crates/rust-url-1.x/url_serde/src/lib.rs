@@ -65,7 +65,13 @@ ipc::channel::<Serde<Url>>()
 
 #![deny(missing_docs)]
 #![deny(unsafe_code)]
-
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
 extern crate serde;
 #[cfg(test)] #[macro_use] extern crate serde_derive;
 #[cfg(test)] extern crate serde_json;
@@ -79,6 +85,8 @@ use std::io::Write;
 use std::ops::{Deref, DerefMut};
 use std::str;
 use url::{Url, Host};
+use std::prelude::v1::*;
+
 
 /// Serialises `value` with a given serializer.
 ///

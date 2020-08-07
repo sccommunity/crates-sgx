@@ -46,10 +46,22 @@
 
 #![cfg_attr(target_os = "wasi", feature(wasi_ext))]
 
-#[cfg(any(target_os = "redox", target_os = "wasi", unix))] extern crate libc;
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"), feature(rustc_private))]
+
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
+
+#[cfg(all(
+    feature = "mesalock_sgx",
+    any(target_os = "redox", target_os = "wasi", unix)))]
+extern crate sgx_libc;
 
 #[cfg(windows)] extern crate winapi;
 
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
 #[macro_use] extern crate cfg_if;
 
 use std::io;

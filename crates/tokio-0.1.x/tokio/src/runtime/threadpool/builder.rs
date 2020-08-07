@@ -3,11 +3,11 @@ use super::{Inner, Runtime};
 use reactor::Reactor;
 
 use std::io;
-use std::sync::Mutex;
+use std::sync::SgxMutex as Mutex;
 use std::time::Duration;
 use std::any::Any;
-
-use num_cpus;
+use std::prelude::v1::*;
+//use num_cpus;
 use tokio_reactor;
 use tokio_threadpool::Builder as ThreadPoolBuilder;
 use tokio_timer::clock::{self, Clock};
@@ -73,7 +73,7 @@ impl Builder {
     ///
     /// Configuration methods can be chained on the return value.
     pub fn new() -> Builder {
-        let core_threads = num_cpus::get().max(1);
+        let core_threads = 1;//num_cpus::get().max(1);
 
         let mut threadpool_builder = ThreadPoolBuilder::new();
         threadpool_builder.name_prefix("tokio-runtime-worker-");

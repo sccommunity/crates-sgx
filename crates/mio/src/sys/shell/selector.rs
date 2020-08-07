@@ -2,7 +2,7 @@ use std::io;
 #[cfg(unix)]
 use std::os::unix::io::{AsRawFd, RawFd};
 use std::time::Duration;
-
+use std::prelude::v1::Vec;
 pub type Event = usize;
 
 pub type Events = Vec<Event>;

@@ -20,7 +20,7 @@ use std::sync::Arc;
 use std::io::{self, IoSlice};
 use std::fmt;
 use std::mem;
-
+use std::prelude::v1::*;
 use sct;
 use webpki;
 

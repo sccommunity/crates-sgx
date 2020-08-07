@@ -12,9 +12,10 @@ The core traits and types in for the `futures` library.
 """
 
 [features]
-default = ["std"]
-std = ["alloc"]
+default = ["std", "mesalock_sgx"]
+std = ["mesalock_sgx", "alloc"]
 alloc = []
+mesalock_sgx = ["sgx_tstd", "std"]
 
 # Unstable features
 # These features are outside of the normal semver guarantees and require the
@@ -23,6 +24,7 @@ unstable = []
 cfg-target-has-atomic = []
 
 [dependencies]
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 
 [dev-dependencies]
 futures = { path = "../futures", version = "0.3.5" }

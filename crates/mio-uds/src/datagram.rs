@@ -4,7 +4,6 @@ use std::os::unix::net;
 use std::os::unix::prelude::*;
 use std::path::Path;
 
-use libc;
 use mio::event::Evented;
 use mio::unix::EventedFd;
 use mio::{Poll, Token, Ready, PollOpt};
@@ -180,4 +179,9 @@ impl FromRawFd for UnixDatagram {
     unsafe fn from_raw_fd(fd: i32) -> UnixDatagram {
         UnixDatagram { inner: net::UnixDatagram::from_raw_fd(fd) }
     }
+}
+
+mod libc {
+    pub use sgx_libc::*;
+    pub use sgx_libc::ocall::*;
 }

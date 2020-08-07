@@ -17,7 +17,7 @@ use crate::{
     der, Error,
 };
 use core;
-
+use std::prelude::v1::*;
 /// A DNS Name suitable for use in the TLS Server Name Indication (SNI)
 /// extension and/or for use as the reference hostname for which to verify a
 /// certificate.

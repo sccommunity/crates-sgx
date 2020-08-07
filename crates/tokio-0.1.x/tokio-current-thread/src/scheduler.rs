@@ -15,7 +15,7 @@ use std::sync::atomic::{AtomicBool, AtomicPtr, AtomicUsize};
 use std::sync::{Arc, Weak};
 use std::thread;
 use std::usize;
-
+use std::prelude::v1::Box;
 /// A generic task-aware scheduler.
 ///
 /// This is used both by `FuturesUnordered` and the current-thread executor.

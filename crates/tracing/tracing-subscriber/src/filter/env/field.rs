@@ -9,6 +9,7 @@ use std::{
         Arc,
     },
 };
+use std::prelude::v1::*;
 
 use super::{FieldMap, LevelFilter};
 use tracing_core::field::{Field, Visit};

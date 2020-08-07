@@ -20,7 +20,7 @@
 //! processing steps necessary for a TLS connection.
 
 #![doc(html_root_url = "https://briansmith.org/rustdoc/")]
-#![cfg_attr(not(feature = "std"), no_std)]
+//#![cfg_attr(not(feature = "std"), no_std)]
 #![allow(missing_debug_implementations)]
 // `#[derive(...)]` uses `#[allow(unused_qualifications)]` internally.
 #![deny(unused_qualifications)]
@@ -39,10 +39,34 @@
     variant_size_differences,
     warnings
 )]
+#![cfg_attr(not(
+    all(
+        any(feature = "std", feature = "mesalock_sgx"),
+        target_env = "sgx",
+        target_vendor = "mesalock",
+    )),
+    no_std
+)]
 
-#[cfg(all(test, not(feature = "std")))]
+#![cfg_attr(
+    all(
+        any(feature = "std", feature = "mesalock_sgx"),
+        target_env = "sgx",
+        target_vendor = "mesalock",
+    ),
+    feature(rustc_private)
+)]
+
+#[cfg(all(
+    any(feature = "std", feature = "mesalock_sgx"),
+    not(target_env = "sgx"),
+    not(target_vendor = "mesalock"),
+))]
 #[macro_use]
-extern crate std;
+extern crate sgx_tstd as std;
+// #[cfg(all(test, not(feature = "std")))]
+// #[macro_use]
+// extern crate std;
 
 #[macro_use]
 mod der;
@@ -73,7 +97,7 @@ pub use signed_data::{
 };
 
 pub use time::Time;
-
+use std::prelude::v1::*;
 /// An end-entity certificate.
 ///
 /// Server certificate processing in a TLS connection consists of several

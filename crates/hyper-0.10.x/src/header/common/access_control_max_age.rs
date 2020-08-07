@@ -1,3 +1,5 @@
+use std::prelude::v1::Vec;
+
 header! {
     /// `Access-Control-Max-Age` header, part of
     /// [CORS](http://www.w3.org/TR/cors/#access-control-max-age-response-header)

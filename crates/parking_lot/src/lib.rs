@@ -12,7 +12,13 @@
 #![warn(missing_docs)]
 #![warn(rust_2018_idioms)]
 #![cfg_attr(feature = "nightly", feature(llvm_asm))]
-
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
 mod condvar;
 mod elision;
 mod fair_mutex;
@@ -29,6 +35,15 @@ mod util;
 pub mod deadlock;
 #[cfg(not(feature = "deadlock_detection"))]
 mod deadlock;
+
+// If deadlock detection is enabled, we cannot allow lock guards to be sent to
+// other threads.
+#[cfg(all(feature = "send_guard", feature = "deadlock_detection"))]
+compile_error!("the `send_guard` and `deadlock_detection` features cannot be used together");
+#[cfg(feature = "send_guard")]
+type GuardMarker = lock_api::GuardSend;
+#[cfg(not(feature = "send_guard"))]
+type GuardMarker = lock_api::GuardNoSend;
 
 pub use self::condvar::{Condvar, WaitTimeoutResult};
 pub use self::fair_mutex::{const_fair_mutex, FairMutex, FairMutexGuard, MappedFairMutexGuard};

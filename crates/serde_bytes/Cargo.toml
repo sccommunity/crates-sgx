@@ -12,17 +12,19 @@ readme = "README.md"
 edition = "2018"
 
 [features]
-default = ["std"]
-std = ["serde/std"]
+default = ["std", "mesalock_sgx"]
+std = ["serde/mesalock_sgx"]
 alloc = ["serde/alloc"]
+mesalock_sgx = ["sgx_tstd", "std"]
 
 [dependencies]
-serde = { version = "1.0", default-features = false }
+serde = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2", features = ["derive"] }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 
 [dev-dependencies]
-bincode = "1.0"
-serde_derive = "1.0"
-serde_test = "1.0"
+#bincode = "1.0"
+#serde_derive = "1.0"
+#serde_test = "1.0"
 
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]

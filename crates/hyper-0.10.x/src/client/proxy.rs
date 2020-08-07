@@ -78,7 +78,7 @@ pub enum Proxied<T1, T2> {
     Tunneled(T2)
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 impl<T1, T2> Proxied<T1, T2> {
     pub fn into_normal(self) -> Result<T1, Self> {
         match self {

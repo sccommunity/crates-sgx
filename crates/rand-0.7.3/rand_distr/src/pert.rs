@@ -112,12 +112,13 @@ where
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod test {
     use super::*;
     use std::f64;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn test_pert() {
         for &(min, max, mode) in &[
             (-1., 1., 0.),
@@ -137,7 +138,7 @@ mod test {
         }
     }
 
-    #[test]
+    #[test_case]
     fn value_stability() {
         let rng = crate::test::rng(860);
         let distr = Pert::new(2., 10., 3.).unwrap(); // mean = 4, var = 12/7

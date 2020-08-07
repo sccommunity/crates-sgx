@@ -4,12 +4,12 @@ use std::{
     fmt,
     sync::{
         atomic::{AtomicIsize, Ordering},
-        Mutex,
+        SgxMutex as Mutex,
     },
     time::Duration,
 };
 use tokio::time::Instant;
-
+use std::prelude::v1::*;
 /// Represents a "budget" for retrying requests.
 ///
 /// This is useful for limiting the amount of retries a service can perform
@@ -211,18 +211,20 @@ impl Bucket {
     }
 }
 
-#[cfg(test)]
-mod tests {
+//#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
+pub mod tests {
     use super::*;
     use tokio::time;
-
-    #[test]
+    use std::string::ToString;
+    use crates_unittest::{ test_case, run_inventory_tests };
+    #[test_case]
     fn empty() {
         let bgt = Budget::new(Duration::from_secs(1), 0, 1.0);
         bgt.withdraw().unwrap_err();
     }
 
-    #[tokio::test]
+    #[crates_unittest::test]
     async fn leaky() {
         time::pause();
 
@@ -234,7 +236,7 @@ mod tests {
         bgt.withdraw().unwrap_err();
     }
 
-    #[tokio::test]
+    #[crates_unittest::test]
     async fn slots() {
         time::pause();
 
@@ -259,7 +261,7 @@ mod tests {
         bgt.withdraw().unwrap();
     }
 
-    #[tokio::test]
+    #[crates_unittest::test]
     async fn reserve() {
         let bgt = Budget::new(Duration::from_secs(1), 5, 1.0);
         bgt.withdraw().unwrap();

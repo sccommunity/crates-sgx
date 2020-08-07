@@ -11,7 +11,7 @@ use std::mem::{self, MaybeUninit};
 use std::ptr;
 use std::sync::atomic::{self, AtomicIsize, AtomicPtr, AtomicUsize, Ordering};
 use std::sync::Arc;
-
+use std::prelude::v1::*;
 use crate::epoch::{self, Atomic, Owned};
 use crate::utils::{Backoff, CachePadded};
 

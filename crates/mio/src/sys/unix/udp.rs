@@ -28,7 +28,7 @@ pub fn bind(addr: SocketAddr) -> io::Result<net::UdpSocket> {
             .map_err(|err| {
                 // Close the socket if we hit an error, ignoring the error
                 // from closing since we can't pass back two errors.
-                let _ = unsafe { libc::close(socket) };
+                let _ = unsafe { libc::ocall::close(socket) };
                 err
             })
             .map(|_| unsafe { net::UdpSocket::from_raw_fd(socket) })

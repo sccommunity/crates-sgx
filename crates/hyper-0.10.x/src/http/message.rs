@@ -5,7 +5,7 @@ use std::any::{Any, TypeId};
 use std::fmt::Debug;
 use std::io::{Read, Write};
 use std::mem;
-
+use std::prelude::v1::*;
 use std::io;
 use std::time::Duration;
 

@@ -1,6 +1,6 @@
 [package]
 name = "tracing-appender"
-version = "0.1.0"
+version = "0.1.1"
 authors = [
     "Zeki Sherif <zekshi@amazon.com>",
     "Tokio Contributors <team@tokio.rs>"
@@ -19,11 +19,22 @@ categories = [
 keywords = ["logging", "tracing", "file-appender", "non-blocking-writer"]
 edition = "2018"
 
-[dependencies]
-tracing-subscriber = {path = "../tracing-subscriber", version = "0.2.4"}
-crossbeam-channel = "0.4.2"
-chrono = "0.4.11"
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+enclave_unit_test = ["crates_unittest", "inventory", "tracing", "tempdir"]
 
-[dev-dependencies]
-tracing = { path = "../tracing", version = "0.1" }
-tempdir = "0.3"
+[dependencies]
+tracing-subscriber = {path = "../tracing-subscriber", version = "0.2.7", features = ["fmt"]}
+crossbeam-channel = { path = "../../crossbeam/crossbeam-channel" }
+#chrono = {"0.4.11"}
+chrono = { path = "../../chrono" }
+crates_unittest = { git = "https://github.com/Zha0Chan/crates-sgx-unittest.git", optional = true, default-features = false }
+inventory = { version = "0.1.6", optional = true }
+tracing = { path = "../tracing", version = "0.1", optional = true }
+tempdir = { path = "../../tempdir", optional = true}
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true, features = ["untrusted_fs"]}
+
+# [dev-dependencies]
+# tracing = { path = "../tracing", version = "0.1" }
+# tempdir = "0.3"

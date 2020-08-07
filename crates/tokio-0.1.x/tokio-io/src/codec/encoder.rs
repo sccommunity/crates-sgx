@@ -15,7 +15,6 @@ pub trait Encoder {
     /// `FramedWrite` requires `Encoder`s errors to implement `From<io::Error>`
     /// in the interest letting it return `Error`s directly.
     type Error: From<io::Error>;
-
     /// Encodes a frame into the buffer provided.
     ///
     /// This method will encode `item` into the byte buffer provided by `dst`.

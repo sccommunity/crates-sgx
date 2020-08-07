@@ -1,4 +1,5 @@
 //! Support for cbor tags
+use std::prelude::v1::*;
 use core::fmt;
 use core::marker::PhantomData;
 use serde::de::{

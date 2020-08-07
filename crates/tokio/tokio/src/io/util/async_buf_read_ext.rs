@@ -4,6 +4,8 @@ use crate::io::util::read_until::{read_until, ReadUntil};
 use crate::io::util::split::{split, Split};
 use crate::io::AsyncBufRead;
 
+use std::prelude::v1::*;
+
 cfg_io_util! {
     /// An extension trait which adds utility methods to [`AsyncBufRead`] types.
     ///

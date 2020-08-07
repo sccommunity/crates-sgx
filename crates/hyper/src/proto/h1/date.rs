@@ -1,6 +1,7 @@
 use std::cell::RefCell;
 use std::fmt::{self, Write};
 use std::str;
+use std::prelude::v1::Vec;
 
 use http::header::HeaderValue;
 use time::{self, Duration};

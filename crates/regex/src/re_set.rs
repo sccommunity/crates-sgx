@@ -2,6 +2,7 @@ macro_rules! define_set {
     ($name:ident, $builder_mod:ident, $text_ty:ty, $as_bytes:expr,
      $(#[$doc_regexset_example:meta])* ) => {
         pub mod $name {
+            use std::prelude::v1::*;
             use std::fmt;
             use std::iter;
             use std::slice;

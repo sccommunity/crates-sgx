@@ -1,0 +1,40 @@
+[package]
+name = "run-tests-enclave"
+version = "1.0.0"
+edition = "2018"
+
+[lib]
+name = "run_tests_enclave"
+crate-type = ["staticlib"]
+
+[workspace] 
+
+
+[features]
+mesalock_sgx = ["sgx_tstd", "std"]
+async-await = ["futures-util/async-await", "futures-util/async-await-macro"]
+default = ["mesalock_sgx", "crates_unittest", "inventory", "executor", "async-await"]
+alloc = ["futures-core/alloc", "futures-task/alloc", "futures-sink/alloc", "futures-channel/alloc", "futures-util/alloc"]
+executor = ["std", "futures-executor/std"]
+std = ["mesalock_sgx", "alloc", "futures-core/std", "futures-task/std", "futures-io/std", "futures-sink/std", "futures-util/std", "futures-util/io", "futures-util/channel"]
+[dependencies]
+futures-core = { path = "../../futures-core", version = "0.3.5", default-features = false }
+futures-task = { path = "../../futures-task", version = "0.3.5", default-features = false }
+futures-channel = { path = "../../futures-channel", version = "0.3.5", default-features = false, features = ["sink"] }
+futures-sink = { path = "../../futures-sink", version = "0.3.5", default-features = false }
+futures-util = { path = "../../futures-util", version = "0.3.5", default-features = false, features = ["sink"] }
+futures-io = { path = "../../futures-io", version = "0.3.5", default-features = false }
+
+futures = { path = "../../futures" }
+pin-utils = "0.1.0"
+futures-executor = { path = "../../futures-executor", version = "0.3.5", features = ["thread-pool"] }
+futures-test = { path = "../../futures-test", version = "0.3.5" }
+tokio = { path = "../../../tokio-0.1.x/tokio" }
+assert_matches = { path = "../../../assert_matches" }
+pin-project = "0.4.15"
+crates_unittest = { git = "https://github.com/Zha0Chan/crates-sgx-unittest.git", optional = true, default-features = true}
+inventory = { version = "0.1.6", optional = true }
+
+[target.'cfg(not(target_env = "sgx"))'.dependencies]
+sgx_types = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true, features = ["thread"] }

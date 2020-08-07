@@ -16,14 +16,25 @@ license = "MIT OR Apache-2.0"
 repository = "https://github.com/Stebalien/tempfile"
 description = "A library for managing temporary files and directories."
 
+
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd", "sgx_libc"]
+
+
 [dependencies]
-cfg-if = "0.1"
-rand = "0.7"
-remove_dir_all = "0.5"
+#cfg-if = "0.1"
+#rand = "0.7"
+#remove_dir_all = "0.5"
+cfg-if = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2" }
+rand = { path = "../rand-0.7.3" }
+remove_dir_all = { path = "../remove_dir_all"}
 
-[target.'cfg(unix)'.dependencies]
-libc = "0.2.27"
-
+#[target.'cfg(unix)'.dependencies]
+#libc = "0.2.27"
+[target.'cfg(not(target_env = "sgx"))'.dependencies]
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true, features = ["untrusted_fs"] }
+sgx_libc = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 [target.'cfg(windows)'.dependencies.winapi]
 version = "0.3"
 features = [

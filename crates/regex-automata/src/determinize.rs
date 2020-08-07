@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::mem;
 use std::rc::Rc;
-
+use std::prelude::v1::*;
 use dense;
 use error::Result;
 use nfa::{self, NFA};

@@ -16,8 +16,8 @@
 
 use untrusted;
 
-#[cfg(feature = "std")]
-extern crate std;
+//#[cfg(feature = "std")]
+//extern crate std;
 
 /// An error with absolutely no details.
 ///

@@ -7,6 +7,7 @@ use std::io::{self, Write};
 use std::mem::MaybeUninit;
 use std::pin::Pin;
 use std::task::{Context, Poll};
+use std::prelude::v1::*;
 
 pin_project! {
     /// Wraps a writer and buffers its output.

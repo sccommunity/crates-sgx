@@ -2,9 +2,11 @@ use std::fmt;
 
 #[allow(unused_imports)]
 use std::ascii::AsciiExt;
-
+use std::prelude::v1::*;
 use header::{Header, HeaderFormat, parsing};
 
+#[cfg(feature = "enclave_unit_test")]
+use crates_unittest::test_case;
 /// `Referrer-Policy` header, part of
 /// [Referrer Policy](https://www.w3.org/TR/referrer-policy/#referrer-policy-header)
 ///
@@ -104,7 +106,7 @@ impl fmt::Display for ReferrerPolicy {
     }
 }
 
-#[test]
+#[test_case]
 fn test_parse_header() {
     let a: ReferrerPolicy = Header::parse_header([b"origin".to_vec()].as_ref()).unwrap();
     let b = ReferrerPolicy::Origin;
@@ -113,7 +115,7 @@ fn test_parse_header() {
     assert!(e.is_err());
 }
 
-#[test]
+#[test_case]
 fn test_rightmost_header() {
     let a: ReferrerPolicy = Header::parse_header(&["same-origin, origin, foobar".into()]).unwrap();
     let b = ReferrerPolicy::Origin;

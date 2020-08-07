@@ -19,15 +19,26 @@ description = """
 Timer facilities for Tokio
 """
 
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+
 [dependencies]
-futures = "0.1.19"
-tokio-executor = "0.1.1"
-crossbeam-utils = "0.7.0"
+futures = { path = "../../futures-rs_01"}
+tokio-executor = { path = "../tokio-executor"}
+crossbeam-utils = { path = "../../crossbeam/crossbeam-utils"}
 
 # Backs `DelayQueue`
-slab = "0.4.1"
+slab = { path = "../../slab" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true, features = ["untrusted_time"] }
+#futures = "0.1.19"
+#tokio-executor = "0.1.1"
+#crossbeam-utils = "0.7.0"
+
+# Backs `DelayQueue`
+#slab = "0.4.1"
 
 [dev-dependencies]
-rand = "0.7"
-tokio-mock-task = "0.1.0"
-tokio = "0.1.7"
+#rand = "0.7"
+#tokio-mock-task = "0.1.0"
+#tokio = "0.1.7"

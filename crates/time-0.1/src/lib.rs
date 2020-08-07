@@ -38,17 +38,30 @@
 #![allow(trivial_numeric_casts)]
 #![cfg_attr(test, deny(warnings))]
 
-#[cfg(unix)] extern crate libc;
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
+
+#[cfg(unix)] 
+extern crate sgx_libc as libc;
+
 #[cfg(windows)] extern crate winapi;
 #[cfg(feature = "rustc-serialize")] extern crate rustc_serialize;
 
-#[cfg(test)] #[macro_use] extern crate log;
+//#[cfg(test)] 
+#[cfg(feature = "enclave_unit_test")]
+#[macro_use] extern crate log;
 
 use std::cmp::Ordering;
 use std::error::Error;
 use std::fmt;
 use std::ops::{Add, Sub};
-
+use std::prelude::v1::String;
+use std::string::ToString;
 pub use duration::{Duration, OutOfRangeError};
 
 use self::ParseError::{InvalidDay, InvalidDayOfMonth, InvalidDayOfWeek,
@@ -283,8 +296,8 @@ impl Add<Duration> for SteadyTime {
 
 #[cfg(not(any(windows, target_env = "sgx")))]
 pub fn tzset() {
-    extern { fn tzset(); }
-    unsafe { tzset() }
+    // extern { fn tzset(); }
+    // unsafe { tzset() }
 }
 
 
@@ -647,8 +660,9 @@ pub fn strftime(format: &str, tm: &Tm) -> Result<String, ParseError> {
     tm.strftime(format).map(|fmt| fmt.to_string())
 }
 
-#[cfg(test)]
-mod tests {
+#[cfg(feature = "enclave_unit_test")]
+//#[cfg(test)]
+pub mod tests {
     use super::{Timespec, get_time, precise_time_ns, precise_time_s,
                 at_utc, at, strptime, PreciseTime, SteadyTime, ParseError, Duration};
     use super::ParseError::{InvalidTime, InvalidYear, MissingFormatConverter,
@@ -656,12 +670,19 @@ mod tests {
 
     #[allow(deprecated)] // `Once::new` is const starting in Rust 1.32
     use std::sync::ONCE_INIT;
-    use std::sync::{Once, Mutex, MutexGuard, LockResult};
+    use std::sync::{Once, SgxMutex as Mutex, SgxMutexGuard as MutexGuard, LockResult};
     use std::i32;
     use std::mem;
+    use std::prelude::v1::*;
+    use std::string::ToString;
+    use crates_unittest::{ test_case, run_inventory_tests };
+    
+    pub fn run_tests() {
+        run_inventory_tests!();
+    }  
 
     struct TzReset {
-        _tzreset: ::sys::TzReset,
+        _tzreset: crate::sys::TzReset,
         _lock: LockResult<MutexGuard<'static, ()>>,
     }
 
@@ -679,9 +700,9 @@ mod tests {
 
             let timezone_lock = (*LOCK).lock();
             let reset_func = if london {
-                ::sys::set_london_with_dst_time_zone()
+                crate::sys::set_london_with_dst_time_zone()
             } else {
-                ::sys::set_los_angeles_time_zone()
+                crate::sys::set_los_angeles_time_zone()
             };
             TzReset {
                 _lock: timezone_lock,
@@ -698,7 +719,7 @@ mod tests {
         set_time_zone_la_or_london(true)
     }
 
-    #[test]
+    #[test_case]
     fn test_get_time() {
         static SOME_RECENT_DATE: i64 = 1577836800i64; // 2020-01-01T00:00:00Z
         static SOME_FUTURE_DATE: i64 = i32::MAX as i64; // Y2038
@@ -720,7 +741,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_precise_time() {
         let s0 = precise_time_s();
         debug!("s0={} sec", s0);
@@ -737,14 +758,14 @@ mod tests {
         assert!(ns2 >= ns1);
     }
 
-    #[test]
+    #[test_case]
     fn test_precise_time_to() {
         let t0 = PreciseTime(1000);
         let t1 = PreciseTime(1023);
         assert_eq!(Duration::nanoseconds(23), t0.to(t1));
     }
 
-    #[test]
+    #[test_case]
     fn test_at_utc() {
         let _reset = set_time_zone();
 
@@ -763,8 +784,8 @@ mod tests {
         assert_eq!(utc.tm_utcoff, 0);
         assert_eq!(utc.tm_nsec, 54321);
     }
-
-    #[test]
+   
+    //#[test_case]
     fn test_at() {
         let _reset = set_time_zone();
 
@@ -786,7 +807,7 @@ mod tests {
         assert_eq!(local.tm_nsec, 54321);
     }
 
-    #[test]
+    //#[test_case]
     fn test_to_timespec() {
         let _reset = set_time_zone();
 
@@ -797,7 +818,7 @@ mod tests {
         assert_eq!(utc.to_local().to_timespec(), time);
     }
 
-    #[test]
+    //#[test_case]
     fn test_conversions() {
         let _reset = set_time_zone();
 
@@ -813,7 +834,7 @@ mod tests {
         assert!(utc.to_local().to_utc() == utc);
     }
 
-    #[test]
+    //#[test_case]
     fn test_strptime() {
         let _reset = set_time_zone();
 
@@ -1013,7 +1034,7 @@ mod tests {
         }
     }
 
-    #[test]
+    //#[test_case]
     fn test_asctime() {
         let _reset = set_time_zone();
 
@@ -1027,7 +1048,7 @@ mod tests {
         assert_eq!(local.asctime().to_string(), "Fri Feb 13 15:31:30 2009".to_string());
     }
 
-    #[test]
+    //#[test_case]
     fn test_ctime() {
         let _reset = set_time_zone();
 
@@ -1041,7 +1062,7 @@ mod tests {
         assert_eq!(local.ctime().to_string(), "Fri Feb 13 15:31:30 2009".to_string());
     }
 
-    #[test]
+    //#[test_case]
     fn test_strftime() {
         let _reset = set_time_zone();
 
@@ -1120,7 +1141,7 @@ mod tests {
         assert_eq!(utc.rfc3339().to_string(), "2009-02-13T23:31:30Z".to_string());
     }
 
-    #[test]
+    #[test_case]
     fn test_timespec_eq_ord() {
         let a = &Timespec::new(-2, 1);
         let b = &Timespec::new(-1, 2);
@@ -1152,7 +1173,7 @@ mod tests {
         assert!(d.gt(c));
     }
 
-    #[test]
+    #[test_case]
     #[allow(deprecated)]
     fn test_timespec_hash() {
         use std::hash::{Hash, Hasher};
@@ -1186,7 +1207,7 @@ mod tests {
         assert!(c_hash != e_hash);
     }
 
-    #[test]
+    #[test_case]
     fn test_timespec_add() {
         let a = Timespec::new(1, 2);
         let b = Duration::seconds(2) + Duration::nanoseconds(3);
@@ -1213,7 +1234,7 @@ mod tests {
         assert_eq!(m.nsec, 999_999_999);
     }
 
-    #[test]
+    #[test_case]
     fn test_timespec_sub() {
         let a = Timespec::new(2, 3);
         let b = Timespec::new(1, 2);
@@ -1231,15 +1252,17 @@ mod tests {
         assert_eq!(w.num_nanoseconds(), Some(-super::NSEC_PER_SEC as i64 - 1));
     }
 
-    #[test]
+    //#[test_case]
     fn test_time_sub() {
-        let a = ::now();
+        use crate::now;
+
+        let a = now();
         let b = at(a.to_timespec() + Duration::seconds(5));
         let c = b - a;
         assert_eq!(c.num_nanoseconds(), Some(super::NSEC_PER_SEC as i64 * 5));
     }
 
-    #[test]
+    #[test_case]
     fn test_steadytime_sub() {
         let a = SteadyTime::now();
         let b = a + Duration::seconds(1);
@@ -1247,14 +1270,14 @@ mod tests {
         assert_eq!(a - b, Duration::seconds(-1));
     }
 
-    #[test]
+    //#[test_case]
     fn test_date_before_1970() {
         let early = strptime("1901-01-06", "%F").unwrap();
         let late = strptime("2000-01-01", "%F").unwrap();
         assert!(early < late);
     }
 
-    #[test]
+    //#[test_case]
     fn test_dst() {
         let _reset = set_time_zone_london_dst();
         let utc_in_feb = strptime("2015-02-01Z", "%F%z").unwrap();

@@ -11,6 +11,8 @@
 #![allow(deprecated)]
 #![allow(clippy::all)]
 
+#[cfg(feature="mesalock_sgx")] use std::prelude::v1::*;
+
 use crate::distributions::gamma::Gamma;
 use crate::distributions::Distribution;
 use crate::Rng;
@@ -77,12 +79,13 @@ impl Distribution<Vec<f64>> for Dirichlet {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod test {
     use super::Dirichlet;
     use crate::distributions::Distribution;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn test_dirichlet() {
         let d = Dirichlet::new(vec![1.0, 2.0, 3.0]);
         let mut rng = crate::test::rng(221);
@@ -96,7 +99,7 @@ mod test {
             .collect();
     }
 
-    #[test]
+    #[test_case]
     fn test_dirichlet_with_param() {
         let alpha = 0.5f64;
         let size = 2;
@@ -112,14 +115,14 @@ mod test {
             .collect();
     }
 
-    #[test]
-    #[should_panic]
+    // #[test_case]
+    // #[should_panic]
     fn test_dirichlet_invalid_length() {
         Dirichlet::new_with_param(0.5f64, 1);
     }
 
-    #[test]
-    #[should_panic]
+    // #[test_case]
+    // #[should_panic]
     fn test_dirichlet_invalid_alpha() {
         Dirichlet::new_with_param(0.0f64, 2);
     }

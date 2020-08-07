@@ -108,16 +108,17 @@
 //! // `my_subscriber` is now the default
 //! ```
 //!
-//! **Note**: the thread-local scoped dispatcher (`with_default`) requires the
-//! Rust standard library. `no_std` users should use [`set_global_default`]
+//! <div class="information">
+//!     <div class="tooltip ignore" style="">ⓘ<span class="tooltiptext">Note</span></div>
+//! </div>
+//! <div class="example-wrap" style="display:inline-block">
+//! <pre class="ignore" style="white-space:normal;font:inherit;">
+//! <strong>Note</strong>:the thread-local scoped dispatcher
+//! (<a href="#fn.with_default"><code>with_default</code></a>) requires the
+//! Rust standard library. <code>no_std</code> users should use
+//! <a href="#fn.set_global_default"><code>set_global_default</code></a>
 //! instead.
-//!
-//! Finally, `tokio` users should note that versions of `tokio` >= 0.1.22
-//! support an `experimental-tracing` feature flag. When this flag is enabled,
-//! the `tokio` runtime's thread pool will automatically propagate the default
-//! subscriber. This means that if `tokio::runtime::Runtime::new()` or
-//! `tokio::run()` are invoked when a default subscriber is set, it will also be
-//! set by all worker threads created by that runtime.
+//! </pre></div>
 //!
 //! ## Accessing the Default Subscriber
 //!
@@ -134,7 +135,7 @@
 use crate::{
     callsite, span,
     subscriber::{self, Subscriber},
-    Event, Metadata,
+    Event, LevelFilter, Metadata,
 };
 
 use crate::stdlib::{
@@ -204,8 +205,15 @@ pub struct DefaultGuard(Option<Dispatch>);
 /// The default dispatcher is used when creating a new [span] or
 /// [`Event`].
 ///
-/// **Note**: This function requires the Rust standard library. `no_std` users
-/// should use [`set_global_default`] instead.
+/// <div class="information">
+///     <div class="tooltip ignore" style="">ⓘ<span class="tooltiptext">Note</span></div>
+/// </div>
+/// <div class="example-wrap" style="display:inline-block">
+/// <pre class="ignore" style="white-space:normal;font:inherit;">
+/// <strong>Note</strong>: This function required the Rust standard library.
+/// <code>no_std</code> users should use <a href="../fn.set_global_default.html">
+/// <code>set_global_default</code></a> instead.
+/// </pre></div>
 ///
 /// [span]: ../span/index.html
 /// [`Subscriber`]: ../subscriber/trait.Subscriber.html
@@ -225,8 +233,15 @@ pub fn with_default<T>(dispatcher: &Dispatch, f: impl FnOnce() -> T) -> T {
 /// Sets the dispatch as the default dispatch for the duration of the lifetime
 /// of the returned DefaultGuard
 ///
-/// **Note**: This function required the Rust standard library. `no_std`  users
-/// should use [`set_global_default`] instead.
+/// <div class="information">
+///     <div class="tooltip ignore" style="">ⓘ<span class="tooltiptext">Note</span></div>
+/// </div>
+/// <div class="example-wrap" style="display:inline-block">
+/// <pre class="ignore" style="white-space:normal;font:inherit;">
+/// <strong>Note</strong>: This function required the Rust standard library.
+/// <code>no_std</code> users should use <a href="../fn.set_global_default.html">
+/// <code>set_global_default</code></a> instead.
+/// </pre></div>
 ///
 /// [`set_global_default`]: ../fn.set_global_default.html
 #[cfg(feature = "std")]
@@ -246,8 +261,14 @@ pub fn set_default(dispatcher: &Dispatch) -> DefaultGuard {
 /// Can only be set once; subsequent attempts to set the global default will fail.
 /// Returns `Err` if the global default has already been set.
 ///
-/// Note: Libraries should *NOT* call `set_global_default()`! That will cause conflicts when
-/// executables try to set them later.
+///
+/// <div class="information">
+///     <div class="tooltip compile_fail" style="">&#x26a0; &#xfe0f;<span class="tooltiptext">Warning</span></div>
+/// </div><div class="example-wrap" style="display:inline-block"><pre class="compile_fail" style="white-space:normal;font:inherit;">
+/// <strong>Warning</strong>: In general, libraries should <em>not</em> call
+/// <code>set_global_default()</code>! Doing so will cause conflicts when
+/// executables that depend on the library try to set the default later.
+/// </pre></div>
 ///
 /// [span]: ../span/index.html
 /// [`Subscriber`]: ../subscriber/trait.Subscriber.html
@@ -406,6 +427,22 @@ impl Dispatch {
         self.subscriber.register_callsite(metadata)
     }
 
+    /// Returns the highest [verbosity level][level] that this [`Subscriber`] will
+    /// enable, or `None`, if the subscriber does not implement level-based
+    /// filtering or chooses not to implement this method.
+    ///
+    /// This calls the [`max_level_hint`] function on the [`Subscriber`]
+    /// that this `Dispatch` forwards to.
+    ///
+    /// [level]: ../struct.Level.html
+    /// [`Subscriber`]: ../subscriber/trait.Subscriber.html
+    /// [`register_callsite`]: ../subscriber/trait.Subscriber.html#method.max_level_hint
+    // TODO(eliza): consider making this a public API?
+    #[inline]
+    pub(crate) fn max_level_hint(&self) -> Option<LevelFilter> {
+        self.subscriber.max_level_hint()
+    }
+
     /// Record the construction of a new span, returning a new [ID] for the
     /// span being constructed.
     ///
@@ -522,11 +559,17 @@ impl Dispatch {
     /// this guarantee and any other libraries implementing instrumentation APIs
     /// must as well.
     ///
-    /// This calls the [`drop_span`]  function on the [`Subscriber`] that this
+    /// This calls the [`drop_span`] function on the [`Subscriber`] that this
     ///  `Dispatch` forwards to.
     ///
-    /// **Note:** the [`try_close`] function is functionally identical, but
-    /// returns `true` if the span is now closed.
+    /// <div class="information">
+    ///     <div class="tooltip compile_fail" style="">&#x26a0; &#xfe0f;<span class="tooltiptext">Warning</span></div>
+    /// </div>
+    /// <div class="example-wrap" style="display:inline-block"><pre class="compile_fail" style="white-space:normal;font:inherit;">
+    /// <strong>Deprecated</strong>: The <a href="#method.try_close"><code>try_close</code></a>
+    /// method is functionally identical, but returns <code>true</code> if the span is now closed.
+    /// It should be used instead of this method.
+    /// </pre></div>
     ///
     /// [span ID]: ../span/struct.Id.html
     /// [`Subscriber`]: ../subscriber/trait.Subscriber.html
@@ -548,7 +591,7 @@ impl Dispatch {
     /// this guarantee and any other libraries implementing instrumentation APIs
     /// must as well.
     ///
-    /// This calls the [`try_close`]  function on the [`Subscriber`] that this
+    /// This calls the [`try_close`] function on the [`Subscriber`] that this
     ///  `Dispatch` forwards to.
     ///
     /// [span ID]: ../span/struct.Id.html
@@ -643,8 +686,8 @@ impl Registrar {
         self.0.upgrade().map(|s| s.register_callsite(metadata))
     }
 
-    pub(crate) fn is_alive(&self) -> bool {
-        self.0.upgrade().is_some()
+    pub(crate) fn upgrade(&self) -> Option<Dispatch> {
+        self.0.upgrade().map(|subscriber| Dispatch { subscriber })
     }
 }
 

@@ -184,7 +184,8 @@
 //! [`Builder::enable_all`]: crate::runtime::Builder::enable_all
 
 // At the top due to macros
-#[cfg(test)]
+//#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 #[macro_use]
 mod tests;
 
@@ -268,7 +269,7 @@ use std::time::Duration;
 ///
 /// [timer]: crate::time
 /// [mod]: index.html
-/// [`new`]: #method.new
+/// [`new`]: method@Self::new
 /// [`Builder`]: struct@Builder
 /// [`tokio::run`]: fn@run
 #[derive(Debug)]
@@ -542,10 +543,39 @@ impl Runtime {
     ///    runtime.shutdown_timeout(Duration::from_millis(100));
     /// }
     /// ```
-    pub fn shutdown_timeout(self, duration: Duration) {
-        let Runtime {
-            mut blocking_pool, ..
-        } = self;
-        blocking_pool.shutdown(Some(duration));
+    pub fn shutdown_timeout(mut self, duration: Duration) {
+        // Wakeup and shutdown all the worker threads
+        self.handle.spawner.shutdown();
+        self.blocking_pool.shutdown(Some(duration));
+    }
+
+    /// Shutdown the runtime, without waiting for any spawned tasks to shutdown.
+    ///
+    /// This can be useful if you want to drop a runtime from within another runtime.
+    /// Normally, dropping a runtime will block indefinitely for spawned blocking tasks
+    /// to complete, which would normally not be permitted within an asynchronous context.
+    /// By calling `shutdown_background()`, you can drop the runtime from such a context.
+    ///
+    /// Note however, that because we do not wait for any blocking tasks to complete, this
+    /// may result in a resource leak (in that any blocking tasks are still running until they
+    /// return.
+    ///
+    /// This function is equivalent to calling `shutdown_timeout(Duration::of_nanos(0))`.
+    ///
+    /// ```
+    /// use tokio::runtime::Runtime;
+    ///
+    /// fn main() {
+    ///    let mut runtime = Runtime::new().unwrap();
+    ///
+    ///    runtime.block_on(async move {
+    ///        let inner_runtime = Runtime::new().unwrap();
+    ///        // ...
+    ///        inner_runtime.shutdown_background();
+    ///    });
+    /// }
+    /// ```
+    pub fn shutdown_background(self) {
+        self.shutdown_timeout(Duration::from_nanos(0))
     }
 }

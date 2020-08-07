@@ -22,6 +22,7 @@ backed applications.
 categories = ["asynchronous", "network-programming"]
 keywords = ["io", "async", "non-blocking", "futures"]
 
+
 [features]
 default = [
   "codec",
@@ -34,15 +35,16 @@ default = [
   "timer",
   "udp",
   "uds",
+  "mesalock_sgx",
 ]
-
+mesalock_sgx = ["sgx_tstd"]
 codec = ["io", "tokio-codec"]
 experimental-tracing = ["tracing-core"]
 fs = ["tokio-fs"]
 io = ["bytes", "tokio-io"]
 reactor = ["io", "mio", "tokio-reactor"]
 rt-full = [
-  "num_cpus",
+  #"num_cpus",
   "reactor",
   "timer",
   "tokio-current-thread",
@@ -56,40 +58,67 @@ udp = ["tokio-udp"]
 uds = ["tokio-uds"]
 
 [dependencies]
+
 # Only non-optional dependency...
-futures = "0.1.20"
+#futures = "0.1.20"
 
 # Everything else is optional...
-bytes = { version = "0.4", optional = true }
-num_cpus = { version = "1.8.0", optional = true }
-tokio-codec = { version = "0.1.0", optional = true }
-tokio-current-thread = { version = "0.1.6", optional = true }
-tokio-fs = { version = "0.1.6", optional = true }
-tokio-io = { version = "0.1.6", optional = true }
-tokio-executor = { version = "0.1.7", optional = true }
-tokio-reactor = { version = "0.1.1", optional = true }
-tokio-sync = { version = "0.1.5", optional = true }
-tokio-threadpool = { version = "0.1.16", optional = true }
-tokio-tcp = { version = "0.1.0", optional = true }
-tokio-udp = { version = "0.1.0", optional = true }
-tokio-timer = { version = "0.2.8", optional = true }
-tracing-core = { version = "0.1", optional = true }
+#bytes = { version = "0.4", optional = true }
+#num_cpus = { version = "1.8.0", optional = true }
+#tokio-codec = { version = "0.1.0", optional = true }
+#tokio-current-thread = { version = "0.1.6", optional = true }
+#tokio-fs = { version = "0.1.6", optional = true }
+#tokio-io = { version = "0.1.6", optional = true }
+#tokio-executor = { version = "0.1.7", optional = true }
+#tokio-reactor = { version = "0.1.1", optional = true }
+#tokio-sync = { version = "0.1.5", optional = true }
+#tokio-threadpool = { version = "0.1.16", optional = true }
+#tokio-tcp = { version = "0.1.0", optional = true }
+#tokio-udp = { version = "0.1.0", optional = true }
+#tokio-timer = { version = "0.2.8", optional = true }
+#tracing-core = { version = "0.1", optional = true }
 
 # Needed until `reactor` is removed from `tokio`.
-mio = { version = "0.6.14", optional = true }
+#mio = { version = "0.6.14", optional = true }
+
+#[target.'cfg(unix)'.dependencies]
+#tokio-uds = { version = "0.2.4", optional = true }
+
+# Only non-optional dependency...
+futures = { path = "../../futures-rs_01"}
+
+# Everything else is optional...
+bytes = { path = "../../bytes-0.4.x", optional = true}
+#num_cpus = { version = "1.8.0", optional = true }
+tokio-codec = { path = "../tokio-codec", optional = true }
+tokio-current-thread = { path = "../tokio-current-thread", optional = true }
+tokio-fs = { path = "../tokio-fs", optional = true }
+tokio-io = { path = "../tokio-io", optional = true }
+tokio-executor = { path = "../tokio-executor", optional = true }
+tokio-reactor = { path = "../tokio-reactor", optional = true }
+tokio-sync = { path = "../tokio-sync", optional = true }
+tokio-threadpool = { path = "../tokio-threadpool", optional = true }
+tokio-tcp = { path = "../tokio-tcp", optional = true }
+tokio-udp = { path = "../tokio-udp", optional = true }
+tokio-timer = { path = "../tokio-timer", optional = true }
+tracing-core = { path = "../../tracing/tracing-core", optional = true }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+
+# Needed until `reactor` is removed from `tokio`.
+mio = { path = "../../mio-0.6.x", optional = true }
 
 [target.'cfg(unix)'.dependencies]
-tokio-uds = { version = "0.2.4", optional = true }
+tokio-uds = { path = "../tokio-uds", optional = true }
 
 [dev-dependencies]
-env_logger = { version = "0.6", default-features = false }
-flate2 = { version = ">=1.0.2, <1.0.10", features = ["tokio"] }
-futures-cpupool = "0.1"
-http = "0.1"
-httparse = "1.0"
-libc = "0.2"
-num_cpus = "1.0"
-serde = "1.0"
-serde_derive = "1.0"
-serde_json = "1.0"
-time = "0.1"
+#env_logger = { version = "0.6", default-features = false }
+#flate2 = { version = ">=1.0.2, <1.0.10", features = ["tokio"] }
+#futures-cpupool = "0.1"
+#http = "0.1"
+#httparse = "1.0"
+#libc = "0.2"
+#num_cpus = "1.0"
+#serde = "1.0"
+#serde_derive = "1.0"
+#serde_json = "1.0"
+#time = "0.1"

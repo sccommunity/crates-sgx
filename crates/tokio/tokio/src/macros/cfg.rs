@@ -364,6 +364,25 @@ macro_rules! cfg_unstable {
     }
 }
 
+macro_rules! cfg_trace {
+    ($($item:item)*) => {
+        $(
+            #[cfg(feature = "tracing")]
+            #[cfg_attr(docsrs, doc(cfg(feature = "tracing")))]
+            $item
+        )*
+    }
+}
+
+macro_rules! cfg_not_trace {
+    ($($item:item)*) => {
+        $(
+            #[cfg(not(feature = "tracing"))]
+            $item
+        )*
+    }
+}
+
 macro_rules! cfg_coop {
     ($($item:item)*) => {
         $(
@@ -373,7 +392,7 @@ macro_rules! cfg_coop {
                     feature = "fs",
                     feature = "io-driver",
                     feature = "io-std",
-                    feature = "process",
+                    //feature = "process",
                     feature = "rt-core",
                     feature = "sync",
                     feature = "stream",

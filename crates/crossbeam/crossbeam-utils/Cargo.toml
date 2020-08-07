@@ -17,11 +17,11 @@ keywords = ["scoped", "thread", "atomic", "cache"]
 categories = ["algorithms", "concurrency", "data-structures", "no-std"]
 
 [features]
-default = ["std"]
-
+default = ["std", "mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd", "std"]
 # Enable to use APIs that require `std`.
 # This is enabled by default.
-std = ["lazy_static"]
+std = ["lazy_static",  "mesalock_sgx"]
 
 # Enable to use of unstable functionality.
 # This is disabled by default and requires recent nightly compiler.
@@ -30,8 +30,9 @@ std = ["lazy_static"]
 nightly = []
 
 [dependencies]
-cfg-if = "0.1.10"
-lazy_static = { version = "1.4.0", optional = true }
+cfg-if = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2" }
+lazy_static = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2", optional = true }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true, features = ["thread", "untrusted_time"] }
 
 [build-dependencies]
 autocfg = "1.0.0"

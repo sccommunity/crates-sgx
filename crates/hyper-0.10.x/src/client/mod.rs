@@ -59,7 +59,7 @@ use std::borrow::Cow;
 use std::default::Default;
 use std::io::{self, copy, Read};
 use std::fmt;
-
+use std::prelude::v1::*;
 use std::time::Duration;
 
 use url::Url;
@@ -549,7 +549,7 @@ fn get_host_and_port(url: &Url) -> ::Result<(&str, u16)> {
 }
 
 mod scheme {
-
+    use std::prelude::v1::*;
     #[derive(Clone, PartialEq, Eq, Debug, Hash)]
     pub enum Scheme {
         Http,
@@ -579,7 +579,7 @@ mod scheme {
 
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use std::io::Read;
     use header::Server;
@@ -590,7 +590,8 @@ mod tests {
     use super::proxy::Proxy;
     use super::pool::Pool;
     use url::Url;
-
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
     mock_connector!(MockRedirectPolicy {
         "http://127.0.0.1" =>       "HTTP/1.1 301 Redirect\r\n\
                                      Location: http://127.0.0.2\r\n\
@@ -609,7 +610,7 @@ mod tests {
     });
 
 
-    #[test]
+    #[test_case]
     fn test_proxy() {
         use super::pool::PooledStream;
         type MessageStream = PooledStream<super::proxy::Proxied<MockStream, MockStream>>;
@@ -636,7 +637,7 @@ mod tests {
         assert!(s.contains("Host: 127.0.0.1\r\n"));
     }
 
-    #[test]
+    #[test_case]
     fn test_proxy_tunnel() {
         use super::pool::PooledStream;
         type MessageStream = PooledStream<super::proxy::Proxied<MockStream, MockStream>>;
@@ -669,7 +670,7 @@ mod tests {
         assert!(s.contains("Host: 127.0.0.1\r\n"));
     }
 
-    #[test]
+    #[test_case]
     fn test_redirect_followall() {
         let mut client = Client::with_connector(MockRedirectPolicy);
         client.set_redirect_policy(RedirectPolicy::FollowAll);
@@ -678,7 +679,7 @@ mod tests {
         assert_eq!(res.headers.get(), Some(&Server("mock3".to_owned())));
     }
 
-    #[test]
+    #[test_case]
     fn test_redirect_dontfollow() {
         let mut client = Client::with_connector(MockRedirectPolicy);
         client.set_redirect_policy(RedirectPolicy::FollowNone);
@@ -686,7 +687,7 @@ mod tests {
         assert_eq!(res.headers.get(), Some(&Server("mock1".to_owned())));
     }
 
-    #[test]
+    #[test_case]
     fn test_redirect_followif() {
         fn follow_if(url: &Url) -> bool {
             !url.as_str().contains("127.0.0.3")
@@ -707,7 +708,7 @@ mod tests {
     });
 
     // see issue #640
-    #[test]
+    #[test_case]
     fn test_head_response_body_keep_alive() {
         let client = Client::with_connector(Pool::with_connector(Default::default(), Issue640Connector));
 
@@ -724,7 +725,7 @@ mod tests {
         assert_eq!(s, "POST");
     }
 
-    #[test]
+    #[test_case]
     fn test_request_body_error_is_returned() {
         mock_connector!(Connector {
             b"HTTP/1.1 200 OK\r\nContent-Length: 5\r\n\r\n",

@@ -300,15 +300,15 @@ impl Distribution<f64> for Beta {
         x / (x + y)
     }
 }
-
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod test {
     use super::{Beta, ChiSquared, FisherF, StudentT};
     use crate::distributions::Distribution;
-
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
     const N: u32 = 100;
 
-    #[test]
+    #[test_case]
     fn test_chi_squared_one() {
         let chi = ChiSquared::new(1.0);
         let mut rng = crate::test::rng(201);
@@ -316,7 +316,7 @@ mod test {
             chi.sample(&mut rng);
         }
     }
-    #[test]
+    #[test_case]
     fn test_chi_squared_small() {
         let chi = ChiSquared::new(0.5);
         let mut rng = crate::test::rng(202);
@@ -324,7 +324,7 @@ mod test {
             chi.sample(&mut rng);
         }
     }
-    #[test]
+    #[test_case]
     fn test_chi_squared_large() {
         let chi = ChiSquared::new(30.0);
         let mut rng = crate::test::rng(203);
@@ -332,13 +332,13 @@ mod test {
             chi.sample(&mut rng);
         }
     }
-    #[test]
-    #[should_panic]
+    // #[test_case]
+    // #[should_panic]
     fn test_chi_squared_invalid_dof() {
         ChiSquared::new(-1.0);
     }
 
-    #[test]
+    #[test_case]
     fn test_f() {
         let f = FisherF::new(2.0, 32.0);
         let mut rng = crate::test::rng(204);
@@ -347,7 +347,7 @@ mod test {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_t() {
         let t = StudentT::new(11.0);
         let mut rng = crate::test::rng(205);
@@ -356,7 +356,7 @@ mod test {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_beta() {
         let beta = Beta::new(1.0, 2.0);
         let mut rng = crate::test::rng(201);
@@ -365,8 +365,8 @@ mod test {
         }
     }
 
-    #[test]
-    #[should_panic]
+    // #[test_case]
+    // #[should_panic]
     fn test_beta_invalid_dof() {
         Beta::new(0., 0.);
     }

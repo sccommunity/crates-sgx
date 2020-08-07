@@ -8,7 +8,7 @@ use loom::{
 };
 
 use std::fmt;
-use std::process;
+//use std::process;
 use std::sync::atomic::Ordering::{AcqRel, Relaxed};
 
 /// Channel sender
@@ -409,7 +409,8 @@ impl Semaphore for AtomicUsize {
 
         if prev >> 1 == 0 {
             // Something went wrong
-            process::abort();
+            //process::abort();
+            sgx_trts::trts::rsgx_abort();
         }
     }
 
@@ -433,7 +434,8 @@ impl Semaphore for AtomicUsize {
             if curr == usize::MAX ^ 1 {
                 // Overflowed the ref count. There is no safe way to recover, so
                 // abort the process. In practice, this should never happen.
-                process::abort()
+                //process::abort()
+                sgx_trts::trts::rsgx_abort();
             }
 
             match self.compare_exchange(curr, curr + 2, AcqRel, Acquire) {

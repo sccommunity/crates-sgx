@@ -8,7 +8,8 @@
 //!
 //! assert_eq!("base64: AAECAw==", format!("base64: {}", wrapper));
 //! ```
-
+#[cfg(feature = "std")]
+use std::prelude::v1::*;
 use super::chunked_encoder::ChunkedEncoder;
 use super::Config;
 use core::fmt::{Display, Formatter};

@@ -1,6 +1,6 @@
 use std::cell::RefCell;
 use std::collections::HashSet;
-
+use std::prelude::v1::*;
 pub(crate) use tracing_core::span::Id;
 
 struct ContextId {

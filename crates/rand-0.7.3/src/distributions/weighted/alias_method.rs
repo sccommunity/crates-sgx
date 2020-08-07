@@ -1,6 +1,7 @@
 //! This module contains an implementation of alias method for sampling random
 //! indices with probabilities proportional to a collection of weights.
 
+#[cfg(feature="mesalock_sgx")] use std::prelude::v1::*;
 use super::WeightedError;
 #[cfg(not(feature = "std"))] use crate::alloc::vec;
 #[cfg(not(feature = "std"))] use crate::alloc::vec::Vec;
@@ -361,11 +362,12 @@ impl_weight_for_int!(i32);
 impl_weight_for_int!(i16);
 impl_weight_for_int!(i8);
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod test {
     use super::*;
-
-    #[test]
+    
+    use crates_unittest::test_case;
+    #[test_case]
     #[cfg_attr(miri, ignore)] // Miri is too slow
     fn test_weighted_index_f32() {
         test_weighted_index(f32::into);
@@ -394,14 +396,14 @@ mod test {
     }
 
     #[cfg(not(target_os = "emscripten"))]
-    #[test]
+    #[test_case]
     #[cfg_attr(miri, ignore)] // Miri is too slow
     fn test_weighted_index_u128() {
         test_weighted_index(|x: u128| x as f64);
     }
 
     #[cfg(all(rustc_1_26, not(target_os = "emscripten")))]
-    #[test]
+    #[test_case]
     #[cfg_attr(miri, ignore)] // Miri is too slow
     fn test_weighted_index_i128() {
         test_weighted_index(|x: i128| x as f64);
@@ -417,13 +419,13 @@ mod test {
         );
     }
 
-    #[test]
+    #[test_case]
     #[cfg_attr(miri, ignore)] // Miri is too slow
     fn test_weighted_index_u8() {
         test_weighted_index(u8::into);
     }
 
-    #[test]
+    #[test_case]
     #[cfg_attr(miri, ignore)] // Miri is too slow
     fn test_weighted_index_i8() {
         test_weighted_index(i8::into);
@@ -491,7 +493,7 @@ mod test {
         );
     }
 
-    #[test]
+    #[test_case]
     fn value_stability() {
         fn test_samples<W: Weight>(weights: Vec<W>, buf: &mut [usize], expected: &[usize]) {
             assert_eq!(buf.len(), expected.len());

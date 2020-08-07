@@ -3,7 +3,7 @@ use std::iter::ExactSizeIterator;
 use std::slice::Iter;
 use std::vec::IntoIter;
 use std::borrow::Cow;
-
+use std::prelude::v1::*;
 use serde::{self, Deserialize, Deserializer};
 use serde::de::{self, DeserializeSeed, IntoDeserializer, SeqAccess, Unexpected, Visitor};
 

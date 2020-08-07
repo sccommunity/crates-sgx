@@ -1,3 +1,4 @@
+use std::prelude::v1::*;
 use std::any::{Any, TypeId};
 use std::collections::HashMap;
 use std::fmt;

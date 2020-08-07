@@ -9,8 +9,11 @@
 //! Error types
 
 use core::fmt;
-use core::num::NonZeroU32;
 
+#[cfg(all(feature="std", feature="mesalock_sgx", not(target_env="sgx")))]
+use std::prelude::v1::*;
+
+use core::num::NonZeroU32;
 
 /// Error type of random number generators
 ///

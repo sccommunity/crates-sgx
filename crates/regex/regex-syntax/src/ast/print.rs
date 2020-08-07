@@ -2,6 +2,7 @@
 This module provides a regular expression printer for `Ast`.
 */
 
+use std::prelude::v1::*;
 use std::fmt;
 
 use ast::visitor::{self, Visitor};

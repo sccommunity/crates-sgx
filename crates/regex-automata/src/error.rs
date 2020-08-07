@@ -1,7 +1,7 @@
 use std::error;
 use std::fmt;
 use std::result;
-
+use std::prelude::v1::*;
 use regex_syntax;
 
 pub type Result<T> = result::Result<T, Error>;

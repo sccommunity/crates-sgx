@@ -11,9 +11,11 @@ members = [
   "futures-util",
   "futures-test",
 
-  "futures/tests/macro-tests",
-  "futures/tests/macro-reexport",
+  #"futures/tests/macro-tests",
+  #"futures/tests/macro-reexport",
 
-  "examples/functional",
-  "examples/imperative",
+  #"examples/functional",
+  #"examples/imperative",
+
 ]
+exclude = ["sgx-tests"]

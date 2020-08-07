@@ -1,6 +1,6 @@
 use {Poll, Token};
 use std::{fmt, io, ops};
-
+use std::prelude::v1::Box;
 /// A value that may be registered with `Poll`
 ///
 /// Values that implement `Evented` can be registered with `Poll`. Users of Mio
@@ -1000,7 +1000,7 @@ impl<T: Into<Ready>> ops::SubAssign<T> for Ready {
 }
 
 #[deprecated(since = "0.6.10", note = "removed")]
-#[cfg(feature = "with-deprecated")]
+//#[cfg(feature = "with-deprecated")]
 #[doc(hidden)]
 impl ops::Not for Ready {
     type Output = Ready;

@@ -1,5 +1,5 @@
 use std::fmt;
-
+use std::prelude::v1::*;
 use classes::ByteClasses;
 pub use nfa::compiler::Builder;
 

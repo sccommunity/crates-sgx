@@ -1,8 +1,8 @@
 use {ByteBuf, MutBuf, SmallByteStr, Source, BufError};
 use traits::{Buf, ByteStr, ToBytes};
 use std::{cmp, fmt, mem, ops, ptr};
-use std::any::{Any, TypeId};
-
+use std::any::{TypeId};
+use std::prelude::v1::*;
 const INLINE: usize = 1;
 
 /// A specialized `ByteStr` box.
@@ -25,7 +25,7 @@ impl Bytes {
                 let data;
 
                 {
-                    let obj: &ByteStrPriv = &bytes;
+                    let obj: &dyn ByteStrPriv = &bytes;
                     let obj: TraitObject = mem::transmute(obj);
                     let ptr: *const *mut () = mem::transmute(obj.data);
 
@@ -41,7 +41,7 @@ impl Bytes {
                     data: data,
                 }
             } else {
-                let obj: Box<ByteStrPriv> = Box::new(bytes);
+                let obj: Box<dyn ByteStrPriv> = Box::new(bytes);
                 let obj: TraitObject = mem::transmute(obj);
 
                 Bytes {
@@ -95,13 +95,13 @@ impl Bytes {
         }
     }
 
-    fn obj(&self) -> &ByteStrPriv {
+    fn obj(&self) -> &dyn ByteStrPriv {
         unsafe {
             mem::transmute(self.to_trait_object())
         }
     }
 
-    fn obj_mut(&mut self) -> &mut ByteStrPriv {
+    fn obj_mut(&mut self) -> &mut dyn ByteStrPriv {
         unsafe {
             mem::transmute(self.to_trait_object())
         }
@@ -132,9 +132,9 @@ fn inline<B: ByteStr>() -> bool {
 
 impl ByteStr for Bytes {
 
-    type Buf = Box<Buf+'static>;
+    type Buf = Box<dyn Buf+'static>;
 
-    fn buf(&self) -> Box<Buf+'static> {
+    fn buf(&self) -> Box<dyn Buf+'static> {
         self.obj().buf()
     }
 
@@ -188,7 +188,7 @@ impl Drop for Bytes {
                 let obj = self.obj_mut();
                 obj.drop();
             } else {
-                let _: Box<ByteStrPriv> =
+                let _: Box<dyn ByteStrPriv> =
                     mem::transmute(self.obj());
             }
         }
@@ -231,7 +231,7 @@ impl<'a> Source for &'a Bytes {
 
 trait ByteStrPriv {
 
-    fn buf(&self) -> Box<Buf+'static>;
+    fn buf(&self) -> Box<dyn Buf+'static>;
 
     fn clone(&self) -> Bytes;
 
@@ -252,7 +252,7 @@ trait ByteStrPriv {
 
 impl<B: ByteStr> ByteStrPriv for B {
 
-    fn buf(&self) -> Box<Buf+'static> {
+    fn buf(&self) -> Box<dyn Buf+'static> {
         Box::new(self.buf())
     }
 

@@ -2,6 +2,7 @@
 Defines an abstract syntax for regular expressions.
 */
 
+use std::prelude::v1::*;
 use std::cmp::Ordering;
 use std::error;
 use std::fmt;

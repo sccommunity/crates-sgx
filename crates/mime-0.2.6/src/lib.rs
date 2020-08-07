@@ -18,6 +18,13 @@
 #![doc(html_root_url = "https://hyperium.github.io/mime.rs")]
 #![cfg_attr(test, deny(warnings))]
 #![cfg_attr(all(feature = "nightly", test), feature(test))]
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
 
 #[macro_use]
 extern crate log;
@@ -40,7 +47,7 @@ use std::ascii::AsciiExt;
 use std::fmt;
 use std::iter::Enumerate;
 use std::str::{FromStr, Chars};
-
+use std::prelude::v1::*;
 /// Mime, or Media Type. Encapsulates common registers types.
 ///
 /// Consider that a traditional mime type contains a "top level type",
@@ -561,14 +568,22 @@ fn is_restricted_name_char(c: char) -> bool {
     }
 }
 
-#[cfg(test)]
-mod tests {
+
+#[cfg(feature = "enclave_unit_test")]
+extern crate crates_unittest;
+#[cfg(feature = "enclave_unit_test")]
+pub mod tests {
+    use std::prelude::v1::*;
     use std::str::FromStr;
     #[cfg(feature = "nightly")]
     use test::Bencher;
     use super::{Mime, Value, Attr};
-
-    #[test]
+    use crates_unittest::{ test_case, run_inventory_tests };
+  
+    pub fn run_tests() {
+        run_inventory_tests!();
+    }
+    #[test_case]
     fn test_mime_show() {
         let mime = mime!(Text/Plain);
         assert_eq!(mime.to_string(), "text/plain".to_string());
@@ -576,7 +591,7 @@ mod tests {
         assert_eq!(mime.to_string(), "text/plain; charset=utf-8".to_string());
     }
 
-    #[test]
+    #[test_case]
     fn test_mime_from_str() {
         assert_eq!(Mime::from_str("text/plain").unwrap(), mime!(Text/Plain));
         assert_eq!(Mime::from_str("TEXT/PLAIN").unwrap(), mime!(Text/Plain));
@@ -592,7 +607,7 @@ mod tests {
         assert!("text/*plain".parse::<Mime>().is_err());
     }
 
-    #[test]
+    #[test_case]
     fn test_case_sensitive_values() {
         assert_eq!(Mime::from_str("multipart/form-data; boundary=ABCDEFG").unwrap(),
                    mime!(Multipart/FormData; Boundary=("ABCDEFG")));
@@ -600,7 +615,7 @@ mod tests {
                    mime!(Multipart/FormData; Charset=("base64"), Boundary=("ABCDEFG")));
     }
 
-    #[test]
+    #[test_case]
     fn test_get_param() {
         let mime = Mime::from_str("text/plain; charset=utf-8; foo=bar").unwrap();
         assert_eq!(mime.get_param(Attr::Charset), Some(&Value::Utf8));
@@ -609,19 +624,19 @@ mod tests {
         assert_eq!(mime.get_param("baz"), None);
     }
 
-    #[test]
+    #[test_case]
     fn test_value_as_str() {
         assert_eq!(Value::Utf8.as_str(), "utf-8");
     }
 
-    #[test]
+    #[test_case]
     fn test_value_eq_str() {
         assert_eq!(Value::Utf8, "utf-8");
         assert_eq!("utf-8", Value::Utf8);
     }
 
     #[cfg(feature = "serde")]
-    #[test]
+    #[test_case]
     fn test_serialize_deserialize() {
         use serde_json;
 

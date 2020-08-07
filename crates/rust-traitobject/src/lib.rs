@@ -1,5 +1,12 @@
-#![cfg_attr(test, deny(warnings))]
 #![deny(missing_docs)]
+
+#![cfg_attr(test, deny(warnings))]
+
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+
 
 //! # traitobject
 //!
@@ -31,4 +38,7 @@ fn test_simple() {
 pub unsafe trait Trait {}
 
 mod impls;
+
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+extern crate sgx_tstd as std;
 

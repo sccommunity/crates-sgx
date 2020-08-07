@@ -19,11 +19,20 @@ Testing utilities for Tokio- and futures-based code
 """
 categories = ["asynchronous", "testing"]
 
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+
 [dependencies]
 tokio = { version = "0.2.0", path = "../tokio", features = ["rt-core", "stream", "sync", "time", "test-util"] }
 
-bytes = "0.5.0"
-futures-core = "0.3.0"
+#bytes = "0.5.0"
+#futures-core = "0.3.0"
+
+bytes = { path = "../../bytes" }
+futures-core = { path = "../../futures-rs/futures-core" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+
 
 [dev-dependencies]
 tokio = { version = "0.2.0", path = "../tokio", features = ["full"] }

@@ -5,7 +5,7 @@ use crate::{
     tid::Tid,
     Pack, Shard,
 };
-
+use std::prelude::v1::*;
 use std::{fmt, marker::PhantomData};
 
 /// A lock-free concurrent object pool.

@@ -1,0 +1,40 @@
+[package]
+name = "run-tests-enclave"
+version = "1.0.0"
+edition = "2018"
+
+[lib]
+name = "run_tests_enclave"
+crate-type = ["staticlib"]
+
+[features]
+default = ["slab", "rand", "futures-util", "mesalock_sgx", "crates_unittest", "inventory"]
+mesalock_sgx = ["sgx_tstd"]
+
+[dependencies]
+tower = { path = "../../tower", features = ["enclave_unit_test", "balance", "retry", "util", "filter", "buffer", "limit", "spawn-ready", "steer", "load-shed", "hedge"] }
+futures-core = { path = "../../../futures-rs/futures-core"}
+pin-project = "0.4"
+tower-layer = { version = "0.3", path = "../../tower-layer" }
+tower-service = { path = "../../tower-service" }
+tracing = { path = "../../../tracing/tracing"}
+hdrhistogram = { path = "../../../HdrHistogram_rust", optional = true }
+indexmap = { path = "../../../indexmap", optional = true }
+rand = { path = "../../../rand-0.7.3", features = ["small_rng"], optional = true }
+slab = { path = "../../../slab", optional = true }
+futures-util = { path = "../../../futures-rs/futures-util", version = "0.3", default-features = false, features = ["alloc", "async-await"], optional = true }
+quickcheck = { path = "../../../quickcheck", version = "0.9", default-features = true }
+tokio = { path = "../../../tokio/tokio", version = "0.2", features = ["macros", "stream", "sync", "test-util" ] }
+tokio-test = { path = "../../../tokio/tokio-test"}
+tower-test = { version = "0.3", path = "../../tower-test" }
+tracing-subscriber = { path = "../../../tracing/tracing-subscriber"}
+crates_unittest = { git = "https://github.com/Zha0Chan/crates-sgx-unittest.git", optional = true, default-features = true }
+inventory = { version = "0.1.6", optional = true }
+
+
+env_logger = { path = "../../../env_logger" }
+log = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2" }
+
+[target.'cfg(not(target_env = "sgx"))'.dependencies]
+sgx_types = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }

@@ -22,27 +22,33 @@ libraries.
 """
 
 [dependencies]
-bytes = "0.5"
+bytes = { path = "../bytes"}
 derivative = { version = "2", optional = true }
-futures = "0.3"
+futures = { path = "../futures-rs/futures" }
 pin-project = "0.4"
-serde = { version = "1", optional = true }
-bincode-crate = { package = "bincode", version = "1", optional = true }
-serde_json = { version = "1", optional = true }
-rmp-serde = { version = "0.14", optional = true }
-serde_cbor = { version = "0.11", optional = true }
+serde = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2", features = ["derive"], optional = true }
+bincode-crate = { package = "bincode", path = "../bincode", version = "1", optional = true }
+serde_json = { path = "../json", version = "1", optional = true }
+rmp-serde = { path = "../msgpack-rust/rmp-serde", version = "0.14", optional = true }
+serde_cbor = { path = "../cbor", version = "0.11", optional = true }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 
 [dev-dependencies]
 tokio = { version = "0.2", features = ["full"] }
 tokio-util = { version = "0.3", features = ["full"] }
 static_assertions = "1.1.0"
 
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
+
 [features]
 bincode = ["derivative", "serde", "bincode-crate"]
 json = ["derivative", "serde", "serde_json"]
 messagepack = ["derivative", "serde", "rmp-serde"]
-cbor = ["serde", "serde_cbor"]
-
+cbor = ["derivative", "serde", "serde_cbor"]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
 [[example]]
 name = "client"
 required-features = ["bincode", "cbor", "json", "messagepack"]

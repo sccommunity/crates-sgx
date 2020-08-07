@@ -1,6 +1,6 @@
 use std::error::Error as StdError;
 use std::fmt;
-
+use std::prelude::v1::*;
 use tokio::io::{AsyncRead, AsyncWrite};
 
 use super::{HttpService, Service};

@@ -129,8 +129,34 @@
 // FEATURES
 
 // Require intrinsics in a no_std context.
-#![cfg_attr(not(feature = "std"), no_std)]
+//#![cfg_attr(not(feature = "std"), no_std)]
 #![cfg_attr(not(feature = "std"), feature(core_intrinsics))]
+
+#![cfg_attr(not(
+    all(
+        any(feature = "std", feature = "mesalock_sgx"),
+        target_env = "sgx",
+        target_vendor = "mesalock",
+    )),
+    no_std
+  )]
+  
+  #![cfg_attr(
+    all(
+        any(feature = "std", feature = "mesalock_sgx"),
+        target_env = "sgx",
+        target_vendor = "mesalock",
+    ),
+    feature(rustc_private)
+  )]
+
+  #[cfg(all(
+    any(feature = "std", feature = "mesalock_sgx"),
+    not(target_env = "sgx"),
+    not(target_vendor = "mesalock"),
+    ))]
+    //#[macro_use]
+    extern crate sgx_tstd as std;
 
 // DEPENDENCIES
 
@@ -183,13 +209,19 @@ if #[cfg(feature = "grisu3")] {
 
 /// Facade around the core features for name mangling.
 pub(crate) mod lib {
-#[cfg(feature = "std")]
-pub(crate) use std::*;
+
+#[cfg(all(
+    any(feature = "std", feature = "mesalock_sgx"),
+    not(target_env = "sgx"),
+    not(target_vendor = "mesalock"),
+    ))]
+pub use std::*;
+// pub(crate) use std::*;
 
 #[cfg(not(feature = "std"))]
 pub(crate) use core::*;
 
-cfg_if! {
+cfg_if::cfg_if! {
 if #[cfg(all(feature = "correct", feature = "radix"))] {
     #[cfg(feature = "std")]
     pub(crate) use std::vec::Vec;

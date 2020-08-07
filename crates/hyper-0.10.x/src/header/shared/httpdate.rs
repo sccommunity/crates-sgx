@@ -50,11 +50,12 @@ impl Display for HttpDate {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use time::Tm;
     use super::HttpDate;
-
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
     const NOV_07: HttpDate = HttpDate(Tm {
         tm_nsec: 0,
         tm_sec: 37,
@@ -69,22 +70,22 @@ mod tests {
         tm_utcoff: 0,
     });
 
-    #[test]
+    #[test_case]
     fn test_imf_fixdate() {
         assert_eq!("Sun, 07 Nov 1994 08:48:37 GMT".parse::<HttpDate>().unwrap(), NOV_07);
     }
 
-    #[test]
+    #[test_case]
     fn test_rfc_850() {
         assert_eq!("Sunday, 07-Nov-94 08:48:37 GMT".parse::<HttpDate>().unwrap(), NOV_07);
     }
 
-    #[test]
+    #[test_case]
     fn test_asctime() {
         assert_eq!("Sun Nov  7 08:48:37 1994".parse::<HttpDate>().unwrap(), NOV_07);
     }
 
-    #[test]
+    #[test_case]
     fn test_no_date() {
         assert!("this-is-no-date".parse::<HttpDate>().is_err());
     }

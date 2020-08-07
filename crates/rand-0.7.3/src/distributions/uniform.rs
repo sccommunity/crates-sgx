@@ -962,18 +962,19 @@ impl UniformSampler for UniformDuration {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::*;
     use crate::rngs::mock::StepRng;
-
-    #[should_panic]
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    // #[should_panic]
+    // #[test_case]
     fn test_uniform_bad_limits_equal_int() {
         Uniform::new(10, 10);
     }
 
-    #[test]
+    #[test_case]
     fn test_uniform_good_limits_equal_int() {
         let mut rng = crate::test::rng(804);
         let dist = Uniform::new_inclusive(10, 10);
@@ -982,13 +983,13 @@ mod tests {
         }
     }
 
-    #[should_panic]
-    #[test]
+    // #[should_panic]
+    // #[test_case]
     fn test_uniform_bad_limits_flipped_int() {
         Uniform::new(10, 5);
     }
 
-    #[test]
+    #[test_case]
     #[cfg_attr(miri, ignore)] // Miri is too slow
     fn test_integers() {
         #[cfg(not(target_os = "emscripten"))] use core::{i128, u128};
@@ -1071,7 +1072,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_case]
     #[cfg_attr(miri, ignore)] // Miri is too slow
     fn test_floats() {
         let mut rng = crate::test::rng(252);
@@ -1167,7 +1168,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_case]
     #[cfg(all(
         feature = "std",
         not(target_arch = "wasm32"),
@@ -1229,7 +1230,7 @@ mod tests {
     }
 
 
-    #[test]
+    #[test_case]
     #[cfg_attr(miri, ignore)] // Miri is too slow
     fn test_durations() {
         #[cfg(not(feature = "std"))] use core::time::Duration;
@@ -1254,7 +1255,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_custom_uniform() {
         use crate::distributions::uniform::{
             SampleBorrow, SampleUniform, UniformFloat, UniformSampler,
@@ -1303,7 +1304,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_uniform_from_std_range() {
         let r = Uniform::from(2u32..7);
         assert_eq!(r.0.low, 2);
@@ -1313,7 +1314,7 @@ mod tests {
         assert_eq!(r.0.scale, 5.0);
     }
 
-    #[test]
+    #[test_case]
     fn test_uniform_from_std_range_inclusive() {
         let r = Uniform::from(2u32..=6);
         assert_eq!(r.0.low, 2);
@@ -1324,7 +1325,7 @@ mod tests {
         assert!(r.0.scale < 5.0 + 1e-14);
     }
 
-    #[test]
+    #[test_case]
     fn value_stability() {
         fn test_samples<T: SampleUniform + Copy + core::fmt::Debug + PartialEq>(
             lb: T, ub: T, expected_single: &[T], expected_multiple: &[T],

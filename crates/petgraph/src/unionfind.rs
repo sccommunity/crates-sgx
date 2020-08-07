@@ -1,5 +1,5 @@
 //! `UnionFind<K>` is a disjoint-set data structure.
-
+use std::prelude::v1::*;
 use super::graph::IndexType;
 use std::cmp::Ordering;
 

@@ -4,6 +4,7 @@
     attr(deny(warnings, rust_2018_idioms), allow(dead_code, unused_variables))
 ))]
 #![doc(html_root_url = "https://docs.rs/bytes/0.5.6")]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"), feature(rustc_private))]
 #![no_std]
 
 //! Provides abstractions for working with bytes.
@@ -78,8 +79,12 @@
 
 extern crate alloc;
 
-#[cfg(feature = "std")]
+#[cfg(all(feature = "mesalock_sgx", target_env = "sgx"))]
 extern crate std;
+
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
 
 pub mod buf;
 pub use crate::buf::{Buf, BufMut};
@@ -98,13 +103,13 @@ mod serde;
 #[inline(never)]
 #[cold]
 fn abort() -> ! {
-    #[cfg(feature = "std")]
-    {
-        std::process::abort();
-    }
+    //#[cfg(feature = "std")]
+    //{
+    //    std::process::abort();
+    //}
 
-    #[cfg(not(feature = "std"))]
-    {
+    //#[cfg(not(feature = "std"))]
+    //{
         struct Abort;
         impl Drop for Abort {
             fn drop(&mut self) {
@@ -112,6 +117,6 @@ fn abort() -> ! {
             }
         }
         let _a = Abort;
-        panic!("abort");
-    }
+        panic!("abort in bytes");
+    //}
 }

@@ -12,7 +12,7 @@
 //!
 //! # Usage
 //!
-//! Attempting to write data that the mock isn't expected will result in a
+//! Attempting to write data that the mock isn't expecting will result in a
 //! panic.
 //!
 //! [`AsyncRead`]: tokio::io::AsyncRead
@@ -30,6 +30,7 @@ use std::pin::Pin;
 use std::sync::Arc;
 use std::task::{self, Poll, Waker};
 use std::{cmp, io};
+use std::prelude::v1::*;
 
 /// An I/O object that follows a predefined script.
 ///

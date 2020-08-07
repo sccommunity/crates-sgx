@@ -4,10 +4,10 @@ name = "crossbeam-channel"
 # - Update CHANGELOG.md
 # - Update README.md
 # - Create "crossbeam-channel-X.Y.Z" git tag
-version = "0.4.2"
+version = "0.4.3"
 authors = ["The Crossbeam Project Developers"]
 edition = "2018"
-license = "MIT AND BSD-2-Clause OR Apache-2.0 AND BSD-2-Clause"
+license = "MIT OR Apache-2.0"
 readme = "README.md"
 repository = "https://github.com/crossbeam-rs/crossbeam"
 homepage = "https://github.com/crossbeam-rs/crossbeam/tree/master/crossbeam-channel"
@@ -17,14 +17,16 @@ keywords = ["channel", "mpmc", "select", "golang", "message"]
 categories = ["algorithms", "concurrency", "data-structures"]
 
 [features]
-default = ["std"]
-
+default = ["std", "mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd", "sgx_trts"]
 # Enable to use APIs that require `std`.
 # This is enabled by default.
-std = ["crossbeam-utils/std"]
+std = ["crossbeam-utils/std", "mesalock_sgx"]
 
 [dependencies]
-cfg-if = "0.1.10"
+cfg-if = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true, features = ["untrusted_time"] }
+sgx_trts = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 
 [dependencies.crossbeam-utils]
 version = "0.7"
@@ -33,6 +35,6 @@ default-features = false
 optional = true
 
 [dev-dependencies]
-num_cpus = "1.13.0"
-rand = "0.7.3"
-signal-hook = "0.1.15"
+# num_cpus = "1.13.0"
+# rand = "0.7.3"
+# signal-hook = "0.1.15"

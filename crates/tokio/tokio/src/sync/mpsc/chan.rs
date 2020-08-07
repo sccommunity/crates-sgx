@@ -6,10 +6,11 @@ use crate::sync::mpsc::error::{ClosedError, TryRecvError};
 use crate::sync::mpsc::{error, list};
 
 use std::fmt;
-use std::process;
+//use std::process;
 use std::sync::atomic::Ordering::{AcqRel, Relaxed};
 use std::task::Poll::{Pending, Ready};
 use std::task::{Context, Poll};
+use sgx_trts::trts;
 
 /// Channel sender
 pub(crate) struct Tx<T, S: Semaphore> {
@@ -277,7 +278,7 @@ where
         use super::block::Read::*;
 
         // Keep track of task budget
-        ready!(crate::coop::poll_proceed(cx));
+        let coop = ready!(crate::coop::poll_proceed(cx));
 
         self.inner.rx_fields.with_mut(|rx_fields_ptr| {
             let rx_fields = unsafe { &mut *rx_fields_ptr };
@@ -287,6 +288,7 @@ where
                     match rx_fields.list.pop(&self.inner.tx) {
                         Some(Value(value)) => {
                             self.inner.semaphore.add_permit();
+                            coop.made_progress();
                             return Ready(Some(value));
                         }
                         Some(Closed) => {
@@ -297,6 +299,7 @@ where
                             // which ensures that if dropping the tx handle is
                             // visible, then all messages sent are also visible.
                             assert!(self.inner.semaphore.is_idle());
+                            coop.made_progress();
                             return Ready(None);
                         }
                         None => {} // fall through
@@ -314,6 +317,7 @@ where
             try_recv!();
 
             if rx_fields.rx_closed && self.inner.semaphore.is_idle() {
+                coop.made_progress();
                 Ready(None)
             } else {
                 Pending
@@ -439,11 +443,15 @@ impl Semaphore for (crate::sync::semaphore_ll::Semaphore, usize) {
         permit: &mut Permit,
     ) -> Poll<Result<(), ClosedError>> {
         // Keep track of task budget
-        ready!(crate::coop::poll_proceed(cx));
+        let coop = ready!(crate::coop::poll_proceed(cx));
 
         permit
             .poll_acquire(cx, 1, &self.0)
             .map_err(|_| ClosedError::new())
+            .map(move |r| {
+                coop.made_progress();
+                r
+            })
     }
 
     fn try_acquire(&self, permit: &mut Permit) -> Result<(), TrySendError> {
@@ -477,7 +485,8 @@ impl Semaphore for AtomicUsize {
 
         if prev >> 1 == 0 {
             // Something went wrong
-            process::abort();
+            //process::abort();
+	     trts::rsgx_abort();
         }
     }
 
@@ -504,7 +513,8 @@ impl Semaphore for AtomicUsize {
             if curr == usize::MAX ^ 1 {
                 // Overflowed the ref count. There is no safe way to recover, so
                 // abort the process. In practice, this should never happen.
-                process::abort()
+                //process::abort()
+		 trts::rsgx_abort()
             }
 
             match self.compare_exchange(curr, curr + 2, AcqRel, Acquire) {

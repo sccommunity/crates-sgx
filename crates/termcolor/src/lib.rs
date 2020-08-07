@@ -116,8 +116,15 @@ let stdout = StandardStream::stdout(choice);
 
 Currently, `termcolor` does not provide anything to do this for you.
 */
-
 #![deny(missing_docs)]
+
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
 
 #[cfg(doctest)]
 use doc_comment::doctest;
@@ -130,6 +137,7 @@ use std::fmt;
 use std::io::{self, Write};
 use std::str::FromStr;
 use std::sync::atomic::{AtomicBool, Ordering};
+use std::prelude::v1::*;
 #[cfg(windows)]
 use std::sync::{Mutex, MutexGuard};
 

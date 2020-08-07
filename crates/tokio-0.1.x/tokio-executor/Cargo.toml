@@ -20,9 +20,16 @@ Future execution primitives
 keywords = ["futures", "tokio"]
 categories = ["concurrency", "asynchronous"]
 
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+
 [dependencies]
-crossbeam-utils = "0.7.0"
-futures = "0.1.19"
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true, features = ["untrusted_time"] }
+crossbeam-utils = { path = "../../crossbeam/crossbeam-utils" }
+futures = { path = "../../futures-rs_01"}
+#crossbeam-utils = "0.7.0"
+#futures = "0.1.19"
 
 [dev-dependencies]
-tokio = "0.1.18"
+#tokio = "0.1.18"

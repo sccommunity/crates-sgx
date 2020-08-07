@@ -140,12 +140,13 @@ impl fmt::Debug for IsoWeek {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use naive::{internals, MAX_DATE, MIN_DATE};
     use Datelike;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn test_iso_week_extremes() {
         let minweek = MIN_DATE.iso_week();
         let maxweek = MAX_DATE.iso_week();

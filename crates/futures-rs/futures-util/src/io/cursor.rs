@@ -4,6 +4,7 @@ use futures_io::Initializer;
 use futures_io::{AsyncBufRead, AsyncRead, AsyncSeek, AsyncWrite, IoSlice, IoSliceMut, SeekFrom};
 use std::io;
 use std::pin::Pin;
+use std::prelude::v1::*;
 
 /// A `Cursor` wraps an in-memory buffer and provides it with a
 /// [`AsyncSeek`] implementation.

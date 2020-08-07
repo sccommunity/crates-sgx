@@ -1,6 +1,7 @@
 use crate::msgs::codec;
 use crate::msgs::codec::{Codec, Reader};
 use crate::key;
+use std::prelude::v1::*;
 /// An externally length'd payload
 #[derive(Debug, Clone, PartialEq)]
 pub struct Payload(pub Vec<u8>);

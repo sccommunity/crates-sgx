@@ -2,6 +2,7 @@ use crate::fs::asyncify;
 
 use std::io;
 use std::path::Path;
+use std::prelude::v1::*;
 
 /// Creates a new hard link on the filesystem.
 ///

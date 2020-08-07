@@ -1,11 +1,11 @@
 use std::iter::Enumerate;
 use std::mem::size_of;
 
-pub(crate) fn third<A, B, C>(t: (A, B, C)) -> C {
+pub fn third<A, B, C>(t: (A, B, C)) -> C {
     t.2
 }
 
-pub(crate) fn enumerate<I>(iterable: I) -> Enumerate<I::IntoIter>
+pub fn enumerate<I>(iterable: I) -> Enumerate<I::IntoIter>
 where
     I: IntoIterator,
 {
@@ -13,7 +13,7 @@ where
 }
 
 /// return the number of steps from a to b
-pub(crate) fn ptrdistance<T>(a: *const T, b: *const T) -> usize {
+pub fn ptrdistance<T>(a: *const T, b: *const T) -> usize {
     debug_assert!(a as usize <= b as usize);
     (b as usize - a as usize) / size_of::<T>()
 }

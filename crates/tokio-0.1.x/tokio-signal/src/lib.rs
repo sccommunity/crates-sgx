@@ -75,13 +75,21 @@
 //! # }
 //! # fn main() {}
 //! ```
-
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
+extern crate sgx_signal;
+extern crate sgx_libc as libc;
 extern crate futures;
 extern crate mio;
 extern crate tokio_executor;
 extern crate tokio_io;
 extern crate tokio_reactor;
-
+use std::prelude::v1::*;
 use std::io;
 
 use futures::stream::Stream;
@@ -130,7 +138,7 @@ pub fn ctrl_c_handle(handle: &Handle) -> IoFuture<IoStream<()>> {
     fn ctrl_c_imp(handle: &Handle) -> IoFuture<IoStream<()>> {
         let handle = handle.clone();
         Box::new(future::lazy(move || {
-            unix::Signal::with_handle(unix::libc::SIGINT, &handle)
+            unix::Signal::with_handle(libc::SIGINT, &handle)
                 .map(|x| Box::new(x.map(|_| ())) as Box<dyn Stream<Item = _, Error = _> + Send>)
         }))
     }

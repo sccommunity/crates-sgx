@@ -23,11 +23,19 @@ categories = ["asynchronous", "network-programming"]
 license = "MIT"
 repository = "https://github.com/tower-rs/tower"
 [dependencies.tokio]
+path = "../tokio/tokio"
 version = "0.2"
 optional = true
 
 [dependencies.tower-service]
 version = "0.3"
+path = "../tower/tower-service"
+
+
+[dependencies]
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 
 [features]
 connect = ["tokio"]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]

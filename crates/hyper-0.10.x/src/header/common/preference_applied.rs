@@ -1,4 +1,5 @@
 use std::fmt;
+use std::prelude::v1::*;
 use header::{Header, HeaderFormat, Preference};
 use header::parsing::{from_comma_delimited, fmt_comma_delimited};
 
@@ -85,12 +86,13 @@ impl fmt::Display for PreferenceApplied {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use header::{HeaderFormat, Preference};
     use super::*;
-
-    #[test]
+    
+    use crates_unittest::test_case;
+    #[test_case]
     fn test_format_ignore_parameters() {
         assert_eq!(
             format!("{}", &PreferenceApplied(vec![Preference::Extension(

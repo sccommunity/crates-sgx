@@ -2,6 +2,10 @@
 #![cfg_attr(test, deny(warnings))]
 #![cfg_attr(feature = "heap_size", feature(custom_derive, plugin))]
 #![cfg_attr(feature = "heap_size", plugin(heapsize_plugin))]
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
 
 //! Language tags can be used identify human languages, scripts e.g. Latin script, countries and
 //! other regions.
@@ -51,14 +55,16 @@
 
 #[cfg(feature = "heap_size")]
 extern crate heapsize;
-
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
 use std::ascii::AsciiExt;
 use std::cmp::Ordering;
 use std::collections::{BTreeMap, BTreeSet};
 use std::error::Error as ErrorTrait;
 use std::fmt::{self, Display};
 use std::iter::FromIterator;
-
+use std::prelude::v1::*;
 fn is_alphabetic(s: &str) -> bool {
     s.chars().all(|x| x >= 'A' && x <= 'Z' || x >= 'a' && x <= 'z')
 }

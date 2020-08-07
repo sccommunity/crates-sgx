@@ -1,6 +1,6 @@
 use futures::Future;
 use SpawnError;
-
+use std::prelude::v1::Box;
 /// A value that executes futures.
 ///
 /// The [`spawn`] function is used to submit a future to an executor. Once

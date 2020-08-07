@@ -18,5 +18,13 @@ keywords = ["regex", "match", "pattern", "streaming"]
 azure-devops = { project = "eliza0132/eliza", pipeline = "hawkw.matchers", build = "1" }
 maintenance = { status = "experimental" }
 
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+enclave_unit_test = ["crates_unittest", "inventory"]
 [dependencies]
-regex-automata = "0.1"
+#regex-automata = "0.1"
+regex-automata = { path = "../regex-automata" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+crates_unittest = { git = "https://github.com/Zha0Chan/crates-sgx-unittest.git", optional = true, default-features = true}
+inventory = { version = "0.1.6", optional = true }

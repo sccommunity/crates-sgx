@@ -37,15 +37,26 @@
 #![deny(missing_docs)]
 #![deny(missing_debug_implementations)]
 
+
+
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
+
 extern crate futures;
-extern crate num_cpus;
+//extern crate num_cpus;
 
 use std::panic::{self, AssertUnwindSafe};
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, SgxMutex as Mutex};
 use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use std::sync::mpsc;
 use std::thread;
 use std::fmt;
+use std::prelude::v1::*;
 
 use futures::{IntoFuture, Future, Poll, Async};
 use futures::future::{lazy, Executor, ExecuteError};
@@ -81,7 +92,7 @@ pub struct CpuPool {
 /// of CPUs on the host. But you can change it until you call `create()`.
 pub struct Builder {
     pool_size: usize,
-    stack_size: usize,
+    //stack_size: usize,
     name_prefix: Option<String>,
     after_start: Option<Arc<Fn() + Send + Sync>>,
     before_stop: Option<Arc<Fn() + Send + Sync>>,
@@ -345,8 +356,8 @@ impl Builder {
     /// of CPUs on the host.
     pub fn new() -> Builder {
         Builder {
-            pool_size: num_cpus::get(),
-            stack_size: 0,
+            pool_size: 1,//num_cpus::get(),
+            //stack_size: 0,
             name_prefix: None,
             after_start: None,
             before_stop: None,
@@ -363,7 +374,7 @@ impl Builder {
 
     /// Set stack size of threads in the pool.
     pub fn stack_size(&mut self, stack_size: usize) -> &mut Self {
-        self.stack_size = stack_size;
+        //self.stack_size = stack_size;
         self
     }
 
@@ -426,9 +437,9 @@ impl Builder {
             if let Some(ref name_prefix) = self.name_prefix {
                 thread_builder = thread_builder.name(format!("{}{}", name_prefix, counter));
             }
-            if self.stack_size > 0 {
-                thread_builder = thread_builder.stack_size(self.stack_size);
-            }
+            // if self.stack_size > 0 {
+            //     thread_builder = thread_builder.stack_size(self.stack_size);
+            // }
             thread_builder.spawn(move || inner.work(after_start, before_stop)).unwrap();
         }
         return pool

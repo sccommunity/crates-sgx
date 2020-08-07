@@ -480,22 +480,23 @@ impl fmt::Debug for Mdf {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
-    #[cfg(test)]
+    //#[cfg(test)]
     extern crate num_iter;
-
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;	
     use self::num_iter::range_inclusive;
     use super::{Mdf, Of};
     use super::{YearFlags, A, AG, B, BA, C, CB, D, DC, E, ED, F, FE, G, GF};
     use std::u32;
     use Weekday;
-
+    
     const NONLEAP_FLAGS: [YearFlags; 7] = [A, B, C, D, E, F, G];
     const LEAP_FLAGS: [YearFlags; 7] = [AG, BA, CB, DC, ED, FE, GF];
     const FLAGS: [YearFlags; 14] = [A, B, C, D, E, F, G, AG, BA, CB, DC, ED, FE, GF];
 
-    #[test]
+    #[test_case]
     fn test_year_flags_ndays_from_year() {
         assert_eq!(YearFlags::from_year(2014).ndays(), 365);
         assert_eq!(YearFlags::from_year(2012).ndays(), 366);
@@ -512,7 +513,7 @@ mod tests {
         assert_eq!(YearFlags::from_year(-400).ndays(), 366); // 401 BCE
     }
 
-    #[test]
+    #[test_case]
     fn test_year_flags_nisoweeks() {
         assert_eq!(A.nisoweeks(), 52);
         assert_eq!(B.nisoweeks(), 52);
@@ -530,7 +531,7 @@ mod tests {
         assert_eq!(GF.nisoweeks(), 52);
     }
 
-    #[test]
+    #[test_case]
     fn test_of() {
         fn check(expected: bool, flags: YearFlags, ordinal1: u32, ordinal2: u32) {
             for ordinal in range_inclusive(ordinal1, ordinal2) {
@@ -561,7 +562,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_mdf_valid() {
         fn check(expected: bool, flags: YearFlags, month1: u32, day1: u32, month2: u32, day2: u32) {
             for month in range_inclusive(month1, month2) {
@@ -647,7 +648,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_of_fields() {
         for &flags in FLAGS.iter() {
             for ordinal in range_inclusive(1u32, 366) {
@@ -659,7 +660,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_of_with_fields() {
         fn check(flags: YearFlags, ordinal: u32) {
             let of = Of::new(ordinal, flags);
@@ -683,7 +684,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_of_weekday() {
         assert_eq!(Of::new(1, A).weekday(), Weekday::Sun);
         assert_eq!(Of::new(1, B).weekday(), Weekday::Sat);
@@ -711,7 +712,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_mdf_fields() {
         for &flags in FLAGS.iter() {
             for month in range_inclusive(1u32, 12) {
@@ -726,7 +727,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_mdf_with_fields() {
         fn check(flags: YearFlags, month: u32, day: u32) {
             let mdf = Mdf::new(month, day, flags);
@@ -768,7 +769,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_of_isoweekdate_raw() {
         for &flags in FLAGS.iter() {
             // January 4 should be in the first week
@@ -777,7 +778,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_of_to_mdf() {
         for i in range_inclusive(0u32, 8192) {
             let of = Of(i);
@@ -785,7 +786,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_mdf_to_of() {
         for i in range_inclusive(0u32, 8192) {
             let mdf = Mdf(i);
@@ -793,7 +794,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_of_to_mdf_to_of() {
         for i in range_inclusive(0u32, 8192) {
             let of = Of(i);
@@ -803,7 +804,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_mdf_to_of_to_mdf() {
         for i in range_inclusive(0u32, 8192) {
             let mdf = Mdf(i);

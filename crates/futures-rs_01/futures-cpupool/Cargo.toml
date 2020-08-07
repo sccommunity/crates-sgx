@@ -12,14 +12,16 @@ computation on the threads themselves.
 """
 
 [dependencies]
-num_cpus = "1.0"
+#num_cpus = "1.0"
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true, features = ["thread"] }
 
 [dependencies.futures]
 path = ".."
 version = "0.1"
 default-features = false
-features = ["use_std"]
 
 [features]
-default = ["with-deprecated"]
+default = ["with-deprecated", "mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
 with-deprecated = ["futures/with-deprecated"]
+

@@ -20,7 +20,7 @@ fn main() {
             _ => {}
         }
     }
-    let version = release.unwrap().split('-').next().unwrap();;
+    let version = release.unwrap().split('-').next().unwrap();
     let mut version_components = version.split('.').map(|s| s.parse::<u32>().unwrap());
     let version = (
         version_components.next().unwrap(),

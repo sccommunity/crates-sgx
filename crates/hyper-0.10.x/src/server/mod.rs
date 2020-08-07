@@ -113,7 +113,7 @@ use std::net::{SocketAddr, ToSocketAddrs, Shutdown};
 use std::thread::{self, JoinHandle};
 use std::time::Duration;
 
-use num_cpus;
+//use num_cpus;
 
 pub use self::request::Request;
 pub use self::response::Response;
@@ -221,7 +221,8 @@ impl<S: SslServer + Clone + Send> Server<HttpsListener<S>> {
 impl<L: NetworkListener + Send + 'static> Server<L> {
     /// Binds to a socket and starts handling connections.
     pub fn handle<H: Handler + 'static>(self, handler: H) -> ::Result<Listening> {
-        self.handle_threads(handler, num_cpus::get() * 5 / 4)
+        //self.handle_threads(handler, num_cpus::get() * 5 / 4)
+        self.handle_threads(handler, 1 * 5 / 4)
     }
 
     /// Binds to a socket and starts handling connections with the provided
@@ -434,17 +435,18 @@ impl<F> Handler for F where F: Fn(Request, Response<Fresh>), F: Sync + Send {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use header::Headers;
     use method::Method;
     use mock::MockStream;
     use status::StatusCode;
     use uri::RequestUri;
-
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
     use super::{Request, Response, Fresh, Handler, Worker};
 
-    #[test]
+    #[test_case]
     fn test_check_continue_default() {
         let mut mock = MockStream::with_input(b"\
             POST /upload HTTP/1.1\r\n\
@@ -466,7 +468,7 @@ mod tests {
         assert_eq!(&mock.write[cont.len()..cont.len() + res.len()], res);
     }
 
-    #[test]
+    #[test_case]
     fn test_check_continue_reject() {
         struct Reject;
         impl Handler for Reject {

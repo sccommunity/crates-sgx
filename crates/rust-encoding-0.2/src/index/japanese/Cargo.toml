@@ -7,11 +7,15 @@ description = "Index tables for Japanese character encodings"
 homepage = "https://github.com/lifthrasiir/rust-encoding"
 readme = "../../../README.md"
 license = "CC0-1.0"
-
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
 [lib]
 name = "encoding_index_japanese"
 path = "lib.rs"
 
+[dependencies]
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 [dependencies.encoding_index_tests]
 # TODO consider using dev-dependencies instead (Cargo issue #860)
 version = "0.1.4"

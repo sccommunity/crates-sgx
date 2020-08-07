@@ -1,3 +1,5 @@
+use std::prelude::v1::*;
+
 header! {
     /// `User-Agent` header, defined in
     /// [RFC7231](http://tools.ietf.org/html/rfc7231#section-5.5.3)
@@ -31,6 +33,7 @@ header! {
     /// let mut headers = Headers::new();
     /// headers.set(UserAgent("hyper/0.5.2".to_owned()));
     /// ```
+    
     (UserAgent, "User-Agent") => [String]
 
     test_user_agent {

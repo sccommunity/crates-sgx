@@ -11,8 +11,7 @@ use crate::traits::{Compare, CompareResult};
 
 /// Recognizes one character.
 ///
-/// *complete version*: Will return an error if there's not enough input data.
-///
+/// *Complete version*: Will return an error if there's not enough input data.
 /// # Example
 ///
 /// ```
@@ -40,8 +39,7 @@ where
 
 /// Recognizes one of the provided characters.
 ///
-/// *complete version*: Will return an error if there's not enough input data.
-///
+/// *Complete version*: Will return an error if there's not enough input data.
 /// # Example
 ///
 /// ```
@@ -67,8 +65,7 @@ where
 
 /// Recognizes a character that is not in the provided characters.
 ///
-/// *complete version*: Will return an error if there's not enough input data.
-///
+/// *Complete version*: Will return an error if there's not enough input data.
 /// # Example
 ///
 /// ```
@@ -94,8 +91,7 @@ where
 
 /// Recognizes the string "\r\n".
 ///
-/// *complete version*: Will return an error if there's not enough input data.
-///
+/// *Complete version*: Will return an error if there's not enough input data.
 /// # Example
 ///
 /// ```
@@ -130,8 +126,7 @@ where
 //FIXME: there's still an incomplete
 /// Recognizes a string of any char except '\r' or '\n'.
 ///
-/// *complete version*: Will return an error if there's not enough input data.
-///
+/// *Complete version*: Will return an error if there's not enough input data.
 /// # Example
 ///
 /// ```
@@ -183,8 +178,7 @@ where
 
 /// Recognizes an end of line (both '\n' and '\r\n').
 ///
-/// *complete version*: Will return an error if there's not enough input data.
-///
+/// *Complete version*: Will return an error if there's not enough input data.
 /// # Example
 ///
 /// ```
@@ -221,8 +215,7 @@ where
 
 /// Matches a newline character '\n'.
 ///
-/// *complete version*: Will return an error if there's not enough input data.
-///
+/// *Complete version*: Will return an error if there's not enough input data.
 /// # Example
 ///
 /// ```
@@ -248,8 +241,7 @@ where
 
 /// Matches a tab character '\t'.
 ///
-/// *complete version*: Will return an error if there's not enough input data.
-///
+/// *Complete version*: Will return an error if there's not enough input data.
 /// # Example
 ///
 /// ```
@@ -276,8 +268,7 @@ where
 /// Matches one byte as a character. Note that the input type will
 /// accept a `str`, but not a `&[u8]`, unlike many other nom parsers.
 ///
-/// *complete version*: Will return an error if there's not enough input data.
-///
+/// *Complete version*: Will return an error if there's not enough input data.
 /// # Example
 ///
 /// ```
@@ -308,9 +299,8 @@ where
 
 /// Recognizes zero or more lowercase and uppercase ASCII alphabetic characters: a-z, A-Z
 ///
-/// *complete version*: Will return the whole input if no terminating token is found (a non
+/// *Complete version*: Will return the whole input if no terminating token is found (a non
 /// alphabetic character).
-///
 /// # Example
 ///
 /// ```
@@ -336,9 +326,8 @@ where
 
 /// Recognizes one or more lowercase and uppercase ASCII alphabetic characters: a-z, A-Z
 ///
-/// *complete version*: Will return an error if there's not enough input data,
+/// *Complete version*: Will return an error if there's not enough input data,
 /// or the whole input if no terminating token is found  (a non alphabetic character).
-///
 /// # Example
 ///
 /// ```
@@ -364,9 +353,8 @@ where
 
 /// Recognizes zero or more ASCII numerical characters: 0-9
 ///
-/// *complete version*: Will return an error if there's not enough input data,
+/// *Complete version*: Will return an error if there's not enough input data,
 /// or the whole input if no terminating token is found (a non digit character).
-///
 /// # Example
 ///
 /// ```
@@ -393,9 +381,8 @@ where
 
 /// Recognizes one or more ASCII numerical characters: 0-9
 ///
-/// *complete version*: Will return an error if there's not enough input data,
+/// *Complete version*: Will return an error if there's not enough input data,
 /// or the whole input if no terminating token is found (a non digit character).
-///
 /// # Example
 ///
 /// ```
@@ -421,8 +408,7 @@ where
 
 /// Recognizes zero or more ASCII hexadecimal numerical characters: 0-9, A-F, a-f
 ///
-/// *complete version*: Will return the whole input if no terminating token is found (a non hexadecimal digit character).
-///
+/// *Complete version*: Will return the whole input if no terminating token is found (a non hexadecimal digit character).
 /// # Example
 ///
 /// ```
@@ -447,9 +433,8 @@ where
 }
 /// Recognizes one or more ASCII hexadecimal numerical characters: 0-9, A-F, a-f
 ///
-/// *complete version*: Will return an error if there's not enough input data,
+/// *Complete version*: Will return an error if there's not enough input data,
 /// or the whole input if no terminating token is found (a non hexadecimal digit character).
-///
 /// # Example
 ///
 /// ```
@@ -475,9 +460,8 @@ where
 
 /// Recognizes zero or more octal characters: 0-7
 ///
-/// *complete version*: Will return the whole input if no terminating token is found (a non octal
+/// *Complete version*: Will return the whole input if no terminating token is found (a non octal
 /// digit character).
-///
 /// # Example
 ///
 /// ```
@@ -503,9 +487,8 @@ where
 
 /// Recognizes one or more octal characters: 0-7
 ///
-/// *complete version*: Will return an error if there's not enough input data,
+/// *Complete version*: Will return an error if there's not enough input data,
 /// or the whole input if no terminating token is found (a non octal digit character).
-///
 /// # Example
 ///
 /// ```
@@ -531,9 +514,8 @@ where
 
 /// Recognizes zero or more ASCII numerical and alphabetic characters: 0-9, a-z, A-Z
 ///
-/// *complete version*: Will return the whole input if no terminating token is found (a non
+/// *Complete version*: Will return the whole input if no terminating token is found (a non
 /// alphanumerical character).
-///
 /// # Example
 ///
 /// ```
@@ -559,9 +541,8 @@ where
 
 /// Recognizes one or more ASCII numerical and alphabetic characters: 0-9, a-z, A-Z
 ///
-/// *complete version*: Will return an error if there's not enough input data,
+/// *Complete version*: Will return an error if there's not enough input data,
 /// or the whole input if no terminating token is found (a non alphanumerical character).
-///
 /// # Example
 ///
 /// ```
@@ -587,9 +568,8 @@ where
 
 /// Recognizes zero or more spaces and tabs.
 ///
-/// *complete version*: Will return the whole input if no terminating token is found (a non space
+/// *Complete version*: Will return the whole input if no terminating token is found (a non space
 /// character).
-///
 /// # Example
 ///
 /// ```
@@ -618,9 +598,8 @@ where
 
 /// Recognizes one or more spaces and tabs.
 ///
-/// *complete version*: Will return an error if there's not enough input data,
+/// *Complete version*: Will return an error if there's not enough input data,
 /// or the whole input if no terminating token is found (a non space character).
-///
 /// # Example
 ///
 /// ```
@@ -652,9 +631,8 @@ where
 
 /// Recognizes zero or more spaces, tabs, carriage returns and line feeds.
 ///
-/// *complete version*: will return the whole input if no terminating token is found (a non space
+/// *Complete version*: will return the whole input if no terminating token is found (a non space
 /// character).
-///
 /// # Example
 ///
 /// ```
@@ -683,9 +661,8 @@ where
 
 /// Recognizes one or more spaces, tabs, carriage returns and line feeds.
 ///
-/// *complete version*: will return an error if there's not enough input data,
+/// *Complete version*: will return an error if there's not enough input data,
 /// or the whole input if no terminating token is found (a non space character).
-///
 /// # Example
 ///
 /// ```
@@ -715,11 +692,12 @@ where
   )
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
   use super::*;
   use crate::internal::Err;
-
+  use std::string::ToString;
+  use crates_unittest::test_case;
   macro_rules! assert_parse(
     ($left: expr, $right: expr) => {
       let res: $crate::IResult<_, _, (_, ErrorKind)> = $left;
@@ -727,7 +705,7 @@ mod tests {
     };
   );
 
-  #[test]
+  #[test_case]
   fn character() {
     let empty: &[u8] = b"";
     let a: &[u8] = b"abcd";
@@ -772,7 +750,7 @@ mod tests {
   }
 
   #[cfg(feature = "alloc")]
-  #[test]
+  #[test_case]
   fn character_s() {
     let empty = "";
     let a = "abcd";
@@ -805,7 +783,7 @@ mod tests {
   }
 
   use crate::traits::Offset;
-  #[test]
+  #[test_case]
   fn offset() {
     let a = &b"abcd;"[..];
     let b = &b"1234;"[..];
@@ -858,7 +836,7 @@ mod tests {
     }
   }
 
-  #[test]
+  #[test_case]
   fn is_not_line_ending_bytes() {
     let a: &[u8] = b"ab12cd\nefgh";
     assert_eq!(
@@ -885,7 +863,7 @@ mod tests {
     );
   }
 
-  #[test]
+  #[test_case]
   fn is_not_line_ending_str() {
     /*
     let a: &str = "ab12cd\nefgh";
@@ -911,7 +889,7 @@ mod tests {
     assert_eq!(not_line_ending::<_, (_, ErrorKind)>(g2), Ok(("", g2)));
   }
 
-  #[test]
+  #[test_case]
   fn hex_digit_test() {
     let i = &b"0123456789abcdefABCDEF;"[..];
     assert_parse!(hex_digit1(i), Ok((&b";"[..], &i[..i.len() - 1])));
@@ -942,7 +920,7 @@ mod tests {
     assert!(!crate::character::is_hex_digit(b'\x60'));
   }
 
-  #[test]
+  #[test_case]
   fn oct_digit_test() {
     let i = &b"01234567;"[..];
     assert_parse!(oct_digit1(i), Ok((&b";"[..], &i[..i.len() - 1])));
@@ -965,7 +943,7 @@ mod tests {
     assert!(!crate::character::is_oct_digit(b'\x60'));
   }
 
-  #[test]
+  #[test_case]
   fn full_line_windows() {
     //let not_line_ending = |i:&[u8]| take_while(|c| c != b'\r' && c != b'\n')(i);
 
@@ -978,7 +956,7 @@ mod tests {
     assert_eq!(output, Ok((&b""[..], (&b"abc"[..], &b"\r\n"[..]))));
   }
 
-  #[test]
+  #[test_case]
   fn full_line_unix() {
     //let not_line_ending = |i:&[u8]| take_while(|c| c != b'\n')(i);
     named!(
@@ -990,21 +968,21 @@ mod tests {
     assert_eq!(output, Ok((&b""[..], (&b"abc"[..], &b"\n"[..]))));
   }
 
-  #[test]
+  #[test_case]
   fn check_windows_lineending() {
     let input = b"\r\n";
     let output = line_ending(&input[..]);
     assert_parse!(output, Ok((&b""[..], &b"\r\n"[..])));
   }
 
-  #[test]
+  #[test_case]
   fn check_unix_lineending() {
     let input = b"\n";
     let output = line_ending(&input[..]);
     assert_parse!(output, Ok((&b""[..], &b"\n"[..])));
   }
 
-  #[test]
+  #[test_case]
   fn cr_lf() {
     assert_parse!(crlf(&b"\r\na"[..]), Ok((&b"a"[..], &b"\r\n"[..])));
     assert_parse!(
@@ -1027,7 +1005,7 @@ mod tests {
     );
   }
 
-  #[test]
+  #[test_case]
   fn end_of_line() {
     assert_parse!(line_ending(&b"\na"[..]), Ok((&b"a"[..], &b"\n"[..])));
     assert_parse!(line_ending(&b"\r\na"[..]), Ok((&b"a"[..], &b"\r\n"[..])));

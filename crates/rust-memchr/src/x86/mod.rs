@@ -1,8 +1,9 @@
-use fallback;
+//use fallback;
 
 // We only use AVX when we can detect at runtime whether it's available, which
 // requires std.
-#[cfg(feature = "std")]
+//#[cfg(feature = "use_std")]
+//#[cfg(not(feature = "libc"))]
 mod avx;
 mod sse2;
 
@@ -27,7 +28,7 @@ mod sse2;
 // probably can't be inlined anyway---unless you've compiled your entire
 // program with AVX2 enabled. However, even then, the various memchr
 // implementations aren't exactly small, so inlining might not help anyway!
-#[cfg(feature = "std")]
+//#[cfg(feature = "use_std")]
 macro_rules! ifunc {
     ($fnty:ty, $name:ident, $haystack:ident, $($needle:ident),+) => {{
         use std::mem;
@@ -39,13 +40,13 @@ macro_rules! ifunc {
 
         fn detect($($needle: u8),+, haystack: &[u8]) -> Option<usize> {
             let fun =
-                if cfg!(memchr_runtime_avx) && is_x86_feature_detected!("avx2") {
-                    avx::$name as FnRaw
-                } else if cfg!(memchr_runtime_sse2) {
-                    sse2::$name as FnRaw
-                } else {
-                    fallback::$name as FnRaw
-                };
+//                if cfg!(memchr_runtime_avx) && is_x86_feature_detected!("avx2") {
+                    avx::$name as FnRaw;
+//                } else if cfg!(memchr_runtime_sse2) {
+//                    sse2::$name as FnRaw
+//                } else {
+//                    fallback::$name as FnRaw
+//                };
             FN.store(fun as FnRaw, Ordering::Relaxed);
             unsafe {
                 mem::transmute::<FnRaw, $fnty>(fun)($($needle),+, haystack)
@@ -63,16 +64,16 @@ macro_rules! ifunc {
 // runtime CPU feature detection has been explicitly disabled, then just call
 // our optimized SSE2 routine directly. SSE2 is avalbale on all x86_64 targets,
 // so no CPU feature detection is necessary.
-#[cfg(not(feature = "std"))]
-macro_rules! ifunc {
-    ($fnty:ty, $name:ident, $haystack:ident, $($needle:ident),+) => {{
-        if cfg!(memchr_runtime_sse2) {
-            unsafe { sse2::$name($($needle),+, $haystack) }
-        } else {
-            fallback::$name($($needle),+, $haystack)
-        }
-    }}
-}
+//#[cfg(not(feature = "use_std"))]
+//macro_rules! ifunc {
+//    ($fnty:ty, $name:ident, $haystack:ident, $($needle:ident),+) => {{
+//        if cfg!(memchr_runtime_sse2) {
+//            unsafe { sse2::$name($($needle),+, $haystack) }
+//        } else {
+//            fallback::$name($($needle),+, $haystack)
+//        }
+//    }}
+//}
 
 #[inline(always)]
 pub fn memchr(n1: u8, haystack: &[u8]) -> Option<usize> {

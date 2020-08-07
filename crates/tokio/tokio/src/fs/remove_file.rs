@@ -2,6 +2,7 @@ use crate::fs::asyncify;
 
 use std::io;
 use std::path::Path;
+use std::prelude::v1::*;
 
 /// Removes a file from the filesystem.
 ///

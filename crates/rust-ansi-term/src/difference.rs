@@ -137,21 +137,23 @@ impl Difference {
     }
 }
 
+    
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod test {
+    use std::prelude::v1::*;
     use super::*;
     use super::Difference::*;
     use style::Colour::*;
     use style::Style;
-
+    use crates_unittest::{ test_case };
     fn style() -> Style {
         Style::new()
     }
 
     macro_rules! test {
         ($name: ident: $first: expr; $next: expr => $result: expr) => {
-            #[test]
+            #[test_case]
             fn $name() {
                 assert_eq!($result, Difference::between(&$first, &$next));
             }

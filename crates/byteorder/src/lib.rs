@@ -69,11 +69,19 @@ cases.
 
 // For the 'try!' macro, until we bump MSRV past 1.12.
 #![allow(deprecated)]
-#![deny(missing_docs)]
-#![cfg_attr(not(feature = "std"), no_std)]
+//#![deny(missing_docs)]
+#![cfg_attr(any(not(feature = "std"),
+                all(feature = "mesalock_sgx",
+                    not(target_env = "sgx"))), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"), feature(rustc_private))]
 
-#[cfg(feature = "std")]
+#[cfg(all(feature = "std",
+          not(all(feature = "mesalock_sgx",
+                  not(target_env = "sgx")))))]
 extern crate core;
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
 
 use core::fmt::Debug;
 use core::hash::Hash;
@@ -86,6 +94,8 @@ pub use io::{ReadBytesExt, WriteBytesExt};
 #[cfg(feature = "std")]
 mod io;
 
+#[cfg(feature = "enclave_unit_test")]
+extern crate crates_unittest;
 #[inline]
 fn extend_sign(val: u64, nbytes: usize) -> i64 {
     let shift = (8 - nbytes) * 8;
@@ -2424,8 +2434,12 @@ impl ByteOrder for LittleEndian {
     }
 }
 
-#[cfg(test)]
-mod test {
+
+#[cfg(feature = "enclave_unit_test")]
+pub mod test {
+    
+    use std::prelude::v1::*;
+    use crates_unittest::{ test_case, run_inventory_tests };
     extern crate quickcheck;
     extern crate rand;
 
@@ -2451,6 +2465,11 @@ mod test {
         ($max:expr, $bytes:expr, $maxbytes:expr) => {
             ($max - 1) >> (8 * ($maxbytes - $bytes))
         };
+    }
+    
+  
+    pub fn run_tests() {
+        run_inventory_tests!();
     }
 
     #[derive(Clone, Debug)]
@@ -2504,8 +2523,8 @@ mod test {
                 #[allow(unused_imports)]
                 use super::{qc_sized, Wi128};
                 use {BigEndian, ByteOrder, LittleEndian, NativeEndian};
-
-                #[test]
+                use std::prelude::v1::*;
+                #[crates_unittest::test_case]
                 fn big_endian() {
                     fn prop(n: $ty_int) -> bool {
                         let mut buf = [0; 16];
@@ -2515,7 +2534,7 @@ mod test {
                     qc_sized(prop as fn($ty_int) -> bool, $max);
                 }
 
-                #[test]
+                #[crates_unittest::test_case]
                 fn little_endian() {
                     fn prop(n: $ty_int) -> bool {
                         let mut buf = [0; 16];
@@ -2525,7 +2544,7 @@ mod test {
                     qc_sized(prop as fn($ty_int) -> bool, $max);
                 }
 
-                #[test]
+                #[crates_unittest::test_case]
                 fn native_endian() {
                     fn prop(n: $ty_int) -> bool {
                         let mut buf = [0; 16];
@@ -2543,8 +2562,8 @@ mod test {
                 use super::{qc_sized, Wi128};
                 use core::mem::size_of;
                 use {BigEndian, ByteOrder, LittleEndian, NativeEndian};
-
-                #[test]
+                use std::prelude::v1::*;
+                #[crates_unittest::test_case]
                 fn big_endian() {
                     fn prop(n: $ty_int) -> bool {
                         let bytes = size_of::<$ty_int>();
@@ -2555,7 +2574,7 @@ mod test {
                     qc_sized(prop as fn($ty_int) -> bool, $max - 1);
                 }
 
-                #[test]
+                #[crates_unittest::test_case]
                 fn little_endian() {
                     fn prop(n: $ty_int) -> bool {
                         let bytes = size_of::<$ty_int>();
@@ -2566,7 +2585,7 @@ mod test {
                     qc_sized(prop as fn($ty_int) -> bool, $max - 1);
                 }
 
-                #[test]
+                #[crates_unittest::test_case]
                 fn native_endian() {
                     fn prop(n: $ty_int) -> bool {
                         let bytes = size_of::<$ty_int>();
@@ -3245,7 +3264,7 @@ mod test {
          $num_bytes:expr, $numbers:expr) => {
             mod $name {
                 use {BigEndian, ByteOrder, LittleEndian, NativeEndian};
-
+               
                 #[test]
                 #[should_panic]
                 fn read_big_endian() {
@@ -3417,7 +3436,7 @@ mod test {
         [0, 0]
     );
 
-    #[test]
+    #[crates_unittest::test_case]
     fn uint_bigger_buffer() {
         use {ByteOrder, LittleEndian};
         let n = LittleEndian::read_uint(&[1, 2, 3, 4, 5, 6, 7, 8], 5);
@@ -3425,15 +3444,16 @@ mod test {
     }
 }
 
-#[cfg(test)]
-#[cfg(feature = "std")]
+#[cfg(feature = "enclave_unit_test")]
+//#[cfg(feature = "std")]
 mod stdtests {
     extern crate quickcheck;
     extern crate rand;
 
     use self::quickcheck::{QuickCheck, StdGen, Testable};
     use self::rand::thread_rng;
-
+    
+ 
     fn qc_unsized<A: Testable>(f: A) {
         QuickCheck::new()
             .gen(StdGen::new(thread_rng(), 16))
@@ -3452,6 +3472,7 @@ mod stdtests {
         ($name:ident, $ty_int:ty, $max:expr,
          $bytes:expr, $read:ident, $write:ident) => {
             mod $name {
+           
                 use std::io::Cursor;
                 #[allow(unused_imports)]
                 use test::{qc_sized, Wi128};
@@ -3459,8 +3480,9 @@ mod stdtests {
                     BigEndian, LittleEndian, NativeEndian, ReadBytesExt,
                     WriteBytesExt,
                 };
-
-                #[test]
+                use std::prelude::v1::*;
+               
+                #[crates_unittest::test_case]
                 fn big_endian() {
                     fn prop(n: $ty_int) -> bool {
                         let mut wtr = vec![];
@@ -3472,7 +3494,7 @@ mod stdtests {
                     qc_sized(prop as fn($ty_int) -> bool, $max);
                 }
 
-                #[test]
+                #[crates_unittest::test_case]
                 fn little_endian() {
                     fn prop(n: $ty_int) -> bool {
                         let mut wtr = vec![];
@@ -3483,7 +3505,7 @@ mod stdtests {
                     qc_sized(prop as fn($ty_int) -> bool, $max);
                 }
 
-                #[test]
+                #[crates_unittest::test_case]
                 fn native_endian() {
                     fn prop(n: $ty_int) -> bool {
                         let mut wtr = vec![];
@@ -3502,6 +3524,8 @@ mod stdtests {
         };
         ($name:ident, $ty_int:ty, $max:expr, $read:ident, $write:ident) => {
             mod $name {
+                use std::prelude::v1::*;
+               
                 use std::io::Cursor;
                 #[allow(unused_imports)]
                 use test::{qc_sized, Wi128};
@@ -3509,8 +3533,8 @@ mod stdtests {
                     BigEndian, LittleEndian, NativeEndian, ReadBytesExt,
                     WriteBytesExt,
                 };
-
-                #[test]
+               
+                #[crates_unittest::test_case]
                 fn big_endian() {
                     fn prop(n: $ty_int) -> bool {
                         let mut wtr = vec![];
@@ -3521,7 +3545,7 @@ mod stdtests {
                     qc_sized(prop as fn($ty_int) -> bool, $max - 1);
                 }
 
-                #[test]
+                #[crates_unittest::test_case]
                 fn little_endian() {
                     fn prop(n: $ty_int) -> bool {
                         let mut wtr = vec![];
@@ -3532,7 +3556,7 @@ mod stdtests {
                     qc_sized(prop as fn($ty_int) -> bool, $max - 1);
                 }
 
-                #[test]
+                #[crates_unittest::test_case]
                 fn native_endian() {
                     fn prop(n: $ty_int) -> bool {
                         let mut wtr = vec![];
@@ -4037,8 +4061,9 @@ mod stdtests {
                 #[allow(unused_imports)]
                 use test::Wi128;
                 use {BigEndian, ByteOrder, LittleEndian, NativeEndian};
-
-                #[test]
+                use std::prelude::v1::*;
+                
+                #[crates_unittest::test_case]
                 fn big_endian() {
                     #[allow(unused_unsafe)]
                     fn prop(numbers: Vec<$ty_int>) -> bool {
@@ -4059,7 +4084,7 @@ mod stdtests {
                     qc_unsized(prop as fn(_) -> bool);
                 }
 
-                #[test]
+                #[crates_unittest::test_case]
                 fn little_endian() {
                     #[allow(unused_unsafe)]
                     fn prop(numbers: Vec<$ty_int>) -> bool {
@@ -4080,7 +4105,7 @@ mod stdtests {
                     qc_unsized(prop as fn(_) -> bool);
                 }
 
-                #[test]
+                #[crates_unittest::test_case]
                 fn native_endian() {
                     #[allow(unused_unsafe)]
                     fn prop(numbers: Vec<$ty_int>) -> bool {

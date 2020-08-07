@@ -5,7 +5,7 @@ use crate::finish::{Complete, Finish};
 use crate::lz77;
 use std::cmp;
 use std::io;
-
+use std::prelude::v1::*;
 /// The default size of a DEFLATE block.
 pub const DEFAULT_BLOCK_SIZE: usize = 1024 * 1024;
 
@@ -407,12 +407,13 @@ where
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::*;
     use std::io::Write;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn test_issues_52() {
         // see: https://github.com/sile/libflate/issues/52
         let input = crate::deflate::test_data::ISSUE_52_INPUT;

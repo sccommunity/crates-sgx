@@ -81,10 +81,11 @@ where Standard: Distribution<N>
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod test {
     use super::*;
-
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;   
     fn median(mut numbers: &mut [f64]) -> f64 {
         sort(&mut numbers);
         let mid = numbers.len() / 2;
@@ -95,7 +96,7 @@ mod test {
         numbers.sort_by(|a, b| a.partial_cmp(b).unwrap());
     }
 
-    #[test]
+    #[test_case]
     fn test_cauchy_averages() {
         // NOTE: given that the variance and mean are undefined,
         // this test does not have any rigorous statistical meaning.
@@ -116,19 +117,19 @@ mod test {
         assert!((mean - 10.0).abs() > 0.4); // not 100% certain, but probable enough
     }
 
-    #[test]
-    #[should_panic]
+    // #[test_case]
+    // #[should_panic]
     fn test_cauchy_invalid_scale_zero() {
         Cauchy::new(0.0, 0.0).unwrap();
     }
 
-    #[test]
-    #[should_panic]
+    // #[test_case]
+    // #[should_panic]
     fn test_cauchy_invalid_scale_neg() {
         Cauchy::new(0.0, -10.0).unwrap();
     }
 
-    #[test]
+    #[test_case]
     fn value_stability() {
         fn gen_samples<N: Float + core::fmt::Debug>(m: N, s: N, buf: &mut [N])
         where Standard: Distribution<N> {

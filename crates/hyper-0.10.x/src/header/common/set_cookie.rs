@@ -1,8 +1,10 @@
 use header::{Header, HeaderFormat};
 use std::fmt::{self};
 use std::str::from_utf8;
+use std::prelude::v1::*;
 
-
+#[cfg(feature = "enclave_unit_test")]
+use crates_unittest::test_case;
 /// `Set-Cookie` header, defined [RFC6265](http://tools.ietf.org/html/rfc6265#section-4.1)
 ///
 /// The Set-Cookie HTTP response header is used to send cookies from the
@@ -109,7 +111,7 @@ impl HeaderFormat for SetCookie {
     }
 }
 
-#[test]
+#[test_case]
 fn test_set_cookie_fmt() {
     use ::header::Headers;
     let mut headers = Headers::new();

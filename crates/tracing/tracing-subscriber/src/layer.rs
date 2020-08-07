@@ -3,7 +3,7 @@ use tracing_core::{
     metadata::Metadata,
     span,
     subscriber::{Interest, Subscriber},
-    Event,
+    Event, LevelFilter,
 };
 
 #[cfg(feature = "registry")]
@@ -212,13 +212,23 @@ where
     /// By default, this returns [`Interest::always()`] if [`self.enabled`] returns
     /// true, or [`Interest::never()`] if it returns false.
     ///
-    /// **Note:** This method (and [`Layer::enabled`]) determine whether a
-    /// span or event is globally enabled, _not_ whether the individual layer
-    /// will be notified about that span or event. This is intended to be used
+    /// <div class="information">
+    ///     <div class="tooltip ignore" style="">ⓘ<span class="tooltiptext">Note</span></div>
+    /// </div>
+    /// <div class="example-wrap" style="display:inline-block">
+    /// <pre class="ignore" style="white-space:normal;font:inherit;">
+    /// <strong>Note</strong>: This method (and <a href="#method.enabled">
+    /// <code>Layer::enabled</code></a>) determine whether a span or event is
+    /// globally enabled, <em>not</em> whether the individual layer will be
+    /// notified about that span or event. This is intended to be used
     /// by layers that implement filtering for the entire stack. Layers which do
     /// not wish to be notified about certain spans or events but do not wish to
     /// globally disable them should ignore those spans or events in their
-    /// [`on_event`], [`on_enter`], [`on_exit`], and other notification methods.
+    /// <a href="#method.on_event"><code>on_event</code></a>,
+    /// <a href="#method.on_enter"><code>on_enter</code></a>,
+    /// <a href="#method.on_exit"><code>on_exit</code></a>, and other notification
+    /// methods.
+    /// </pre></div>
     ///
     /// See [the trait-level documentation] for more information on filtering
     /// with `Layer`s.
@@ -254,13 +264,23 @@ where
     /// By default, this always returns `true`, allowing the wrapped subscriber
     /// to choose to disable the span.
     ///
-    /// **Note:** This method (and [`Layer::register_callsite`]) determine whether a
-    /// span or event is globally enabled, _not_ whether the individual layer
-    /// will be notified about that span or event. This is intended to be used
+    /// <div class="information">
+    ///     <div class="tooltip ignore" style="">ⓘ<span class="tooltiptext">Note</span></div>
+    /// </div>
+    /// <div class="example-wrap" style="display:inline-block">
+    /// <pre class="ignore" style="white-space:normal;font:inherit;">
+    /// <strong>Note</strong>: This method (and <a href="#method.register_callsite">
+    /// <code>Layer::register_callsite</code></a>) determine whether a span or event is
+    /// globally enabled, <em>not</em> whether the individual layer will be
+    /// notified about that span or event. This is intended to be used
     /// by layers that implement filtering for the entire stack. Layers which do
     /// not wish to be notified about certain spans or events but do not wish to
     /// globally disable them should ignore those spans or events in their
-    /// [`on_event`], [`on_enter`], [`on_exit`], and other notification methods.
+    /// <a href="#method.on_event"><code>on_event</code></a>,
+    /// <a href="#method.on_enter"><code>on_enter</code></a>,
+    /// <a href="#method.on_exit"><code>on_exit</code></a>, and other notification
+    /// methods.
+    /// </pre></div>
     ///
     ///
     /// See [the trait-level documentation] for more information on filtering
@@ -283,6 +303,14 @@ where
     /// `Attributes` and `Id`.
     fn new_span(&self, attrs: &span::Attributes<'_>, id: &span::Id, ctx: Context<'_, S>) {
         let _ = (attrs, id, ctx);
+    }
+
+    // TODO(eliza): do we want this to be a public API? If we end up moving
+    // filtering layers to a separate trait, we may no longer want `Layer`s to
+    // be able to participate in max level hinting...
+    #[doc(hidden)]
+    fn max_level_hint(&self) -> Option<LevelFilter> {
+        None
     }
 
     /// Notifies this layer that a span with the given `Id` recorded the given
@@ -503,8 +531,28 @@ pub trait SubscriberExt: Subscriber + crate::sealed::Sealed {
 /// Represents information about the current context provided to [`Layer`]s by the
 /// wrapped [`Subscriber`].
 ///
+/// To access [stored data] keyed by a span ID, implementors of the `Layer`
+/// trait should ensure that the `Subscriber` type parameter is *also* bound by the
+/// [`LookupSpan`]:
+///
+/// ```rust
+/// use tracing::Subscriber;
+/// use tracing_subscriber::{Layer, registry::LookupSpan};
+///
+/// pub struct MyLayer;
+///
+/// impl<S> Layer<S> for MyLayer
+/// where
+///     S: Subscriber + for<'a> LookupSpan<'a>,
+/// {
+///     // ...
+/// }
+/// ```
+///
 /// [`Layer`]: ../layer/trait.Layer.html
 /// [`Subscriber`]: https://docs.rs/tracing-core/latest/tracing_core/trait.Subscriber.html
+/// [stored data]: ../registry/struct.SpanRef.html
+/// [`LookupSpan`]: "../registry/trait.LookupSpan.html
 #[derive(Debug)]
 pub struct Context<'a, S> {
     subscriber: Option<&'a S>,
@@ -529,7 +577,7 @@ pub struct Identity {
 }
 
 /// An iterator over the [stored data] for all the spans in the
-/// current context, starting  the root of the trace tree and ending with
+/// current context, starting the root of the trace tree and ending with
 /// the current span.
 ///
 /// This is returned by [`Context::scope`].
@@ -576,6 +624,10 @@ where
             // otherwise, the callsite is disabled by the layer
             false
         }
+    }
+
+    fn max_level_hint(&self) -> Option<LevelFilter> {
+        std::cmp::max(self.layer.max_level_hint(), self.inner.max_level_hint())
     }
 
     fn new_span(&self, span: &span::Attributes<'_>) -> span::Id {
@@ -672,7 +724,7 @@ where
         let outer = self.layer.register_callsite(metadata);
         if outer.is_never() {
             // if the outer layer has disabled the callsite, return now so that
-            // inner layers  don't get their hopes up.
+            // inner layers don't get their hopes up.
             return outer;
         }
 
@@ -794,7 +846,10 @@ impl<S: Subscriber> SubscriberExt for S {}
 
 // === impl Context ===
 
-impl<'a, S: Subscriber> Context<'a, S> {
+impl<'a, S> Context<'a, S>
+where
+    S: Subscriber,
+{
     /// Returns the wrapped subscriber's view of the current span.
     #[inline]
     pub fn current_span(&self) -> span::Current {
@@ -847,16 +902,6 @@ impl<'a, S: Subscriber> Context<'a, S> {
     ///
     /// If this returns `None`, then no span exists for that ID (either it has
     /// closed or the ID is invalid).
-    ///
-    /// **Note**: This requires the wrapped subscriber to implement the
-    /// [`LookupSpan`] trait. `Layer` implementations that wish to use this
-    /// function can bound their `Subscriber` type parameter with
-    /// ```rust,ignore
-    /// where S: Subscriber + for<'a> LookupSpan<'a>,
-    /// ```
-    /// or similar.
-    ///
-    /// [`LookupSpan`]: ../registry/trait.LookupSpan.html
     #[inline]
     #[cfg(feature = "registry")]
     #[cfg_attr(docsrs, doc(cfg(feature = "registry")))]
@@ -873,16 +918,18 @@ impl<'a, S: Subscriber> Context<'a, S> {
     /// If this returns `None`, then no span exists for that ID (either it has
     /// closed or the ID is invalid).
     ///
-    /// **Note**: This requires the wrapped subscriber to implement the
-    /// [`LookupSpan`] trait. `Layer` implementations that wish to use this
-    /// function can bound their `Subscriber` type parameter with
-    /// ```rust,ignore
-    /// where S: Subscriber + for<'span> LookupSpan<'span>,
-    /// ```
-    /// or similar.
+    /// <div class="information">
+    ///     <div class="tooltip ignore" style="">ⓘ<span class="tooltiptext">Note</span></div>
+    /// </div>
+    /// <div class="example-wrap" style="display:inline-block">
+    /// <pre class="ignore" style="white-space:normal;font:inherit;">
+    /// <strong>Note</strong>: This requires the wrapped subscriber to implement the
+    /// <a href="../registry/trait.LookupSpan.html"><code>LookupSpan</code></a> trait.
+    /// See the documentation on <a href="./struct.Context.html"><code>Context</code>'s
+    /// declaration</a> for details.
+    /// </pre></div>
     ///
     /// [stored data]: ../registry/struct.SpanRef.html
-    /// [`LookupSpan`]: ../registry/trait.LookupSpan.html
     #[inline]
     #[cfg(feature = "registry")]
     #[cfg_attr(docsrs, doc(cfg(feature = "registry")))]
@@ -895,15 +942,16 @@ impl<'a, S: Subscriber> Context<'a, S> {
 
     /// Returns `true` if an active span exists for the given `Id`.
     ///
-    /// **Note**: This requires the wrapped subscriber to implement the
-    /// [`LookupSpan`] trait. `Layer` implementations that wish to use this
-    /// function can bound their `Subscriber` type parameter with
-    /// ```rust,ignore
-    /// where S: Subscriber + for<'a> LookupSpan<'a>,
-    /// ```
-    /// or similar.
-    ///
-    /// [`LookupSpan`]: ../registry/trait.LookupSpan.html
+    /// <div class="information">
+    ///     <div class="tooltip ignore" style="">ⓘ<span class="tooltiptext">Note</span></div>
+    /// </div>
+    /// <div class="example-wrap" style="display:inline-block">
+    /// <pre class="ignore" style="white-space:normal;font:inherit;">
+    /// <strong>Note</strong>: This requires the wrapped subscriber to implement the
+    /// <a href="../registry/trait.LookupSpan.html"><code>LookupSpan</code></a> trait.
+    /// See the documentation on <a href="./struct.Context.html"><code>Context</code>'s
+    /// declaration</a> for details.
+    /// </pre></div>
     #[inline]
     #[cfg(feature = "registry")]
     #[cfg_attr(docsrs, doc(cfg(feature = "registry")))]
@@ -919,16 +967,18 @@ impl<'a, S: Subscriber> Context<'a, S> {
     ///
     /// If this returns `None`, then we are not currently within a span.
     ///
-    /// **Note**: This requires the wrapped subscriber to implement the
-    /// [`LookupSpan`] trait. `Layer` implementations that wish to use this
-    /// function can bound their `Subscriber` type parameter with
-    /// ```rust,ignore
-    /// where S: Subscriber + for<'span> LookupSpan<'span>,
-    /// ```
-    /// or similar.
+    /// <div class="information">
+    ///     <div class="tooltip ignore" style="">ⓘ<span class="tooltiptext">Note</span></div>
+    /// </div>
+    /// <div class="example-wrap" style="display:inline-block">
+    /// <pre class="ignore" style="white-space:normal;font:inherit;">
+    /// <strong>Note</strong>: This requires the wrapped subscriber to implement the
+    /// <a href="../registry/trait.LookupSpan.html"><code>LookupSpan</code></a> trait.
+    /// See the documentation on <a href="./struct.Context.html"><code>Context</code>'s
+    /// declaration</a> for details.
+    /// </pre></div>
     ///
     /// [stored data]: ../registry/struct.SpanRef.html
-    /// [`LookupSpan`]: ../registry/trait.LookupSpan.html
     #[inline]
     #[cfg(feature = "registry")]
     #[cfg_attr(docsrs, doc(cfg(feature = "registry")))]
@@ -949,21 +999,23 @@ impl<'a, S: Subscriber> Context<'a, S> {
     }
 
     /// Returns an iterator over the [stored data] for all the spans in the
-    /// current context, starting  the root of the trace tree and ending with
+    /// current context, starting the root of the trace tree and ending with
     /// the current span.
     ///
-    /// If this iterator is empty, then there are no spans in the current context
+    /// If this iterator is empty, then there are no spans in the current context.
     ///
-    /// **Note**: This requires the wrapped subscriber to implement the
-    /// [`LookupSpan`] trait. `Layer` implementations that wish to use this
-    /// function can bound their `Subscriber` type parameter with
-    /// ```rust,ignore
-    /// where S: Subscriber + for<'span> LookupSpan<'span>,
-    /// ```
-    /// or similar.
+    /// <div class="information">
+    ///     <div class="tooltip ignore" style="">ⓘ<span class="tooltiptext">Note</span></div>
+    /// </div>
+    /// <div class="example-wrap" style="display:inline-block">
+    /// <pre class="ignore" style="white-space:normal;font:inherit;">
+    /// <strong>Note</strong>: This requires the wrapped subscriber to implement the
+    /// <a href="../registry/trait.LookupSpan.html"><code>LookupSpan</code></a> trait.
+    /// See the documentation on <a href="./struct.Context.html"><code>Context</code>'s
+    /// declaration</a> for details.
+    /// </pre></div>
     ///
     /// [stored data]: ../registry/struct.SpanRef.html
-    /// [`LookupSpan`]: ../registry/trait.LookupSpan.html
     #[cfg(feature = "registry")]
     #[cfg_attr(docsrs, doc(cfg(feature = "registry")))]
     pub fn scope(&self) -> Scope<'_, S>
@@ -1138,7 +1190,7 @@ pub(crate) mod tests {
         assert_eq!(&layer.0, "layer_1");
         let layer = Subscriber::downcast_ref::<StringLayer2>(&s).expect("layer 2 should downcast");
         assert_eq!(&layer.0, "layer_2");
-        let layer = Subscriber::downcast_ref::<StringLayer3>(&s).expect("layer 13 should downcast");
+        let layer = Subscriber::downcast_ref::<StringLayer3>(&s).expect("layer 3 should downcast");
         assert_eq!(&layer.0, "layer_3");
     }
 }

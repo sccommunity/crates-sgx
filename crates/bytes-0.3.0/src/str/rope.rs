@@ -2,7 +2,7 @@ use {Bytes, ByteBuf, Source, BufError};
 use traits::{Buf, ByteStr, MutBuf, MutBufExt, ToBytes};
 use std::{cmp, mem, ops};
 use std::sync::Arc;
-
+use std::prelude::v1::*;
 // The implementation is mostly a port of the implementation found in the Java
 // protobuf lib.
 
@@ -302,7 +302,7 @@ pub struct RopeBuf {
     // escape (which it shouldn't) it is safe. Doing this properly would
     // require HKT.
     pieces: PieceIter<'static>,
-    leaf_buf: Option<Box<Buf+'static>>,
+    leaf_buf: Option<Box<dyn Buf+'static>>,
 }
 
 impl RopeBuf {

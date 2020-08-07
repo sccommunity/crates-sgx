@@ -24,7 +24,7 @@ use crate::checksum;
 use crate::gzip::{Header, Trailer};
 use crate::non_blocking::deflate;
 use std::io::{self, Read};
-
+use std::prelude::v1::*;
 /// GZIP decoder which supports non-blocking I/O.
 #[derive(Debug)]
 pub struct Decoder<R> {
@@ -152,19 +152,20 @@ impl<R: Read> Read for Decoder<R> {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::*;
     use crate::gzip::Encoder;
     use crate::util::{nb_read_to_end, WouldBlockReader};
     use std::io;
-
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
     fn decode_all(buf: &[u8]) -> io::Result<Vec<u8>> {
         let decoder = Decoder::new(WouldBlockReader::new(buf));
         nb_read_to_end(decoder)
     }
 
-    #[test]
+    #[test_case]
     fn encode_works() {
         let plain = b"Hello World! Hello GZIP!!";
         let mut encoder = Encoder::new(Vec::new()).unwrap();
@@ -173,7 +174,7 @@ mod tests {
         assert_eq!(decode_all(&encoded).unwrap(), plain);
     }
 
-    #[test]
+    #[test_case]
     fn decode_works_noncompressed_block_offset_sync() {
         let encoded = include_bytes!("../../data/noncompressed_block_offset_sync/offset.gz");
         let decoded = include_bytes!("../../data/noncompressed_block_offset_sync/offset");

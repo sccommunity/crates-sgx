@@ -6,8 +6,11 @@ use h2_support::prelude::*;
 use h2_support::util::yield_once;
 use std::task::Poll;
 use tokio::sync::oneshot;
+use std::string::ToString;
+use crates_unittest::{ test_case };
+use std::prelude::v1::*;
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn send_recv_headers_only() {
     let _ = env_logger::try_init();
 
@@ -40,7 +43,7 @@ async fn send_recv_headers_only() {
     h2.await.unwrap();
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn send_recv_data() {
     let _ = env_logger::try_init();
 
@@ -102,7 +105,7 @@ async fn send_recv_data() {
     h2.await.unwrap();
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn send_headers_recv_data_single_frame() {
     let _ = env_logger::try_init();
 
@@ -151,7 +154,7 @@ async fn send_headers_recv_data_single_frame() {
     h2.await.unwrap();
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn closed_streams_are_released() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -194,7 +197,7 @@ async fn closed_streams_are_released() {
     join(srv, h2).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn errors_if_recv_frame_exceeds_max_frame_size() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -237,7 +240,7 @@ async fn errors_if_recv_frame_exceeds_max_frame_size() {
     join(srv, h2).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn configure_max_frame_size() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -276,7 +279,7 @@ async fn configure_max_frame_size() {
     join(srv, h2).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn recv_goaway_finishes_processed_streams() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -330,7 +333,7 @@ async fn recv_goaway_finishes_processed_streams() {
     join(srv, h2).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn recv_goaway_with_higher_last_processed_id() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -364,7 +367,7 @@ async fn recv_goaway_with_higher_last_processed_id() {
     join(srv, client).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn recv_next_stream_id_updated_by_malformed_headers() {
     let _ = env_logger::try_init();
     let (io, mut client) = mock::new();
@@ -402,7 +405,7 @@ async fn recv_next_stream_id_updated_by_malformed_headers() {
     join(srv, client).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn skipped_stream_ids_are_implicitly_closed() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -443,7 +446,7 @@ async fn skipped_stream_ids_are_implicitly_closed() {
     join(srv, h2).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn send_rst_stream_allows_recv_data() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -488,7 +491,7 @@ async fn send_rst_stream_allows_recv_data() {
     join(srv, client).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn send_rst_stream_allows_recv_trailers() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -529,7 +532,7 @@ async fn send_rst_stream_allows_recv_trailers() {
     join(srv, client).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn rst_stream_expires() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -580,7 +583,7 @@ async fn rst_stream_expires() {
     join(srv, client).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn rst_stream_max() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -651,7 +654,7 @@ async fn rst_stream_max() {
     join(srv, client).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn reserved_state_recv_window_update() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -728,7 +731,7 @@ fn exceed_max_streams() {
 }
 */
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn rst_while_closing() {
     // Test to reproduce panic in issue #246 --- receipt of a RST_STREAM frame
     // on a stream in the Half Closed (remote) state with a queued EOS causes
@@ -788,7 +791,7 @@ async fn rst_while_closing() {
     join(srv, client).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn rst_with_buffered_data() {
     // Data is buffered in `FramedWrite` and the stream is reset locally before
     // the data is fully flushed. Given that resetting a stream requires
@@ -840,7 +843,7 @@ async fn rst_with_buffered_data() {
     join(srv, client).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn err_with_buffered_data() {
     // Data is buffered in `FramedWrite` and the stream is reset locally before
     // the data is fully flushed. Given that resetting a stream requires
@@ -895,7 +898,7 @@ async fn err_with_buffered_data() {
     join(srv, client).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn send_err_with_buffered_data() {
     // Data is buffered in `FramedWrite` and the stream is reset locally before
     // the data is fully flushed. Given that resetting a stream requires
@@ -960,7 +963,7 @@ async fn send_err_with_buffered_data() {
     join(srv, client).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn srv_window_update_on_lower_stream_id() {
     // See https://github.com/hyperium/h2/issues/208
     let _ = env_logger::try_init();

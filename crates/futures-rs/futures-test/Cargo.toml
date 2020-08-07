@@ -18,15 +18,17 @@ futures-io = { version = "0.3.5", path = "../futures-io", default-features = fal
 futures-util = { version = "0.3.5", path = "../futures-util", default-features = false }
 futures-executor = { version = "0.3.5", path = "../futures-executor", default-features = false }
 pin-utils = { version = "0.1.0", default-features = false }
-once_cell = { version = "1.3.1", default-features = false, features = ["std"], optional = true }
-pin-project = "0.4.15"
+#once_cell = { version = "1.3.1", default-features = false, features = ["std"], optional = true }
+once_cell = { path = "../../once_cell", version = "1.3.1", default-features = false, features = ["std"], optional = true }
+pin-project = "0.4.20"
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 
 [dev-dependencies]
 futures = { version = "0.3.5", path = "../futures", default-features = false, features = ["std", "executor"] }
 
 [features]
-default = ["std"]
-std = ["futures-core/std", "futures-task/std", "futures-io/std", "futures-util/std", "futures-util/io", "futures-executor/std", "once_cell"]
-
+default = ["std", "mesalock_sgx"]
+std = ["mesalock_sgx", "futures-core/std", "futures-task/std", "futures-io/std", "futures-util/std", "futures-util/io", "futures-executor/std", "once_cell"]
+mesalock_sgx = ["sgx_tstd", "std"]
 [package.metadata.docs.rs]
 all-features = true

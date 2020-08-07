@@ -1,5 +1,5 @@
 pub mod sync {
-    pub use std::sync::{Arc, Mutex, Condvar};
+    pub use std::sync::{Arc, SgxMutex as Mutex, SgxCondvar as Condvar};
 
     pub mod atomic {
         pub use std::sync::atomic::{AtomicPtr, AtomicBool, AtomicUsize, Ordering};

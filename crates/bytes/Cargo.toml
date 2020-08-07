@@ -21,14 +21,15 @@ categories = ["network-programming", "data-structures"]
 edition = "2018"
 
 [features]
-default = ["std"]
-std = []
-
-[dependencies]
-serde = { version = "1.0.60", optional = true, default-features = false, features = ["alloc"] }
+default = ["std", "mesalock_sgx"]
+std = ["mesalock_sgx"]
+mesalock_sgx = ["std", "sgx_tstd"]
 
 [dev-dependencies]
-serde_test = "1.0"
+#serde_test = "1.0"
 
 [target.'cfg(loom)'.dev-dependencies]
-loom = "0.3"
+#loom = "0.3"
+[dependencies]
+serde = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2", features = ["derive"] }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }

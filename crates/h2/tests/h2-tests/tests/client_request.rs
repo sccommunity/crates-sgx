@@ -4,8 +4,11 @@ use futures::StreamExt;
 use h2_support::prelude::*;
 use std::pin::Pin;
 use std::task::Context;
+use std::prelude::v1::*;
+use std::string::ToString;
+use crates_unittest::{ test_case };
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn handshake() {
     let _ = env_logger::try_init();
 
@@ -22,7 +25,7 @@ async fn handshake() {
     h2.await.unwrap();
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn client_other_thread() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -58,7 +61,7 @@ async fn client_other_thread() {
     join(srv, h2).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn recv_invalid_server_stream_id() {
     let _ = env_logger::try_init();
 
@@ -94,7 +97,7 @@ async fn recv_invalid_server_stream_id() {
     assert!(response.await.is_err());
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn request_stream_id_overflows() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -147,7 +150,7 @@ async fn request_stream_id_overflows() {
     join(srv, h2).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn client_builder_max_concurrent_streams() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -185,7 +188,7 @@ async fn client_builder_max_concurrent_streams() {
     join(srv, h2).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn request_over_max_concurrent_streams_errors() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -284,7 +287,7 @@ async fn request_over_max_concurrent_streams_errors() {
     join(srv, h2).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn send_request_poll_ready_when_connection_error() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -377,7 +380,7 @@ async fn send_request_poll_ready_when_connection_error() {
     join(srv, h2).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn send_reset_notifies_recv_stream() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -430,7 +433,7 @@ async fn send_reset_notifies_recv_stream() {
     join(srv, client).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn http_11_request_without_scheme_or_authority() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -460,7 +463,7 @@ async fn http_11_request_without_scheme_or_authority() {
     join(srv, h2).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn http_2_request_without_scheme_or_authority() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -497,7 +500,7 @@ async fn http_2_request_without_scheme_or_authority() {
 #[ignore]
 fn request_with_h1_version() {}
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn request_with_connection_headers() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -540,7 +543,7 @@ async fn request_with_connection_headers() {
     join(srv, client).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn connection_close_notifies_response_future() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -579,7 +582,7 @@ async fn connection_close_notifies_response_future() {
     join(srv, client).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn connection_close_notifies_client_poll_ready() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -624,7 +627,7 @@ async fn connection_close_notifies_client_poll_ready() {
     join(srv, client).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn sending_request_on_closed_connection() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -686,7 +689,7 @@ async fn sending_request_on_closed_connection() {
     join(srv, h2).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn recv_too_big_headers() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -749,7 +752,7 @@ async fn recv_too_big_headers() {
     join(srv, client).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn pending_send_request_gets_reset_by_peer_properly() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -821,7 +824,7 @@ async fn pending_send_request_gets_reset_by_peer_properly() {
     join(srv, client).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn request_without_path() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -852,7 +855,7 @@ async fn request_without_path() {
     join(srv, client).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn request_options_with_star() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -892,7 +895,7 @@ async fn request_options_with_star() {
     join(srv, client).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn notify_on_send_capacity() {
     // This test ensures that the client gets notified when there is additional
     // send capacity. In other words, when the server is ready to accept a new
@@ -977,7 +980,7 @@ async fn notify_on_send_capacity() {
     join(srv, client).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn send_stream_poll_reset() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -1012,7 +1015,7 @@ async fn send_stream_poll_reset() {
     join(srv, client).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn drop_pending_open() {
     // This test checks that a stream queued for pending open behaves correctly when its
     // client drops.
@@ -1099,7 +1102,7 @@ async fn drop_pending_open() {
     join(srv, client).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn malformed_response_headers_dont_unlink_stream() {
     // This test checks that receiving malformed headers frame on a stream with
     // no remaining references correctly resets the stream, without prematurely

@@ -1,3 +1,4 @@
+use std::prelude::v1::*;
 use std::str;
 
 use find_byte::find_byte;

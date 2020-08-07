@@ -1,3 +1,5 @@
+use std::prelude::v1::*;
+
 use std::error;
 use std::fmt;
 use std::result;

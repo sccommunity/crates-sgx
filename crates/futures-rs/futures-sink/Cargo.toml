@@ -12,11 +12,13 @@ The asynchronous `Sink` trait for the futures-rs library.
 """
 
 [features]
-default = ["std"]
-std = ["alloc"]
+default = ["std", "mesalock_sgx"]
+std = ["mesalock_sgx", "alloc"]
 alloc = []
+mesalock_sgx = ["sgx_tstd", "std"]
 
 [dependencies]
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 
 [package.metadata.docs.rs]
 all-features = true

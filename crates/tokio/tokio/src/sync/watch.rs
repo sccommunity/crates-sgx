@@ -58,7 +58,7 @@ use fnv::FnvHashSet;
 use std::ops;
 use std::sync::atomic::AtomicUsize;
 use std::sync::atomic::Ordering::{Relaxed, SeqCst};
-use std::sync::{Arc, Mutex, RwLock, RwLockReadGuard, Weak};
+use std::sync::{Arc, SgxMutex as Mutex, SgxRwLock as RwLock, SgxRwLockReadGuard as RwLockReadGuard, Weak};
 use std::task::Poll::{Pending, Ready};
 use std::task::{Context, Poll};
 
@@ -338,7 +338,6 @@ impl<T> Sender<T> {
         // Notify all watchers
         notify_all(&*shared);
 
-        // Return the old value
         Ok(())
     }
 

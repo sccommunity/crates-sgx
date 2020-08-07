@@ -17,21 +17,29 @@ keywords = ["logging", "tracing"]
 license = "MIT"
 
 [features]
-default = ["tower-layer", "tower-make", "http"]
+default = ["mesalock_sgx", "tower-layer", "tower-make", "http"]
 tower-make = [
     "tower_make",
     "pin-project",
 ]
+mesalock_sgx = ["sgx_tstd"]
 
 [dependencies]
 tracing = { path = "../tracing", version = "0.1"}
 tracing-futures = { version = "0.2.1", path = "../tracing-futures", features = ["std-future"] }
-futures = "0.3"
-tower-service = "0.3"
-tower-layer = { version = "0.3", optional = true }
-tower_make = { package = "tower-make", version = "0.3", optional = true }
+#futures = "0.3"
+#tower-service = "0.3"
+#tower-layer = { version = "0.3", optional = true }
+#tower_make = { package = "tower-make", version = "0.3", optional = true }
+
+futures = { path = "../../futures-rs/futures" }
+tower-service = { path = "../../tower/tower-service" }
+tower-layer = { path = "../../tower/tower-layer", optional = true }
+tower_make = { package = "tower-make", path = "../../tower-make-0.3.0", version = "0.3", optional = true }
 pin-project = { version = "0.4", optional = true }
-http = { version = "0.1", optional = true }
+#http = { version = "0.2", optional = true }
+http = { path = "../../http", optional = true }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 
 [badges]
 maintenance = { status = "experimental" }

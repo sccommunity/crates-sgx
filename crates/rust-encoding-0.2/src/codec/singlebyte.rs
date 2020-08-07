@@ -3,7 +3,7 @@
 // See README.md and LICENSE.txt for details.
 
 //! Common codec implementation for single-byte encodings.
-
+use std::prelude::v1::*;
 use std::convert::Into;
 use util::{as_char, StrCharIndex};
 use types::*;
@@ -116,12 +116,13 @@ pub mod iso_8859_1 {
     #[inline] pub fn backward(code: u32) -> u8 { if (code & !0x7f) == 0x80 {code as u8} else {0} }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use all::ISO_8859_2;
     use types::*;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::{ test_case };
+    #[test_case]
     fn test_encoder_non_bmp() {
         let mut e = ISO_8859_2.raw_encoder();
         assert_feed_err!(e, "A", "\u{FFFF}", "B", [0x41]);

@@ -1,5 +1,5 @@
 use {alloc, Bytes, SeqByteStr, MAX_CAPACITY};
-use traits::{Buf, MutBuf, MutBufExt, ByteStr};
+use traits::{Buf, MutBuf, MutBufExt};
 use std::{cmp, fmt, ptr};
 
 /*

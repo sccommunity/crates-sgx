@@ -8,5 +8,16 @@ license = "MIT OR Apache-2.0"
 repository = "https://github.com/seanmonstar/spmc"
 documentation = "https://docs.rs/spmc"
 
-[dev-dependencies]
-loom = "0.2.2"
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+enclave_unit_test = ["crates_unittest", "inventory"]
+[target.'cfg(not(target_env = "sgx"))'.dependencies]
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true, features = ["thread"] }
+crates_unittest = { git = "https://github.com/Zha0Chan/crates-sgx-unittest.git", optional = true, default-features = false }
+inventory = { version = "0.1.6", optional = true }
+
+
+
+# [dev-dependencies]
+# loom = "0.2.2"

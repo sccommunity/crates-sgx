@@ -1,5 +1,5 @@
 use std::fmt::Debug;
-
+use std::prelude::v1::*;
 /// Read from a byte slice.
 pub struct Reader<'a> {
     buf: &'a [u8],

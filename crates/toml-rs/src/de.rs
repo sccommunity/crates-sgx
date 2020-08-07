@@ -4,6 +4,7 @@
 //! into Rust structures. Note that some top-level functions here are also
 //! provided at the top of the crate.
 
+use std::prelude::v1::*;
 use std::borrow::Cow;
 use std::collections::HashMap;
 use std::error;

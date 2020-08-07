@@ -69,12 +69,38 @@
     warnings
 )]
 #![forbid(unsafe_code)]
-#![cfg_attr(not(any(feature = "std", test)), no_std)]
+//#![cfg_attr(not(any(feature = "std", test)), no_std)]
+
+#![cfg_attr(not(
+    all(
+        any(feature = "std", feature = "mesalock_sgx"),
+        target_env = "sgx",
+        target_vendor = "mesalock",
+    )),
+    no_std
+)]
+
+#![cfg_attr(
+    all(
+        any(feature = "std", feature = "mesalock_sgx"),
+        target_env = "sgx",
+        target_vendor = "mesalock",
+    ),
+    feature(rustc_private)
+)]
+
+#[cfg(all(
+    any(feature = "std", feature = "mesalock_sgx"),
+    not(target_env = "sgx"),
+    not(target_vendor = "mesalock"),
+))]
+#[macro_use]
+extern crate sgx_tstd as std;
 
 #[cfg(all(feature = "alloc", not(any(feature = "std", test))))]
 extern crate alloc;
-#[cfg(any(feature = "std", test))]
-extern crate std as alloc;
+// #[cfg(any(feature = "std", test))]
+// extern crate std as alloc;
 
 mod chunked_encoder;
 pub mod display;

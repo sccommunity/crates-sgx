@@ -48,7 +48,7 @@ use std::marker::PhantomData;
 use std::rc::Rc;
 use std::sync::Arc;
 use std::time::Duration;
-
+use std::prelude::v1::Box;
 use crossbeam_utils::sync::{Parker, Unparker};
 
 /// Block the current thread.

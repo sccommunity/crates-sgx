@@ -290,13 +290,13 @@ impl Distribution<u64> for Binomial {
         }
     }
 }
-
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod test {
     use super::Binomial;
     use crate::Distribution;
     use rand::Rng;
-
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
     fn test_binomial_mean_and_variance<R: Rng>(n: u64, p: f64, rng: &mut R) {
         let binomial = Binomial::new(n, p).unwrap();
 
@@ -316,7 +316,7 @@ mod test {
         assert!((variance - expected_variance).abs() < expected_variance / 10.0);
     }
 
-    #[test]
+    #[test_case]
     fn test_binomial() {
         let mut rng = crate::test::rng(351);
         test_binomial_mean_and_variance(150, 0.1, &mut rng);
@@ -326,20 +326,20 @@ mod test {
         test_binomial_mean_and_variance(20, 0.5, &mut rng);
     }
 
-    #[test]
+    #[test_case]
     fn test_binomial_end_points() {
         let mut rng = crate::test::rng(352);
         assert_eq!(rng.sample(Binomial::new(20, 0.0).unwrap()), 0);
         assert_eq!(rng.sample(Binomial::new(20, 1.0).unwrap()), 20);
     }
 
-    #[test]
-    #[should_panic]
+    //#[test_case]
+    //#[should_panic]
     fn test_binomial_invalid_lambda_neg() {
         Binomial::new(20, -10.0).unwrap();
     }
 
-    #[test]
+    #[test_case]
     fn value_stability() {
         fn test_samples(n: u64, p: f64, expected: &[u64]) {
             let distr = Binomial::new(n, p).unwrap();

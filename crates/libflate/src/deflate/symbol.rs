@@ -6,7 +6,7 @@ use std::cmp;
 use std::io;
 use std::iter;
 use std::ops::Range;
-
+use std::prelude::v1::*;
 const FIXED_LITERAL_OR_LENGTH_CODE_TABLE: [(u8, Range<u16>, u16); 4] = [
     (8, 000..144, 0b0_0011_0000),
     (9, 144..256, 0b1_1001_0000),

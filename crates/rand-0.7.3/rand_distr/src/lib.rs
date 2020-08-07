@@ -11,7 +11,7 @@
     html_favicon_url = "https://www.rust-lang.org/favicon.ico",
     html_root_url = "https://rust-random.github.io/rand/"
 )]
-#![deny(missing_docs)]
+//#![deny(missing_docs)]
 #![deny(missing_debug_implementations)]
 #![allow(
     clippy::excessive_precision,
@@ -67,6 +67,13 @@
 //!   - [`UnitCircle`] distribution
 //!   - [`UnitDisc`] distribution
 
+#![cfg_attr(all(feature = "mesalock_sgx", not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"), feature(rustc_private))]
+
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
+
 pub use rand::distributions::{
     uniform, weighted, Alphanumeric, Bernoulli, BernoulliError, DistIter, Distribution, Open01,
     OpenClosed01, Standard, Uniform,
@@ -110,8 +117,8 @@ mod utils;
 mod weibull;
 mod ziggurat_tables;
 
-#[cfg(test)]
-mod test {
+#[cfg(feature = "enclave_unit_test")]
+pub mod test {
     // Notes on testing
     //
     // Testing random number distributions correctly is hard. The following
@@ -138,5 +145,11 @@ mod test {
         // PCG32 will do fine, and will be easy to embed if we ever need to.
         const INC: u64 = 11634580027462260723;
         rand_pcg::Pcg32::new(seed, INC)
+    }
+    use std::prelude::v1::*;
+    use crates_unittest::run_inventory_tests;
+  
+    pub fn run_tests() {
+        run_inventory_tests!();
     }
 }

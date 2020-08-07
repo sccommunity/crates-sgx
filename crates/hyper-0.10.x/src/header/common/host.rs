@@ -3,7 +3,7 @@ use std::fmt;
 use std::str::FromStr;
 use header::parsing::from_one_raw_str;
 use url::idna::domain_to_unicode;
-
+use std::prelude::v1::*;
 /// The `Host` header.
 ///
 /// HTTP/1.1 requires that all requests include a `Host` header, and so hyper
@@ -101,13 +101,14 @@ impl FromStr for Host {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::Host;
     use header::Header;
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
 
-
-    #[test]
+    #[test_case]
     fn test_host() {
         let host = Header::parse_header([b"foo.com".to_vec()].as_ref());
         assert_eq!(host.ok(), Some(Host {

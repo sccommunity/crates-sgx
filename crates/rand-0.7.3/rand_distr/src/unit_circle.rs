@@ -73,7 +73,11 @@ mod tests {
         };
     }
 
-    #[test]
+    #[cfg(feature = "enclave_unit_test")]
+    use std::prelude::v1::*;
+    #[cfg(feature = "enclave_unit_test")]
+    use crates_unittest::test_case;
+    #[test_case]
     fn norm() {
         let mut rng = crate::test::rng(1);
         for _ in 0..1000 {
@@ -82,7 +86,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn value_stability() {
         let mut rng = crate::test::rng(2);
         let expected = [

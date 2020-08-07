@@ -6,8 +6,9 @@ use std::future::Future;
 use std::mem;
 use std::ops;
 use std::pin::Pin;
-use std::sync::{Arc, Condvar, Mutex};
+use std::sync::{Arc, SgxCondvar as Condvar, SgxMutex as Mutex};
 use std::task::{Context, Poll, RawWaker, RawWakerVTable, Waker};
+use std::prelude::v1::*;
 
 use tokio::stream::Stream;
 
@@ -46,21 +47,11 @@ const SLEEP: usize = 2;
 
 impl<T> Spawn<T> {
     /// Consumes `self` returning the inner value
-    pub fn into_inner(mut self) -> T
+    pub fn into_inner(self) -> T
     where
         T: Unpin,
     {
-        drop(self.task);
-
-        // Pin::into_inner is unstable, so we work around it
-        //
-        // Safety: `T` is bound by `Unpin`.
-        unsafe {
-            let ptr = Pin::get_mut(self.future.as_mut()) as *mut T;
-            let future = Box::from_raw(ptr);
-            mem::forget(self.future);
-            *future
-        }
+        *Pin::into_inner(self.future)
     }
 
     /// Returns `true` if the inner future has received a wake notification

@@ -17,7 +17,7 @@ use std::sync::atomic::Ordering::{AcqRel, Acquire, Relaxed, Release};
 use std::sync::atomic::{AtomicPtr, AtomicUsize};
 use std::sync::Arc;
 use std::{fmt, panic, ptr};
-
+use std::prelude::v1::Box;
 /// Harness around a future.
 ///
 /// This also behaves as a node in the inbound work queue and the blocking

@@ -1,5 +1,5 @@
 use core::fmt;
-
+use std::prelude::v1::*;
 /// A representation of byte oriented equivalence classes.
 ///
 /// This is used in a DFA to reduce the size of the transition table. This can

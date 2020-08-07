@@ -1,7 +1,7 @@
 use crate::bit;
 use std::cmp;
 use std::io::{self, Read};
-
+use std::prelude::v1::*;
 #[derive(Debug)]
 pub struct TransactionalBitReader<R> {
     inner: bit::BitReader<TransactionalReader<R>>,

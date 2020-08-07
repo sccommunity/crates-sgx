@@ -17,14 +17,15 @@ keywords = ["chase-lev", "lock-free", "scheduler", "scheduling"]
 categories = ["algorithms", "concurrency", "data-structures"]
 
 [features]
-default = ["std"]
-
+default = ["std", "mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd", "std"]
 # Enable to use APIs that require `std`.
 # This is enabled by default.
-std = ["crossbeam-epoch/std", "crossbeam-utils/std"]
+std = ["crossbeam-epoch/std", "crossbeam-utils/std", "mesalock_sgx"]
 
 [dependencies]
-cfg-if = "0.1.10"
+cfg-if = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 
 [dependencies.crossbeam-epoch]
 version = "0.8"

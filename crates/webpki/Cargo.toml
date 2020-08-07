@@ -61,13 +61,15 @@ name = "webpki"
 path = "src/webpki.rs"
 
 [features]
-default = ["std", "trust_anchor_util"]
+default = ["std", "trust_anchor_util", "mesalock_sgx"]
 trust_anchor_util = ["std"]
-std = []
+std = ["sgx_tstd"]
+mesalock_sgx = ["sgx_tstd", "std"]
 
 [dependencies]
-ring = { version = "0.16.14", default-features = false, features = ["alloc"] }
+ring = { path = "../ring", version = "0.16.14" }
 untrusted = "0.7.1"
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 
 [dev-dependencies]
 base64 = "0.9.1"

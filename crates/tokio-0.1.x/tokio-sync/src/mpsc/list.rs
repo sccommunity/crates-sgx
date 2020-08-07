@@ -10,7 +10,7 @@ use loom::{
 use std::fmt;
 use std::ptr::NonNull;
 use std::sync::atomic::Ordering::{AcqRel, Acquire, Relaxed, Release};
-
+use std::prelude::v1::*;
 /// List queue transmit handle
 pub(crate) struct Tx<T> {
     /// Tail in the `Block` mpmc list.

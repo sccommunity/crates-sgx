@@ -1,6 +1,7 @@
 use crate::fs::asyncify;
 
 use std::{io, path::Path};
+use std::prelude::v1::*;
 
 /// Reads the entire contents of a file into a bytes vector.
 ///

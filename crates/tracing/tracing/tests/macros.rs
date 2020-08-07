@@ -263,6 +263,22 @@ fn error_span_with_parent() {
 }
 
 #[test]
+fn span_with_non_rust_symbol() {
+    span!(Level::TRACE, "non-rust", "guid:x-request-id" = ?"abcdef", "more {}", 42);
+    span!(Level::TRACE, "non-rust", "guid:x-request-id" = %"abcdef", "more {}", 51);
+    span!(
+        Level::TRACE,
+        "non-rust",
+        "guid:x-request-id" = "abcdef",
+        "more {}",
+        60
+    );
+    span!(Level::TRACE, "non-rust", "guid:x-request-id" = ?"abcdef");
+    span!(Level::TRACE, "non-rust", "guid:x-request-id" = %"abcdef");
+    span!(Level::TRACE, "non-rust", "guid:x-request-id" = "abcdef");
+}
+
+#[test]
 fn event() {
     event!(Level::DEBUG, foo = ?3, bar.baz = %2, quux = false);
     event!(Level::DEBUG, foo = 3, bar.baz = 2, quux = false);
@@ -524,15 +540,15 @@ fn trace_root() {
     trace!(parent: None, { foo = 2, bar.baz = 79 }, "quux {:?}", true);
     trace!(parent: None, { foo = 2, bar.baz = 79 }, "quux {:?}, {quux}", true, quux = false);
     trace!(parent: None, { foo = 2, bar.baz = 78 }, "quux");
-    trace!(parent:None, { foo = ?2, bar.baz = %78 }, "quux");
+    trace!(parent: None, { foo = ?2, bar.baz = %78 }, "quux");
     trace!(target: "foo_events", parent: None, foo = 3, bar.baz = 2, quux = false);
     trace!(target: "foo_events", parent: None, foo = 3, bar.baz = 3,);
     trace!(target: "foo_events", parent: None, "foo");
     trace!(target: "foo_events", parent: None, "foo: {}", 3);
-    trace!(target: "foo_events", parent: None,  { foo = 3, bar.baz = 80 }, "quux");
+    trace!(target: "foo_events", parent: None, { foo = 3, bar.baz = 80 }, "quux");
     trace!(target: "foo_events", parent: None, { foo = 2, bar.baz = 79 }, "quux {:?}", true);
     trace!(target: "foo_events", parent: None, { foo = 2, bar.baz = 79 }, "quux {:?}, {quux}", true, quux = false);
-    trace!(target: "foo_events", parent: None,  { foo = 2, bar.baz = 78, }, "quux");
+    trace!(target: "foo_events", parent: None, { foo = 2, bar.baz = 78, }, "quux");
 }
 
 #[test]
@@ -662,10 +678,10 @@ fn trace_with_parent() {
     trace!(target: "foo_events", parent: &p, foo = 3, bar.baz = 3,);
     trace!(target: "foo_events", parent: &p, "foo");
     trace!(target: "foo_events", parent: &p, "foo: {}", 3);
-    trace!(target: "foo_events", parent: &p,  { foo = 3, bar.baz = 80 }, "quux");
+    trace!(target: "foo_events", parent: &p, { foo = 3, bar.baz = 80 }, "quux");
     trace!(target: "foo_events", parent: &p, { foo = 2, bar.baz = 79 }, "quux {:?}", true);
     trace!(target: "foo_events", parent: &p, { foo = 2, bar.baz = 79 }, "quux {:?}, {quux}", true, quux = false);
-    trace!(target: "foo_events", parent: &p,  { foo = 2, bar.baz = 78, }, "quux");
+    trace!(target: "foo_events", parent: &p, { foo = 2, bar.baz = 78, }, "quux");
 }
 
 #[test]

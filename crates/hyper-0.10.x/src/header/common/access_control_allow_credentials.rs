@@ -2,7 +2,7 @@ use std::fmt::{self, Display};
 use std::str;
 use unicase::UniCase;
 use header::{Header, HeaderFormat};
-
+use std::prelude::v1::*;
 /// `Access-Control-Allow-Credentials` header, part of
 /// [CORS](http://www.w3.org/TR/cors/#access-control-allow-headers-response-header)
 ///
@@ -76,10 +76,11 @@ impl Display for AccessControlAllowCredentials {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod test_access_control_allow_credentials {
     use std::str;
     use header::*;
+   
     use super::AccessControlAllowCredentials as HeaderField;
     test_header!(works,        vec![b"true"], Some(HeaderField));
     test_header!(ignores_case, vec![b"True"]);

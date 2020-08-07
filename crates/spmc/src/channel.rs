@@ -7,7 +7,7 @@ use std::sync::atomic::Ordering;
 use loom::sync::{Arc, Mutex, CausalCell, Condvar};
 use loom::sync::atomic::{AtomicPtr, AtomicBool, AtomicUsize};
 use loom::thread;
-
+use std::prelude::v1::*;
 /// Create a new SPMC channel.
 pub fn channel<T: Send>() -> (Sender<T>, Receiver<T>) {
     let a = Arc::new(Inner::new());

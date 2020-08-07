@@ -83,7 +83,7 @@ pub fn backward(code: u32) -> u32 {
     (code - FORWARD_TABLE[i-1]) + BACKWARD_TABLE[i-1]
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 multi_byte_range_tests!(
     mod = gb18030_ranges,
     key = [0, 189000], key < 1114112,

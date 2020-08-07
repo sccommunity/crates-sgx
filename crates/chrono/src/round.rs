@@ -265,13 +265,16 @@ impl std::error::Error for RoundingError {
     }
 }
 
-#[cfg(test)]
+//#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::{Duration, DurationRound, SubsecRound};
     use offset::{FixedOffset, TimeZone, Utc};
     use Timelike;
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
 
-    #[test]
+    #[test_case]
     fn test_round_subsecs() {
         let pst = FixedOffset::east(8 * 60 * 60);
         let dt = pst.ymd(2018, 1, 11).and_hms_nano(10, 5, 13, 084_660_684);
@@ -301,7 +304,7 @@ mod tests {
         assert_eq!(dt.round_subsecs(0).second(), 28);
     }
 
-    #[test]
+    #[test_case]
     fn test_round_leap_nanos() {
         let dt = Utc.ymd(2016, 12, 31).and_hms_nano(23, 59, 59, 1_750_500_000);
         assert_eq!(dt.round_subsecs(9), dt);
@@ -314,8 +317,8 @@ mod tests {
         assert_eq!(dt.round_subsecs(0).second(), 0);
     }
 
-    #[test]
-    fn test_trunc_subsecs() {
+    #[test_case]
+    fn test_trunc() {
         let pst = FixedOffset::east(8 * 60 * 60);
         let dt = pst.ymd(2018, 1, 11).and_hms_nano(10, 5, 13, 084_660_684);
 
@@ -344,7 +347,7 @@ mod tests {
         assert_eq!(dt.trunc_subsecs(0).second(), 27);
     }
 
-    #[test]
+    #[test_case]
     fn test_trunc_leap_nanos() {
         let dt = Utc.ymd(2016, 12, 31).and_hms_nano(23, 59, 59, 1_750_500_000);
         assert_eq!(dt.trunc_subsecs(9), dt);
@@ -357,7 +360,7 @@ mod tests {
         assert_eq!(dt.trunc_subsecs(0).second(), 59);
     }
 
-    #[test]
+    #[test_case]
     fn test_duration_round() {
         let dt = Utc.ymd(2016, 12, 31).and_hms_nano(23, 59, 59, 175_500_000);
 
@@ -397,7 +400,7 @@ mod tests {
         );
     }
 
-    #[test]
+    #[test_case]
     fn test_duration_round_pre_epoch() {
         let dt = Utc.ymd(1969, 12, 12).and_hms(12, 12, 12);
         assert_eq!(
@@ -406,7 +409,7 @@ mod tests {
         );
     }
 
-    #[test]
+    #[test_case]
     fn test_duration_trunc() {
         let dt = Utc.ymd(2016, 12, 31).and_hms_nano(23, 59, 59, 1_75_500_000);
 
@@ -445,7 +448,7 @@ mod tests {
         );
     }
 
-    #[test]
+    #[test_case]
     fn test_duration_trunc_pre_epoch() {
         let dt = Utc.ymd(1969, 12, 12).and_hms(12, 12, 12);
         assert_eq!(

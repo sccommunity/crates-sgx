@@ -36,6 +36,7 @@ articles on regexes is strongly recommended: https://swtch.com/~rsc/regexp/
 implementation.)
 */
 
+use std::prelude::v1::*;
 use std::collections::HashMap;
 use std::fmt;
 use std::iter::repeat;

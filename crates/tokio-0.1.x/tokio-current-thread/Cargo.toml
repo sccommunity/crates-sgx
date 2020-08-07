@@ -20,6 +20,15 @@ Single threaded executor which manage many tasks concurrently on the current thr
 keywords = ["futures", "tokio"]
 categories = ["concurrency", "asynchronous"]
 
+
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+
 [dependencies]
-tokio-executor = "0.1.7"
-futures = "0.1.19"
+tokio-executor = { path = "../tokio-executor" }
+futures = { path = "../../futures-rs_01" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+
+#tokio-executor = "0.1.7"
+#futures = "0.1.19"

@@ -1,5 +1,5 @@
 #![cfg(unix)]
-#![doc(html_root_url = "https://docs.rs/tokio-uds/0.2.6")]
+#![doc(html_root_url = "https://docs.rs/tokio-uds/0.2.7")]
 #![deny(missing_docs, missing_debug_implementations)]
 
 //! Unix Domain Sockets for Tokio.
@@ -11,12 +11,20 @@
 //! [feature flag]: https://docs.rs/tokio/latest/tokio/index.html#feature-flags
 //!
 //! This crate provides APIs for using Unix Domain Sockets with Tokio.
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
 
 extern crate bytes;
 #[macro_use]
 extern crate futures;
 extern crate iovec;
-extern crate libc;
+//extern crate libc;
+extern crate sgx_libc as libc;
 #[macro_use]
 extern crate log;
 extern crate mio;

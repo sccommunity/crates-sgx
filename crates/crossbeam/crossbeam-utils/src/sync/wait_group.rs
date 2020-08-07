@@ -2,7 +2,7 @@
 #![allow(clippy::mutex_atomic)]
 
 use std::fmt;
-use std::sync::{Arc, Condvar, Mutex};
+use std::sync::{Arc, SgxCondvar as Condvar, SgxMutex as Mutex};
 
 /// Enables threads to synchronize the beginning or end of some computation.
 ///

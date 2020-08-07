@@ -5,7 +5,7 @@
 
 use ring::rand::{SystemRandom, SecureRandom};
 use crate::msgs::codec;
-
+use std::prelude::v1::*;
 /// Fill the whole slice with random material.
 pub fn fill_random(bytes: &mut [u8]) {
     SystemRandom::new()

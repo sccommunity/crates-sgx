@@ -1,5 +1,5 @@
 use std::fmt;
-
+use std::prelude::v1::*;
 use header::{HeaderFormat, Header, parsing};
 
 /// `Content-Length` header, defined in
@@ -80,7 +80,7 @@ __hyper__tm!(ContentLength, tests {
     test_header!(test_invalid, vec![b"34v95"], None);
 
     // Can't use the test_header macro because "5, 5" gets cleaned to "5".
-    #[test]
+    #[crates_unittest::test_case]
     fn test_duplicates() {
         let parsed = HeaderField::parse_header(&[b"5"[..].into(),
                                                  b"5"[..].into()]).unwrap();

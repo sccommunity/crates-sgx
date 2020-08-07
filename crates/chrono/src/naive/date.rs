@@ -3,7 +3,7 @@
 
 //! ISO 8601 calendar date without timezone.
 
-#[cfg(any(feature = "alloc", feature = "std", test))]
+#[cfg(any(feature = "alloc", feature = "std", enclave_unit_test))]
 use core::borrow::Borrow;
 use core::ops::{Add, AddAssign, Sub, SubAssign};
 use core::{fmt, str};
@@ -11,7 +11,7 @@ use num_traits::ToPrimitive;
 use oldtime::Duration as OldDuration;
 
 use div::div_mod_floor;
-#[cfg(any(feature = "alloc", feature = "std", test))]
+#[cfg(any(feature = "alloc", feature = "std", enclave_unit_test))]
 use format::DelayedFormat;
 use format::{parse, ParseError, ParseResult, Parsed, StrftimeItems};
 use format::{Item, Numeric, Pad};
@@ -21,6 +21,10 @@ use {Datelike, Weekday};
 use super::internals::{self, DateImpl, Mdf, Of, YearFlags};
 use super::isoweek;
 
+#[cfg(feature = "enclave_unit_test")]
+use std::prelude::v1::*;
+#[cfg(feature = "enclave_unit_test")]
+use crates_unittest::test_case;
 const MAX_YEAR: i32 = internals::MAX_YEAR;
 const MIN_YEAR: i32 = internals::MIN_YEAR;
 
@@ -28,7 +32,7 @@ const MIN_YEAR: i32 = internals::MIN_YEAR;
 // = ((MAX_YEAR+1)-01-01 minus 0001-01-01) + (0001-01-01 minus 0000-01-01) - 1 day
 // = ((MAX_YEAR+1)-01-01 minus 0001-01-01) + 365 days
 // = MAX_YEAR * 365 + (# of leap years from 0001 to MAX_YEAR) + 365 days
-#[cfg(test)] // only used for testing
+#[cfg(feature = "enclave_unit_test")] // only used for testing
 const MAX_DAYS_FROM_YEAR_0: i32 =
     MAX_YEAR * 365 + MAX_YEAR / 4 - MAX_YEAR / 100 + MAX_YEAR / 400 + 365;
 
@@ -38,13 +42,13 @@ const MAX_DAYS_FROM_YEAR_0: i32 =
 // = ((MIN_YEAR+400n+1)-01-01 minus 0001-01-01) - 146097n days
 //
 // n is set to 1000 for convenience.
-#[cfg(test)] // only used for testing
+#[cfg(feature = "enclave_unit_test")] // only used for testing
 const MIN_DAYS_FROM_YEAR_0: i32 = (MIN_YEAR + 400_000) * 365 + (MIN_YEAR + 400_000) / 4
     - (MIN_YEAR + 400_000) / 100
     + (MIN_YEAR + 400_000) / 400
     - 146097_000;
 
-#[cfg(test)] // only used for testing, but duplicated in naive::datetime
+#[cfg(feature = "enclave_unit_test")] // only used for testing, but duplicated in naive::datetime
 const MAX_BITS: usize = 44;
 
 /// ISO 8601 calendar date without timezone.
@@ -107,7 +111,8 @@ pub const MAX_DATE: NaiveDate = NaiveDate { ymdf: (MAX_YEAR << 13) | (365 << 4) 
 
 // as it is hard to verify year flags in `MIN_DATE` and `MAX_DATE`,
 // we use a separate run-time test.
-#[test]
+#[cfg(feature = "enclave_unit_test")]
+#[test_case]
 fn test_date_bounds() {
     let calculated_min = NaiveDate::from_ymd(MIN_YEAR, 1, 1);
     let calculated_max = NaiveDate::from_ymd(MAX_YEAR, 12, 31);
@@ -1787,15 +1792,16 @@ mod rustc_serialize {
         }
     }
 
-    #[cfg(test)]
+    //#[cfg(test)] 
+    #[cfg(feature = "enclave_unit_test")]
     use rustc_serialize::json;
 
-    #[test]
+    #[test_case]
     fn test_encodable() {
         super::test_encodable_json(json::encode);
     }
 
-    #[test]
+    #[test_case]
     fn test_decodable() {
         super::test_decodable_json(json::decode);
     }
@@ -1863,22 +1869,24 @@ mod serde {
         }
     }
 
-    #[cfg(test)]
-    extern crate bincode;
-    #[cfg(test)]
+    //#[cfg(test)]
+    #[cfg(feature = "enclave_unit_test")] 
     extern crate serde_json;
+    //#[cfg(test)] 
+    #[cfg(feature = "enclave_unit_test")]
+    extern crate bincode;
 
-    #[test]
+    #[test_case]
     fn test_serde_serialize() {
         super::test_encodable_json(self::serde_json::to_string);
     }
 
-    #[test]
+    #[test_case]
     fn test_serde_deserialize() {
         super::test_decodable_json(|input| self::serde_json::from_str(&input));
     }
 
-    #[test]
+    #[test_case]
     fn test_serde_bincode() {
         // Bincode is relevant to test separately from JSON because
         // it is not self-describing.
@@ -1891,7 +1899,8 @@ mod serde {
     }
 }
 
-#[cfg(test)]
+//#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::NaiveDate;
     use super::{MAX_DATE, MAX_DAYS_FROM_YEAR_0, MAX_YEAR};
@@ -1899,8 +1908,10 @@ mod tests {
     use oldtime::Duration;
     use std::{i32, u32};
     use {Datelike, Weekday};
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
 
-    #[test]
+    #[test_case]
     fn test_date_from_ymd() {
         let ymd_opt = |y, m, d| NaiveDate::from_ymd_opt(y, m, d);
 
@@ -1916,7 +1927,7 @@ mod tests {
         assert!(ymd_opt(2014, 13, 1).is_none());
     }
 
-    #[test]
+    #[test_case]
     fn test_date_from_yo() {
         let yo_opt = |y, o| NaiveDate::from_yo_opt(y, o);
         let ymd = |y, m, d| NaiveDate::from_ymd(y, m, d);
@@ -1946,7 +1957,7 @@ mod tests {
         assert_eq!(yo_opt(2014, 366), None);
     }
 
-    #[test]
+    #[test_case]
     fn test_date_from_isoywd() {
         let isoywd_opt = |y, w, d| NaiveDate::from_isoywd_opt(y, w, d);
         let ymd = |y, m, d| NaiveDate::from_ymd(y, m, d);
@@ -1975,7 +1986,7 @@ mod tests {
         assert_eq!(isoywd_opt(2018, 53, Weekday::Mon), None);
     }
 
-    #[test]
+    #[test_case]
     fn test_date_from_isoywd_and_iso_week() {
         for year in 2000..2401 {
             for week in 1..54 {
@@ -2017,7 +2028,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_date_from_num_days_from_ce() {
         let from_ndays_from_ce = |days| NaiveDate::from_num_days_from_ce_opt(days);
         assert_eq!(from_ndays_from_ce(1), Some(NaiveDate::from_ymd(1, 1, 1)));
@@ -2048,7 +2059,7 @@ mod tests {
         assert_eq!(from_ndays_from_ce(MAX_DATE.num_days_from_ce() + 1), None);
     }
 
-    #[test]
+    #[test_case]
     fn test_date_from_weekday_of_month_opt() {
         let ymwd = |y, m, w, n| NaiveDate::from_weekday_of_month_opt(y, m, w, n);
         assert_eq!(ymwd(2018, 8, Weekday::Tue, 0), None);
@@ -2066,7 +2077,7 @@ mod tests {
         assert_eq!(ymwd(2018, 8, Weekday::Sat, 5), None);
     }
 
-    #[test]
+    #[test_case]
     fn test_date_fields() {
         fn check(year: i32, month: u32, day: u32, ordinal: u32) {
             let d1 = NaiveDate::from_ymd(year, month, day);
@@ -2105,7 +2116,7 @@ mod tests {
         check(2014, 12, 31, 365);
     }
 
-    #[test]
+    #[test_case]
     fn test_date_weekday() {
         assert_eq!(NaiveDate::from_ymd(1582, 10, 15).weekday(), Weekday::Fri);
         // May 20, 1875 = ISO 8601 reference date
@@ -2113,7 +2124,7 @@ mod tests {
         assert_eq!(NaiveDate::from_ymd(2000, 1, 1).weekday(), Weekday::Sat);
     }
 
-    #[test]
+    #[test_case]
     fn test_date_with_fields() {
         let d = NaiveDate::from_ymd(2000, 2, 29);
         assert_eq!(d.with_year(-400), Some(NaiveDate::from_ymd(-400, 2, 29)));
@@ -2152,7 +2163,7 @@ mod tests {
         assert_eq!(d.with_ordinal(u32::MAX), None);
     }
 
-    #[test]
+    #[test_case]
     fn test_date_num_days_from_ce() {
         assert_eq!(NaiveDate::from_ymd(1, 1, 1).num_days_from_ce(), 1);
 
@@ -2164,7 +2175,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_date_succ() {
         let ymd = |y, m, d| NaiveDate::from_ymd(y, m, d);
         assert_eq!(ymd(2014, 5, 6).succ_opt(), Some(ymd(2014, 5, 7)));
@@ -2174,7 +2185,7 @@ mod tests {
         assert_eq!(ymd(MAX_DATE.year(), 12, 31).succ_opt(), None);
     }
 
-    #[test]
+    #[test_case]
     fn test_date_pred() {
         let ymd = |y, m, d| NaiveDate::from_ymd(y, m, d);
         assert_eq!(ymd(2016, 3, 1).pred_opt(), Some(ymd(2016, 2, 29)));
@@ -2184,7 +2195,7 @@ mod tests {
         assert_eq!(ymd(MIN_DATE.year(), 1, 1).pred_opt(), None);
     }
 
-    #[test]
+    #[test_case]
     fn test_date_add() {
         fn check((y1, m1, d1): (i32, u32, u32), rhs: Duration, ymd: Option<(i32, u32, u32)>) {
             let lhs = NaiveDate::from_ymd(y1, m1, d1);
@@ -2214,7 +2225,7 @@ mod tests {
         check((0, 1, 1), Duration::min_value(), None);
     }
 
-    #[test]
+    #[test_case]
     fn test_date_sub() {
         fn check((y1, m1, d1): (i32, u32, u32), (y2, m2, d2): (i32, u32, u32), diff: Duration) {
             let lhs = NaiveDate::from_ymd(y1, m1, d1);
@@ -2234,7 +2245,7 @@ mod tests {
         check((MIN_YEAR, 1, 1), (0, 1, 1), Duration::days(MIN_DAYS_FROM_YEAR_0 as i64));
     }
 
-    #[test]
+    #[test_case]
     fn test_date_addassignment() {
         let ymd = NaiveDate::from_ymd;
         let mut date = ymd(2016, 10, 1);
@@ -2244,7 +2255,7 @@ mod tests {
         assert_eq!(date, ymd(2016, 11, 10));
     }
 
-    #[test]
+    #[test_case]
     fn test_date_subassignment() {
         let ymd = NaiveDate::from_ymd;
         let mut date = ymd(2016, 10, 11);
@@ -2254,7 +2265,7 @@ mod tests {
         assert_eq!(date, ymd(2016, 9, 29));
     }
 
-    #[test]
+    #[test_case]
     fn test_date_fmt() {
         assert_eq!(format!("{:?}", NaiveDate::from_ymd(2012, 3, 4)), "2012-03-04");
         assert_eq!(format!("{:?}", NaiveDate::from_ymd(0, 3, 4)), "0000-03-04");
@@ -2271,7 +2282,7 @@ mod tests {
         assert_eq!(format!("{:30?}", NaiveDate::from_ymd(12345, 6, 7)), "+12345-06-07");
     }
 
-    #[test]
+    #[test_case]
     fn test_date_from_str() {
         // valid cases
         let valid = [
@@ -2322,7 +2333,7 @@ mod tests {
         assert!("9999999-9-9".parse::<NaiveDate>().is_err()); // out-of-bounds
     }
 
-    #[test]
+    #[test_case]
     fn test_date_parse_from_str() {
         let ymd = |y, m, d| NaiveDate::from_ymd(y, m, d);
         assert_eq!(
@@ -2342,7 +2353,7 @@ mod tests {
         assert!(NaiveDate::parse_from_str("2014", "%Y").is_err()); // insufficient
     }
 
-    #[test]
+    #[test_case]
     fn test_date_format() {
         let d = NaiveDate::from_ymd(2012, 3, 4);
         assert_eq!(d.format("%Y,%C,%y,%G,%g").to_string(), "2012,20,12,2012,12");
@@ -2380,7 +2391,7 @@ mod tests {
         );
     }
 
-    #[test]
+    #[test_case]
     fn test_day_iterator_limit() {
         assert_eq!(
             NaiveDate::from_ymd(262143, 12, 29).iter_days().take(4).collect::<Vec<_>>().len(),
@@ -2388,7 +2399,7 @@ mod tests {
         );
     }
 
-    #[test]
+    #[test_case]
     fn test_week_iterator_limit() {
         assert_eq!(
             NaiveDate::from_ymd(262143, 12, 12).iter_weeks().take(4).collect::<Vec<_>>().len(),

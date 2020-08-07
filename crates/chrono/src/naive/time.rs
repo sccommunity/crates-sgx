@@ -3,18 +3,20 @@
 
 //! ISO 8601 time without timezone.
 
-#[cfg(any(feature = "alloc", feature = "std", test))]
+#[cfg(any(feature = "alloc", feature = "std", enclave_unit_test))]
 use core::borrow::Borrow;
 use core::ops::{Add, AddAssign, Sub, SubAssign};
 use core::{fmt, hash, str};
 use oldtime::Duration as OldDuration;
 
 use div::div_mod_floor;
-#[cfg(any(feature = "alloc", feature = "std", test))]
+#[cfg(any(feature = "alloc", feature = "std", enclave_unit_test))]
 use format::DelayedFormat;
 use format::{parse, ParseError, ParseResult, Parsed, StrftimeItems};
 use format::{Fixed, Item, Numeric, Pad};
 use Timelike;
+#[cfg(feature = "enclave_unit_test")]
+use std::prelude::v1::*;
 
 pub const MIN_TIME: NaiveTime = NaiveTime { secs: 0, frac: 0 };
 pub const MAX_TIME: NaiveTime = NaiveTime { secs: 23 * 3600 + 59 * 60 + 59, frac: 999_999_999 };
@@ -1448,15 +1450,15 @@ mod rustc_serialize {
         }
     }
 
-    #[cfg(test)]
+    #[cfg(feature = "enclave_unit_test")]
     use rustc_serialize::json;
 
-    #[test]
+    #[test_case]
     fn test_encodable() {
         super::test_encodable_json(json::encode);
     }
 
-    #[test]
+    #[test_case]
     fn test_decodable() {
         super::test_decodable_json(json::decode);
     }
@@ -1506,22 +1508,22 @@ mod serde {
         }
     }
 
-    #[cfg(test)]
+    #[cfg(feature = "enclave_unit_test")]
     extern crate bincode;
-    #[cfg(test)]
+    #[cfg(feature = "enclave_unit_test")]
     extern crate serde_json;
 
-    #[test]
+    #[test_case]
     fn test_serde_serialize() {
         super::test_encodable_json(self::serde_json::to_string);
     }
 
-    #[test]
+    #[test_case]
     fn test_serde_deserialize() {
         super::test_decodable_json(|input| self::serde_json::from_str(&input));
     }
 
-    #[test]
+    #[test_case]
     fn test_serde_bincode() {
         // Bincode is relevant to test separately from JSON because
         // it is not self-describing.
@@ -1534,14 +1536,16 @@ mod serde {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::NaiveTime;
     use oldtime::Duration;
     use std::u32;
     use Timelike;
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
 
-    #[test]
+    #[test_case]
     fn test_time_from_hms_milli() {
         assert_eq!(
             NaiveTime::from_hms_milli_opt(3, 5, 7, 0),
@@ -1560,7 +1564,7 @@ mod tests {
         assert_eq!(NaiveTime::from_hms_milli_opt(3, 5, 7, u32::MAX), None);
     }
 
-    #[test]
+    #[test_case]
     fn test_time_from_hms_micro() {
         assert_eq!(
             NaiveTime::from_hms_micro_opt(3, 5, 7, 0),
@@ -1583,7 +1587,7 @@ mod tests {
         assert_eq!(NaiveTime::from_hms_micro_opt(3, 5, 7, u32::MAX), None);
     }
 
-    #[test]
+    #[test_case]
     fn test_time_hms() {
         assert_eq!(NaiveTime::from_hms(3, 5, 7).hour(), 3);
         assert_eq!(NaiveTime::from_hms(3, 5, 7).with_hour(0), Some(NaiveTime::from_hms(0, 5, 7)));
@@ -1610,7 +1614,7 @@ mod tests {
         assert_eq!(NaiveTime::from_hms(3, 5, 7).with_second(u32::MAX), None);
     }
 
-    #[test]
+    #[test_case]
     fn test_time_add() {
         macro_rules! check {
             ($lhs:expr, $rhs:expr, $sum:expr) => {{
@@ -1640,7 +1644,7 @@ mod tests {
         check!(hmsm(0, 0, 0, 0), Duration::milliseconds(-9990), hmsm(23, 59, 50, 10));
     }
 
-    #[test]
+    #[test_case]
     fn test_time_overflowing_add() {
         let hmsm = NaiveTime::from_hms_milli;
 
@@ -1668,7 +1672,7 @@ mod tests {
         );
     }
 
-    #[test]
+    #[test_case]
     fn test_time_addassignment() {
         let hms = NaiveTime::from_hms;
         let mut time = hms(12, 12, 12);
@@ -1678,7 +1682,7 @@ mod tests {
         assert_eq!(time, hms(8, 12, 12));
     }
 
-    #[test]
+    #[test_case]
     fn test_time_subassignment() {
         let hms = NaiveTime::from_hms;
         let mut time = hms(12, 12, 12);
@@ -1688,7 +1692,7 @@ mod tests {
         assert_eq!(time, hms(16, 12, 12));
     }
 
-    #[test]
+    #[test_case]
     fn test_time_sub() {
         macro_rules! check {
             ($lhs:expr, $rhs:expr, $diff:expr) => {{
@@ -1721,7 +1725,7 @@ mod tests {
         assert_eq!(hmsm(3, 5, 6, 1_800) + Duration::milliseconds(400), hmsm(3, 5, 7, 200));
     }
 
-    #[test]
+    #[test_case]
     fn test_time_fmt() {
         assert_eq!(format!("{}", NaiveTime::from_hms_milli(23, 59, 59, 999)), "23:59:59.999");
         assert_eq!(format!("{}", NaiveTime::from_hms_milli(23, 59, 59, 1_000)), "23:59:60");
@@ -1733,7 +1737,7 @@ mod tests {
         assert_eq!(format!("{:30}", NaiveTime::from_hms_milli(3, 5, 7, 9)), "03:05:07.009");
     }
 
-    #[test]
+    #[test_case]
     fn test_date_from_str() {
         // valid cases
         let valid = [
@@ -1781,7 +1785,7 @@ mod tests {
         assert!("12:34:56. 0".parse::<NaiveTime>().is_err());
     }
 
-    #[test]
+    #[test_case]
     fn test_time_parse_from_str() {
         let hms = |h, m, s| NaiveTime::from_hms(h, m, s);
         assert_eq!(
@@ -1792,7 +1796,7 @@ mod tests {
         assert!(NaiveTime::parse_from_str("12:3456", "%H:%M:%S").is_err());
     }
 
-    #[test]
+    #[test_case]
     fn test_time_format() {
         let t = NaiveTime::from_hms_nano(3, 5, 7, 98765432);
         assert_eq!(t.format("%H,%k,%I,%l,%P,%p").to_string(), "03, 3,03, 3,am,AM");

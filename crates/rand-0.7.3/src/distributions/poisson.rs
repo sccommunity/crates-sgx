@@ -104,12 +104,13 @@ impl Distribution<u64> for Poisson {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod test {
     use super::Poisson;
     use crate::distributions::Distribution;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     #[cfg_attr(miri, ignore)] // Miri is too slow
     fn test_poisson_10() {
         let poisson = Poisson::new(10.0);
@@ -123,7 +124,7 @@ mod test {
         assert!((avg - 10.0).abs() < 0.5); // not 100% certain, but probable enough
     }
 
-    #[test]
+    #[test_case]
     fn test_poisson_15() {
         // Take the 'high expected values' path
         let poisson = Poisson::new(15.0);
@@ -137,14 +138,14 @@ mod test {
         assert!((avg - 15.0).abs() < 0.5); // not 100% certain, but probable enough
     }
 
-    #[test]
-    #[should_panic]
+    // #[test_case]
+    //#[should_panic]
     fn test_poisson_invalid_lambda_zero() {
         Poisson::new(0.0);
     }
 
-    #[test]
-    #[should_panic]
+    // #[test_case]
+    // #[should_panic]
     fn test_poisson_invalid_lambda_neg() {
         Poisson::new(-10.0);
     }

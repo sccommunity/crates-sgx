@@ -3,7 +3,7 @@ use std::fmt::Display;
 use serde::Serialize;
 use serde::ser::{self, SerializeTupleStruct, SerializeSeq, SerializeTuple, SerializeMap, SerializeStruct};
 use serde_bytes::Bytes;
-
+use std::prelude::v1::*;
 use crate::{Integer, IntPriv, Value};
 
 use super::Error;

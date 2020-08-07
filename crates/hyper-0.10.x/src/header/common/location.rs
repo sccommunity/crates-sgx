@@ -1,4 +1,8 @@
+use std::prelude::v1::*;
+
+
 header! {
+
     /// `Location` header, defined in
     /// [RFC7231](http://tools.ietf.org/html/rfc7231#section-7.1.2)
     ///
@@ -30,6 +34,7 @@ header! {
     /// headers.set(Location("http://www.example.com/index.html".to_owned()));
     /// ```
     // TODO: Use URL
+    
     (Location, "Location") => [String]
 
     test_location {

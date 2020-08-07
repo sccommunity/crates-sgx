@@ -18,6 +18,13 @@ edition = "2018"
 name = "termcolor"
 bench = false
 
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+
+[target.'cfg(not(target_env = "sgx"))'.dependencies]
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+
 [target.'cfg(windows)'.dependencies]
 winapi-util = "0.1.3"
 

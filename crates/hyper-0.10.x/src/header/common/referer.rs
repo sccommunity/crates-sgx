@@ -1,3 +1,5 @@
+use std::prelude::v1::*;
+
 header! {
     /// `Referer` header, defined in
     /// [RFC7231](http://tools.ietf.org/html/rfc7231#section-5.5.2)
@@ -30,6 +32,7 @@ header! {
     /// headers.set(Referer("http://www.example.com/index.html".to_owned()));
     /// ```
     // TODO Use URL
+   
     (Referer, "Referer") => [String]
 
     test_referer {

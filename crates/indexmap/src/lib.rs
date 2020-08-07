@@ -1,6 +1,9 @@
 #![deny(unsafe_code)]
 #![doc(html_root_url = "https://docs.rs/indexmap/1/")]
-#![cfg_attr(not(has_std), no_std)]
+//#![cfg_attr(not(has_std), no_std)]
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"), feature(rustc_private))]
 
 //! [`IndexMap`] is a hash table where the iteration order of the key-value
 //! pairs is independent of the hash values of the keys.
@@ -23,33 +26,6 @@
 //!   between borrowed and owned versions of keys.
 //! - The [`MutableKeys`][map::MutableKeys] trait, which gives opt-in mutable
 //!   access to hash map keys.
-//!
-//! ### Alternate Hashers
-//!
-//! [`IndexMap`] and [`IndexSet`] have a default hasher type `S = RandomState`,
-//! just like the standard `HashMap` and `HashSet`, which is resistant to
-//! HashDoS attacks but not the most performant. Type aliases can make it easier
-//! to use alternate hashers:
-//!
-//! ```
-//! # extern crate fnv;
-//! # extern crate fxhash;
-//! use fnv::FnvBuildHasher;
-//! use fxhash::FxBuildHasher;
-//! use indexmap::{IndexMap, IndexSet};
-//!
-//! type FnvIndexMap<K, V> = IndexMap<K, V, FnvBuildHasher>;
-//! type FnvIndexSet<T> = IndexSet<T, FnvBuildHasher>;
-//!
-//! type FxIndexMap<K, V> = IndexMap<K, V, FxBuildHasher>;
-//! type FxIndexSet<T> = IndexSet<T, FxBuildHasher>;
-//!
-//! let std: IndexSet<i32> = (0..100).collect();
-//! let fnv: FnvIndexSet<i32> = (0..100).collect();
-//! let fx: FxIndexSet<i32> = (0..100).collect();
-//! assert_eq!(std, fnv);
-//! assert_eq!(std, fx);
-//! ```
 //!
 //! ### Rust Version
 //!
@@ -79,6 +55,12 @@
 //!
 //! [def]: map/struct.IndexMap.html#impl-Default
 
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
+
+use std::prelude::v1::*;
+
 #[cfg(not(has_std))]
 #[macro_use(vec)]
 extern crate alloc;
@@ -106,8 +88,6 @@ mod mutable_keys;
 mod serde;
 mod util;
 
-mod map_core;
-
 pub mod map;
 pub mod set;
 
@@ -124,7 +104,7 @@ pub use set::IndexSet;
 
 /// Hash value newtype. Not larger than usize, since anything larger
 /// isn't used for selecting position anyway.
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Copy, Debug)]
 struct HashValue(usize);
 
 impl HashValue {
@@ -134,31 +114,24 @@ impl HashValue {
     }
 }
 
-#[derive(Copy, Debug)]
+impl Clone for HashValue {
+    #[inline]
+    fn clone(&self) -> Self {
+        *self
+    }
+}
+impl PartialEq for HashValue {
+    #[inline]
+    fn eq(&self, rhs: &Self) -> bool {
+        self.0 == rhs.0
+    }
+}
+
+#[derive(Copy, Clone, Debug)]
 struct Bucket<K, V> {
     hash: HashValue,
     key: K,
     value: V,
-}
-
-impl<K, V> Clone for Bucket<K, V>
-where
-    K: Clone,
-    V: Clone,
-{
-    fn clone(&self) -> Self {
-        Bucket {
-            hash: self.hash,
-            key: self.key.clone(),
-            value: self.value.clone(),
-        }
-    }
-
-    fn clone_from(&mut self, other: &Self) {
-        self.hash = other.hash;
-        self.key.clone_from(&other.key);
-        self.value.clone_from(&other.value);
-    }
 }
 
 impl<K, V> Bucket<K, V> {

@@ -19,15 +19,26 @@ TCP bindings for tokio.
 """
 categories = ["asynchronous"]
 
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+
 [dependencies]
-tokio-io = "0.1.6"
-tokio-reactor = "0.1.1"
-bytes = "0.4"
-mio = "0.6.14"
-iovec = "0.1"
-futures = "0.1.19"
+tokio-io = { path = "../tokio-io"}
+tokio-reactor = { path = "../tokio-reactor"}
+bytes = { path = "../../bytes-0.4.x" }
+mio = { path = "../../mio-0.6.x" }
+iovec = { path = "../../iovec" }
+futures = { path = "../../futures-rs_01"}
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true, features = ["net"] }
+#tokio-io = "0.1.6"
+#tokio-reactor = "0.1.1"
+#bytes = "0.4"
+#mio = "0.6.14"
+#iovec = "0.1"
+#futures = "0.1.19"
 
 [dev-dependencies]
-env_logger = { version = "0.6", default-features = false }
-net2 = "0.2"
-tokio = "0.1.13"
+#env_logger = { version = "0.6", default-features = false }
+#net2 = "0.2"
+#tokio = "0.1.13"

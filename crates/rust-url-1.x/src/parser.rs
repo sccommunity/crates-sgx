@@ -12,7 +12,7 @@ use std::ascii::AsciiExt;
 use std::error::Error;
 use std::fmt::{self, Formatter, Write};
 use std::str;
-
+use std::prelude::v1::*;
 use Url;
 use encoding::EncodingOverride;
 use host::{Host, HostInternal};

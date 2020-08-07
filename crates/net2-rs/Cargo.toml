@@ -18,16 +18,21 @@ include = [
   "src/**/*.rs"
 ]
 
-[target."cfg(windows)".dependencies]
-winapi = { version = "0.3", features = ["handleapi", "winsock2", "ws2def", "ws2ipdef", "ws2tcpip"] }
+#[target."cfg(windows)".dependencies]
+#winapi = { version = "0.3", features = ["handleapi", "winsock2", "ws2def", "ws2ipdef", "ws2tcpip"] }
 
-[target.'cfg(any(target_os="redox", unix, target_os="wasi"))'.dependencies]
-libc = "0.2.54"
+#[target.'cfg(any(target_os="redox", unix, target_os="wasi"))'.dependencies]
+#libc = "0.2.54"
+[target.'cfg(not(target_env = "sgx"))'.dependencies]
+sgx_libc = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true, features = ["net"] }
 
 [dependencies]
-cfg-if = "0.1"
+#cfg-if = "0.1"
+cfg-if = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2" }
 
 [features]
 nightly = []
 duration = []
-default = ["duration"]
+default = ["duration", "mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd", "sgx_libc"]

@@ -5,7 +5,7 @@ use rle_decode_fast::rle_decode;
 use std::cmp;
 use std::io;
 use std::io::Read;
-
+use std::prelude::v1::*;
 /// DEFLATE decoder.
 #[derive(Debug)]
 pub struct Decoder<R> {
@@ -190,13 +190,14 @@ where
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::*;
     use crate::deflate::symbol::{DynamicHuffmanCodec, HuffmanCodec};
     use std::io;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn test_issues_3() {
         // see: https://github.com/sile/libflate/issues/3
         let input = [
@@ -213,7 +214,7 @@ mod tests {
         DynamicHuffmanCodec.load(&mut bit_reader).unwrap();
     }
 
-    #[test]
+    #[test_case]
     fn it_works() {
         let input = [
             180, 253, 73, 143, 28, 201, 150, 46, 8, 254, 150, 184, 139, 75, 18, 69, 247, 32, 157,

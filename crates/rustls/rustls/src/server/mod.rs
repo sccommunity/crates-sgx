@@ -18,7 +18,7 @@ use webpki;
 use std::sync::Arc;
 use std::io::{self, IoSlice};
 use std::fmt;
-
+use std::prelude::v1::*;
 #[macro_use]
 mod hs;
 mod tls12;

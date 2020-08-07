@@ -9,7 +9,7 @@ use std::fmt;
 use std::future::Future;
 use std::marker::PhantomData;
 use std::pin::Pin;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, SgxMutex as Mutex};
 use std::task::Poll;
 
 use pin_project_lite::pin_project;
@@ -105,7 +105,7 @@ cfg_rt_util! {
     /// }
     /// ```
     ///
-    /// [`Send`]: https://doc.rust-lang.org/std/marker/trait.Send.html
+    /// [`Send`]: trait@std::marker::Send
     /// [local task set]: struct@LocalSet
     /// [`Runtime::block_on`]: method@crate::runtime::Runtime::block_on
     /// [`task::spawn_local`]: fn@spawn_local
@@ -195,6 +195,7 @@ cfg_rt_util! {
         F: Future + 'static,
         F::Output: 'static,
     {
+        let future = crate::util::trace::task(future, "local");
         CURRENT.with(|maybe_cx| {
             let cx = maybe_cx
                 .expect("`spawn_local` called from outside of a `task::LocalSet`");
@@ -277,6 +278,7 @@ impl LocalSet {
         F: Future + 'static,
         F::Output: 'static,
     {
+        let future = crate::util::trace::task(future, "local");
         let (task, handle) = unsafe { task::joinable_local(future) };
         self.context.tasks.borrow_mut().queue.push_back(task);
         handle

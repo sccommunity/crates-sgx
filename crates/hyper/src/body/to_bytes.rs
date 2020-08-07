@@ -1,5 +1,5 @@
 use bytes::{Buf, BufMut, Bytes};
-
+use std::prelude::v1::*;
 use super::HttpBody;
 
 /// Concatenate the buffers from a body into a single `Bytes` asynchronously.

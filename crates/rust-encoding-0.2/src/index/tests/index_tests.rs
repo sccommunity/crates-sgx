@@ -1,20 +1,31 @@
 // This is a part of rust-encoding.
 // Copyright (c) 2013-2015, Kang Seonghoon.
 // See README.md and LICENSE.txt for details.
-
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
 //! Macros and utilities for testing indices.
 
 /// Makes a common test suite for single-byte indices.
+
+
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+
+extern crate sgx_tstd as std;
+
+
 #[macro_export]
 macro_rules! single_byte_tests {
     (
         mod = $parentmod:ident // XXX Rust issue #20701 prevents the use of `super`
     ) => (
         mod tests {
-            extern crate test;
+            //extern crate test;
             use $parentmod::{forward, backward};
-
-            #[test]
+            use std::prelude::v1::*;
+            use crates_unittest::{ test_case };
+            #[test_case]
             fn test_correct_table() {
                 for i in 0x80..0x100 {
                     let i = i as u8;
@@ -50,7 +61,7 @@ macro_rules! single_byte_tests {
 #[macro_export]
 macro_rules! multi_byte_tests {
     (make shared tests and benches with dups = $dups:expr) => ( // internal macro
-        #[test]
+        #[test_case]
         fn test_correct_table() {
             static DUPS: &'static [u16] = &$dups;
             for i in 0..0x10000 {
@@ -90,7 +101,7 @@ macro_rules! multi_byte_tests {
         dups = $dups:expr
     ) => (
         mod tests {
-            extern crate test;
+            //extern crate test;
             use $parentmod::{forward, backward};
 
             multi_byte_tests!(make shared tests and benches with dups = $dups);
@@ -103,15 +114,16 @@ macro_rules! multi_byte_tests {
         dups = $dups:expr
     ) => (
         mod tests {
-            extern crate test;
+            //extern crate test;
             use $parentmod::{forward, backward, backward_remapped};
-
+            use std::prelude::v1::*;
+            use crates_unittest::{ test_case };
             multi_byte_tests!(make shared tests and benches with dups = $dups);
 
             static REMAP_MIN: u16 = $remap_min;
             static REMAP_MAX: u16 = $remap_max;
 
-            #[test]
+            #[test_case]
             fn test_correct_remapping() {
                 for i in REMAP_MIN..(REMAP_MAX+1) {
                     let j = forward(i);
@@ -148,9 +160,10 @@ macro_rules! multi_byte_range_tests {
         value = [$minvalue:expr, $maxvalue:expr], value < $valueubound:expr
     ) => (
         mod tests {
-            extern crate test;
+            //extern crate test;
             use $parentmod::{forward, backward};
-
+            use std::prelude::v1::*;
+            use crates_unittest::{ test_case };
             static MIN_KEY: u32 = $minkey;
             static MAX_KEY: u32 = $maxkey;
             static KEY_UBOUND: u32 = $keyubound;
@@ -158,7 +171,7 @@ macro_rules! multi_byte_range_tests {
             static MAX_VALUE: u32 = $maxvalue;
             static VALUE_UBOUND: u32 = $valueubound;
 
-            #[test]
+            #[test_case]
             #[allow(unused_comparisons)]
             fn test_no_failure() {
                 for i in (if MIN_KEY>0 {MIN_KEY-1} else {0})..(MAX_KEY+2) {
@@ -169,7 +182,7 @@ macro_rules! multi_byte_range_tests {
                 }
             }
 
-            #[test]
+            #[test_case]
             fn test_correct_table() {
                 for i in MIN_KEY..(MAX_KEY+2) {
                     let j = forward(i);

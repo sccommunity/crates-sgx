@@ -1,7 +1,9 @@
 use futures::StreamExt;
 use h2_support::prelude::*;
-
-#[tokio::test]
+use std::string::ToString;
+use crates_unittest::{ test_case };
+use std::prelude::v1::*;
+#[crates_unittest::test]
 async fn recv_trailers_only() {
     let _ = env_logger::try_init();
 
@@ -51,7 +53,7 @@ async fn recv_trailers_only() {
     h2.await.unwrap();
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn send_trailers_immediately() {
     let _ = env_logger::try_init();
 

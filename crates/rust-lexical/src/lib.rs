@@ -93,14 +93,35 @@
 //! [`set_exponent_default_char`]: fn.set_exponent_default_char.html
 #![cfg_attr(feature = "radix", doc = " [`set_exponent_backup_char`]: fn.set_exponent_backup_char.html")]
 #![cfg_attr(all(feature = "correct", feature = "rounding"), doc = " [`set_float_rounding`]: fn.set_float_rounding.html")]
+#![cfg_attr(not(
+    all(
+        any(feature = "std", feature = "mesalock_sgx"),
+        target_env = "sgx",
+        target_vendor = "mesalock",
+    )),
+    no_std
+)]
+
+#![cfg_attr(
+    all(
+        any(feature = "std", feature = "mesalock_sgx"),
+        target_env = "sgx",
+        target_vendor = "mesalock",
+    ),
+    feature(rustc_private)
+)]
+
 //! [`set_nan_string`]: fn.set_nan_string.html
 //! [`set_inf_string`]: fn.set_inf_string.html
 //! [`set_infinity_string`]: fn.set_infinity_string.html
 
+
+
+
 // FEATURES
 
 // Require intrinsics and alloc in a no_std context.
-#![cfg_attr(not(feature = "std"), no_std)]
+//#![cfg_attr(not(feature = "std"), no_std)]
 
 // EXTERNAL
 
@@ -115,11 +136,18 @@ extern crate lexical_core;
 #[cfg(not(feature = "std"))]
 extern crate alloc;
 
+#[cfg(all(
+    any(feature = "std", feature = "mesalock_sgx"),
+    not(target_env = "sgx"),
+    not(target_vendor = "mesalock"),
+))]
+#[macro_use]
+extern crate sgx_tstd as std;
 /// Facade around the core features for name mangling.
 pub(crate) mod lib {
 cfg_if! {
 if #[cfg(feature = "std")] {
-    pub(crate) use std::*;
+   pub(crate) use std::*;
 } else {
     pub(crate) use core::*;
 }}  // cfg_if

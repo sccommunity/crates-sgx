@@ -101,12 +101,13 @@ impl std::error::Error for ReadError {
 }
 
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod test {
     use super::ReadRng;
     use crate::RngCore;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn test_reader_rng_u64() {
         // transmute from the target to avoid endianness concerns.
         #[rustfmt::skip]
@@ -120,7 +121,7 @@ mod test {
         assert_eq!(rng.next_u64(), 3_u64.to_be());
     }
 
-    #[test]
+    #[test_case]
     fn test_reader_rng_u32() {
         let v = vec![0u8, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0, 3];
         let mut rng = ReadRng::new(&v[..]);
@@ -130,7 +131,7 @@ mod test {
         assert_eq!(rng.next_u32(), 3_u32.to_be());
     }
 
-    #[test]
+    #[test_case]
     fn test_reader_rng_fill_bytes() {
         let v = [1u8, 2, 3, 4, 5, 6, 7, 8];
         let mut w = [0u8; 8];
@@ -141,7 +142,7 @@ mod test {
         assert!(v == w);
     }
 
-    #[test]
+    #[test_case]
     fn test_reader_rng_insufficient_bytes() {
         let v = [1u8, 2, 3, 4, 5, 6, 7, 8];
         let mut w = [0u8; 9];

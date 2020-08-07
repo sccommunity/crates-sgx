@@ -150,11 +150,13 @@ impl Display for Weekday {
     }
 }
 
-#[cfg(test)]
-mod test {
+#[cfg(feature = "enclave_unit_test")]
+pub(crate)mod test {
     use super::*;
+    use std::prelude::v1::*;
+    use std::string::ToString;
 
-    #[test]
+    #[crates_unittest::test_case]
     fn previous() {
         assert_eq!(Sunday.previous(), Saturday);
         assert_eq!(Monday.previous(), Sunday);
@@ -165,7 +167,7 @@ mod test {
         assert_eq!(Saturday.previous(), Friday);
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn next() {
         assert_eq!(Sunday.next(), Monday);
         assert_eq!(Monday.next(), Tuesday);
@@ -176,7 +178,7 @@ mod test {
         assert_eq!(Saturday.next(), Sunday);
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn iso_weekday_number() {
         assert_eq!(Monday.iso_weekday_number(), 1);
         assert_eq!(Tuesday.iso_weekday_number(), 2);
@@ -187,7 +189,7 @@ mod test {
         assert_eq!(Sunday.iso_weekday_number(), 7);
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn number_from_monday() {
         assert_eq!(Monday.number_from_monday(), 1);
         assert_eq!(Tuesday.number_from_monday(), 2);
@@ -198,7 +200,7 @@ mod test {
         assert_eq!(Sunday.number_from_monday(), 7);
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn number_from_sunday() {
         assert_eq!(Sunday.number_from_sunday(), 1);
         assert_eq!(Monday.number_from_sunday(), 2);
@@ -209,7 +211,7 @@ mod test {
         assert_eq!(Saturday.number_from_sunday(), 7);
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn number_days_from_monday() {
         assert_eq!(Monday.number_days_from_monday(), 0);
         assert_eq!(Tuesday.number_days_from_monday(), 1);
@@ -220,7 +222,7 @@ mod test {
         assert_eq!(Sunday.number_days_from_monday(), 6);
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn number_days_from_sunday() {
         assert_eq!(Sunday.number_days_from_sunday(), 0);
         assert_eq!(Monday.number_days_from_sunday(), 1);
@@ -231,7 +233,7 @@ mod test {
         assert_eq!(Saturday.number_days_from_sunday(), 6);
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn display() {
         assert_eq!(Monday.to_string(), "Monday");
         assert_eq!(Tuesday.to_string(), "Tuesday");

@@ -5,7 +5,7 @@ use std::fmt;
 use std::marker::PhantomData;
 use std::mem;
 use std::ptr;
-use std::sync::{Arc, Mutex, Condvar, Once, ONCE_INIT};
+use std::sync::{Arc, SgxMutex as Mutex, SgxCondvar as Condvar, Once, ONCE_INIT};
 use std::sync::atomic::{AtomicUsize, Ordering};
 
 use {Future, Stream, Sink, Poll, Async, StartSend, AsyncSink};

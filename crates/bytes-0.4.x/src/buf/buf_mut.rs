@@ -3,6 +3,7 @@ use byteorder::{LittleEndian, ByteOrder, BigEndian};
 use iovec::IoVec;
 
 use std::{cmp, io, ptr, usize};
+use std::prelude::v1::*;
 
 /// A trait for values that provide sequential write access to bytes.
 ///
@@ -1164,4 +1165,4 @@ impl BufMut for Vec<u8> {
 
 // The existance of this function makes the compiler catch if the BufMut
 // trait is "object-safe" or not.
-fn _assert_trait_object(_b: &BufMut) {}
+fn _assert_trait_object(_b: &dyn BufMut) {}

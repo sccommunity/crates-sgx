@@ -477,12 +477,14 @@ impl From<Colour> for Style {
     }
 }
 
-#[cfg(test)]
+
+#[cfg(feature = "enclave_unit_test")]
 #[cfg(feature = "derive_serde_style")]
 mod serde_json_tests {
+    use std::prelude::v1::*;
     use super::{Style, Colour};
-
-    #[test]
+    use crates_unittest::{ test_case };
+    #[test_case]
     fn colour_serialization() {
 
         let colours = &[
@@ -495,7 +497,7 @@ mod serde_json_tests {
         assert_eq!(serde_json::to_string(&colours).unwrap(), String::from("[\"Red\",\"Blue\",{\"RGB\":[123,123,123]},{\"Fixed\":255}]"));
     }
 
-    #[test]
+    #[test_case]
     fn colour_deserialization() {
         let colours = &[
             Colour::Red,
@@ -512,7 +514,7 @@ mod serde_json_tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn style_serialization() {
         let style = Style::default();
 

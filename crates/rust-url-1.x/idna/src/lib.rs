@@ -31,6 +31,13 @@
 //! > This document specifies a mechanism
 //! > that minimizes the impact of this transition for client software,
 //! > allowing client software to access domains that are valid under either system.
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
 
 #[macro_use] extern crate matches;
 extern crate unicode_bidi;
@@ -38,7 +45,7 @@ extern crate unicode_normalization;
 
 pub mod punycode;
 pub mod uts46;
-
+use std::prelude::v1::*;
 /// The [domain to ASCII](https://url.spec.whatwg.org/#concept-domain-to-ascii) algorithm.
 ///
 /// Return the ASCII representation a domain name,

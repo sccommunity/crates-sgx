@@ -1,7 +1,7 @@
 
 use std::collections::VecDeque;
 use std::io;
-
+use std::prelude::v1::*;
 use crate::msgs::codec;
 use crate::msgs::message::{Message, MessageError};
 

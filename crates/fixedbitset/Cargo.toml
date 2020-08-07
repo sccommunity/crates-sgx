@@ -11,9 +11,17 @@ repository = "https://github.com/bluss/fixedbitset"
 keywords = ["container", "data-structure", "bitvec", "bitset", "no_std"]
 categories = ["data-structures"]
 
+
 [features]
-std = []
-default = ["std"]
+std = ["mesalock_sgx"]
+default = ["std", "mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd", "std"]
+enclave_unit_test = ["crates_unittest", "inventory"]
+
+[dependencies]
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+crates_unittest = { git = "https://github.com/Zha0Chan/crates-sgx-unittest.git", optional = true, default-features = false }
+inventory = { version = "0.1.6", optional = true }
 
 [package.metadata.release]
 no-dev-version = true

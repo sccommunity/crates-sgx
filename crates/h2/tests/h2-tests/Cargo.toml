@@ -5,10 +5,25 @@ authors = ["Carl Lerche <me@carllerche.com>"]
 publish = false
 edition = "2018"
 
-[dependencies]
+[lib]
+path = "tests/lib.rs"    # The source file of the target.
+crate-type = ["lib"]   # The crate types to generate.
 
-[dev-dependencies]
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+enclave_unit_test = ["crates_unittest", "inventory"]
+
+[dependencies]
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+crates_unittest = { git = "https://github.com/Zha0Chan/crates-sgx-unittest.git", optional = true, default-features = true }
+inventory = { version = "0.1.6", optional = true }
+
+#[dev-dependencies]
 h2-support = { path = "../h2-support" }
-log = "0.4.1"
-futures = { version = "0.3", default-features = false, features = ["alloc"] }
-tokio = { version = "0.2", features = ["macros", "tcp"] }
+log = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2" }
+futures = { path = "../../../futures-rs/futures", version = "0.3", default-features = false, features = ["alloc"] }
+tokio = { path = "../../../tokio/tokio", version = "0.2", features = ["macros", "tcp"] }
+# log = {"0.4.1"}
+# futures = { version = "0.3", default-features = false, features = ["alloc"] }
+# tokio = { version = "0.2", features = ["macros", "tcp"] }

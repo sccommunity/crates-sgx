@@ -2,7 +2,7 @@ use ring::digest;
 use ring::hmac;
 
 use std::io::Write;
-
+use std::prelude::v1::*;
 fn convert_digest_to_hmac_alg(hash: &'static digest::Algorithm) -> hmac::Algorithm {
     if hash == &digest::SHA256 {
         hmac::HMAC_SHA256

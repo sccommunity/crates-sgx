@@ -15,7 +15,7 @@ use std::mem;
 use std::net::SocketAddr;
 #[cfg(feature = "runtime")]
 use std::time::Duration;
-
+use std::prelude::v1::Box;
 use bytes::Bytes;
 use pin_project::{pin_project, project};
 use tokio::io::{AsyncRead, AsyncWrite};
@@ -830,6 +830,7 @@ where
 }
 
 pub(crate) mod spawn_all {
+    use std::prelude::v1::Box;
     use std::error::Error as StdError;
     use tokio::io::{AsyncRead, AsyncWrite};
 
@@ -956,7 +957,7 @@ pub(crate) mod spawn_all {
 
 mod upgrades {
     use super::*;
-
+    use std::prelude::v1::Box;
     // A future binding a connection with a Service with Upgrade support.
     //
     // This type is unnameable outside the crate, and so basically just an

@@ -68,11 +68,12 @@ impl<T: 'static> TransferStack<T> {
 
         impl<T: 'static> Drop for Iter<T> {
             fn drop(&mut self) {
-                use std::process;
+               // use std::process;
 
                 if self.0.is_some() {
                     // we have bugs
-                    process::abort();
+                    //process::abort();
+		     sgx_trts::trts::rsgx_abort();
                 }
             }
         }

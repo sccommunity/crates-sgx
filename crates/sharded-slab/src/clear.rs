@@ -1,5 +1,6 @@
-use std::{collections, hash, ops::DerefMut, sync};
-
+use std::{collections, hash, ops::DerefMut};
+use std::prelude::v1::*;
+use std::sync::{ SgxRwLock as RwLock, SgxMutex as Mutex };
 /// Trait implemented by types which can be cleared in place, retaining any
 /// allocated memory.
 ///
@@ -78,14 +79,14 @@ impl Clear for String {
     }
 }
 
-impl<T: Clear> Clear for sync::Mutex<T> {
+impl<T: Clear> Clear for Mutex<T> {
     #[inline]
     fn clear(&mut self) {
         self.get_mut().unwrap().clear();
     }
 }
 
-impl<T: Clear> Clear for sync::RwLock<T> {
+impl<T: Clear> Clear for RwLock<T> {
     #[inline]
     fn clear(&mut self) {
         self.write().unwrap().clear();

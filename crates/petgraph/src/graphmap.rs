@@ -12,7 +12,7 @@ use std::iter::{Cloned, DoubleEndedIterator};
 use std::marker::PhantomData;
 use std::ops::{Deref, Index, IndexMut};
 use std::slice::Iter;
-
+use std::prelude::v1::*;
 use crate::{Directed, Direction, EdgeType, Incoming, Outgoing, Undirected};
 
 use crate::graph::node_index;

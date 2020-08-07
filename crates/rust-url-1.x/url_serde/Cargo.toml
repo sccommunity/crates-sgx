@@ -10,11 +10,15 @@ repository = "https://github.com/servo/rust-url"
 readme = "README.md"
 keywords = ["url", "serde"]
 license = "MIT/Apache-2.0"
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
 
 [dependencies]
-serde = "1.0"
+#serde = "1.0"
+serde = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2", features = ["derive"] }
 url = {version = "1.0.0", path = ".."}
-
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 [dev-dependencies]
 serde_json = "1.0"
 serde_derive = "1.0"

@@ -87,7 +87,16 @@ I also got the idea from
 which uses it for executing automata on their term index.
 */
 
-#![deny(missing_docs)]
+//#![deny(missing_docs)]
+
+#![cfg_attr(not(target_env = "sgx"), no_std)]
+#![cfg_attr(target_env = "sgx", feature(rustc_private))]
+
+#[cfg(not(target_env = "sgx"))]
+#[macro_use]
+extern crate sgx_tstd as std;
+
+use std::prelude::v1::*;
 
 #[cfg(test)]
 extern crate quickcheck;
@@ -444,15 +453,22 @@ fn max_scalar_value(nbytes: usize) -> u32 {
         _ => unreachable!("invalid UTF-8 byte sequence size"),
     }
 }
-
-#[cfg(test)]
-mod tests {
+#[cfg(feature = "enclave_unit_test")]
+extern crate crates_unittest;
+#[cfg(feature = "enclave_unit_test")]
+extern crate quickcheck;
+#[cfg(feature = "enclave_unit_test")]
+pub mod tests {
     use std::char;
-
-    use quickcheck::{TestResult, quickcheck};
-
+    use std::prelude::v1::*;
+     use quickcheck::{TestResult, quickcheck};
+    use crates_unittest::{ test_case, run_inventory_tests };
     use char_utf8::encode_utf8;
     use {MAX_UTF8_BYTES, Utf8Range, Utf8Sequences};
+
+    pub fn run_tests() {
+        run_inventory_tests!();
+    }
 
     fn rutf8(s: u8, e: u8) -> Utf8Range {
         Utf8Range::new(s, e)
@@ -474,7 +490,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn codepoints_no_surrogates() {
         never_accepts_surrogate_codepoints('\u{0}', '\u{FFFF}');
         never_accepts_surrogate_codepoints('\u{0}', '\u{10FFFF}');
@@ -483,7 +499,7 @@ mod tests {
         never_accepts_surrogate_codepoints('\u{D7FF}', '\u{E000}');
     }
 
-    #[test]
+    #[test_case]
     fn single_codepoint_one_sequence() {
         // Tests that every range of scalar values that contains a single
         // scalar value is recognized by one sequence of byte ranges.
@@ -497,7 +513,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn qc_codepoints_no_surrogate() {
         fn p(s: char, e: char) -> TestResult {
             if s > e {
@@ -509,7 +525,7 @@ mod tests {
         quickcheck(p as fn(char, char) -> TestResult);
     }
 
-    #[test]
+    #[test_case]
     fn bmp() {
         use Utf8Sequence::*;
 
@@ -525,7 +541,7 @@ mod tests {
         ]);
     }
 
-    #[test]
+    #[test_case]
     fn scratch() {
         for range in Utf8Sequences::new('\u{0}', '\u{FFFF}') {
             println!("{:?}", range);

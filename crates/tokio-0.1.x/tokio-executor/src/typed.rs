@@ -1,5 +1,5 @@
 use SpawnError;
-
+use std::prelude::v1::Box;
 /// A value that spawns futures of a specific type.
 ///
 /// The trait is generic over `T`: the type of future that can be spawened. This

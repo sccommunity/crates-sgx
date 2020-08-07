@@ -10,8 +10,12 @@ use std::fmt;
 use std::io;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::mpsc;
-use std::sync::{Arc, Mutex};
+use std::sync::Arc;
+use std::sync::SgxMutex as Mutex;
 use std::thread;
+use std::prelude::v1::*;
+
+const NUM_CPU: usize = 1;
 
 /// A general-purpose thread pool for scheduling tasks that poll futures to
 /// completion.
@@ -34,7 +38,7 @@ pub struct ThreadPool {
 /// library is activated.
 pub struct ThreadPoolBuilder {
     pool_size: usize,
-    stack_size: usize,
+    //stack_size: usize,
     name_prefix: Option<String>,
     after_start: Option<Arc<dyn Fn(usize) + Send + Sync>>,
     before_stop: Option<Arc<dyn Fn(usize) + Send + Sync>>,
@@ -188,8 +192,8 @@ impl ThreadPoolBuilder {
     /// See the other methods on this type for details on the defaults.
     pub fn new() -> Self {
         Self {
-            pool_size: cmp::max(1, num_cpus::get()),
-            stack_size: 0,
+            pool_size: cmp::max(1, NUM_CPU),
+            //stack_size: 0,
             name_prefix: None,
             after_start: None,
             before_stop: None,
@@ -213,10 +217,10 @@ impl ThreadPoolBuilder {
     /// Set stack size of threads in the pool, in bytes.
     ///
     /// By default, worker threads use Rust's standard stack size.
-    pub fn stack_size(&mut self, stack_size: usize) -> &mut Self {
-        self.stack_size = stack_size;
-        self
-    }
+    //pub fn stack_size(&mut self, stack_size: usize) -> &mut Self {
+    //    self.stack_size = stack_size;
+    //    self
+    //}
 
     /// Set thread name prefix of a future ThreadPool.
     ///
@@ -280,9 +284,9 @@ impl ThreadPoolBuilder {
             if let Some(ref name_prefix) = self.name_prefix {
                 thread_builder = thread_builder.name(format!("{}{}", name_prefix, counter));
             }
-            if self.stack_size > 0 {
-                thread_builder = thread_builder.stack_size(self.stack_size);
-            }
+            //if self.stack_size > 0 {
+            //    thread_builder = thread_builder.stack_size(self.stack_size);
+            //}
             thread_builder.spawn(move || state.work(counter, after_start, before_stop))?;
         }
         Ok(pool)

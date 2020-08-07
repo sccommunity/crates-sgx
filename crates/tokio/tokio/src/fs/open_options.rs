@@ -2,6 +2,7 @@ use crate::fs::{asyncify, File};
 
 use std::io;
 use std::path::Path;
+use std::prelude::v1::*;
 
 /// Options and flags which can be used to configure how a file is opened.
 ///
@@ -381,6 +382,12 @@ impl OpenOptions {
 
         let std = asyncify(move || opts.open(path)).await?;
         Ok(File::from_std(std))
+    }
+
+    /// Returns a mutable reference to the the underlying std::fs::OpenOptions
+    #[cfg(unix)]
+    pub(super) fn as_inner_mut(&mut self) -> &mut std::fs::OpenOptions {
+        &mut self.0
     }
 }
 

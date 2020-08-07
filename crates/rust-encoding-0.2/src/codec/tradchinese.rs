@@ -3,7 +3,7 @@
 // See README.md and LICENSE.txt for details.
 
 //! Legacy traditional Chinese encodings.
-
+use std::prelude::v1::*;
 use std::convert::Into;
 use std::default::Default;
 use util::StrCharIndex;
@@ -147,14 +147,15 @@ transient:
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod bigfive2003_tests {
-    extern crate test;
+    //extern crate test;
     use super::BigFive2003Encoding;
     use testutils;
     use types::*;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::{ test_case };
+    #[test_case]
     fn test_encoder_valid() {
         let mut e = BigFive2003Encoding.raw_encoder();
         assert_feed_ok!(e, "A", "", [0x41]);
@@ -167,7 +168,7 @@ mod bigfive2003_tests {
         assert_finish_ok!(e, []);
     }
 
-    #[test]
+    #[test_case]
     fn test_encoder_invalid() {
         let mut e = BigFive2003Encoding.raw_encoder();
         assert_feed_err!(e, "", "\u{ffff}", "", []);
@@ -176,7 +177,7 @@ mod bigfive2003_tests {
         assert_finish_ok!(e, []);
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_valid() {
         let mut d = BigFive2003Encoding.raw_decoder();
         assert_feed_ok!(d, [0x41], [], "A");
@@ -195,7 +196,7 @@ mod bigfive2003_tests {
         assert_finish_ok!(d, "");
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_invalid_lone_lead_immediate_test_finish() {
         for i in 0x81..0xff {
             let mut d = BigFive2003Encoding.raw_decoder();
@@ -210,7 +211,7 @@ mod bigfive2003_tests {
         assert_finish_ok!(d, "");
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_invalid_lone_lead_followed_by_space() {
         for i in 0x80..0x100 {
             let i = i as u8;
@@ -220,7 +221,7 @@ mod bigfive2003_tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_invalid_lead_followed_by_invalid_trail() {
         // unlike most other cases, valid lead + invalid MSB-set trail are entirely consumed.
         // https://www.w3.org/Bugs/Public/show_bug.cgi?id=16771
@@ -247,7 +248,7 @@ mod bigfive2003_tests {
         assert_finish_ok!(d, "");
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_feed_after_finish() {
         let mut d = BigFive2003Encoding.raw_decoder();
         assert_feed_ok!(d, [0xa4, 0x40], [0xa4], "\u{4e00}");
@@ -256,22 +257,22 @@ mod bigfive2003_tests {
         assert_finish_ok!(d, "");
     }
 
-    #[bench]
-    fn bench_encode_short_text(bencher: &mut test::Bencher) {
-        let s = testutils::TRADITIONAL_CHINESE_TEXT;
-        bencher.bytes = s.len() as u64;
-        bencher.iter(|| test::black_box({
-            BigFive2003Encoding.encode(&s, EncoderTrap::Strict)
-        }))
-    }
+    // #[bench]
+    // fn bench_encode_short_text(bencher: &mut test::Bencher) {
+    //     let s = testutils::TRADITIONAL_CHINESE_TEXT;
+    //     bencher.bytes = s.len() as u64;
+    //     bencher.iter(|| test::black_box({
+    //         BigFive2003Encoding.encode(&s, EncoderTrap::Strict)
+    //     }))
+    // }
 
-    #[bench]
-    fn bench_decode_short_text(bencher: &mut test::Bencher) {
-        let s = BigFive2003Encoding.encode(testutils::TRADITIONAL_CHINESE_TEXT,
-                                           EncoderTrap::Strict).ok().unwrap();
-        bencher.bytes = s.len() as u64;
-        bencher.iter(|| test::black_box({
-            BigFive2003Encoding.decode(&s, DecoderTrap::Strict)
-        }))
-    }
+    // #[bench]
+    // fn bench_decode_short_text(bencher: &mut test::Bencher) {
+    //     let s = BigFive2003Encoding.encode(testutils::TRADITIONAL_CHINESE_TEXT,
+    //                                        EncoderTrap::Strict).ok().unwrap();
+    //     bencher.bytes = s.len() as u64;
+    //     bencher.iter(|| test::black_box({
+    //         BigFive2003Encoding.decode(&s, DecoderTrap::Strict)
+    //     }))
+    // }
 }

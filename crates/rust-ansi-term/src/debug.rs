@@ -70,18 +70,21 @@ impl fmt::Debug for Style {
 }
 
 
-#[cfg(test)]
+
+    
+#[cfg(feature = "enclave_unit_test")]
 mod test {
+    use std::prelude::v1::*;
     use style::Colour::*;
     use style::Style;
-
+    use crates_unittest::{ test_case };
     fn style() -> Style {
         Style::new()
     }
 
     macro_rules! test {
         ($name: ident: $obj: expr => $result: expr) => {
-            #[test]
+            #[test_case]
             fn $name() {
                 assert_eq!($result, format!("{:?}", $obj));
             }
@@ -100,7 +103,7 @@ mod test {
             Red.on(Blue).blink().bold().dimmed().hidden().italic().reverse().strikethrough().underline() =>
             "Style { fg(Red), on(Blue), blink, bold, dimmed, hidden, italic, reverse, strikethrough, underline }");
 
-    #[test]
+    #[test_case]
     fn long_and_detailed() {
         extern crate regex;
         let expected_debug = "Style { fg(Blue), bold }";

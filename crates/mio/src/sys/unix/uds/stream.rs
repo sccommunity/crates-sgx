@@ -17,7 +17,7 @@ pub(crate) fn connect(path: &Path) -> io::Result<net::UnixStream> {
         Err(e) => {
             // Close the socket if we hit an error, ignoring the error
             // from closing since we can't pass back two errors.
-            let _ = unsafe { libc::close(socket) };
+            let _ = unsafe { libc::ocall::close(socket) };
 
             return Err(e);
         }

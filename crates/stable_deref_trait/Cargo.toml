@@ -12,6 +12,10 @@ An unsafe marker trait for types like Box and Rc that dereference to a stable ad
 """
 
 [features]
-default = ["std"]
+mesalock_sgx = ["sgx_tstd", "std"]
+default = ["std", "mesalock_sgx"]
 std = ["alloc"]
 alloc = []
+
+[dependencies]
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }

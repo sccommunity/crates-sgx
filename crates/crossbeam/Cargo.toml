@@ -18,11 +18,13 @@ categories = ["concurrency", "memory-management", "data-structures", "no-std"]
 exclude = ["/ci/*", "/bors.toml"]
 
 [features]
-default = ["std"]
+default = ["mesalock_sgx", "std"]
+mesalock_sgx = ["sgx_tstd", "std"]
 
 # Enable to use APIs that require `std`.
 # This is enabled by default.
 std = [
+  "mesalock_sgx",
   "alloc",
   "crossbeam-channel/std",
   "crossbeam-deque/std",
@@ -42,7 +44,9 @@ alloc = ["crossbeam-epoch/alloc", "crossbeam-queue/alloc"]
 nightly = ["crossbeam-epoch/nightly", "crossbeam-utils/nightly", "crossbeam-queue/nightly"]
 
 [dependencies]
-cfg-if = "0.1.10"
+#cfg-if = "0.1.10"
+cfg-if = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 
 [dependencies.crossbeam-channel]
 version = "0.4"

@@ -60,6 +60,15 @@
 #![cfg_attr(feature="flame_it", feature(plugin, custom_attribute))]
 #![cfg_attr(feature="flame_it", plugin(flamer))]
 
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"), feature(rustc_private))]
+
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
+
+use std::prelude::v1::*;
 
 #[macro_use]
 extern crate matches;
@@ -489,11 +498,19 @@ fn assign_levels_to_removed_chars(para_level: Level, classes: &[BidiClass], leve
 }
 
 
-#[cfg(test)]
-mod tests {
+#[cfg(feature = "enclave_unit_test")]
+extern crate crates_unittest;
+#[cfg(feature = "enclave_unit_test")]
+pub mod tests {
     use super::*;
+    use std::prelude::v1::*;
+    use crates_unittest::{ test_case, run_inventory_tests };
 
-    #[test]
+    pub fn run_tests() {
+        run_inventory_tests!();
+    }
+
+    #[test_case]
     fn test_initial_text_info() {
         let text = "a1";
         assert_eq!(
@@ -560,7 +577,7 @@ mod tests {
         );
     }
 
-    #[test]
+    #[test_case]
     fn test_process_text() {
         let text = "abc123";
         assert_eq!(
@@ -679,7 +696,7 @@ mod tests {
         assert_eq!(bidi_info.original_classes, vec![AL, AL, ET, ET, ET, EN, EN]);
     }
 
-    #[test]
+    #[test_case]
     fn test_bidi_info_has_rtl() {
         // ASCII only
         assert_eq!(BidiInfo::new("123", None).has_rtl(), false);
@@ -712,7 +729,7 @@ mod tests {
             .collect()
     }
 
-    #[test]
+    #[test_case]
     fn test_reorder_line() {
         /// Bidi_Class: L L L B L L L B L L L
         assert_eq!(
@@ -809,7 +826,7 @@ mod tests {
             .collect()
     }
 
-    #[test]
+    #[test_case]
     fn test_reordered_levels() {
 
         /// BidiTest:946 (LRI PDI)
@@ -852,7 +869,7 @@ mod serde_tests {
     use serde_test::{Token, assert_tokens};
     use super::*;
 
-    #[test]
+    #[test_case]
     fn test_levels() {
         let text = "abc אבג";
         let bidi_info = BidiInfo::new(text, None);

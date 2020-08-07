@@ -1,5 +1,5 @@
 use header::HttpDate;
-
+use std::prelude::v1::*;
 header! {
     /// `Last-Modified` header, defined in
     /// [RFC7232](http://tools.ietf.org/html/rfc7232#section-2.2)

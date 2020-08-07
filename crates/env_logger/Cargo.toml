@@ -18,14 +18,17 @@ keywords = ["logging", "log", "logger"]
 members = [
     "ci"
 ]
-
+exclude = ["sgx-tests"]
 [dependencies]
-log = { version = "0.4.8", features = ["std"] }
-regex = { version = "1.0.3", optional = true, default-features=false, features=["std", "perf"] }
-termcolor = { version = "1.0.2", optional = true }
-humantime = { version = "2.0.0", optional = true }
-atty = { version = "0.2.5", optional = true }
+log = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2", features = ["std"] }
+regex = { version = "1.0.3", optional = true, path = "../regex", features=["std", "perf"] }
+termcolor = { version = "1.0.5", optional = true, path = "../termcolor" }
+humantime = { optional = true, path = "../humantime" }
+#atty = { version = "0.2.5", optional = true }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 
+crates_unittest = { git = "https://github.com/Zha0Chan/crates-sgx-unittest.git", optional = true, default-features = false }
+inventory = { version = "0.1.6", optional = true }
 [[test]]
 name = "regexp_filter"
 harness = false
@@ -43,4 +46,6 @@ name = "init-twice-retains-filter"
 harness = false
 
 [features]
-default = ["termcolor", "atty", "humantime", "regex"]
+default = ["termcolor", "humantime", "regex", "mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+enclave_unit_test = ["crates_unittest", "inventory"]

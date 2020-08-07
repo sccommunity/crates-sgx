@@ -15,7 +15,7 @@
 use std::cmp::Ordering;
 use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
-
+use std::prelude::v1::*;
 use crate::visit::{DfsPostOrder, GraphBase, IntoNeighbors, Visitable, Walker};
 
 /// The dominance relation for some graph and root.

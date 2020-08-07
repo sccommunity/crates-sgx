@@ -4,6 +4,13 @@
 //!
 //! ```
 //! ```
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
 
 #[cfg(feature = "with-serde")]
 #[macro_use]
@@ -15,7 +22,7 @@ use std::ops::Index;
 use std::str::Utf8Error;
 use std::iter::FromIterator;
 use std::convert::TryFrom;
-
+use std::prelude::v1::*;
 use num_traits::NumCast;
 
 pub mod decode;

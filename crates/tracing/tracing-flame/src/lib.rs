@@ -91,6 +91,10 @@
 //! [`FlameLayer`]: struct.FlameLayer.html
 //! [`FlushGuard`]: struct.FlushGuard.html
 //! [`inferno-flamegraph`]: https://docs.rs/inferno/0.9.5/inferno/index.html#producing-a-flame-graph
+#![doc(
+    html_logo_url = "https://raw.githubusercontent.com/tokio-rs/tracing/master/assets/logo.svg",
+    issue_tracker_base_url = "https://github.com/tokio-rs/tracing/issues/"
+)]
 #![warn(
     missing_debug_implementations,
     missing_docs,
@@ -114,6 +118,14 @@
     while_true
 )]
 
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
+
 pub use error::Error;
 
 use error::Kind;
@@ -127,7 +139,7 @@ use std::io::Write;
 use std::marker::PhantomData;
 use std::path::Path;
 use std::sync::Arc;
-use std::sync::Mutex;
+use std::sync::SgxMutex as Mutex;
 use std::time::{Duration, Instant};
 use tracing::span;
 use tracing::Subscriber;
@@ -135,7 +147,7 @@ use tracing_subscriber::layer::Context;
 use tracing_subscriber::registry::LookupSpan;
 use tracing_subscriber::registry::SpanRef;
 use tracing_subscriber::Layer;
-
+use std::prelude::v1::*;
 mod error;
 
 lazy_static! {
@@ -193,7 +205,26 @@ thread_local! {
 #[derive(Debug)]
 pub struct FlameLayer<S, W> {
     out: Arc<Mutex<W>>,
+    config: Config,
     _inner: PhantomData<S>,
+}
+
+#[derive(Debug)]
+struct Config {
+    /// Don't include samples where no spans are open
+    empty_samples: bool,
+
+    /// Don't include thread_id
+    threads_collapsed: bool,
+}
+
+impl Default for Config {
+    fn default() -> Self {
+        Self {
+            empty_samples: true,
+            threads_collapsed: false,
+        }
+    }
 }
 
 /// An RAII guard for managing flushing a global writer that is
@@ -224,6 +255,7 @@ where
         let _unused = *START;
         Self {
             out: Arc::new(Mutex::new(writer)),
+            config: Default::default(),
             _inner: PhantomData,
         }
     }
@@ -234,6 +266,39 @@ where
         FlushGuard {
             out: self.out.clone(),
         }
+    }
+
+    /// Configures whether or not periods of time where no spans are entered
+    /// should be included in the output.
+    ///
+    /// Defaults to `true`.
+    ///
+    /// Setting this feature to false can help with situations where no span is
+    /// active for large periods of time. This can include time spent idling, or
+    /// doing uninteresting work that isn't being measured.
+    /// When a large number of empty samples are recorded, the flamegraph
+    /// may be harder to interpret and navigate, since the recorded spans will
+    /// take up a correspondingly smaller percentage of the graph. In some
+    /// cases, a large number of empty samples may even hide spans which
+    /// would otherwise appear in the flamegraph.
+    pub fn with_empty_samples(mut self, enabled: bool) -> Self {
+        self.config.empty_samples = enabled;
+        self
+    }
+
+    /// Configures whether or not spans from different threads should be
+    /// collapsed into one pool of events.
+    ///
+    /// Defaults to `false`.
+    ///
+    /// Setting this feature to true can help with applications that distribute
+    /// work evenly across many threads, such as thread pools. In such
+    /// cases it can be difficult to get an overview of where the application
+    /// as a whole spent most of its time, because work done in the same
+    /// span may be split up across many threads.
+    pub fn with_threads_collapsed(mut self, enabled: bool) -> Self {
+        self.config.threads_collapsed = enabled;
+        self
     }
 }
 
@@ -301,11 +366,20 @@ where
         let samples = self.time_since_last_event();
 
         let first = ctx.span(id).expect("expected: span id exists in registry");
+
+        if !self.config.empty_samples && first.from_root().count() == 0 {
+            return;
+        }
+
         let parents = first.from_root();
 
         let mut stack = String::new();
 
-        THREAD_NAME.with(|name| stack += name.as_str());
+        if !self.config.threads_collapsed {
+            THREAD_NAME.with(|name| stack += name.as_str());
+        } else {
+            stack += "all-threads";
+        }
 
         for parent in parents {
             stack += "; ";
@@ -342,7 +416,11 @@ where
         let parents = first.from_root();
 
         let mut stack = String::new();
-        THREAD_NAME.with(|name| stack += name.as_str());
+        if !self.config.threads_collapsed {
+            THREAD_NAME.with(|name| stack += name.as_str());
+        } else {
+            stack += "all-threads";
+        }
         stack += "; ";
 
         for parent in parents {

@@ -19,19 +19,25 @@ documentation = "http://hyperium.github.io/mime.rs"
 keywords = ["mime", "media-extensions", "media-types"]
 license = "MIT"
 repository = "https://github.com/hyperium/mime.rs"
-[dependencies.heapsize]
-version = ">=0.2.0, <0.4"
-optional = true
 
-[dependencies.log]
-version = "0.3"
 
-[dependencies.serde]
-version = ">=0.7, <0.9"
-optional = true
-[dev-dependencies.serde_json]
-version = ">=0.7, <0.9"
+[dependencies]
+heapsize = { path = "../heapsize", optional = true }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+crates_unittest = { git = "https://github.com/Zha0Chan/crates-sgx-unittest.git", optional = true, default-features = false}
+inventory = { version = "0.1.6", optional = true }
+log = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2" }
+
+# [dependencies.serde]
+# version = ">=0.7, <0.9"
+# optional = true
+# [dependencies.serde_json]
+# version = ">=0.7, <0.9"
+
 
 [features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
 heap_size = ["heapsize"]
 nightly = []
+enclave_unit_test = ["crates_unittest", "inventory"]

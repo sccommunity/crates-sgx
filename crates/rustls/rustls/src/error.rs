@@ -3,7 +3,7 @@ use std::error::Error;
 use crate::msgs::enums::{ContentType, HandshakeType, AlertDescription};
 use webpki;
 use sct;
-
+use std::prelude::v1::*;
 /// rustls reports protocol errors using this type.
 #[derive(Debug, PartialEq, Clone)]
 pub enum TLSError {

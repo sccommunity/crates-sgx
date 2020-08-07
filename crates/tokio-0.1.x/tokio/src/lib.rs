@@ -67,6 +67,14 @@
 //! }
 //! ```
 
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
+
 macro_rules! if_runtime {
     ($($i:item)*) => ($(
         #[cfg(any(feature = "rt-full"))]
@@ -81,8 +89,8 @@ extern crate futures;
 extern crate bytes;
 #[cfg(feature = "reactor")]
 extern crate mio;
-#[cfg(feature = "rt-full")]
-extern crate num_cpus;
+//#[cfg(feature = "rt-full")]
+//extern crate num_cpus;
 #[cfg(feature = "codec")]
 extern crate tokio_codec;
 #[cfg(feature = "rt-full")]

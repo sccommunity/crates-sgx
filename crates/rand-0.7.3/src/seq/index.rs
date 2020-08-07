@@ -13,6 +13,7 @@
 #[cfg(all(feature = "alloc", not(feature = "std")))]
 use crate::alloc::vec::{self, Vec};
 #[cfg(feature = "std")] use std::vec;
+#[cfg(feature="mesalock_sgx")] use std::prelude::v1::*;
 // BTreeMap is not as fast in tests, but better than nothing.
 #[cfg(all(feature = "alloc", not(feature = "std")))]
 use crate::alloc::collections::BTreeSet;
@@ -373,13 +374,15 @@ where
     IndexVec::from(indices)
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod test {
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
     use super::*;
     #[cfg(all(feature = "alloc", not(feature = "std")))] use crate::alloc::vec;
     #[cfg(feature = "std")] use std::vec;
 
-    #[test]
+    #[test_case]
     fn test_sample_boundaries() {
         let mut r = crate::test::rng(404);
 
@@ -401,7 +404,7 @@ mod test {
         assert!(1 << 25 < sum && sum < (1 << 25) * 25);
     }
 
-    #[test]
+    #[test_case]
     #[cfg_attr(miri, ignore)] // Miri is too slow
     fn test_sample_alg() {
         let seed_rng = crate::test::rng;

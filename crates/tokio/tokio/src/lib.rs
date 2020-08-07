@@ -1,4 +1,4 @@
-#![doc(html_root_url = "https://docs.rs/tokio/0.2.20")]
+#![doc(html_root_url = "https://docs.rs/tokio/0.2.22")]
 #![allow(
     clippy::cognitive_complexity,
     clippy::large_enum_variant,
@@ -16,6 +16,10 @@
     attr(deny(warnings, rust_2018_idioms), allow(dead_code, unused_variables))
 ))]
 #![cfg_attr(docsrs, feature(doc_cfg))]
+
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"), feature(rustc_private))]
 
 //! A runtime for writing reliable, asynchronous, and slim applications.
 //!
@@ -44,7 +48,7 @@
 //! [signal]: crate::signal
 //! [fs]: crate::fs
 //! [runtime]: crate::runtime
-//! [website]: https://tokio.rs/docs/overview/
+//! [website]: https://tokio.rs/tokio/tutorial
 //!
 //! # A Tour of Tokio
 //!
@@ -228,7 +232,7 @@
 //! on the number of blocking threads is very large. These limits can be
 //! configured on the [`Builder`].
 //!
-//! Two spawn a blocking task, you should use the [`spawn_blocking`] function.
+//! To spawn a blocking task, you should use the [`spawn_blocking`] function.
 //!
 //! [`Builder`]: crate::runtime::Builder
 //! [`spawn_blocking`]: crate::task::spawn_blocking()
@@ -337,6 +341,10 @@
 //! }
 //! ```
 
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
+
 // Includes re-exports used by macros.
 //
 // This module is not intended to be part of the public API. In general, any
@@ -360,9 +368,9 @@ mod park;
 
 pub mod prelude;
 
-cfg_process! {
-    pub mod process;
-}
+//cfg_process! {
+//    pub mod process;
+//}
 
 pub mod runtime;
 

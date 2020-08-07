@@ -15,7 +15,7 @@ use std::vec;
 use parser::{ParseResult, ParseError};
 use percent_encoding::{percent_decode, utf8_percent_encode, SIMPLE_ENCODE_SET};
 use idna;
-
+use std::prelude::v1::*;
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum HostInternal {
     None,

@@ -5,7 +5,7 @@ use bytes::{Buf, BufMut, Bytes};
 use std::error::Error;
 use std::fmt;
 use std::usize;
-
+use std::prelude::v1::*;
 /// Conversion from a `BufStream`.
 ///
 /// By implementing `FromBufStream` for a type, you define how it will be

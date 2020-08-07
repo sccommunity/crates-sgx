@@ -8,12 +8,12 @@ name = "tokio"
 #   - README.md
 # - Update CHANGELOG.md.
 # - Create "v0.2.x" git tag.
-version = "0.2.20"
+version = "0.2.22"
 edition = "2018"
 authors = ["Tokio Contributors <team@tokio.rs>"]
 license = "MIT"
 readme = "README.md"
-documentation = "https://docs.rs/tokio/0.2.20/tokio/"
+documentation = "https://docs.rs/tokio/0.2.22/tokio/"
 repository = "https://github.com/tokio-rs/tokio"
 homepage = "https://tokio.rs"
 description = """
@@ -25,7 +25,7 @@ keywords = ["io", "async", "non-blocking", "futures"]
 
 [features]
 # Include nothing by default
-default = []
+default = ["mesalock_sgx"]
 
 # enable everything
 full = [
@@ -37,7 +37,7 @@ full = [
   "io-std",
   "macros",
   "net",
-  "process",
+# "process",
   "rt-core",
   "rt-util",
   "rt-threaded",
@@ -45,6 +45,7 @@ full = [
   "stream",
   "sync",
   "time",
+  "mesalock_sgx",
 ]
 
 blocking = ["rt-core"]
@@ -56,61 +57,83 @@ io-util = ["memchr"]
 io-std = ["rt-core"]
 macros = ["tokio-macros"]
 net = ["dns", "tcp", "udp", "uds"]
-process = [
-  "io-driver",
-  "libc",
-  "mio-named-pipes",
-  "signal",
-  "winapi/consoleapi",
-  "winapi/minwindef",
-  "winapi/threadpoollegacyapiset",
-  "winapi/winerror",
-]
+#process = [
+#  "io-driver",
+#  "libc",
+#  "mio-named-pipes",
+#  "signal",
+#  "winapi/consoleapi",
+#  "winapi/minwindef",
+#  "winapi/threadpoollegacyapiset",
+#  "winapi/winerror",
+#]
 # Includes basic task execution capabilities
-rt-core = []
+rt-core = ["slab"]
 rt-util = []
 rt-threaded = [
-  "num_cpus",
+# "num_cpus",
   "rt-core",
 ]
 signal = [
   "io-driver",
   "lazy_static",
-  "libc",
-  "mio-uds",
-  "signal-hook-registry",
+  #"libc",
+  #"mio-uds",
+  #"signal-hook-registry",
   "winapi/consoleapi",
   "winapi/minwindef",
+  "sgx_signal"
 ]
+
 stream = ["futures-core"]
 sync = ["fnv"]
 test-util = []
 tcp = ["io-driver", "iovec"]
 time = ["slab"]
 udp = ["io-driver"]
-uds = ["io-driver", "mio-uds", "libc"]
+uds = ["io-driver", "sgx_libc", "mio-uds"]
+
+mesalock_sgx = ["sgx_tstd", "sgx_trts", "sgx_libc"]
 
 [dependencies]
 tokio-macros = { version = "0.2.4", path = "../tokio-macros", optional = true }
 
-bytes = "0.5.0"
+#bytes = "0.5.0"
 pin-project-lite = "0.1.1"
 
 # Everything else is optional...
-fnv = { version = "1.0.6", optional = true }
-futures-core = { version = "0.3.0", optional = true }
-lazy_static = { version = "1.0.2", optional = true }
-memchr = { version = "2.2", optional = true }
-mio = { version = "0.6.20", optional = true }
-iovec = { version = "0.1.4", optional = true }
-num_cpus = { version = "1.8.0", optional = true }
-parking_lot = { version = "0.10.0", optional = true } # Not in full
-slab = { version = "0.4.1", optional = true } # Backs `DelayQueue`
+#fnv = { version = "1.0.6", optional = true }
+#futures-core = { version = "0.3.0", optional = true }
+#lazy_static = { version = "1.0.2", optional = true }
+#memchr = { version = "2.2", optional = true }
+#mio = { version = "0.6.20", optional = true }
+#iovec = { version = "0.1.4", optional = true }
+#num_cpus = { version = "1.8.0", optional = true }
+#parking_lot = { version = "0.11.0", optional = true } # Not in full
+#slab = { version = "0.4.1", optional = true } # Backs `DelayQueue`
+
+parking_lot = { path = "../../parking_lot" }
+bytes = { path = "../../bytes" }
+fnv = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2", optional = true }
+futures-core = { path = "../../futures-rs/futures-core", optional = true }
+lazy_static = { version = "1.0.2", features = ["spin_no_std"], optional = true }
+tracing = { version = "0.1.16", default-features = false, features = ["std"], optional = true } # Not in full
+
+memchr = { path = "../../rust-memchr", optional = true  }
+mio = { path = "../../mio-0.6.x", optional = true, features = [] }
+iovec = { path = "../../iovec", optional = true }
+slab = { path = "../../slab", optional = true }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true, features = ["thread", "net", "untrusted_fs", "untrusted_time"] }
+sgx_trts = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+sgx_libc = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+sgx_signal = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+
 
 [target.'cfg(unix)'.dependencies]
-mio-uds = { version = "0.6.5", optional = true }
-libc = { version = "0.2.42", optional = true }
-signal-hook-registry = { version = "1.1.1", optional = true }
+#mio-uds = { version = "0.6.5", optional = true }
+#libc = { version = "0.2.42", optional = true }
+#signal-hook-registry = { version = "1.1.1", optional = true }
+mio-uds = { path = "../../mio-uds", optional = true }
 
 [target.'cfg(windows)'.dependencies]
 mio-named-pipes = { version = "0.1.6", optional = true }
@@ -121,14 +144,14 @@ default-features = false
 optional = true
 
 [dev-dependencies]
-tokio-test = { version = "0.2.0", path = "../tokio-test" }
+tokio-test = { version = "0.2.0", path = "../tokio-test"}
 futures = { version = "0.3.0", features = ["async-await"] }
 futures-test = "0.3.0"
 proptest = "0.9.4"
 tempfile = "3.1.0"
 
 [target.'cfg(loom)'.dev-dependencies]
-loom = { version = "0.3.4", features = ["futures", "checkpoint"] }
+loom = { version = "0.3.5", features = ["futures", "checkpoint"] }
 
 [package.metadata.docs.rs]
 all-features = true

@@ -9,7 +9,7 @@ use core::{
     ops::{Add, AddAssign, Sub, SubAssign},
     time::Duration as StdDuration,
 };
-
+use std::prelude::v1::*;
 // Some methods could be `const fn` due to the internal structure of `Date`, but
 // are explicitly not (and have linting disabled) as it could lead to
 // compatibility issues down the road if the internal structure is changed.
@@ -1117,18 +1117,24 @@ impl Ord for Date {
     }
 }
 
-#[cfg(test)]
-#[rustfmt::skip::macros(date)]
-mod test {
-    use super::*;
+//#[cfg(test)]
 
+#[cfg(feature = "enclave_unit_test")]
+#[rustfmt::skip::macros(date)]
+pub(crate) mod test {
+  
+    use std::prelude::v1::*;
+    use std::string::ToString;
+   
+    use super::*;
+   
     macro_rules! julian {
         ($julian:literal) => {
             Date::from_julian_day($julian)
         };
     }
-
-    #[test]
+   
+    #[crates_unittest::test_case]
     fn weeks_in_year_exhaustive() {
         let years_with_53 = &[
             4, 9, 15, 20, 26, 32, 37, 43, 48, 54, 60, 65, 71, 76, 82, 88, 93, 99, 105, 111, 116,
@@ -1149,7 +1155,7 @@ mod test {
         }
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     fn test_days_in_year_month() {
         // Common year
         assert_eq!(days_in_year_month(2019, 1), 31);
@@ -1183,9 +1189,12 @@ mod test {
     // Test all dominical letters. For leap years, check the dates
     // immediately preceding and after the leap day.
 
-    #[test]
-    fn test_monday_based_week() -> crate::Result<()> {
-        // A
+    #[crates_unittest::test_case]
+    fn test_monday_based_week() {
+        assert!(test_monday_based_week_inner().is_ok());
+    }
+    fn test_monday_based_week_inner() -> crate::Result<()> {
+        // A  
         assert_eq!(date!(2023-01-01).monday_based_week(), 0);
         assert_eq!(date!(2023-01-02).monday_based_week(), 1);
         assert_eq!(date!(2023-01-03).monday_based_week(), 1);
@@ -1375,9 +1384,12 @@ mod test {
         assert_eq!(date!(2024-03-07).monday_based_week(), 10);
         Ok(())
     }
-
-    #[test]
-    fn test_sunday_based_week() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn test_sunday_based_week() {
+        assert!(test_sunday_based_week_inner().is_ok());
+    }
+    //#[test]
+    fn test_sunday_based_week_inner() -> crate::Result<()> {
         // A
         assert_eq!(date!(2023-01-01).sunday_based_week(), 1);
         assert_eq!(date!(2023-01-02).sunday_based_week(), 1);
@@ -1568,9 +1580,12 @@ mod test {
         assert_eq!(date!(2024-03-07).sunday_based_week(), 9);
         Ok(())
     }
-
-    #[test]
-    fn test_parse_monday_based_week() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn test_parse_monday_based_week() {
+        assert!(test_parse_monday_based_week_inner().is_ok());
+    }
+    //#[test]
+    fn test_parse_monday_based_week_inner() -> crate::Result<()> {
         macro_rules! parse {
             ($s:literal) => {
                 Date::parse($s, "%a %W %Y")?
@@ -1768,9 +1783,13 @@ mod test {
 
         Ok(())
     }
+    #[crates_unittest::test_case]
+    fn test_parse_sunday_based_week() {
+        assert!(test_parse_sunday_based_week_inner().is_ok());
+    }
 
-    #[test]
-    fn test_parse_sunday_based_week() -> crate::Result<()> {
+    //#[test]
+    fn test_parse_sunday_based_week_inner() -> crate::Result<()> {
         macro_rules! parse {
             ($s:literal) => {
                 Date::parse($s, "%a %U %Y")?
@@ -1969,8 +1988,13 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn is_leap_year() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn is_leap_year() {
+        assert!(is_leap_year_inner().is_ok());
+    }
+    
+    //#[test]
+    fn is_leap_year_inner() -> crate::Result<()> {
         use super::is_leap_year;
         assert!(!is_leap_year(1900));
         assert!(is_leap_year(2000));
@@ -1980,8 +2004,12 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn days_in_year() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn days_in_year() {
+        assert!(days_in_year_inner().is_ok());
+    }
+    //#[test]
+    fn days_in_year_inner() -> crate::Result<()> {
         use super::days_in_year;
         assert_eq!(days_in_year(1900), 365);
         assert_eq!(days_in_year(2000), 366);
@@ -1991,23 +2019,37 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn weeks_in_year() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn weeks_in_year() {
+        assert!(weeks_in_year_inner().is_ok());
+    }
+    //#[test]
+    fn weeks_in_year_inner() -> crate::Result<()> {
         use super::weeks_in_year;
         assert_eq!(weeks_in_year(2019), 52);
         assert_eq!(weeks_in_year(2020), 53);
         Ok(())
     }
 
-    #[test]
-    fn year() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn year() {
+        assert!(year_inner().is_ok());
+    }
+
+    //#[test]
+    fn year_inner() -> crate::Result<()> {
         assert_eq!(date!(2019-002).year(), 2019);
         assert_eq!(date!(2020-002).year(), 2020);
         Ok(())
     }
 
-    #[test]
-    fn month() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn month() {
+        assert!(month_inner().is_ok());
+    }
+
+    //[test]
+    fn month_inner() -> crate::Result<()> {
         assert_eq!(date!(2019-002).month(), 1);
         assert_eq!(date!(2020-002).month(), 1);
         assert_eq!(date!(2019-060).month(), 3);
@@ -2015,8 +2057,13 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn day() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn day() {
+        assert!(day_inner().is_ok());
+    }
+
+    //#[test]
+    fn day_inner() -> crate::Result<()> {
         assert_eq!(date!(2019-002).day(), 2);
         assert_eq!(date!(2020-002).day(), 2);
         assert_eq!(date!(2019-060).day(), 1);
@@ -2024,8 +2071,13 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn iso_year_week() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn iso_year_week() {
+        assert!(iso_year_week_inner().is_ok());
+    }
+
+    //#[test]
+    fn iso_year_week_inner() -> crate::Result<()> {
         assert_eq!(date!(2019-01-01).iso_year_week(), (2019, 1));
         assert_eq!(date!(2019-10-04).iso_year_week(), (2019, 40));
         assert_eq!(date!(2020-01-01).iso_year_week(), (2020, 1));
@@ -2034,8 +2086,13 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn week() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn week() {
+        assert!(week_inner().is_ok());
+    }
+
+    //#[test]
+    fn week_inner() -> crate::Result<()> {
         assert_eq!(date!(2019-01-01).week(), 1);
         assert_eq!(date!(2019-10-04).week(), 40);
         assert_eq!(date!(2020-01-01).week(), 1);
@@ -2043,37 +2100,62 @@ mod test {
         assert_eq!(date!(2021-01-01).week(), 53);
         Ok(())
     }
+    
+    #[crates_unittest::test_case]
+    fn as_ymd() {
+        assert!(as_ymd_inner().is_ok());
+    }
 
-    #[test]
-    fn as_ymd() -> crate::Result<()> {
+
+    //#[test]
+    fn as_ymd_inner() -> crate::Result<()> {
         assert_eq!(date!(2019-01-02).as_ymd(), (2019, 1, 2));
         Ok(())
     }
 
-    #[test]
-    fn as_yo() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn as_yo() {
+        assert!(as_yo_inner().is_ok());
+    }
+
+   // #[test]
+    fn as_yo_inner() -> crate::Result<()> {
         assert_eq!(date!(2019-01-01).as_yo(), (2019, 1));
         Ok(())
     }
 
-    #[test]
-    fn next_day() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn next_day() {
+        assert!(next_day_inner().is_ok());
+    }
+
+    //#[test]
+    fn next_day_inner() -> crate::Result<()> {
         assert_eq!(date!(2019-01-01).next_day(), date!(2019-01-02));
         assert_eq!(date!(2019-01-31).next_day(), date!(2019-02-01));
         assert_eq!(date!(2019-12-31).next_day(), date!(2020-01-01));
         Ok(())
     }
 
-    #[test]
-    fn previous_day() -> crate::Result<()> {
+     #[crates_unittest::test_case]
+    fn previous_day() {
+        assert!(previous_day_inner().is_ok());
+    }
+
+    //#[test]
+    fn previous_day_inner() -> crate::Result<()> {
         assert_eq!(date!(2019-01-02).previous_day(), date!(2019-01-01));
         assert_eq!(date!(2019-02-01).previous_day(), date!(2019-01-31));
         assert_eq!(date!(2020-01-01).previous_day(), date!(2019-12-31));
         Ok(())
     }
 
-    #[test]
-    fn julian_day() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn julian_day() {
+        assert!(julian_day_inner().is_ok());
+    }
+    //#[test]
+    fn julian_day_inner() -> crate::Result<()> {
         assert_eq!(date!(-4713-11-24).julian_day(), 0);
         assert_eq!(date!(2000-01-01).julian_day(), 2_451_545);
         assert_eq!(date!(2019-01-01).julian_day(), 2_458_485);
@@ -2081,8 +2163,12 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn from_julian_day() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn from_julian_day() {
+        assert!(from_julian_day_inner().is_ok());
+    }
+    //#[test]
+    fn from_julian_day_inner() -> crate::Result<()> {
         assert_eq!(julian!(0), date!(-4713-11-24));
         assert_eq!(julian!(2_451_545), date!(2000-01-01));
         assert_eq!(julian!(2_458_485), date!(2019-01-01));
@@ -2090,8 +2176,12 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn midnight() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn midnight() {
+        assert!(midnight_inner().is_ok());
+    }
+    //#[test]
+    fn midnight_inner() -> crate::Result<()> {
         assert_eq!(
             date!(1970-01-01).midnight(),
             date!(1970-01-01).with_time(time!(0:00)),
@@ -2099,8 +2189,12 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn with_time() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn with_time() {
+        assert!(with_time_inner().is_ok());
+    }
+    //#[test]
+    fn with_time_inner() -> crate::Result<()> {
         assert_eq!(
             date!(1970-01-01).with_time(time!(0:00)),
             date!(1970-01-01).midnight(),
@@ -2108,10 +2202,17 @@ mod test {
         Ok(())
     }
 
-    #[test]
+
+    #[crates_unittest::test_case]
+    fn with_hms() {
+        #[cfg(panicking_api)]
+        assert!(with_hms_inner().is_ok());
+    }
+
+    //#[test]
     #[cfg(panicking_api)]
     #[allow(deprecated)]
-    fn with_hms() -> crate::Result<()> {
+    fn with_hms_inner() -> crate::Result<()> {
         assert_eq!(
             date!(1970-01-01).with_hms(0, 0, 0),
             date!(1970-01-01).midnight(),
@@ -2119,8 +2220,13 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn try_with_hms() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn try_with_hms() {
+        assert!(try_with_hms_inner().is_ok());
+    }
+
+    //#[test]
+    fn try_with_hms_inner() -> crate::Result<()> {
         assert_eq!(
             date!(1970-01-01).try_with_hms(0, 0, 0),
             Ok(date!(1970-01-01).midnight()),
@@ -2129,10 +2235,16 @@ mod test {
         Ok(())
     }
 
-    #[test]
+
+    #[crates_unittest::test_case]
+    fn with_hms_milli() {
+        #[cfg(panicking_api)]
+        assert!(with_hms_milli_inner().is_ok());
+    }
+    //#[test]
     #[cfg(panicking_api)]
     #[allow(deprecated)]
-    fn with_hms_milli() -> crate::Result<()> {
+    fn with_hms_milli_inner() -> crate::Result<()> {
         assert_eq!(
             date!(1970-01-01).with_hms_milli(0, 0, 0, 0),
             date!(1970-01-01).midnight(),
@@ -2140,8 +2252,12 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn try_with_hms_milli() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn try_with_hms_milli() {
+        assert!(try_with_hms_milli_inner().is_ok());
+    }
+    //#[test]
+    fn try_with_hms_milli_inner() -> crate::Result<()> {
         assert_eq!(
             date!(1970-01-01).try_with_hms_milli(0, 0, 0, 0),
             Ok(date!(1970-01-01).midnight()),
@@ -2150,10 +2266,15 @@ mod test {
         Ok(())
     }
 
-    #[test]
+    #[crates_unittest::test_case]
+    fn with_hms_micro() {
+        #[cfg(panicking_api)]
+        assert!(with_hms_micro_inner().is_ok());
+    }
+    //#[test]
     #[cfg(panicking_api)]
     #[allow(deprecated)]
-    fn with_hms_micro() -> crate::Result<()> {
+    fn with_hms_micro_inner() -> crate::Result<()> {
         assert_eq!(
             date!(1970-01-01).with_hms_micro(0, 0, 0, 0),
             date!(1970-01-01).midnight(),
@@ -2161,8 +2282,12 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn try_with_hms_micro() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn try_with_hms_micro() {
+        assert!(try_with_hms_micro_inner().is_ok());
+    }
+    //#[test]
+    fn try_with_hms_micro_inner() -> crate::Result<()> {
         assert_eq!(
             date!(1970-01-01).try_with_hms_micro(0, 0, 0, 0),
             Ok(date!(1970-01-01).midnight()),
@@ -2171,10 +2296,15 @@ mod test {
         Ok(())
     }
 
-    #[test]
+    #[crates_unittest::test_case]
+    fn with_hms_nano() {
+        #[cfg(panicking_api)]
+        assert!(with_hms_nano_inner().is_ok());
+    }
+    //#[test]
     #[cfg(panicking_api)]
     #[allow(deprecated)]
-    fn with_hms_nano() -> crate::Result<()> {
+    fn with_hms_nano_inner() -> crate::Result<()> {
         assert_eq!(
             date!(1970-01-01).with_hms_nano(0, 0, 0, 0),
             date!(1970-01-01).midnight(),
@@ -2182,8 +2312,12 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn try_with_hms_nano() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn try_with_hms_nano() {
+        assert!(try_with_hms_nano_inner().is_ok());
+    }
+    //#[test]
+    fn try_with_hms_nano_inner() -> crate::Result<()> {
         assert_eq!(
             date!(1970-01-01).try_with_hms_nano(0, 0, 0, 0),
             Ok(date!(1970-01-01).midnight()),
@@ -2192,14 +2326,22 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn format() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn format() {
+        assert!(format_inner().is_ok());
+    }
+    //#[test]
+    fn format_inner() -> crate::Result<()> {
         assert_eq!(date!(2019-01-02).format("%Y-%m-%d"), "2019-01-02");
         Ok(())
     }
 
-    #[test]
-    fn parse() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn parse() {
+        assert!(parse_inner().is_ok());
+    }
+    //#[test]
+    fn parse_inner() -> crate::Result<()> {
         assert_eq!(Date::parse("2019-01-02", "%F"), Ok(date!(2019-01-02)));
         assert_eq!(Date::parse("2019-002", "%Y-%j"), Ok(date!(2019-002)));
         assert_eq!(Date::parse("2019-W01-3", "%G-W%V-%u"), Ok(date!(2019-002)));
@@ -2210,91 +2352,139 @@ mod test {
         Ok(())
     }
 
+    #[crates_unittest::test_case]
+    fn parse_regression() {
+        assert!(parse_regression_inner().is_ok());
+    }
     // See #221.
-    #[test]
-    fn parse_regression() -> crate::Result<()> {
+    //#[test]
+    fn parse_regression_inner() -> crate::Result<()> {
         assert_eq!(Date::parse("0000-01-01", "%Y-%m-%d"), Ok(date!(0000-01-01)));
         Ok(())
     }
 
-    #[test]
-    fn display() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn display() {
+        assert!(display_inner().is_ok());
+    }
+    //#[test]
+    fn display_inner() -> crate::Result<()> {
         assert_eq!(date!(2019-01-01).to_string(), "2019-01-01");
         assert_eq!(date!(2019-12-31).to_string(), "2019-12-31");
         assert_eq!(date!(-4713-11-24).to_string(), "-4713-11-24");
         assert_eq!(date!(10_000-01-01).to_string(), "+10000-01-01");
         Ok(())
-    }
+    }   
 
-    #[test]
-    fn add() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn add() {
+        assert!(add_inner().is_ok());
+    }
+    //#[test]
+    fn add_inner() -> crate::Result<()> {
         assert_eq!(date!(2019-01-01) + 5.days(), date!(2019-01-06));
         assert_eq!(date!(2019-12-31) + 1.days(), date!(2020-01-01));
         Ok(())
     }
 
-    #[test]
-    fn add_std() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn add_std() {
+        assert!(add_std_inner().is_ok());
+    }
+    //#[test]
+    fn add_std_inner() -> crate::Result<()> {
         assert_eq!(date!(2019-01-01) + 5.std_days(), date!(2019-01-06));
         assert_eq!(date!(2019-12-31) + 1.std_days(), date!(2020-01-01));
         Ok(())
     }
 
-    #[test]
-    fn add_assign() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn add_assign() {
+        assert!(add_assign_inner().is_ok());
+    }
+    //#[test]
+    fn add_assign_inner() -> crate::Result<()> {
         let mut date = date!(2019-12-31);
         date += 1.days();
         assert_eq!(date, date!(2020-01-01));
         Ok(())
     }
 
-    #[test]
-    fn add_assign_std() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn add_assign_std() {
+        assert!(add_assign_std_inner().is_ok());
+    }
+    //#[test]
+    fn add_assign_std_inner() -> crate::Result<()> {
         let mut date = date!(2019-12-31);
         date += 1.std_days();
         assert_eq!(date, date!(2020-01-01));
         Ok(())
     }
 
-    #[test]
-    fn sub() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn sub() {
+        assert!(sub_inner().is_ok());
+    }
+    //#[test]
+    fn sub_inner() -> crate::Result<()> {
         assert_eq!(date!(2019-01-06) - 5.days(), date!(2019-01-01));
         assert_eq!(date!(2020-01-01) - 1.days(), date!(2019-12-31));
         Ok(())
     }
 
-    #[test]
-    fn sub_std() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn sub_std() {
+        assert!(sub_std_inner().is_ok());
+    }
+    //#[test]
+    fn sub_std_inner() -> crate::Result<()> {
         assert_eq!(date!(2019-01-06) - 5.std_days(), date!(2019-01-01));
         assert_eq!(date!(2020-01-01) - 1.std_days(), date!(2019-12-31));
         Ok(())
     }
 
-    #[test]
-    fn sub_assign() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn sub_assign() {
+        assert!(sub_assign_inner().is_ok());
+    }
+    //#[test]
+    fn sub_assign_inner() -> crate::Result<()> {
         let mut date = date!(2020-01-01);
         date -= 1.days();
         assert_eq!(date, date!(2019-12-31));
         Ok(())
     }
 
-    #[test]
-    fn sub_assign_std() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn sub_assign_std() {
+        assert!(sub_assign_std_inner().is_ok());
+    }
+    //#[test]
+    fn sub_assign_std_inner() -> crate::Result<()> {
         let mut date = date!(2020-01-01);
         date -= 1.std_days();
         assert_eq!(date, date!(2019-12-31));
         Ok(())
     }
 
-    #[test]
-    fn sub_self() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn sub_self() {
+        assert!(sub_self_inner().is_ok());
+    }
+    //#[test]
+    fn sub_self_inner() -> crate::Result<()> {
         assert_eq!(date!(2019-01-06) - date!(2019-01-01), 5.days());
         assert_eq!(date!(2020-01-01) - date!(2019-12-31), 1.days());
         Ok(())
     }
 
-    #[test]
-    fn partial_ord() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn partial_ord() {
+        assert!(partial_ord_inner().is_ok());
+    }
+    //#[test]
+    fn partial_ord_inner() -> crate::Result<()> {
         let first = date!(2019-01-01);
         let second = date!(2019-01-02);
 
@@ -2304,8 +2494,12 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn ord() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn ord() {
+        assert!(ord_inner().is_ok());
+    }
+    //#[test]
+    fn ord_inner() -> crate::Result<()> {
         let first = date!(2019-01-01);
         let second = date!(2019-01-02);
 

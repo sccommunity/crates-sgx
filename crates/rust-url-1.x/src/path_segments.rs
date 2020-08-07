@@ -9,7 +9,7 @@
 use parser::{self, SchemeType, to_u32};
 use std::str;
 use Url;
-
+use std::prelude::v1::*;
 /// Exposes methods to manipulate the path of an URL that is not cannot-be-base.
 ///
 /// The path always starts with a `/` slash, and is made of slash-separated segments.

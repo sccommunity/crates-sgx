@@ -9,8 +9,12 @@
 //! The ChaCha random number generator.
 
 #[cfg(not(feature = "std"))] use core;
-#[cfg(feature = "std")] use std as core;
+#[cfg(all(feature = "std", feature = "mesalock_sgx", target_env = "sgx"))]
+use std as core;
 
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+use core::fmt;
+#[cfg(all(feature = "mesalock_sgx", target_env = "sgx"))]
 use self::core::fmt;
 use c2_chacha::guts::ChaCha;
 use rand_core::block::{BlockRng, BlockRngCore};
@@ -56,6 +60,7 @@ where T: Copy + Default
         new
     }
 }
+
 impl<T> fmt::Debug for Array64<T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "Array64 {{}}")
@@ -246,13 +251,15 @@ chacha_impl!(ChaCha20Core, ChaCha20Rng, 10, "ChaCha with 20 rounds");
 chacha_impl!(ChaCha12Core, ChaCha12Rng, 6, "ChaCha with 12 rounds");
 chacha_impl!(ChaCha8Core, ChaCha8Rng, 4, "ChaCha with 8 rounds");
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod test {
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
     use rand_core::{RngCore, SeedableRng};
 
     type ChaChaRng = super::ChaCha20Rng;
 
-    #[test]
+    #[test_case]
     fn test_chacha_construction() {
         let seed = [
             0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0,
@@ -265,7 +272,7 @@ mod test {
         assert_eq!(rng2.next_u32(), 1325750369);
     }
 
-    #[test]
+    #[test_case]
     fn test_chacha_true_values_a() {
         // Test vectors 1 and 2 from
         // https://tools.ietf.org/html/draft-nir-cfrg-chacha20-poly1305-04
@@ -294,7 +301,7 @@ mod test {
         assert_eq!(results, expected);
     }
 
-    #[test]
+    #[test_case]
     fn test_chacha_true_values_b() {
         // Test vector 3 from
         // https://tools.ietf.org/html/draft-nir-cfrg-chacha20-poly1305-04
@@ -321,7 +328,7 @@ mod test {
         assert_eq!(results, expected);
     }
 
-    #[test]
+    #[test_case]
     fn test_chacha_true_values_c() {
         // Test vector 4 from
         // https://tools.ietf.org/html/draft-nir-cfrg-chacha20-poly1305-04
@@ -372,7 +379,7 @@ mod test {
         assert_eq!(rng2.get_word_pos(), expected_end + 21);
     }
 
-    #[test]
+    #[test_case]
     fn test_chacha_multiple_blocks() {
         let seed = [
             0, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 4, 0, 0, 0, 5, 0, 0, 0, 6, 0, 0, 0, 7,
@@ -397,7 +404,7 @@ mod test {
         assert_eq!(results, expected);
     }
 
-    #[test]
+    #[test_case]
     fn test_chacha_true_bytes() {
         let seed = [0u8; 32];
         let mut rng = ChaChaRng::from_seed(seed);
@@ -410,7 +417,7 @@ mod test {
         assert_eq!(results, expected);
     }
 
-    #[test]
+    #[test_case]
     fn test_chacha_nonce() {
         // Test vector 5 from
         // https://tools.ietf.org/html/draft-nir-cfrg-chacha20-poly1305-04
@@ -433,7 +440,7 @@ mod test {
         assert_eq!(results, expected);
     }
 
-    #[test]
+    #[test_case]
     fn test_chacha_clone_streams() {
         let seed = [
             0, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 4, 0, 0, 0, 5, 0, 0, 0, 6, 0, 0, 0, 7,

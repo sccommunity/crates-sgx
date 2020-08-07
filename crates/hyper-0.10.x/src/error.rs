@@ -4,7 +4,7 @@ use std::fmt;
 use std::io::Error as IoError;
 use std::str::Utf8Error;
 use std::string::FromUtf8Error;
-
+use std::prelude::v1::*;
 use httparse;
 use url;
 
@@ -150,7 +150,7 @@ impl From<httparse::Error> for Error {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use std::error::Error as StdError;
     use std::io;
@@ -158,8 +158,10 @@ mod tests {
     use url;
     use super::Error;
     use super::Error::*;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    
+    #[test_case]
     fn test_cause() {
         let orig = io::Error::new(io::ErrorKind::Other, "other");
         let desc = orig.description().to_owned();
@@ -191,7 +193,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_from() {
 
         from_and_cause!(io::Error::new(io::ErrorKind::Other, "other") => Io(..));
@@ -208,7 +210,7 @@ mod tests {
     }
 
     #[cfg(feature = "openssl")]
-    #[test]
+    #[test_case]
     fn test_from_ssl() {
         use openssl::ssl::error::SslError;
 

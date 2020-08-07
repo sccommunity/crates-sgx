@@ -1,7 +1,7 @@
 use bytes::BufMut;
 use futures::{Async, Poll};
 use std::io as std_io;
-
+use std::prelude::v1::*;
 #[allow(deprecated)]
 use codec::{Decoder, Encoder, Framed};
 use split::{ReadHalf, WriteHalf};

@@ -453,13 +453,15 @@ fn div_rem_64(this: i64, other: i64) -> (i64, i64) {
     (this / other, this % other)
 }
 
-#[cfg(test)]
+//#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::{Duration, OutOfRangeError, MAX, MIN};
     use std::time::Duration as StdDuration;
     use std::{i32, i64};
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn test_duration() {
         assert!(Duration::seconds(1) != Duration::zero());
         assert_eq!(Duration::seconds(1) + Duration::seconds(2), Duration::seconds(3));
@@ -480,7 +482,7 @@ mod tests {
         );
     }
 
-    #[test]
+    #[test_case]
     fn test_duration_num_days() {
         assert_eq!(Duration::zero().num_days(), 0);
         assert_eq!(Duration::days(1).num_days(), 1);
@@ -493,7 +495,7 @@ mod tests {
         assert_eq!(Duration::days(i32::MIN as i64).num_days(), i32::MIN as i64);
     }
 
-    #[test]
+    #[test_case]
     fn test_duration_num_seconds() {
         assert_eq!(Duration::zero().num_seconds(), 0);
         assert_eq!(Duration::seconds(1).num_seconds(), 1);
@@ -504,7 +506,7 @@ mod tests {
         assert_eq!(Duration::milliseconds(-1001).num_seconds(), -1);
     }
 
-    #[test]
+    #[test_case]
     fn test_duration_num_milliseconds() {
         assert_eq!(Duration::zero().num_milliseconds(), 0);
         assert_eq!(Duration::milliseconds(1).num_milliseconds(), 1);
@@ -519,7 +521,7 @@ mod tests {
         assert_eq!(MIN.num_milliseconds(), i64::MIN);
     }
 
-    #[test]
+    #[test_case]
     fn test_duration_num_microseconds() {
         assert_eq!(Duration::zero().num_microseconds(), Some(0));
         assert_eq!(Duration::microseconds(1).num_microseconds(), Some(1));
@@ -547,7 +549,7 @@ mod tests {
         assert_eq!(Duration::days(i64::MIN / MICROS_PER_DAY - 1).num_microseconds(), None);
     }
 
-    #[test]
+    #[test_case]
     fn test_duration_num_nanoseconds() {
         assert_eq!(Duration::zero().num_nanoseconds(), Some(0));
         assert_eq!(Duration::nanoseconds(1).num_nanoseconds(), Some(1));
@@ -571,7 +573,7 @@ mod tests {
         assert_eq!(Duration::days(i64::MIN / NANOS_PER_DAY - 1).num_nanoseconds(), None);
     }
 
-    #[test]
+    #[test_case]
     fn test_duration_checked_ops() {
         assert_eq!(
             Duration::milliseconds(i64::MAX - 1).checked_add(&Duration::microseconds(999)),
@@ -588,7 +590,7 @@ mod tests {
         assert!(Duration::milliseconds(i64::MIN).checked_sub(&Duration::milliseconds(1)).is_none());
     }
 
-    #[test]
+    #[test_case]
     fn test_duration_mul() {
         assert_eq!(Duration::zero() * i32::MAX, Duration::zero());
         assert_eq!(Duration::zero() * i32::MIN, Duration::zero());
@@ -609,7 +611,7 @@ mod tests {
         assert_eq!(Duration::milliseconds(-1500) * 2, Duration::seconds(-3));
     }
 
-    #[test]
+    #[test_case]
     fn test_duration_div() {
         assert_eq!(Duration::zero() / i32::MAX, Duration::zero());
         assert_eq!(Duration::zero() / i32::MIN, Duration::zero());
@@ -626,7 +628,7 @@ mod tests {
         assert_eq!(Duration::seconds(-4) / -3, Duration::nanoseconds(1_333_333_333));
     }
 
-    #[test]
+    #[test_case]
     fn test_duration_fmt() {
         assert_eq!(Duration::zero().to_string(), "PT0S");
         assert_eq!(Duration::days(42).to_string(), "P42D");
@@ -646,7 +648,7 @@ mod tests {
         );
     }
 
-    #[test]
+    #[test_case]
     fn test_to_std() {
         assert_eq!(Duration::seconds(1).to_std(), Ok(StdDuration::new(1, 0)));
         assert_eq!(Duration::seconds(86401).to_std(), Ok(StdDuration::new(86401, 0)));
@@ -658,7 +660,7 @@ mod tests {
         assert_eq!(Duration::milliseconds(-1).to_std(), Err(OutOfRangeError(())));
     }
 
-    #[test]
+    #[test_case]
     fn test_from_std() {
         assert_eq!(Ok(Duration::seconds(1)), Duration::from_std(StdDuration::new(1, 0)));
         assert_eq!(Ok(Duration::seconds(86401)), Duration::from_std(StdDuration::new(86401, 0)));

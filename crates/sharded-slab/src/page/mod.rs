@@ -7,7 +7,7 @@ pub(crate) mod slot;
 mod stack;
 use self::slot::Slot;
 use std::{fmt, marker::PhantomData};
-
+use std::prelude::v1::*;
 /// A page address encodes the location of a slot within a shard (the page
 /// number and offset within that page) as a single linear value.
 #[repr(transparent)]

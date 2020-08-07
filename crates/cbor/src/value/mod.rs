@@ -1,5 +1,6 @@
 //! CBOR values, keys and serialization routines.
 
+use std::prelude::v1::*;
 mod de;
 mod ser;
 

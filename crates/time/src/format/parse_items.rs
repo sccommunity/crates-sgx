@@ -3,7 +3,7 @@
 use crate::format::{FormatItem, Padding, Specifier};
 #[cfg(not(std))]
 use crate::internal_prelude::*;
-
+use std::prelude::v1::*;
 /// Parse the formatting string. Panics if not valid.
 #[inline(always)]
 pub(crate) fn parse_fmt_string<'a>(s: &'a str) -> Vec<FormatItem<'a>> {

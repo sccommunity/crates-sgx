@@ -76,17 +76,18 @@ where OpenClosed01: Distribution<N>
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::*;
-
-    #[test]
-    #[should_panic]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    // #[test_case]
+    // #[should_panic]
     fn invalid() {
         Weibull::new(0., 0.).unwrap();
     }
 
-    #[test]
+    #[test_case]
     fn sample() {
         let scale = 1.0;
         let shape = 2.0;
@@ -98,7 +99,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn value_stability() {
         fn test_samples<N: Float + core::fmt::Debug, D: Distribution<N>>(
             distr: D, zero: N, expected: &[N],

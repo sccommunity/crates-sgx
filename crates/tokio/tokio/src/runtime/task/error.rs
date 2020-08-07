@@ -1,8 +1,8 @@
 use std::any::Any;
 use std::fmt;
 use std::io;
-use std::sync::Mutex;
-
+use std::sync::SgxMutex as Mutex;
+use std::prelude::v1::*;
 doc_rt_core! {
     /// Task failed to execute to completion.
     pub struct JoinError {

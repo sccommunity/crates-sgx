@@ -23,7 +23,8 @@ serde1 = ["serde"]
 
 [dependencies]
 rand_core = { path = "../rand_core", version = "0.5" }
-serde = { version = "1", features = ["derive"], optional = true }
+serde = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2", features = ["derive"], optional = true }
+
 
 [dev-dependencies]
 # This is for testing serde, unfortunately we can't specify feature-gated dev

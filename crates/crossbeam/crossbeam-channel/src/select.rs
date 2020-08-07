@@ -4,7 +4,7 @@ use std::fmt;
 use std::marker::PhantomData;
 use std::mem;
 use std::time::{Duration, Instant};
-
+use std::prelude::v1::*;
 use crossbeam_utils::Backoff;
 
 use crate::channel::{self, Receiver, Sender};

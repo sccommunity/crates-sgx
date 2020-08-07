@@ -1,7 +1,7 @@
 use std::fmt;
 use std::borrow::Cow;
 use std::str::FromStr;
-
+use std::prelude::v1::*;
 #[allow(unused_imports)]
 use std::ascii::AsciiExt;
 
@@ -893,7 +893,7 @@ fn verify_and_trim(s: &str, b: (u8, u8)) -> ::Result<&str> {
 // Tests
 ////////////////////////////////////////////////////////////////////////////////
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use std::fmt;
     use std::fmt::Write;
@@ -910,8 +910,9 @@ mod tests {
     use mime::Mime;
     use mime::TopLevel::Text;
     use mime::SubLevel::Plain;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn test_link() {
         let link_value = LinkValue::new("http://example.com/TheBook/chapter2")
             .push_rel(RelationType::Previous)
@@ -927,7 +928,7 @@ mod tests {
         assert_eq!(link.ok(), Some(expected_link));
     }
 
-    #[test]
+    #[test_case]
     fn test_link_multiple_values() {
         let first_link = LinkValue::new("/TheBook/chapter2")
             .push_rel(RelationType::Previous)
@@ -948,7 +949,7 @@ mod tests {
         assert_eq!(link.ok(), Some(expected_link));
     }
 
-    #[test]
+    #[test_case]
     fn test_link_all_attributes() {
         let link_value = LinkValue::new("http://example.com/TheBook/chapter2")
             .push_rel(RelationType::Previous)
@@ -972,7 +973,7 @@ mod tests {
         assert_eq!(link.ok(), Some(expected_link));
     }
 
-    #[test]
+    #[test_case]
     fn test_link_multiple_link_headers() {
         let first_link = LinkValue::new("/TheBook/chapter2")
             .push_rel(RelationType::Previous)
@@ -1008,7 +1009,7 @@ mod tests {
         assert_eq!(*link, expected_link);
     }
 
-    #[test]
+    #[test_case]
     fn test_link_display() {
         let link_value = LinkValue::new("http://example.com/TheBook/chapter2")
             .push_rel(RelationType::Previous)
@@ -1034,7 +1035,7 @@ mod tests {
         assert_eq!(link_header, expected_link_header);
     }
 
-    #[test]
+    #[test_case]
     fn test_link_parsing_errors() {
         let link_a = b"http://example.com/TheBook/chapter2; \
             rel=\"previous\"; rev=next; title=\"previous chapter\"";
@@ -1067,7 +1068,7 @@ mod tests {
         assert_eq!(err.is_err(), true);
     }
 
-    #[test]
+    #[test_case]
     fn test_link_split_ascii_unquoted_iterator() {
         let string = "some, text; \"and, more; in quotes\", or not";
         let mut string_split = SplitAsciiUnquoted::new(string, ";,");
@@ -1079,7 +1080,7 @@ mod tests {
         assert_eq!(None, string_split.next());
     }
 
-    #[test]
+    #[test_case]
     fn test_link_fmt_delimited() {
         struct TestFormatterStruct<'a> { v: Vec<&'a str> };
 
@@ -1099,7 +1100,7 @@ mod tests {
         assert_eq!(string, expected_string);
     }
 
-    #[test]
+    #[test_case]
     fn test_link_verify_and_trim() {
         let string = verify_and_trim(">  some string   <", (b'>', b'<'));
         assert_eq!(string.ok(), Some("some string"));

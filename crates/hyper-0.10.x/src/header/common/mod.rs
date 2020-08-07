@@ -59,11 +59,14 @@ pub use self::user_agent::UserAgent;
 pub use self::vary::Vary;
 pub use self::link::{Link, LinkValue, RelationType, MediaDesc};
 
+
+
+
 #[doc(hidden)]
 #[macro_export]
 macro_rules! bench_header(
     ($name:ident, $ty:ty, $value:expr) => {
-        #[cfg(test)]
+        #[cfg(feature = "enclave_unit_test")]
         #[cfg(feature = "nightly")]
         #[allow(deprecated)]
         mod $name {
@@ -117,9 +120,12 @@ macro_rules! __hyper__deref {
 macro_rules! __hyper__tm {
     ($id:ident, $tm:ident{$($tf:item)*}) => {
         #[allow(unused_imports)]
-        #[cfg(test)]
+        #[cfg(feature = "enclave_unit_test")]
         mod $tm{
             use std::str;
+            // use std::prelude::v1::*;
+            // use crates_unittest::test_case;
+            
             use $crate::header::*;
             use $crate::mime::*;
             use $crate::language_tags::*;
@@ -135,10 +141,14 @@ macro_rules! __hyper__tm {
 #[macro_export]
 macro_rules! test_header {
     ($id:ident, $raw:expr) => {
-        #[test]
+        // use std::prelude::v1::*;
+        // #[cfg(feature = "enclave_unit_test")]
+        // use crates_unittest::test_case;
+        #[crates_unittest::test_case]
         fn $id() {
             #[allow(unused_imports)]
             use std::ascii::AsciiExt;
+            use std::prelude::v1::Vec;
             let raw = $raw;
             let a: Vec<Vec<u8>> = raw.iter().map(|x| x.to_vec()).collect();
             let value = HeaderField::parse_header(&a[..]);
@@ -158,8 +168,12 @@ macro_rules! test_header {
         }
     };
     ($id:ident, $raw:expr, $typed:expr) => {
-        #[test]
+        // use std::prelude::v1::*;
+        // #[cfg(feature = "enclave_unit_test")]
+        // use crates_unittest::test_case;
+        #[crates_unittest::test_case]
         fn $id() {
+            use std::prelude::v1::Vec;
             let a: Vec<Vec<u8>> = $raw.iter().map(|x| x.to_vec()).collect();
             let val = HeaderField::parse_header(&a[..]);
             let typed: Option<HeaderField> = $typed;
@@ -183,6 +197,7 @@ macro_rules! test_header {
 
 #[macro_export]
 macro_rules! header {
+  
     // $a:meta: Attributes associated with the header item (usually docs)
     // $id:ident: Identifier of the header
     // $n:expr: Lowercase name of the header
@@ -221,9 +236,11 @@ macro_rules! header {
         pub struct $id(pub Vec<$item>);
         __hyper__deref!($id => Vec<$item>);
         impl $crate::header::Header for $id {
+           
             fn header_name() -> &'static str {
                 $n
             }
+       
             fn parse_header(raw: &[Vec<u8>]) -> $crate::Result<Self> {
                 $crate::header::parsing::from_comma_delimited(raw).map($id)
             }

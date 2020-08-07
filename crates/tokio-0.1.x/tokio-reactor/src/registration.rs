@@ -1,13 +1,13 @@
 use {Direction, Handle, HandlePriv, Task};
 
 use futures::{task, Async, Poll};
-use mio::{self, Evented};
+use mio::{self, event::Evented};
 
 use std::cell::UnsafeCell;
 use std::sync::atomic::AtomicUsize;
 use std::sync::atomic::Ordering::SeqCst;
 use std::{io, ptr, usize};
-
+use std::prelude::v1::Box;
 /// Associates an I/O resource with the reactor instance that drives it.
 ///
 /// A registration represents an I/O resource registered with a Reactor such

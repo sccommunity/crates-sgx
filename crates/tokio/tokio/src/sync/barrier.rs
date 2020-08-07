@@ -1,6 +1,6 @@
 use crate::sync::watch;
 
-use std::sync::Mutex;
+use std::sync::SgxMutex as Mutex;
 
 /// A barrier enables multiple threads to synchronize the beginning of some computation.
 ///

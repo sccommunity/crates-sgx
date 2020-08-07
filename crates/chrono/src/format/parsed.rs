@@ -717,7 +717,7 @@ impl Parsed {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::super::{IMPOSSIBLE, NOT_ENOUGH, OUT_OF_RANGE};
     use super::Parsed;
@@ -725,8 +725,9 @@ mod tests {
     use offset::{FixedOffset, TimeZone, Utc};
     use Datelike;
     use Weekday::*;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn test_parsed_set_fields() {
         // year*, isoyear*
         let mut p = Parsed::new();
@@ -797,7 +798,7 @@ mod tests {
         assert_eq!(p.set_timestamp(1_234_567_891), Err(IMPOSSIBLE));
     }
 
-    #[test]
+    #[test_case]
     fn test_parsed_to_naive_date() {
         macro_rules! parse {
             ($($k:ident: $v:expr),*) => (
@@ -984,7 +985,7 @@ mod tests {
         // technically unique (2014-12-31) but Chrono gives up
     }
 
-    #[test]
+    #[test_case]
     fn test_parsed_to_naive_time() {
         macro_rules! parse {
             ($($k:ident: $v:expr),*) => (
@@ -1039,7 +1040,7 @@ mod tests {
         );
     }
 
-    #[test]
+    #[test_case]
     fn test_parsed_to_naive_datetime_with_offset() {
         macro_rules! parse {
             (offset = $offset:expr; $($k:ident: $v:expr),*) => (
@@ -1189,7 +1190,7 @@ mod tests {
         ); // `hour_div_12` is out of range
     }
 
-    #[test]
+    #[test_case]
     fn test_parsed_to_datetime() {
         macro_rules! parse {
             ($($k:ident: $v:expr),*) => (
@@ -1229,7 +1230,7 @@ mod tests {
         ); // `FixedOffset` does not support such huge offset
     }
 
-    #[test]
+    #[test_case]
     fn test_parsed_to_datetime_with_timezone() {
         macro_rules! parse {
             ($tz:expr; $($k:ident: $v:expr),*) => (

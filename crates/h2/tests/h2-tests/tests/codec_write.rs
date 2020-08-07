@@ -1,7 +1,8 @@
 use futures::future::join;
 use h2_support::prelude::*;
-
-#[tokio::test]
+use std::string::ToString;
+use crates_unittest::{ test_case };
+#[crates_unittest::test]
 async fn write_continuation_frames() {
     // An invalid dependency ID results in a stream level error. The hpack
     // payload should still be decoded.
@@ -52,7 +53,7 @@ async fn write_continuation_frames() {
     join(srv, client).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn client_settings_header_table_size() {
     // A server sets the SETTINGS_HEADER_TABLE_SIZE to 0, test that the
     // client doesn't send indexed headers.
@@ -95,7 +96,7 @@ async fn client_settings_header_table_size() {
     conn.drive(req2).await.expect("req1");
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn server_settings_header_table_size() {
     // A client sets the SETTINGS_HEADER_TABLE_SIZE to 0, test that the
     // server doesn't send indexed headers.

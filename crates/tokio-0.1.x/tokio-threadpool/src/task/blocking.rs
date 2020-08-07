@@ -10,7 +10,7 @@ use std::sync::atomic::AtomicUsize;
 use std::sync::atomic::Ordering::{AcqRel, Acquire, Relaxed, Release};
 use std::sync::Arc;
 use std::thread;
-
+use std::prelude::v1::Box;
 /// Manages the state around entering a blocking section and tasks that are
 /// queued pending the ability to block.
 ///

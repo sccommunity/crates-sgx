@@ -13,17 +13,17 @@ edition = "2018"
 log = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.0+sgx1.1.2" }
 try-lock = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2" }
 
-#log = "0.4"
-#try-lock = "0.2"
 sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
-sgx_tunittest = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
-
+tokio = { path = "../tokio/tokio", optional = true, features = ["sync", "rt-core"] }
+crates_unittest = { git = "https://github.com/Zha0Chan/crates-sgx-unittest.git", optional = true, default-features = true}
+inventory = { version = "0.1.6", optional = true }
 
 [features]
 default = ["mesalock_sgx"]
 mesalock_sgx = ["sgx_tstd"]
-enclave_unit_test = ["sgx_tunittest"]
+enclave_unit_test = ["crates_unittest", "tokio", "inventory"]
 
 [dev-dependencies]
-tokio-executor = "0.2.0-alpha.2"
-tokio-sync = "0.2.0-alpha.2"
+# tokio-executor = "0.2.0-alpha.2"
+# tokio-sync = "0.2.0-alpha.2"
+

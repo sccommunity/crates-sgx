@@ -1,4 +1,5 @@
 use header::EntityTag;
+use std::prelude::v1::*;
 
 header! {
     /// `If-Match` header, defined in

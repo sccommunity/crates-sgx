@@ -24,7 +24,7 @@ use crate::deflate;
 use crate::finish::{Complete, Finish};
 use crate::lz77;
 use std::{ffi::CString, io, time};
-
+use std::prelude::v1::*;
 const GZIP_ID: [u8; 2] = [31, 139];
 const COMPRESSION_METHOD_DEFLATE: u8 = 8;
 
@@ -1139,12 +1139,13 @@ where
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::*;
     use crate::finish::AutoFinish;
     use std::io::{self, Write};
-
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
     fn decode(buf: &[u8]) -> io::Result<Vec<u8>> {
         let mut decoder = Decoder::new(buf).unwrap();
         let mut buf = Vec::with_capacity(buf.len());
@@ -1165,7 +1166,7 @@ mod tests {
         encoder.finish().into_result()
     }
 
-    #[test]
+    #[test_case]
     fn encode_works() {
         let plain = b"Hello World! Hello GZIP!!";
         let mut encoder = Encoder::new(Vec::new()).unwrap();
@@ -1174,7 +1175,7 @@ mod tests {
         assert_eq!(decode(&encoded).unwrap(), plain);
     }
 
-    #[test]
+    #[test_case]
     fn encoder_auto_finish_works() {
         let plain = b"Hello World! Hello GZIP!!";
         let mut buf = Vec::new();
@@ -1185,7 +1186,7 @@ mod tests {
         assert_eq!(decode(&buf).unwrap(), plain);
     }
 
-    #[test]
+    #[test_case]
     fn multi_decode_works() {
         use std::iter;
         let text = b"Hello World!";
@@ -1197,28 +1198,28 @@ mod tests {
         assert_eq!(decode_multi(&encoded).unwrap(), b"Hello World!Hello World!");
     }
 
-    #[test]
+    #[test_case]
     /// See: https://github.com/sile/libflate/issues/15 and https://github.com/RazrFalcon/usvg/issues/20
     fn issue_15_1() {
         let data = b"\x1F\x8B\x08\xC1\x7B\x7B\x7B\x7B\x7B\x7B\x7B\x7B\x7B\x7B\x7B\x7B\x7B\x7B\x7B\x7B\x7B\x7B\x80\x80\x80\x80\x7B\x7B\x7B\x7B\x7B\x7B\x97\x7B\x7B\x7B\x86\x27\xEB\x60\xA7\xA8\x46\x6E\x1F\x33\x51\x5C\x34\xE0\xD2\x2E\xE8\x0C\x19\x1D\x3D\x3C\xFD\x3B\x6A\xFA\x63\xDF\x28\x87\x86\xF2\xA6\xAC\x87\x86\xF2\xA6\xAC\xD5";
         assert!(decode(&data[..]).is_err());
     }
 
-    #[test]
+    #[test_case]
     /// See: https://github.com/sile/libflate/issues/15 and https://github.com/RazrFalcon/usvg/issues/21
     fn issue_15_2() {
         let data = b"\x1F\x8B\x08\xC1\x7B\x7B\x7B\x7B\x7B\xFC\x5D\x2D\xDC\x08\xC1\x7B\x7B\x7B\x7B\x7B\xFC\x5D\x2D\xDC\x08\xC1\x7B\x7F\x7B\x7B\x7B\xFC\x5D\x2D\xDC\x69\x32\x48\x22\x5A\x81\x81\x42\x42\x81\x7E\x81\x81\x81\x81\xF2\x17";
         assert!(decode(&data[..]).is_err());
     }
 
-    #[test]
+    #[test_case]
     /// See: https://github.com/sile/libflate/issues/15 and https://github.com/RazrFalcon/usvg/issues/22
     fn issue_15_3() {
         let data = b"\x1F\x8B\x08\xC1\x91\x28\x71\xDC\xF2\x2D\x34\x35\x31\x35\x34\x30\x70\x6E\x60\x35\x31\x32\x32\x33\x32\x33\x37\x32\x36\x38\xDD\x1C\xE5\x2A\xDD\xDD\xDD\x22\xDD\xDD\xDD\xDC\x88\x13\xC9\x40\x60\xA7";
         assert!(decode(&data[..]).is_err());
     }
 
-    #[test]
+    #[test_case]
     fn extra_field() {
         let f = ExtraField {
             subfields: vec![ExtraSubField {
@@ -1233,7 +1234,7 @@ mod tests {
         assert_eq!(ExtraField::read_from(&buf[..]).unwrap(), f);
     }
 
-    #[test]
+    #[test_case]
     fn encode_with_extra_field() {
         let mut buf = Vec::new();
         let extra_field = ExtraField {

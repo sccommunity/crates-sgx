@@ -1,6 +1,7 @@
 use header::{Header, Host, HeaderFormat};
 use std::fmt;
 use std::str::FromStr;
+use std::prelude::v1::*;
 use header::parsing::from_one_raw_str;
 
 /// The `Origin` header.
@@ -101,12 +102,13 @@ impl PartialEq for Origin {
 }
 
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::Origin;
     use header::Header;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn test_origin() {
         let origin = Header::parse_header([b"http://foo.com".to_vec()].as_ref());
         assert_eq!(origin.ok(), Some(Origin::new("http", "foo.com", None)));

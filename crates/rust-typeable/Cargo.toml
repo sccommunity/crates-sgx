@@ -8,3 +8,10 @@ keywords = ["type", "reflect", "typeid", "any", "downcast"]
 repository = "https://github.com/reem/rust-typeable"
 license = "MIT"
 
+
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+
+[dependencies]
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }

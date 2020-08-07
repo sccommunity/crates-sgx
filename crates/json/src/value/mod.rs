@@ -93,6 +93,8 @@
 use crate::error::Error;
 use crate::io;
 use crate::lib::*;
+use std::prelude::v1::*;
+
 use serde::de::DeserializeOwned;
 use serde::ser::Serialize;
 

@@ -2,6 +2,7 @@ use crate::fs::asyncify;
 
 use std::io;
 use std::path::{Path, PathBuf};
+use std::prelude::v1::*;
 
 /// Returns the canonical, absolute form of a path with all intermediate
 /// components normalized and symbolic links resolved.

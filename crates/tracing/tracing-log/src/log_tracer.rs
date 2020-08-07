@@ -29,6 +29,7 @@
 use crate::{format_trace, AsTrace};
 pub use log::SetLoggerError;
 use tracing_core::dispatcher;
+use std::prelude::v1::*;
 
 /// A simple "logger" that converts all log records into `tracing` `Event`s.
 #[derive(Debug)]

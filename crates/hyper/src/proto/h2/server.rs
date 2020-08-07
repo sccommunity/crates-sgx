@@ -2,7 +2,7 @@ use std::error::Error as StdError;
 use std::marker::Unpin;
 #[cfg(feature = "runtime")]
 use std::time::Duration;
-
+use std::prelude::v1::Box;
 use h2::server::{Connection, Handshake, SendResponse};
 use h2::Reason;
 use pin_project::{pin_project, project};

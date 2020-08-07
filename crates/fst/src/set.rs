@@ -1,7 +1,7 @@
 use std::fmt;
 use std::io;
 use std::iter::{self, FromIterator};
-
+use std::prelude::v1::*;
 use crate::automaton::{AlwaysMatch, Automaton};
 use crate::raw;
 use crate::stream::{IntoStreamer, Streamer};
@@ -379,6 +379,34 @@ fn example() -> Result<(), Box<dyn std::error::Error>> {
     #[inline]
     pub fn into_fst(self) -> raw::Fst<D> {
         self.0
+    }
+
+    /// Maps the underlying data of the fst Set to another data type.
+    ///
+    /// # Example
+    ///
+    /// This example shows that you can map an fst Set based on a `Vec<u8>`
+    /// into an fst Set based on a `Cow<[u8]>`, it can also work with a
+    /// reference counted type (e.g. `Arc`, `Rc`).
+    ///
+    /// ```
+    /// use std::borrow::Cow;
+    ///
+    /// use fst::Set;
+    ///
+    /// let set: Set<Vec<u8>> = Set::from_iter(
+    ///     &["hello", "world"],
+    /// ).unwrap();
+    ///
+    /// let set_on_cow: Set<Cow<[u8]>> = set.map_data(Cow::Owned).unwrap();
+    /// ```
+    #[inline]
+    pub fn map_data<F, T>(self, f: F) -> Result<Set<T>>
+    where
+        F: FnMut(D) -> T,
+        T: AsRef<[u8]>,
+    {
+        self.into_fst().map_data(f).map(Set::from)
     }
 }
 

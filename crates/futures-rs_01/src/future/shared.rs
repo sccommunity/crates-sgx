@@ -19,7 +19,7 @@ use executor::{self, Notify, Spawn};
 
 use std::{error, fmt, mem, ops};
 use std::cell::UnsafeCell;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, SgxMutex as Mutex};
 use std::sync::atomic::AtomicUsize;
 use std::sync::atomic::Ordering::SeqCst;
 use std::collections::HashMap;

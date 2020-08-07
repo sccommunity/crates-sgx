@@ -653,11 +653,12 @@ impl StatusClass {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::*;
     use super::StatusCode::*;
-
+    use std::string::ToString;
+    use crates_unittest::test_case;
     // Check that the following entities are properly inter-connected:
     //   - numerical code
     //   - status code
@@ -670,7 +671,7 @@ mod tests {
         assert_eq!(status_code.canonical_reason(), reason);
     }
 
-    #[test]
+    #[test_case]
     fn test_status_code() {
         validate(99, Unregistered(99), Ok, None);
 

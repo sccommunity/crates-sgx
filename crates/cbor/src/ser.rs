@@ -7,6 +7,8 @@ use alloc::vec::Vec;
 pub use crate::write::IoWrite;
 pub use crate::write::{SliceWrite, Write};
 
+use std::prelude::v1::*;
+
 use crate::error::{Error, Result};
 use half::f16;
 use serde::ser::{self, Serialize};

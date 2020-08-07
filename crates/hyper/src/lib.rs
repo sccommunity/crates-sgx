@@ -4,7 +4,10 @@
 #![cfg_attr(test, deny(rust_2018_idioms))]
 #![cfg_attr(test, deny(warnings))]
 #![cfg_attr(all(test, feature = "nightly"), feature(test))]
-
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
 //! # hyper
 //!
 //! hyper is a **fast** and **correct** HTTP implementation written in and for Rust.
@@ -42,6 +45,11 @@
 
 #[doc(hidden)]
 pub use http;
+
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
+
 #[macro_use]
 extern crate log;
 

@@ -9,7 +9,7 @@ use crate::msgs::enums::{AlertLevel, AlertDescription};
 use crate::msgs::enums::HandshakeType;
 
 use std::mem;
-
+use std::prelude::v1::*;
 #[derive(Debug)]
 pub enum MessagePayload {
     Alert(AlertMessagePayload),

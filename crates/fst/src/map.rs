@@ -1,6 +1,7 @@
 use std::fmt;
 use std::io;
 use std::iter::{self, FromIterator};
+use std::prelude::v1::*;
 
 use crate::automaton::{AlwaysMatch, Automaton};
 use crate::raw;
@@ -431,6 +432,34 @@ fn example() -> Result<(), Box<dyn std::error::Error>> {
     #[inline]
     pub fn into_fst(self) -> raw::Fst<D> {
         self.0
+    }
+
+    /// Maps the underlying data of the fst Map to another data type.
+    ///
+    /// # Example
+    ///
+    /// This example shows that you can map an fst Map based on a `Vec<u8>`
+    /// into an fst Map based on a `Cow<[u8]>`, it can also work with a
+    /// reference counted type (e.g. `Arc`, `Rc`).
+    ///
+    /// ```
+    /// use std::borrow::Cow;
+    ///
+    /// use fst::Map;
+    ///
+    /// let map: Map<Vec<u8>> = Map::from_iter(
+    ///     [("hello", 12), ("world", 42)].iter().cloned(),
+    /// ).unwrap();
+    ///
+    /// let map_on_cow: Map<Cow<[u8]>> = map.map_data(Cow::Owned).unwrap();
+    /// ```
+    #[inline]
+    pub fn map_data<F, T>(self, f: F) -> Result<Map<T>>
+    where
+        F: FnMut(D) -> T,
+        T: AsRef<[u8]>,
+    {
+        self.into_fst().map_data(f).map(Map::from)
     }
 }
 

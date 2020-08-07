@@ -8,6 +8,7 @@ use std::io::prelude::*;
 use std::pin::Pin;
 use std::task::Poll::*;
 use std::task::{Context, Poll};
+use std::prelude::v1::*;
 
 use self::State::*;
 

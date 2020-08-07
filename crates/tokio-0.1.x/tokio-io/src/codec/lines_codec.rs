@@ -3,7 +3,7 @@
 use bytes::{BufMut, BytesMut};
 use codec::{Decoder, Encoder};
 use std::{io, str};
-
+use std::prelude::v1::*;
 /// A simple `Codec` implementation that splits up data into lines.
 #[derive(Clone, Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
 #[deprecated(since = "0.1.7", note = "Moved to tokio-codec")]

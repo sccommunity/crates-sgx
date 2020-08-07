@@ -1,6 +1,9 @@
 use std::fmt;
 use std::time::SystemTime;
 
+#[cfg(feature = "mesalock_sgx")]
+use std::untrusted::time::SystemTimeEx;
+
 use humantime::{
     format_rfc3339_micros, format_rfc3339_millis, format_rfc3339_nanos, format_rfc3339_seconds,
 };

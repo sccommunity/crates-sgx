@@ -3,15 +3,17 @@
 
 //! ISO 8601 date and time without timezone.
 
-#[cfg(any(feature = "alloc", feature = "std", test))]
+#[cfg(any(feature = "alloc", feature = "std", enclave_unit_test))]
 use core::borrow::Borrow;
 use core::ops::{Add, AddAssign, Sub, SubAssign};
 use core::{fmt, hash, str};
 use num_traits::ToPrimitive;
 use oldtime::Duration as OldDuration;
+#[cfg(feature = "enclave_unit_test")]
+use std::prelude::v1::*;
 
 use div::div_mod_floor;
-#[cfg(any(feature = "alloc", feature = "std", test))]
+#[cfg(any(feature = "alloc", feature = "std", enclave_unit_test))]
 use format::DelayedFormat;
 use format::{parse, ParseError, ParseResult, Parsed, StrftimeItems};
 use format::{Fixed, Item, Numeric, Pad};
@@ -1511,7 +1513,7 @@ impl str::FromStr for NaiveDateTime {
     }
 }
 
-#[cfg(all(test, any(feature = "rustc-serialize", feature = "serde")))]
+#[cfg(all(enclave_unit_test, any(feature = "rustc-serialize", feature = "serde")))]
 fn test_encodable_json<F, E>(to_string: F)
 where
     F: Fn(&NaiveDateTime) -> Result<String, E>,
@@ -1545,7 +1547,7 @@ where
     );
 }
 
-#[cfg(all(test, any(feature = "rustc-serialize", feature = "serde")))]
+#[cfg(all(enclave_unit_test, any(feature = "rustc-serialize", feature = "serde")))]
 fn test_decodable_json<F, E>(from_str: F)
 where
     F: Fn(&str) -> Result<NaiveDateTime, E>,
@@ -1609,7 +1611,7 @@ where
     assert!(from_str(r#"null"#).is_err());
 }
 
-#[cfg(all(test, feature = "rustc-serialize"))]
+#[cfg(all(enclave_unit_test, feature = "rustc-serialize"))]
 fn test_decodable_json_timestamp<F, E>(from_str: F)
 where
     F: Fn(&str) -> Result<rustc_serialize::TsSeconds, E>,
@@ -1683,20 +1685,20 @@ pub mod rustc_serialize {
         }
     }
 
-    #[cfg(test)]
+    #[cfg(feature = "enclave_unit_test")]
     use rustc_serialize::json;
 
-    #[test]
+    #[test_case]
     fn test_encodable() {
         super::test_encodable_json(json::encode);
     }
 
-    #[test]
+    #[test_case]
     fn test_decodable() {
         super::test_decodable_json(json::decode);
     }
 
-    #[test]
+    #[test_case]
     fn test_decodable_timestamps() {
         super::test_decodable_json_timestamp(json::decode);
     }
@@ -2205,26 +2207,26 @@ pub mod serde {
         }
     }
 
-    #[cfg(test)]
+    #[cfg(feature = "enclave_unit_test")]
     extern crate bincode;
-    #[cfg(test)]
+    #[cfg(feature = "enclave_unit_test")]
     extern crate serde_derive;
-    #[cfg(test)]
+    #[cfg(feature = "enclave_unit_test")]
     extern crate serde_json;
 
-    #[test]
+    #[test_case]
     fn test_serde_serialize() {
         super::test_encodable_json(self::serde_json::to_string);
     }
 
-    #[test]
+    #[test_case]
     fn test_serde_deserialize() {
         super::test_decodable_json(|input| self::serde_json::from_str(&input));
     }
 
     // Bincode is relevant to test separately from JSON because
     // it is not self-describing.
-    #[test]
+    #[test_case]
     fn test_serde_bincode() {
         use self::bincode::{deserialize, serialize, Infinite};
         use naive::NaiveDate;
@@ -2235,7 +2237,7 @@ pub mod serde {
         assert_eq!(dt, decoded);
     }
 
-    #[test]
+    #[test_case]
     fn test_serde_bincode_optional() {
         use self::bincode::{deserialize, serialize, Infinite};
         use self::serde_derive::{Deserialize, Serialize};
@@ -2257,15 +2259,16 @@ pub mod serde {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::NaiveDateTime;
     use naive::{NaiveDate, MAX_DATE, MIN_DATE};
     use oldtime::Duration;
     use std::i64;
     use Datelike;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn test_datetime_from_timestamp() {
         let from_timestamp = |secs| NaiveDateTime::from_timestamp_opt(secs, 0);
         let ymdhms = |y, m, d, h, n, s| NaiveDate::from_ymd(y, m, d).and_hms(h, n, s);
@@ -2278,7 +2281,7 @@ mod tests {
         assert_eq!(from_timestamp(i64::MAX), None);
     }
 
-    #[test]
+    #[test_case]
     fn test_datetime_add() {
         fn check(
             (y, m, d, h, n, s): (i32, u32, u32, u32, u32, u32),
@@ -2326,7 +2329,7 @@ mod tests {
         check((0, 1, 1, 0, 0, 0), Duration::min_value(), None);
     }
 
-    #[test]
+    #[test_case]
     fn test_datetime_sub() {
         let ymdhms = |y, m, d, h, n, s| NaiveDate::from_ymd(y, m, d).and_hms(h, n, s);
         let since = NaiveDateTime::signed_duration_since;
@@ -2352,7 +2355,7 @@ mod tests {
         );
     }
 
-    #[test]
+    #[test_case]
     fn test_datetime_addassignment() {
         let ymdhms = |y, m, d, h, n, s| NaiveDate::from_ymd(y, m, d).and_hms(h, n, s);
         let mut date = ymdhms(2016, 10, 1, 10, 10, 10);
@@ -2362,7 +2365,7 @@ mod tests {
         assert_eq!(date, ymdhms(2035, 10, 16, 20, 50, 10));
     }
 
-    #[test]
+    #[test_case]
     fn test_datetime_subassignment() {
         let ymdhms = |y, m, d, h, n, s| NaiveDate::from_ymd(y, m, d).and_hms(h, n, s);
         let mut date = ymdhms(2016, 10, 1, 10, 10, 10);
@@ -2372,7 +2375,7 @@ mod tests {
         assert_eq!(date, ymdhms(1997, 9, 16, 23, 30, 10));
     }
 
-    #[test]
+    #[test_case]
     fn test_datetime_timestamp() {
         let to_timestamp =
             |y, m, d, h, n, s| NaiveDate::from_ymd(y, m, d).and_hms(h, n, s).timestamp();
@@ -2383,7 +2386,7 @@ mod tests {
         assert_eq!(to_timestamp(2038, 1, 19, 3, 14, 7), 0x7fffffff);
     }
 
-    #[test]
+    #[test_case]
     fn test_datetime_from_str() {
         // valid cases
         let valid = [
@@ -2428,7 +2431,7 @@ mod tests {
         assert!("+802701-123-12T12:12:12".parse::<NaiveDateTime>().is_err()); // out-of-bound
     }
 
-    #[test]
+    #[test_case]
     fn test_datetime_parse_from_str() {
         let ymdhms = |y, m, d, h, n, s| NaiveDate::from_ymd(y, m, d).and_hms(h, n, s);
         let ymdhmsn =
@@ -2477,7 +2480,7 @@ mod tests {
         );
     }
 
-    #[test]
+    #[test_case]
     fn test_datetime_format() {
         let dt = NaiveDate::from_ymd(2010, 9, 8).and_hms_milli(7, 6, 54, 321);
         assert_eq!(dt.format("%c").to_string(), "Wed Sep  8 07:06:54 2010");
@@ -2490,7 +2493,7 @@ mod tests {
         assert_eq!(dt.format("%s").to_string(), "1341100799"); // not 1341100800, it's intentional.
     }
 
-    #[test]
+    #[test_case]
     fn test_datetime_add_sub_invariant() {
         // issue #37
         let base = NaiveDate::from_ymd(2000, 1, 1).and_hms(0, 0, 0);
@@ -2499,7 +2502,7 @@ mod tests {
         assert_eq!(t, time.signed_duration_since(base).num_microseconds().unwrap());
     }
 
-    #[test]
+    #[test_case]
     fn test_nanosecond_range() {
         const A_BILLION: i64 = 1_000_000_000;
         let maximum = "2262-04-11T23:47:16.854775804";

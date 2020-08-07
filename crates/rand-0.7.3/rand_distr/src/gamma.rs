@@ -499,11 +499,12 @@ where
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod test {
     use super::*;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn test_chi_squared_one() {
         let chi = ChiSquared::new(1.0).unwrap();
         let mut rng = crate::test::rng(201);
@@ -511,7 +512,7 @@ mod test {
             chi.sample(&mut rng);
         }
     }
-    #[test]
+    #[test_case]
     fn test_chi_squared_small() {
         let chi = ChiSquared::new(0.5).unwrap();
         let mut rng = crate::test::rng(202);
@@ -519,7 +520,7 @@ mod test {
             chi.sample(&mut rng);
         }
     }
-    #[test]
+    #[test_case]
     fn test_chi_squared_large() {
         let chi = ChiSquared::new(30.0).unwrap();
         let mut rng = crate::test::rng(203);
@@ -527,13 +528,13 @@ mod test {
             chi.sample(&mut rng);
         }
     }
-    #[test]
-    #[should_panic]
+    // #[test_case]
+    // #[should_panic]
     fn test_chi_squared_invalid_dof() {
         ChiSquared::new(-1.0).unwrap();
     }
 
-    #[test]
+    #[test_case]
     fn test_f() {
         let f = FisherF::new(2.0, 32.0).unwrap();
         let mut rng = crate::test::rng(204);
@@ -542,7 +543,7 @@ mod test {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_t() {
         let t = StudentT::new(11.0).unwrap();
         let mut rng = crate::test::rng(205);
@@ -551,7 +552,7 @@ mod test {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_beta() {
         let beta = Beta::new(1.0, 2.0).unwrap();
         let mut rng = crate::test::rng(201);
@@ -560,13 +561,13 @@ mod test {
         }
     }
 
-    #[test]
-    #[should_panic]
+    // #[test_case]
+    // #[should_panic]
     fn test_beta_invalid_dof() {
         Beta::new(0., 0.).unwrap();
     }
 
-    #[test]
+    #[test_case]
     fn value_stability() {
         fn test_samples<N: Float + core::fmt::Debug, D: Distribution<N>>(
             distr: D, zero: N, expected: &[N],

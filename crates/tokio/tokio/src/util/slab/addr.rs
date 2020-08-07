@@ -130,7 +130,7 @@ impl Address {
 #[cfg(test)]
 cfg_not_loom! {
     use proptest::proptest;
-
+        
     #[test]
     fn test_pack_format() {
         assert_eq!(5, RESERVED.width());

@@ -3,7 +3,7 @@ use futures::Poll;
 use never::Never;
 use std::io;
 use BufStream;
-
+use std::prelude::v1::*;
 impl BufStream for Vec<u8> {
     type Item = io::Cursor<Vec<u8>>;
     type Error = Never;

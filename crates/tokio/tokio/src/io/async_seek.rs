@@ -2,6 +2,7 @@ use std::io::{self, SeekFrom};
 use std::ops::DerefMut;
 use std::pin::Pin;
 use std::task::{Context, Poll};
+use std::prelude::v1::*;
 
 /// Seek bytes asynchronously.
 ///

@@ -4,6 +4,7 @@ use lazy_static::lazy_static;
 use regex::Regex;
 use std::{cmp::Ordering, error::Error, fmt, iter::FromIterator, str::FromStr};
 use tracing_core::{span, Metadata};
+use std::prelude::v1::*;
 
 /// A single filtering directive.
 // TODO(eliza): add a builder for programmatically constructing directives?

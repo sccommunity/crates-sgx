@@ -15,18 +15,28 @@ edition = "2018"
 
 [workspace]
 members = ["quickcheck_macros"]
+exclude = ["sgx-tests"]
 
 [features]
-default = ["regex", "use_logging"]
+default = ["regex", "use_logging", "mesalock_sgx"]
 unstable = []
 use_logging = ["log", "env_logger"]
 regex = ["env_logger/regex"]
-
+mesalock_sgx = ["sgx_tstd"]
+enclave_unit_test = ["crates_unittest", "inventory"]
 [lib]
 name = "quickcheck"
 
 [dependencies]
-env_logger = { version = "0.7.0", default-features = false, optional = true }
-log = { version = "0.4", optional = true }
-rand = "0.7"
-rand_core = "0.5"
+env_logger = { path = "../env_logger", optional = true }
+log = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2", optional = true }
+
+rand = { path = "../rand-0.7.3" }
+rand_core = { path = "../rand-0.7.3/rand_core" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true, features = ["untrusted_fs"] }
+# env_logger = { version = "0.7.0", default-features = false, optional = true }
+# log = { version = "0.4", optional = true }
+# rand = "0.7"
+# rand_core = "0.5"
+crates_unittest = { git = "https://github.com/Zha0Chan/crates-sgx-unittest.git", optional = true, default-features = false }
+inventory = { version = "0.1.6", optional = true }

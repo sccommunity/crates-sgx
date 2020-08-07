@@ -35,14 +35,20 @@ exclude = ["examples", "regex-automata-debug"]
 bench = false
 
 [features]
-default = ["std"]
-std = ["regex-syntax"]
+default = ["std", "mesalock_sgx"]
+std = ["regex-syntax", "mesalock_sgx"]
 transducer = ["std", "fst"]
+mesalock_sgx = ["sgx_tstd", "std"]
 
 [dependencies]
-byteorder = { version = "1.2.7", default-features = false }
-fst = { version = "0.4.0", optional = true }
-regex-syntax = { version = "0.6.16", optional = true }
+#byteorder = { version = "1.2.7", default-features = false }
+#fst = { version = "0.4.0", optional = true }
+#regex-syntax = { version = "0.6.16", optional = true }
+
+byteorder = { path = "../byteorder", version = "1.2.7", default-features = false }
+fst = { path = "../fst", version = "0.4.0", optional = true }
+regex-syntax = { path = "../regex/regex-syntax", optional = true }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 
 [dev-dependencies]
 bstr = { version = "0.2", default-features = false, features = ["std"] }

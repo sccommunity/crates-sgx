@@ -2,7 +2,7 @@
 use crate::bit;
 use std::cmp;
 use std::io;
-
+use std::prelude::v1::*;
 const MAX_BITWIDTH: u8 = 15;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -227,7 +227,7 @@ impl Encoder {
 mod ordinary_huffman_codes {
     use std::cmp;
     use std::collections::BinaryHeap;
-
+    use std::prelude::v1::*;
     pub fn calc_optimal_max_bitwidth(frequencies: &[usize]) -> u8 {
         let mut heap = BinaryHeap::new();
         for &freq in frequencies.iter().filter(|&&f| f > 0) {
@@ -245,7 +245,7 @@ mod ordinary_huffman_codes {
 }
 mod length_limited_huffman_codes {
     use std::mem;
-
+    use std::prelude::v1::*;
     #[derive(Debug, Clone)]
     struct Node {
         symbols: Vec<u16>,

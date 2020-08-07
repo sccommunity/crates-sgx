@@ -16,6 +16,7 @@ autoexamples = false
 include = [
   "CHANGELOG.md",
   "LICENSE",
+  "README.md",
   ".gitignore",
   ".travis.yml",
   "Cargo.toml",
@@ -27,24 +28,35 @@ include = [
 
 [features]
 alloc = []
-std = ["alloc", "memchr/use_std"]
-default = ["std", "lexical"]
+std = ["alloc", "memchr/use_std", "mesalock_sgx"]
+default = ["std", "lexical", "mesalock_sgx"]
 regexp = ["regex"]
 lexical = ["lexical-core"]
+mesalock_sgx = ["sgx_tstd", "std"]
+enclave_unit_test = ["crates_unittest", "inventory"]
+[dependencies]
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+crates_unittest = { git = "https://github.com/Zha0Chan/crates-sgx-unittest.git", optional = true, default-features = false }
+inventory = { version = "0.1.6", optional = true }
 
 [dependencies.regex]
+path = "../regex"
 version = "^1.0"
 optional = true
 
 [dependencies.lazy_static]
+git = "https://github.com/universal-secure-computing-community/crates-sgx.git"
+tag = "v0.3.1+sgx1.1.2"
 version = "^1.0"
 optional = true
 
 [dependencies.memchr]
+path = "../rust-memchr"
 version = "^2.0"
 default-features = false
 
 [dependencies.lexical-core]
+path = "../rust-lexical/lexical-core"
 version = ">= 0.6, < 0.8"
 optional = true
 

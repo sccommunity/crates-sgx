@@ -5,17 +5,17 @@
 
 #![cfg(unix)]
 
-pub extern crate libc;
+//pub extern crate libc;
 extern crate mio;
 extern crate mio_uds;
-extern crate signal_hook_registry;
+//extern crate signal_hook_registry;
 
 use std::io::prelude::*;
 use std::io::{self, Error, ErrorKind};
 use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::{Mutex, Once, ONCE_INIT};
+use std::sync::{SgxMutex as Mutex, Once, ONCE_INIT};
 
-use self::libc::c_int;
+use libc::c_int;
 use self::mio_uds::UnixStream;
 use futures::future;
 use futures::sync::mpsc::{channel, Receiver, Sender};
@@ -23,9 +23,10 @@ use futures::{Async, Future};
 use futures::{Poll, Stream};
 use tokio_io::IoFuture;
 use tokio_reactor::{Handle, PollEvented};
+use std::prelude::v1::*;
 
-pub use self::libc::{SIGALRM, SIGHUP, SIGPIPE, SIGQUIT, SIGTRAP};
-pub use self::libc::{SIGINT, SIGTERM, SIGUSR1, SIGUSR2};
+pub use libc::{SIGALRM, SIGHUP, SIGPIPE, SIGQUIT, SIGTRAP};
+pub use libc::{SIGINT, SIGTERM, SIGUSR1, SIGUSR2};
 
 /// BSD-specific definitions
 #[cfg(any(
@@ -153,7 +154,7 @@ fn action(slot: &SignalInfo, mut sender: &UnixStream) {
 /// This will register the signal handler if it hasn't already been registered,
 /// returning any error along the way if that fails.
 fn signal_enable(signal: c_int) -> io::Result<()> {
-    if signal_hook_registry::FORBIDDEN.contains(&signal) {
+    if sgx_signal::signal::FORBIDDEN.contains(&signal) {
         return Err(Error::new(
             ErrorKind::Other,
             format!("Refusing to register signal {}", signal),
@@ -167,10 +168,8 @@ fn signal_enable(signal: c_int) -> io::Result<()> {
     };
     let mut registered = Ok(());
     siginfo.init.call_once(|| {
-        registered = unsafe {
-            signal_hook_registry::register(signal, move || action(siginfo, &globals.sender))
-                .map(|_| ())
-        };
+        registered = sgx_signal::signal::register(signal, move || action(siginfo, &globals.sender))
+                .map(|_| ());
         if registered.is_ok() {
             siginfo.initialized.store(true, Ordering::Relaxed);
         }

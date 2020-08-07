@@ -20,7 +20,8 @@ use slot::Slot;
 mod stack;
 use stack::TransferStack;
 
-#[cfg(all(loom, test))]
+//#[cfg(all(loom, test))]
+#[cfg(feature = "enclave_unit_test")]
 mod tests;
 
 use crate::loom::sync::Mutex;

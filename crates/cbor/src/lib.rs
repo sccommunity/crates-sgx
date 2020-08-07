@@ -316,6 +316,8 @@
 
 #![deny(missing_docs)]
 #![cfg_attr(not(feature = "std"), no_std)]
+#![cfg_attr(all(feature = "mesalock_sgx", not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"), feature(rustc_private))]
 
 // When we are running tests in no_std mode we need to explicitly link std, because `cargo test`
 // will not work without it.
@@ -324,6 +326,11 @@ extern crate std;
 
 #[cfg(feature = "alloc")]
 extern crate alloc;
+
+#[cfg(all(feature = "std",
+          all(feature = "mesalock_sgx", not(target_env = "sgx"))))]
+#[macro_use]
+extern crate sgx_tstd as std;
 
 pub mod de;
 pub mod error;

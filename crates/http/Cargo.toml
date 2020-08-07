@@ -21,19 +21,31 @@ keywords = ["http"]
 categories = ["web-programming"]
 edition = "2018"
 
-[dependencies]
-bytes = "0.5"
-fnv = "1.0.5"
-itoa = "0.4.1"
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
 
-[dev-dependencies]
-indexmap = "1.0"
-quickcheck = "0.9.0"
-rand = "0.7.0"
-seahash = "3.0.5"
-serde = "1.0"
-serde_json = "1.0"
-doc-comment = "0.3"
+
+[dependencies]
+#bytes = "0.5"
+#fnv = "1.0.5"
+#itoa = "0.4.1"
+bytes = { path = "../bytes" }
+fnv = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2" }
+itoa = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+
+
+
+#doc-comment = "0.3"
+#[dev-dependencies]
+# indexmap = "1.0"
+# quickcheck = "0.9.0"
+# rand = "0.7.0"
+# seahash = "3.0.5"
+# serde = "1.0"
+# serde_json = "1.0"
+# doc-comment = "0.3"
 
 [[bench]]
 name = "header_map"

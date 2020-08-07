@@ -19,8 +19,12 @@ path = ".."
 version = "0.1.29"
 default-features = false
 
+[dependencies]
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true, features = ["thread"] }
+
 [features]
-default = ["use_std", "with-deprecated"]
+default = ["use_std", "with-deprecated", "mesalock_sgx"]
 nightly = ["futures/nightly"]
-use_std = ["futures/use_std"]
+use_std = ["futures/use_std", "mesalock_sgx"]
 with-deprecated = ["futures/with-deprecated"]
+mesalock_sgx = ["sgx_tstd", "use_std"]

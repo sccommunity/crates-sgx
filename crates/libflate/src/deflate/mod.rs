@@ -28,7 +28,7 @@ mod decode;
 mod encode;
 pub(crate) mod symbol;
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 pub(crate) mod test_data;
 
 #[derive(Debug, Clone, Copy)]
@@ -37,14 +37,14 @@ enum BlockType {
     Fixed = 0b01,
     Dynamic = 0b10,
 }
-
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::*;
     use crate::lz77;
     use std::io::{Read, Write};
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn encode_and_decode_works() {
         let plain = (0..lz77::MAX_DISTANCE as u32 * 32)
             .map(|i| i as u8)

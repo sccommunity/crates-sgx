@@ -1,5 +1,8 @@
 #[cfg(feature = "alloc")]
 use alloc::{vec, vec::Vec};
+
+use std::prelude::v1::*;
+
 #[cfg(feature = "std")]
 use core::cmp;
 use core::mem;

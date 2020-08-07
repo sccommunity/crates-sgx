@@ -3,7 +3,6 @@ use std::os::unix::net;
 use std::os::unix::prelude::*;
 use std::path::Path;
 
-use libc;
 use mio::event::Evented;
 use mio::unix::EventedFd;
 use mio::{Poll, PollOpt, Ready, Token};
@@ -140,4 +139,9 @@ impl FromRawFd for UnixListener {
             inner: net::UnixListener::from_raw_fd(fd),
         }
     }
+}
+
+mod libc {
+    pub use sgx_libc::*;
+    pub use sgx_libc::ocall::*;
 }

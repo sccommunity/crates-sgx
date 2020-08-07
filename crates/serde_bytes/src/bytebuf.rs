@@ -1,3 +1,6 @@
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+use std::prelude::v1::*;
+
 use core::borrow::{Borrow, BorrowMut};
 use core::cmp::{self, Ordering};
 use core::fmt::{self, Debug};

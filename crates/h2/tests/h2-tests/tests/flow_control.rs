@@ -2,10 +2,12 @@ use futures::future::{join, join4};
 use futures::{StreamExt, TryStreamExt};
 use h2_support::prelude::*;
 use h2_support::util::yield_once;
-
+use std::string::ToString;
+use crates_unittest::{ test_case };
+use std::prelude::v1::*;
 // In this case, the stream & connection both have capacity, but capacity is not
 // explicitly requested.
-#[tokio::test]
+#[crates_unittest::test]
 async fn send_data_without_requesting_capacity() {
     let _ = env_logger::try_init();
 
@@ -51,7 +53,7 @@ async fn send_data_without_requesting_capacity() {
     h2.await.unwrap();
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn release_capacity_sends_window_update() {
     let _ = env_logger::try_init();
 
@@ -118,7 +120,7 @@ async fn release_capacity_sends_window_update() {
     join(mock, h2).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn release_capacity_of_small_amount_does_not_send_window_update() {
     let _ = env_logger::try_init();
 
@@ -173,7 +175,7 @@ fn expand_window_sends_window_update() {}
 #[ignore]
 fn expand_window_calls_are_coalesced() {}
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn recv_data_overflows_connection_window() {
     let _ = env_logger::try_init();
 
@@ -235,7 +237,7 @@ async fn recv_data_overflows_connection_window() {
     join(mock, h2).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn recv_data_overflows_stream_window() {
     // this tests for when streams have smaller windows than their connection
     let _ = env_logger::try_init();
@@ -293,7 +295,7 @@ fn recv_window_update_causes_overflow() {
     // A received window update causes the window to overflow.
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn stream_error_release_connection_capacity() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -369,7 +371,7 @@ async fn stream_error_release_connection_capacity() {
     join(srv, client).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn stream_close_by_data_frame_releases_capacity() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -441,7 +443,7 @@ async fn stream_close_by_data_frame_releases_capacity() {
     join(srv, h2).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn stream_close_by_trailers_frame_releases_capacity() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -514,7 +516,7 @@ async fn stream_close_by_trailers_frame_releases_capacity() {
     join(srv, h2).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn stream_close_by_send_reset_frame_releases_capacity() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -573,7 +575,7 @@ async fn stream_close_by_send_reset_frame_releases_capacity() {
 #[ignore]
 fn stream_close_by_recv_reset_frame_releases_capacity() {}
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn recv_window_update_on_stream_closed_by_data_frame() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -618,7 +620,7 @@ async fn recv_window_update_on_stream_closed_by_data_frame() {
     join(srv, h2).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn reserved_capacity_assigned_in_multi_window_updates() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -681,7 +683,7 @@ async fn reserved_capacity_assigned_in_multi_window_updates() {
     join(srv, h2).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn connection_notified_on_released_capacity() {
     use tokio::sync::{mpsc, oneshot};
 
@@ -792,7 +794,7 @@ async fn connection_notified_on_released_capacity() {
     drop(b);
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn recv_settings_removes_available_capacity() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -839,7 +841,7 @@ async fn recv_settings_removes_available_capacity() {
     join(srv, h2).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn recv_settings_keeps_assigned_capacity() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -884,7 +886,7 @@ async fn recv_settings_keeps_assigned_capacity() {
     join(srv, h2).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn recv_no_init_window_then_receive_some_init_window() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -937,7 +939,7 @@ async fn recv_no_init_window_then_receive_some_init_window() {
     join(srv, h2).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn settings_lowered_capacity_returns_capacity_to_connection() {
     use futures::channel::oneshot;
     use futures::future::{select, Either};
@@ -1047,7 +1049,7 @@ async fn settings_lowered_capacity_returns_capacity_to_connection() {
     th2_rx.await.unwrap();
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn client_increase_target_window_size() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -1067,7 +1069,7 @@ async fn client_increase_target_window_size() {
     join(srv, client).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn increase_target_window_size_after_using_some() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -1108,7 +1110,7 @@ async fn increase_target_window_size_after_using_some() {
     join(srv, client).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn decrease_target_window_size() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -1153,7 +1155,7 @@ async fn decrease_target_window_size() {
     join(srv, client).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn client_update_initial_window_size() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -1228,7 +1230,7 @@ async fn client_update_initial_window_size() {
     join(srv, client).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn client_decrease_initial_window_size() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -1353,7 +1355,7 @@ async fn client_decrease_initial_window_size() {
     join(srv, client).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn server_target_window_size() {
     let _ = env_logger::try_init();
     let (io, mut client) = mock::new();
@@ -1374,7 +1376,7 @@ async fn server_target_window_size() {
     join(srv, client).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn recv_settings_increase_window_size_after_using_some() {
     // See https://github.com/hyperium/h2/issues/208
     let _ = env_logger::try_init();
@@ -1416,7 +1418,7 @@ async fn recv_settings_increase_window_size_after_using_some() {
     join(srv, client).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn reserve_capacity_after_peer_closes() {
     // See https://github.com/hyperium/h2/issues/300
     let _ = env_logger::try_init();
@@ -1452,7 +1454,7 @@ async fn reserve_capacity_after_peer_closes() {
     join(srv, client).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn reset_stream_waiting_for_capacity() {
     // This tests that receiving a reset on a stream that has some available
     // connection-level window reassigns that window to another stream.
@@ -1515,7 +1517,7 @@ async fn reset_stream_waiting_for_capacity() {
     join(srv, client).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn data_padding() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();

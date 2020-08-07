@@ -12,10 +12,11 @@ Channels for asynchronous communication using futures-rs.
 """
 
 [features]
-default = ["std"]
-std = ["alloc", "futures-core/std"]
+default = ["std", "mesalock_sgx"]
+std = ["mesalock_sgx", "alloc", "futures-core/std"]
 alloc = ["futures-core/alloc"]
 sink = ["futures-sink"]
+mesalock_sgx = ["sgx_tstd", "std"]
 
 # Unstable features
 # These features are outside of the normal semver guarantees and require the
@@ -26,6 +27,7 @@ cfg-target-has-atomic = ["futures-core/cfg-target-has-atomic"]
 [dependencies]
 futures-core = { path = "../futures-core", version = "0.3.5", default-features = false }
 futures-sink = { path = "../futures-sink", version = "0.3.5", default-features = false, optional = true }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true, features = ["thread"] }
 
 [dev-dependencies]
 futures = { path = "../futures", version = "0.3.5", default-features = true }

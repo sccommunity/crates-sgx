@@ -13,10 +13,18 @@
     html_favicon_url = "https://www.rust-lang.org/favicon.ico",
     html_root_url = "https://rust-random.github.io/rand/"
 )]
-#![deny(missing_docs)]
+//#![deny(missing_docs)]
 #![deny(missing_debug_implementations)]
 #![doc(test(attr(allow(unused_variables), deny(warnings))))]
 #![cfg_attr(not(feature = "std"), no_std)]
+
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"), feature(rustc_private))]
+
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
 
 pub use rand_core;
 
@@ -30,3 +38,13 @@ pub use crate::chacha::{
 pub type ChaChaRng = ChaCha20Rng;
 /// ChaCha with 20 rounds, low-level interface
 pub type ChaChaCore = ChaCha20Core;
+
+#[cfg(feature = "enclave_unit_test")]
+pub mod test {
+    use std::prelude::v1::*;
+    use crates_unittest::run_inventory_tests;
+  
+    pub fn run_tests() {
+        run_inventory_tests!();
+    }
+}

@@ -1,5 +1,5 @@
 // ===== Build a codec from raw bytes =====
-
+use std::prelude::v1::*;
 #[macro_export]
 macro_rules! raw_codec {
     (

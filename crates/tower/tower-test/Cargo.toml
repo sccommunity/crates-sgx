@@ -21,13 +21,21 @@ Utilities for writing client and server `Service` tests.
 categories = ["asynchronous", "network-programming"]
 edition = "2018"
 
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+
 [dependencies]
-futures-util = { version = "0.3", default-features = false }
-tokio = { version = "0.2", features = ["sync"]}
+futures-util = { path = "../../futures-rs/futures-util", version = "0.3", default-features = false }
+tokio = { path = "../../tokio/tokio", version = "0.2", features = ["sync"]}
 tower-layer = { version = "0.3", path = "../tower-layer" }
-tokio-test = "0.2"
-tower-service = { version = "0.3" }
-pin-project = "0.4"
+tokio-test = { path = "../../tokio/tokio-test"}
+tower-service = { path = "../tower-service", version = "0.3" }
+pin-project = "0.4.17"
+
+[target.'cfg(not(target_env = "sgx"))'.dependencies]
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+
 
 [dev-dependencies]
-tokio = { version = "0.2", features = ["macros"] }
+#tokio = { version = "0.2", features = ["macros"] }

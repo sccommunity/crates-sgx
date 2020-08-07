@@ -3,7 +3,7 @@
 use std::cell::Cell;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
-use std::thread::{self, Thread, ThreadId};
+use std::thread::{self, SgxThread, ThreadId};
 use std::time::Instant;
 
 use crossbeam_utils::Backoff;
@@ -26,7 +26,7 @@ struct Inner {
     packet: AtomicUsize,
 
     /// Thread handle.
-    thread: Thread,
+    thread: SgxThread,
 
     /// Thread id.
     thread_id: ThreadId,

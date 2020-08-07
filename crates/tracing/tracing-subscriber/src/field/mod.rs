@@ -3,6 +3,7 @@
 //! [fields]: https://docs.rs/tracing-core/latest/tracing_core/field/index.html
 //! [field visitors]: https://docs.rs/tracing-core/latest/tracing_core/field/trait.Visit.html
 use std::{fmt, io};
+use std::prelude::v1::*;
 pub use tracing_core::field::Visit;
 use tracing_core::{
     span::{Attributes, Record},

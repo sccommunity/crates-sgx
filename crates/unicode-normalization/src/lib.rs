@@ -42,7 +42,32 @@
     html_logo_url = "https://unicode-rs.github.io/unicode-rs_sm.png",
     html_favicon_url = "https://unicode-rs.github.io/unicode-rs_sm.png"
 )]
-#![cfg_attr(not(feature = "std"), no_std)]
+//#![cfg_attr(not(feature = "std"), no_std)]
+#![cfg_attr(not(
+    all(
+        any(feature = "std", feature = "mesalock_sgx"),
+        target_env = "sgx",
+        target_vendor = "mesalock",
+    )),
+    no_std
+)]
+
+#![cfg_attr(
+    all(
+        any(feature = "std", feature = "mesalock_sgx"),
+        target_env = "sgx",
+        target_vendor = "mesalock",
+    ),
+    feature(rustc_private)
+)]
+
+#[cfg(all(
+    any(feature = "std", feature = "mesalock_sgx"),
+    not(target_env = "sgx"),
+    not(target_vendor = "mesalock"),
+))]
+#[macro_use]
+extern crate sgx_tstd as std;
 
 #[cfg(not(feature = "std"))]
 extern crate alloc;
@@ -76,10 +101,10 @@ mod stream_safe;
 #[rustfmt::skip]
 mod tables;
 
-#[doc(hidden)]
-pub mod __test_api;
-#[cfg(test)]
-mod test;
+// #[doc(hidden)]
+// pub mod __test_api;
+// #[cfg(test)]
+// mod test;
 
 /// Methods for composing and decomposing characters.
 pub mod char {

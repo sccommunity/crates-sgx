@@ -10,7 +10,7 @@ readme = "README.md"
 categories = ["encoding", "parsing"]
 keywords = ["byte", "endian", "big-endian", "little-endian", "binary"]
 license = "Unlicense OR MIT"
-exclude = ["/ci/*"]
+exclude = ["/ci/*", "/sgx/*"]
 build = "build.rs"
 
 [lib]
@@ -18,17 +18,24 @@ name = "byteorder"
 bench = false
 
 [dev-dependencies]
-quickcheck = { version = "0.8", default-features = false }
-rand = "0.6"
+#quickcheck = { version = "0.8", default-features = false }
+#rand = "0.6"
 
 [features]
-default = ["std"]
-std = []
-
+default = ["std","mesalock_sgx"]
+std = ["mesalock_sgx"]
+mesalock_sgx = ["std", "sgx_tstd"]
+enclave_unit_test = ["crates_unittest", "inventory", "quickcheck", "rand"]
 # This feature is no longer used and is DEPRECATED. This crate now
 # automatically enables i128 support for Rust compilers that support it. The
 # feature will be removed if and when a new major version is released.
 i128 = []
 
+[dependencies]
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+crates_unittest = { git = "https://github.com/Zha0Chan/crates-sgx-unittest.git", optional = true, default-features = false }
+inventory = { version = "0.1.6", optional = true }
+quickcheck = { path = "../quickcheck", optional = true }
+rand = { path = "../rand-0.7.3", optional = true }
 [profile.bench]
 opt-level = 3

@@ -9,6 +9,7 @@ use std::marker::PhantomData;
 use std::mem::MaybeUninit;
 use std::ptr::{self, NonNull};
 use std::sync::atomic::Ordering::{AcqRel, Acquire, Release};
+use std::prelude::v1::*;
 
 /// Producer handle. May only be used from a single thread.
 pub(super) struct Local<T: 'static> {

@@ -10,13 +10,17 @@ repository = "https://github.com/pyfisch/rust-language-tags"
 documentation = "http://pyfisch.github.io/rust-language-tags/language_tags/"
 keywords = ["language", "internationalization", "translation", "http", "html"]
 
-[dependencies.heapsize]
-version = ">=0.2.2, <0.4"
-optional = true
-
-[dependencies.heapsize_plugin]
-version = "0.1.2"
-optional = true
 
 [features]
-heap_size = ["heapsize", "heapsize_plugin"]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+# heap_size = ["heapsize", "heapsize_plugin"]
+# [dependencies.heapsize]
+# version = ">=0.2.2, <0.4"
+# optional = true
+
+# [dependencies.heapsize_plugin]
+# version = "0.1.2"
+# optional = true
+[dependencies]
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }

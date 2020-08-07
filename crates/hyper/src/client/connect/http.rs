@@ -8,7 +8,7 @@ use std::pin::Pin;
 use std::sync::Arc;
 use std::task::{self, Poll};
 use std::time::Duration;
-
+use std::prelude::v1::Box;
 use futures_util::future::Either;
 use http::uri::{Scheme, Uri};
 use net2::TcpBuilder;

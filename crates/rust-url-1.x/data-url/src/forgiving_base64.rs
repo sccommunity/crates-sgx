@@ -1,5 +1,5 @@
 //! <https://infra.spec.whatwg.org/#forgiving-base64-decode>
-
+use std::prelude::v1::*;
 #[derive(Debug)]
 pub struct InvalidBase64(InvalidBase64Details);
 

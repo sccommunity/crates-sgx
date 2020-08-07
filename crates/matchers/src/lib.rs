@@ -26,9 +26,17 @@
 //! [`regex-automata`]: https://crates.io/crates/regex-automata
 //! [syntax]: https://docs.rs/regex-automata/0.1.7/regex_automata/#syntax
 
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
+
 use regex_automata::{DenseDFA, SparseDFA, StateID, DFA};
 use std::{fmt, io, marker::PhantomData, str::FromStr};
-
+use std::prelude::v1::*;
 pub use regex_automata::Error;
 
 /// A compiled match pattern that can match multipe inputs, or return a
@@ -311,9 +319,15 @@ mod sealed {
     pub trait Sealed {}
 }
 
-#[cfg(test)]
-mod test {
+#[cfg(feature = "enclave_unit_test")]
+pub mod tests {
     use super::*;
+    use std::string::ToString;
+    use crates_unittest::{ test_case, run_inventory_tests };
+  
+    pub fn run_tests() {
+        run_inventory_tests!();
+    }
 
     struct Str<'a>(&'a str);
     struct ReadStr<'a>(io::Cursor<&'a [u8]>);
@@ -352,7 +366,7 @@ mod test {
         }
     }
 
-    #[test]
+    #[test_case]
     fn debug_matches() {
         let pat = Pattern::new("hello world").unwrap();
         assert!(pat.debug_matches(&Str::hello_world()));
@@ -364,7 +378,7 @@ mod test {
         assert_eq!(pat.debug_matches(&Str::hello_world()), false);
     }
 
-    #[test]
+    #[test_case]
     fn display_matches() {
         let pat = Pattern::new("hello world").unwrap();
         assert!(pat.display_matches(&Str::hello_world()));
@@ -376,7 +390,7 @@ mod test {
         assert_eq!(pat.display_matches(&Str::hello_world()), false);
     }
 
-    #[test]
+    #[test_case]
     fn reader_matches() {
         let pat = Pattern::new("hello world").unwrap();
         assert!(pat
@@ -396,7 +410,7 @@ mod test {
         );
     }
 
-    #[test]
+    #[test_case]
     fn debug_rep_pattern() {
         let pat = Pattern::new("a+b").unwrap();
         assert!(pat.debug_matches(&Str::new("ab")));

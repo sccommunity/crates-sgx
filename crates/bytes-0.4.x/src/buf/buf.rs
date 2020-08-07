@@ -3,6 +3,7 @@ use byteorder::{BigEndian, ByteOrder, LittleEndian};
 use iovec::IoVec;
 
 use std::{cmp, io, ptr};
+use std::prelude::v1::*;
 
 macro_rules! buf_get_impl {
     ($this:ident, $size:expr, $conv:path) => ({
@@ -1151,4 +1152,4 @@ impl Buf for Option<[u8; 1]> {
 
 // The existance of this function makes the compiler catch if the Buf
 // trait is "object-safe" or not.
-fn _assert_trait_object(_b: &Buf) {}
+fn _assert_trait_object(_b: &dyn Buf) {}

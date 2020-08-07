@@ -14,6 +14,10 @@ description = """
 A lock-free concurrent slab.
 """
 
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+
 [badges]
 maintenance = { status = "experimental" }
 
@@ -22,7 +26,10 @@ name = "bench"
 harness = false
 
 [dependencies]
-lazy_static = "1"
+lazy_static = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true, features = ["thread"] }
+
+#lazy_static = "1"
 
 [dev-dependencies]
 loom = { version = "0.3", features = ["checkpoint"] }

@@ -2,6 +2,7 @@ use crate::loom::cell::UnsafeCell;
 use crate::util::slab::{Address, Entry, Slot, TransferStack, INITIAL_PAGE_SIZE};
 
 use std::fmt;
+use std::prelude::v1::*;
 
 /// Data accessed only by the thread that owns the shard.
 pub(crate) struct Local {

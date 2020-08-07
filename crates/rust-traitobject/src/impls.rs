@@ -68,11 +68,11 @@ unsafe impl<T> Trait for ::std::iter::Iterator<Item=T> + Send { }
 unsafe impl<T> Trait for ::std::iter::Iterator<Item=T> + Sync { }
 unsafe impl<T> Trait for ::std::iter::Iterator<Item=T> + Send + Sync { }
 unsafe impl Trait for ::std::marker::Send + Send { }
-unsafe impl Trait for ::std::marker::Send + Sync { }
-unsafe impl Trait for ::std::marker::Send + Send + Sync { }
+//unsafe impl Trait for ::std::marker::Send + Sync { }
+//unsafe impl Trait for ::std::marker::Send + Send + Sync { }
 unsafe impl Trait for ::std::marker::Sync + Send { }
 unsafe impl Trait for ::std::marker::Sync + Sync { }
-unsafe impl Trait for ::std::marker::Sync + Send + Sync { }
+//unsafe impl Trait for ::std::marker::Sync + Send + Sync { }
 unsafe impl Trait for ::std::ops::Drop + Send { }
 unsafe impl Trait for ::std::ops::Drop + Sync { }
 unsafe impl Trait for ::std::ops::Drop + Send + Sync { }

@@ -8,7 +8,7 @@ use crate::stable_graph::StableGraph;
 use crate::visit::{Data, NodeCount, NodeIndexable, Reversed};
 use crate::EdgeType;
 use crate::Graph;
-
+use std::prelude::v1::*;
 trait_template! {
     /// Access node and edge weights (associated data).
 pub trait DataMap : Data {

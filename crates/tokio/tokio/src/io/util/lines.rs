@@ -6,6 +6,7 @@ use std::io;
 use std::mem;
 use std::pin::Pin;
 use std::task::{Context, Poll};
+use std::prelude::v1::*;
 
 pin_project! {
     /// Stream for the [`lines`](crate::io::AsyncBufReadExt::lines) method.
@@ -91,6 +92,7 @@ where
         let me = self.project();
 
         let n = ready!(read_line_internal(me.reader, cx, me.buf, me.bytes, me.read))?;
+        debug_assert_eq!(*me.read, 0);
 
         if n == 0 && me.buf.is_empty() {
             return Poll::Ready(Ok(None));

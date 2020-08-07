@@ -42,18 +42,19 @@ impl Distribution<f64> for Weibull {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::Weibull;
     use crate::distributions::Distribution;
-
-    #[test]
-    #[should_panic]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    // #[test_case]
+    // #[should_panic]
     fn invalid() {
         Weibull::new(0., 0.);
     }
 
-    #[test]
+    #[test_case]
     fn sample() {
         let scale = 1.0;
         let shape = 2.0;

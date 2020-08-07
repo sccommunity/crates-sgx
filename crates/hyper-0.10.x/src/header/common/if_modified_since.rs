@@ -1,4 +1,5 @@
 use header::HttpDate;
+use std::prelude::v1::*;
 
 header! {
     /// `If-Modified-Since` header, defined in

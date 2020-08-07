@@ -262,15 +262,17 @@ impl fmt::Debug for SpanTrace {
     }
 }
 
-#[cfg(test)]
-mod tests {
+#[cfg(feature = "enclave_unit_test")]
+pub mod tests {
     use super::*;
     use crate::ErrorLayer;
     use tracing::subscriber::with_default;
     use tracing::{span, Level};
     use tracing_subscriber::{prelude::*, registry::Registry};
-
-    #[test]
+    use std::prelude::v1::*;
+    use std::string::ToString;
+    use crates_unittest::test_case;
+    #[test_case]
     fn capture_supported() {
         let subscriber = Registry::default().with(ErrorLayer::default());
 
@@ -286,7 +288,7 @@ mod tests {
         });
     }
 
-    #[test]
+    #[test_case]
     fn capture_empty() {
         let subscriber = Registry::default().with(ErrorLayer::default());
 
@@ -299,7 +301,7 @@ mod tests {
         });
     }
 
-    #[test]
+    #[test_case]
     fn capture_unsupported() {
         let subscriber = Registry::default();
 

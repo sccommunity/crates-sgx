@@ -20,13 +20,21 @@ Asynchronous stream of byte buffers
 categories = ["asynchronous"]
 
 [dependencies]
-bytes = "0.4.10"
-either = { version =  "1.5", optional = true}
-futures = "0.1.23"
+bytes = { path = "../../bytes-0.4.x" }
+either = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2", optional = true }
+futures = { path = "../../futures-rs_01" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+
+#bytes = "0.4.10"
+#either = { version =  "1.5", optional = true }
+#futures = "0.1.23"
+
 
 [features]
-default = ["util"]
+default = ["util", "mesalock_sgx"]
+#util = ["bytes/either", "either"]
 util = ["bytes/either", "either"]
+mesalock_sgx = ["sgx_tstd"]
 
 [dev-dependencies]
-tokio-mock-task = "0.1.1"
+#tokio-mock-task = "0.1.1"

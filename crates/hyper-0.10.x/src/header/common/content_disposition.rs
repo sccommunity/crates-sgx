@@ -10,7 +10,7 @@ use language_tags::LanguageTag;
 use std::fmt;
 use unicase::UniCase;
 use url::percent_encoding;
-
+use std::prelude::v1::*;
 use header::{Header, HeaderFormat, parsing};
 use header::parsing::{parse_extended_value, HTTP_VALUE};
 use header::shared::Charset;
@@ -194,13 +194,14 @@ impl fmt::Display for ContentDisposition {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::{ContentDisposition,DispositionType,DispositionParam};
     use ::header::Header;
     use ::header::shared::Charset;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn test_parse_header() {
         assert!(ContentDisposition::parse_header([b"".to_vec()].as_ref()).is_err());
 
@@ -244,7 +245,7 @@ mod tests {
         assert_eq!(a, b);
     }
 
-    #[test]
+    #[test_case]
     fn test_display() {
         let a = [b"attachment; filename*=UTF-8'en'%C2%A3%20and%20%E2%82%AC%20rates".to_vec()];
         let as_string = ::std::str::from_utf8(&(a[0])).unwrap();

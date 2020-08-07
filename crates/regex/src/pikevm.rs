@@ -15,6 +15,7 @@
 // Therefore, the Pike VM is generally treated as the fallback when the other
 // matching engines either aren't feasible to run or are insufficient.
 
+use std::prelude::v1::*;
 use std::mem;
 
 use exec::ProgramCache;

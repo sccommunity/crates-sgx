@@ -1,4 +1,5 @@
 use method::Method;
+use std::prelude::v1::Vec;
 
 header! {
     /// `Access-Control-Allow-Methods` header, part of

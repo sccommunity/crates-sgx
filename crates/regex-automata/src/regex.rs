@@ -1,3 +1,4 @@
+use std::prelude::v1::*;
 #[cfg(feature = "std")]
 use dense::{self, DenseDFA};
 use dfa::DFA;

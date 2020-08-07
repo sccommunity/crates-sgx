@@ -14,6 +14,14 @@
 //! [found online]: https://tokio.rs/docs/getting-started/core/
 //! [low level details]: https://tokio.rs/docs/going-deeper-tokio/core-low-level/
 
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
+
 #[macro_use]
 extern crate log;
 
@@ -23,6 +31,7 @@ extern crate bytes;
 
 use std::io as std_io;
 
+use std::prelude::v1::*;
 use futures::{Future, Stream};
 
 /// A convenience typedef around a `Future` whose error component is `io::Error`

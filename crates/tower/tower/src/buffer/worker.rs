@@ -4,7 +4,7 @@ use super::{
 };
 use futures_core::ready;
 use pin_project::pin_project;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, SgxMutex as Mutex};
 use std::{
     future::Future,
     pin::Pin,

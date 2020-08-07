@@ -1,8 +1,8 @@
 use std::collections::{HashMap, HashSet, VecDeque};
 use std::fmt;
 use std::ops::{Deref, DerefMut};
-use std::sync::{Arc, Mutex, Weak};
-
+use std::sync::{Arc, SgxMutex as Mutex, Weak};
+use std::prelude::v1::Vec;
 #[cfg(not(feature = "runtime"))]
 use std::time::{Duration, Instant};
 

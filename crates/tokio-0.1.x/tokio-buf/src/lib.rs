@@ -10,6 +10,14 @@
 //! instead of yielding arbitrary values, it only yields types that implement
 //! `Buf` (i.e, byte collections).
 
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
+
 extern crate bytes;
 #[cfg(feature = "util")]
 extern crate either;
@@ -31,6 +39,7 @@ pub use util::BufStreamExt;
 
 use bytes::Buf;
 use futures::Poll;
+use std::prelude::v1::*;
 
 /// An asynchronous stream of bytes.
 ///

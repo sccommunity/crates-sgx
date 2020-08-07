@@ -28,9 +28,17 @@
 //! ```
 
 #![doc(html_root_url = "https://docs.rs/serde_bytes/0.11.5")]
-#![cfg_attr(not(feature = "std"), no_std)]
+#![cfg_attr(
+    any(not(feature = "std"),
+        all(feature = "mesalock_sgx", not(target_env = "sgx"))),
+        no_std)]
+#![cfg_attr(feature = "alloc", feature(alloc))]
 #![deny(missing_docs)]
 #![allow(clippy::needless_doctest_main)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"), feature(rustc_private))]
+
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+extern crate sgx_tstd as std;
 
 mod bytes;
 mod de;

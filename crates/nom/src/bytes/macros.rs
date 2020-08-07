@@ -3,10 +3,9 @@
 #[allow(unused_variables)]
 
 /// `tag!(&[T]: nom::AsBytes) => &[T] -> IResult<&[T], &[T]>`
-/// declares a byte array as a suite to recognize
+/// declares a byte array as a suite to recognize.
 ///
-/// consumes the recognized characters
-///
+/// Consumes the recognized characters.
 /// # Example
 /// ```
 /// # #[macro_use] extern crate nom;
@@ -24,10 +23,9 @@ macro_rules! tag (
 );
 
 /// `tag_no_case!(&[T]) => &[T] -> IResult<&[T], &[T]>`
-/// declares a case insensitive ascii string as a suite to recognize
+/// declares a case insensitive ascii string as a suite to recognize.
 ///
-/// consumes the recognized characters
-///
+/// Consumes the recognized characters.
 /// # Example
 /// ```
 /// # #[macro_use] extern crate nom;
@@ -46,8 +44,7 @@ macro_rules! tag_no_case (
 );
 
 /// `is_not!(&[T:AsBytes]) => &[T] -> IResult<&[T], &[T]>`
-/// returns the longest list of bytes that do not appear in the provided array
-///
+/// returns the longest list of bytes that do not appear in the provided array.
 /// # Example
 /// ```
 /// # #[macro_use] extern crate nom;
@@ -66,8 +63,7 @@ macro_rules! is_not (
 );
 
 /// `is_a!(&[T]) => &[T] -> IResult<&[T], &[T]>`
-/// returns the longest list of bytes that appear in the provided array
-///
+/// returns the longest list of bytes that appear in the provided array.
 /// # Example
 /// ```
 /// # #[macro_use] extern crate nom;
@@ -92,10 +88,9 @@ macro_rules! is_a (
 /// U: AsChar`
 /// matches a byte string with escaped characters.
 ///
-/// The first argument matches the normal characters (it must not accept the control character),
-/// the second argument is the control character (like `\` in most languages),
-/// the third argument matches the escaped characters
-///
+/// * The first argument matches the normal characters (it must not accept the control character)
+/// * The second argument is the control character (like `\` in most languages)
+/// * The third argument matches the escaped characters
 /// # Example
 /// ```
 /// # #[macro_use] extern crate nom;
@@ -133,12 +128,11 @@ macro_rules! escaped (
 /// `escaped_transform!(&[T] -> IResult<&[T], &[T]>, T, &[T] -> IResult<&[T], &[T]>) => &[T] -> IResult<&[T], Vec<T>>`
 /// matches a byte string with escaped characters.
 ///
-/// The first argument matches the normal characters (it must not match the control character),
-/// the second argument is the control character (like `\` in most languages),
-/// the third argument matches the escaped characters and transforms them.
+/// * The first argument matches the normal characters (it must not match the control character)
+/// * The second argument is the control character (like `\` in most languages)
+/// * The third argument matches the escaped characters and transforms them
 ///
-/// As an example, the chain `abc\tdef` could be `abc    def` (it also consumes the control character)
-///
+/// As an example, the chain `abc\tdef` could be `abc    def` (it also consumes the control character).
 /// # Example
 /// ```rust
 /// # #[macro_use] extern crate nom;
@@ -192,7 +186,6 @@ macro_rules! escaped_transform (
 /// returns the longest list of bytes until the provided function fails.
 ///
 /// The argument is either a function `T -> bool` or a macro returning a `bool`.
-///
 /// # Example
 /// ```
 /// # #[macro_use] extern crate nom;
@@ -218,8 +211,7 @@ macro_rules! take_while (
 /// `take_while1!(T -> bool) => &[T] -> IResult<&[T], &[T]>`
 /// returns the longest (non empty) list of bytes until the provided function fails.
 ///
-/// The argument is either a function `&[T] -> bool` or a macro returning a `bool`
-///
+/// The argument is either a function `&[T] -> bool` or a macro returning a `bool`.
 /// # Example
 /// ```
 /// # #[macro_use] extern crate nom;
@@ -247,10 +239,9 @@ macro_rules! take_while1 (
 
 /// `take_while_m_n!(m: usize, n: usize, T -> bool) => &[T] -> IResult<&[T], &[T]>`
 /// returns a list of bytes or characters for which the provided function returns true.
-/// the returned list's size will be at least m, and at most n
+/// The returned list's size will be at least m, and at most n.
 ///
 /// The argument is either a function `T -> bool` or a macro returning a `bool`.
-///
 /// # Example
 /// ```
 /// # #[macro_use] extern crate nom;
@@ -274,10 +265,9 @@ macro_rules! take_while_m_n (
 );
 
 /// `take_till!(T -> bool) => &[T] -> IResult<&[T], &[T]>`
-/// returns the longest list of bytes until the provided function succeeds
+/// returns the longest list of bytes until the provided function succeeds.
 ///
 /// The argument is either a function `&[T] -> bool` or a macro returning a `bool`.
-///
 /// # Example
 /// ```
 /// # #[macro_use] extern crate nom;
@@ -302,7 +292,7 @@ macro_rules! take_till (
 );
 
 /// `take_till1!(T -> bool) => &[T] -> IResult<&[T], &[T]>`
-/// returns the longest non empty list of bytes until the provided function succeeds
+/// returns the longest non empty list of bytes until the provided function succeeds.
 ///
 /// The argument is either a function `&[T] -> bool` or a macro returning a `bool`.
 ///
@@ -332,8 +322,7 @@ macro_rules! take_till1 (
 );
 
 /// `take!(nb) => &[T] -> IResult<&[T], &[T]>`
-/// generates a parser consuming the specified number of bytes
-///
+/// generates a parser consuming the specified number of bytes.
 /// # Example
 /// ```
 /// # #[macro_use] extern crate nom;
@@ -356,8 +345,7 @@ macro_rules! take (
 );
 
 /// `take_str!(nb) => &[T] -> IResult<&[T], &str>`
-/// same as take! but returning a &str
-///
+/// same as `take!` but returning a `&str`.
 /// # Example
 /// ```
 /// # #[macro_use] extern crate nom;
@@ -384,7 +372,6 @@ macro_rules! take_str (
 /// consumes data until it finds the specified tag.
 ///
 /// The remainder still contains the tag.
-///
 /// # Example
 /// ```
 /// # #[macro_use] extern crate nom;
@@ -403,10 +390,9 @@ macro_rules! take_until (
 );
 
 /// `take_until1!(tag) => &[T] -> IResult<&[T], &[T]>`
-/// consumes data (at least one byte) until it finds the specified tag
+/// consumes data (at least one byte) until it finds the specified tag.
 ///
 /// The remainder still contains the tag.
-///
 /// # Example
 /// ```
 /// # #[macro_use] extern crate nom;
@@ -447,7 +433,7 @@ macro_rules! take_until1 (
   );
 );
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
   use crate::character::is_alphabetic;
   use crate::character::streaming::{
@@ -460,7 +446,8 @@ mod tests {
   use crate::lib::std::string::String;
   #[cfg(feature = "alloc")]
   use crate::lib::std::vec::Vec;
-
+  use std::string::ToString;
+  use crates_unittest::test_case;
   #[cfg(feature = "alloc")]
   macro_rules! one_of (
     ($i:expr, $inp: expr) => (
@@ -483,7 +470,7 @@ mod tests {
     );
   );
 
-  #[test]
+  #[test_case]
   fn is_a() {
     named!(a_or_b, is_a!(&b"ab"[..]));
 
@@ -503,7 +490,7 @@ mod tests {
     assert_eq!(a_or_b(d), Ok((&b"cdef"[..], &b"ba"[..])));
   }
 
-  #[test]
+  #[test_case]
   fn is_not() {
     named!(a_or_b, is_not!(&b"ab"[..]));
 
@@ -528,7 +515,7 @@ mod tests {
 
   #[cfg(feature = "alloc")]
   #[allow(unused_variables)]
-  #[test]
+  #[test_case]
   fn escaping() {
     named!(esc, escaped!(call!(alpha), '\\', one_of!("\"n\\")));
     assert_eq!(esc(&b"abcd;"[..]), Ok((&b";"[..], &b"abcd"[..])));
@@ -557,7 +544,7 @@ mod tests {
   }
 
   #[cfg(feature = "alloc")]
-  #[test]
+  #[test_case]
   fn escaping_str() {
     named!(esc<&str, &str>, escaped!(call!(alpha), '\\', one_of!("\"n\\")));
     assert_eq!(esc("abcd;"), Ok((";", "abcd")));
@@ -591,7 +578,7 @@ mod tests {
   }
 
   #[cfg(feature = "alloc")]
-  #[test]
+  #[test_case]
   fn escape_transform() {
     use crate::lib::std::str;
 
@@ -666,7 +653,7 @@ mod tests {
   }
 
   #[cfg(feature = "std")]
-  #[test]
+  #[test_case]
   fn escape_transform_str() {
     named!(esc<&str, String>, escaped_transform!(alpha, '\\',
       alt!(
@@ -716,7 +703,7 @@ mod tests {
     assert_eq!(esc3("a␛0bc␛n"), Ok(("", String::from("a\0bc\n"))));
   }
 
-  #[test]
+  #[test_case]
   fn take_str_test() {
     let a = b"omnomnom";
 
@@ -727,7 +714,7 @@ mod tests {
     assert_eq!(res, Err(Err::Incomplete(Needed::new(9))));
   }
 
-  #[test]
+  #[test_case]
   fn take_until_incomplete() {
     named!(y, take_until!("end"));
     assert_eq!(y(&b"nd"[..]), Err(Err::Incomplete(Needed::new(3))));
@@ -735,13 +722,13 @@ mod tests {
     assert_eq!(y(&b"123en"[..]), Err(Err::Incomplete(Needed::new(3))));
   }
 
-  #[test]
+  #[test_case]
   fn take_until_incomplete_s() {
     named!(ys<&str, &str>, take_until!("end"));
     assert_eq!(ys("123en"), Err(Err::Incomplete(Needed::new(3))));
   }
 
-  #[test]
+  #[test_case]
   fn recognize() {
     named!(
       x,
@@ -781,7 +768,7 @@ mod tests {
     assert_eq!(rms, Ok((semicolon, &b" \t\r\n"[..])));
   }
 
-  #[test]
+  #[test_case]
   fn take_while() {
     named!(f, take_while!(is_alphabetic));
     let a = b"";
@@ -795,7 +782,7 @@ mod tests {
     assert_eq!(f(&d[..]), Ok((&d[..], &a[..])));
   }
 
-  #[test]
+  #[test_case]
   fn take_while1() {
     named!(f, take_while1!(is_alphabetic));
     let a = b"";
@@ -812,7 +799,7 @@ mod tests {
     );
   }
 
-  #[test]
+  #[test_case]
   fn take_while_m_n() {
     named!(x, take_while_m_n!(2, 4, is_alphabetic));
     let a = b"";
@@ -833,7 +820,7 @@ mod tests {
     );
   }
 
-  #[test]
+  #[test_case]
   fn take_till() {
     named!(f, take_till!(is_alphabetic));
     let a = b"";
@@ -847,7 +834,7 @@ mod tests {
     assert_eq!(f(&d[..]), Err(Err::Incomplete(Needed::new(1))));
   }
 
-  #[test]
+  #[test_case]
   fn take_till1() {
     named!(f, take_till1!(is_alphabetic));
     let a = b"";
@@ -864,7 +851,7 @@ mod tests {
     assert_eq!(f(&d[..]), Err(Err::Incomplete(Needed::new(1))));
   }
 
-  #[test]
+  #[test_case]
   fn take_while_utf8() {
     named!(f<&str,&str>, take_while!(|c:char| { c != '點' }));
 
@@ -880,7 +867,7 @@ mod tests {
     assert_eq!(g("點點點a"), Ok(("a", "點點點")));
   }
 
-  #[test]
+  #[test_case]
   fn take_till_utf8() {
     named!(f<&str,&str>, take_till!(|c:char| { c == '點' }));
 
@@ -896,7 +883,7 @@ mod tests {
     assert_eq!(g("點點點a"), Ok(("a", "點點點")));
   }
 
-  #[test]
+  #[test_case]
   fn take_utf8() {
     named!(f<&str,&str>, take!(3));
 
@@ -914,14 +901,14 @@ mod tests {
     assert_eq!(g("點點點a"), Ok(("a", "點點點")));
   }
 
-  #[test]
+  #[test_case]
   fn take_while_m_n_utf8() {
     named!(parser<&str, &str>, take_while_m_n!(1, 1, |c| c == 'A' || c == '😃'));
     assert_eq!(parser("A!"), Ok(("!", "A")));
     assert_eq!(parser("😃!"), Ok(("!", "😃")));
   }
 
-  #[test]
+  #[test_case]
   fn take_while_m_n_utf8_full_match() {
     named!(parser<&str, &str>, take_while_m_n!(1, 1, |c: char| c.is_alphabetic()));
     assert_eq!(parser("øn"), Ok(("n", "ø")));
@@ -937,7 +924,7 @@ mod tests {
     b.iter(|| f(&b"abcdefghijklABCDEejfrfrjgro12aa"[..]));
   }
 
-  #[test]
+  #[test_case]
   #[cfg(feature = "std")]
   fn recognize_take_while() {
     use crate::character::is_alphanumeric;
@@ -948,7 +935,7 @@ mod tests {
     assert_eq!(y(&b"ab."[..]), Ok((&b"."[..], &b"ab"[..])));
   }
 
-  #[test]
+  #[test_case]
   fn length_bytes() {
     use crate::number::streaming::le_u8;
     named!(x, length_data!(le_u8));
@@ -965,7 +952,7 @@ mod tests {
   }
 
   #[cfg(feature = "alloc")]
-  #[test]
+  #[test_case]
   fn case_insensitive() {
     named!(test, tag_no_case!("ABcd"));
     assert_eq!(test(&b"aBCdefgh"[..]), Ok((&b"efgh"[..], &b"aBCd"[..])));
@@ -996,7 +983,7 @@ mod tests {
     );
   }
 
-  #[test]
+  #[test_case]
   fn tag_fixed_size_array() {
     named!(test, tag!([0x42]));
     named!(test2, tag!(&[0x42]));

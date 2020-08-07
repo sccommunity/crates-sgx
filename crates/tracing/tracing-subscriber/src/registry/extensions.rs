@@ -7,7 +7,7 @@ use std::{
     fmt,
     hash::{BuildHasherDefault, Hasher},
 };
-
+use std::prelude::v1::*;
 #[allow(warnings)]
 type AnyMap = HashMap<TypeId, Box<dyn Any + Send + Sync>, BuildHasherDefault<IdHasher>>;
 

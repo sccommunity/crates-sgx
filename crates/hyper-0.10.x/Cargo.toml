@@ -20,20 +20,37 @@ include = [
 ]
 
 [dependencies]
-base64 = "0.9.0"
-httparse = "1.0"
-language-tags = "0.2"
-log = "0.3"
-mime = "0.2"
-num_cpus = "1.0"
-time = "0.1"
-traitobject = "0.1"
-typeable = "0.1"
-unicase = "1.0"
-url = "1.0"
-
-[dev-dependencies]
-env_logger = "0.4"
+base64 = { path = "../rust-base64" }
+httparse = { path = "../httparse" }
+language-tags = { path = "../rust-language-tags-0.2.2" }
+log = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2" }
+mime = { path = "../mime-0.2.6"}
+#num_cpus = "1.0"
+time = { path = "../time-0.1" }
+traitobject = { path = "../rust-traitobject" }
+typeable = { path = "../rust-typeable" }
+unicase = { path = "../unicase-1.0.0" }
+url = { path = "../rust-url-1.x" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true, features = ["net", "thread", "untrusted_time"] }
+#base64 = "0.9.0"
+#httparse = "1.0"
+#language-tags = "0.2"
+#log = "0.3"
+#mime = "0.2"
+#num_cpus = "1.0"
+#time = "0.1"
+#traitobject = "0.1"
+#typeable = "0.1"
+#unicase = "1.0"
+#url = "1.0"
+crates_unittest = { git = "https://github.com/Zha0Chan/crates-sgx-unittest.git", optional = true, default-features =  false}
+inventory = { version = "0.1.6", optional = true }
+env_logger = { path = "../env_logger", optional = true }
+#[dev-dependencies]
+#env_logger = "0.4"
 
 [features]
 nightly = []
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+enclave_unit_test = ["crates_unittest", "inventory", "env_logger"]

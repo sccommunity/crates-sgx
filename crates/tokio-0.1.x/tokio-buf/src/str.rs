@@ -3,7 +3,7 @@ use BufStream;
 use SizeHint;
 
 use futures::Poll;
-
+use std::prelude::v1::*;
 use std::io;
 use std::mem;
 

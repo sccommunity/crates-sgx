@@ -2,6 +2,7 @@ use crate::fs::asyncify;
 
 use std::io;
 use std::path::{Path, PathBuf};
+use std::prelude::v1::*;
 
 /// Reads a symbolic link, returning the file that the link points to.
 ///

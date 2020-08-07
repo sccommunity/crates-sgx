@@ -9,14 +9,17 @@ homepage = "https://github.com/contain-rs/bit-set"
 documentation = "https://contain-rs.github.io/bit-set/bit_set"
 keywords = ["data-structures", "bitset"]
 readme = "README.md"
-
+[dependencies]
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 [dev-dependencies]
 rand = "0.3"
 
 [dependencies.bit-vec]
+path = "../bit-vec"
 version = "0.6.1"
 default-features = false
 
 [features]
-default = ["std"]
-std = ["bit-vec/std"]
+default = ["std", "mesalock_sgx"]
+std = ["bit-vec/std", "mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd", "std"]

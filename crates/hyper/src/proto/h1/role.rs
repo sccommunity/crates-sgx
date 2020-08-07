@@ -4,6 +4,7 @@
 
 use std::fmt::{self, Write};
 use std::mem;
+use std::prelude::v1::Vec;
 
 use bytes::BytesMut;
 use http::header::{self, Entry, HeaderName, HeaderValue};

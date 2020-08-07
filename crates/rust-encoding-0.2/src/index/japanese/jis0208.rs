@@ -3323,7 +3323,7 @@ pub fn backward_remapped(code: u32) -> u16 {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 multi_byte_tests!(
     mod = jis0208,
     remap = [8272, 8835],

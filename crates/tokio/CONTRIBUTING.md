@@ -15,12 +15,14 @@ It should be considered a map to help you navigate the process.
 The [dev channel][dev] is available for any concerns not covered in this guide, please join
 us!
 
-[dev]: https://discord.gg/6yGkFeN
+[dev]: https://discord.gg/tokio
 
 ## Conduct
 
 The Tokio project adheres to the [Rust Code of Conduct][coc]. This describes
-the _minimum_ behavior expected from all contributors. Instances of violations of the Code of Conduct can be reported by contacting the project team at [moderation@tokio.rs](mailto:moderation@tokio.rs).
+the _minimum_ behavior expected from all contributors. Instances of violations of the
+Code of Conduct can be reported by contacting the project team at
+[moderation@tokio.rs](mailto:moderation@tokio.rs).
 
 [coc]: https://github.com/rust-lang/rust/blob/master/CODE_OF_CONDUCT.md
 
@@ -29,8 +31,8 @@ the _minimum_ behavior expected from all contributors. Instances of violations o
 For any issue, there are fundamentally three ways an individual can contribute:
 
 1. By opening the issue for discussion: For instance, if you believe that you
-   have uncovered a bug in Tokio, creating a new issue in the tokio-rs/tokio
-   issue tracker is the way to report it.
+   have discovered a bug in Tokio, creating a new issue in [the tokio-rs/tokio
+   issue tracker][issue] is the way to report it.
 
 2. By helping to triage the issue: This can be done by providing
    supporting details (a test case that demonstrates a bug), providing
@@ -42,21 +44,25 @@ For any issue, there are fundamentally three ways an individual can contribute:
    often, by opening a Pull Request that changes some bit of something in
    Tokio in a concrete and reviewable manner.
 
+[issue]: https://github.com/tokio-rs/tokio/issues
+
 **Anybody can participate in any stage of contribution**. We urge you to
 participate in the discussion around bugs and participate in reviewing PRs.
 
 ### Asking for General Help
 
 If you have reviewed existing documentation and still have questions or are
-having problems, you can open an issue asking for help.
+having problems, you can [open a discussion] asking for help.
 
 In exchange for receiving help, we ask that you contribute back a documentation
 PR that helps others avoid the problems that you encountered.
 
+[open a discussion]: https://github.com/tokio-rs/tokio/discussions/new
+
 ### Submitting a Bug Report
 
-When opening a new issue in the Tokio issue tracker, users will be presented
-with a [basic template][template] that should be filled in. If you believe that you have
+When opening a new issue in the Tokio issue tracker, you will be presented
+with a basic template that should be filled in. If you believe that you have
 uncovered a bug, please fill out this form, following the template to the best
 of your ability. Do not worry if you cannot answer every detail, just fill in
 what you can.
@@ -72,7 +78,6 @@ cases should be limited, as much as possible, to using only Tokio APIs.
 See [How to create a Minimal, Complete, and Verifiable example][mcve].
 
 [mcve]: https://stackoverflow.com/help/mcve
-[template]: .github/PULL_REQUEST_TEMPLATE.md
 
 ### Triaging a Bug Report
 
@@ -132,8 +137,13 @@ RUSTDOCFLAGS="--cfg docsrs" cargo +nightly doc --all-features
 ```
 The `cargo fmt` command does not work on the Tokio codebase. You can use the
 command below instead:
+
 ```
+# Mac or Linux
 rustfmt --check --edition 2018 $(find . -name '*.rs' -print)
+
+# Powershell
+Get-ChildItem . -Filter "*.rs" -Recurse | foreach { rustfmt --check --edition 2018 $_.FullName }
 ```
 The `--check` argument prints the things that need to be fixed. If you remove
 it, `rustfmt` will update your files locally instead.
@@ -414,6 +424,83 @@ _Adapted from the [Node.js contributing guide][node]_.
 [node]: https://github.com/nodejs/node/blob/master/CONTRIBUTING.md
 [hiding-a-comment]: https://help.github.com/articles/managing-disruptive-comments/#hiding-a-comment
 [documentation test]: https://doc.rust-lang.org/rustdoc/documentation-tests.html
+
+## Keeping track of issues and PRs
+
+The Tokio GitHub repository has a lot of issues and PRs, which is not easy to
+keep track of. This section explains the meaning of various labels, as well as
+our [GitHub project][project]. The section is primarily targeted at maintainers.
+
+**Area.** The area label describes the crates relevant to this issue or PR.
+
+ - **A-tokio** This issue concerns the main Tokio crate.
+ - **A-tokio-util** This issue concerns the `tokio-util` crate.
+ - **A-tokio-tls** This issue concerns the `tokio-tls` crate. Only used for
+   older issues, as the crate has been moved to another repository.
+ - **A-tokio-test** The issue concerns the `tokio-test` crate.
+ - **A-tokio-macros** This issue concerns the `tokio-macros` crate. Should only
+   be used for the procedural macros, and not `join!` or `select!`.
+ - **A-ci** This issue concerns our GitHub Actions setup.
+
+**Category.** The category label describes the category.
+
+ - **C-bug** This is a bug-report. Bug-fix PRs use `C-enhancement` instead.
+ - **C-enhancement** This is a PR that adds a new features.
+ - **C-maintenance** This is an issue or PR about stuff such as documentation,
+   GitHub Actions or code quality.
+ - **C-feature-request** This is a feature request. Implementations of feature
+   requests use `C-enhancement` instead.
+ - **C-feature-accepted** If you submit a PR for this feature request, we wont
+   close it with the reason "we don't want this". Issues with this label should
+   also have the `C-feature-request` label.
+ - **C-musing** Stuff like tracking issues or roadmaps. "musings about a better
+   world"
+ - **C-proposal** A proposal of some kind, and a request for comments.
+ - **C-question** A user question. Large overlap with GitHub discussions.
+ - **C-request** A non-feature request, e.g. "please add deprecation notices to
+   `-alpha.*` versions of crates"
+
+**Call for participation.** I don't know why it's called `E-`. Many issues are
+missing a difficulty rating, and you should feel free to add one.
+
+ - **E-help-wanted** Stuff where we want help. Often seen together with `C-bug`
+   or `C-feature-accepted`.
+ - **E-easy** This is easy, ranging from quick documentation fixes to stuff you
+   can do after reading the tutorial on our website.
+ - **E-medium** This is not `E-easy` or `E-hard`.
+ - **E-hard** This either involves very tricky code, is something we don't know
+   how to solve, or is difficult for some other reason.
+ - **E-needs-mvce** This bug is missing a minimal complete and verifiable
+   example.
+
+**Module.** A more fine groaned categorization than area.
+
+ - **M-blocking** Things relevant to `spawn_blocking`, `block_in_place`.
+ - **M-codec** The `tokio_util::codec` module.
+ - **M-compat** The `tokio_util::compat` module.
+ - **M-coop** Things relevant to coop.
+ - **M-fs** The `tokio::fs` module.
+ - **M-io** The `tokio::io` module.
+ - **M-macros** Issues about any kind of macro.
+ - **M-net** The `tokio::net` module.
+ - **M-process** The `tokio::process` module.
+ - **M-runtime** The `tokio::runtime` module.
+ - **M-signal** The `tokio::signal` module.
+ - **M-stream** The `tokio::stream` module.
+ - **M-sync** The `tokio::sync` module.
+ - **M-task** The `tokio::task` module.
+ - **M-time** The `tokio::time` module.
+ - **M-tracing** Tracing support in Tokio.
+
+**Topic.** Some extra information.
+
+ - **T-docs** This is about documentation.
+ - **T-performance** This is about performance.
+ - **T-v0.1.x** This is about old Tokio.
+
+Any label not listed here is not in active use.
+
+[project]: https://github.com/orgs/tokio-rs/projects/1
 
 ## Releasing
 

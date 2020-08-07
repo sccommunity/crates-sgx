@@ -43,12 +43,13 @@ impl<N: Float + SampleUniform> Distribution<[N; 2]> for UnitDisc {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::UnitDisc;
     use crate::Distribution;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn value_stability() {
         let mut rng = crate::test::rng(2);
         let expected = [

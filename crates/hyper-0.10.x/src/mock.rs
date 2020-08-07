@@ -2,7 +2,7 @@ use std::io::{self, Read, Write, Cursor};
 use std::net::{SocketAddr, Shutdown};
 use std::time::Duration;
 use std::cell::Cell;
-
+use std::prelude::v1::*;
 use net::{NetworkStream, NetworkConnector, SslClient};
 
 #[derive(Clone, Debug)]

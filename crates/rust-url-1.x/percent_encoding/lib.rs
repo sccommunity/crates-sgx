@@ -31,13 +31,20 @@
 //!
 //! assert_eq!(utf8_percent_encode("foo bar?", DEFAULT_ENCODE_SET).to_string(), "foo%20bar%3F");
 //! ```
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
 
 use std::ascii::AsciiExt;
 use std::borrow::Cow;
 use std::fmt;
 use std::slice;
 use std::str;
-
+use std::prelude::v1::*;
 /// Represents a set of characters / bytes that should be percent-encoded.
 ///
 /// See [encode sets specification](http://url.spec.whatwg.org/#simple-encode-set).

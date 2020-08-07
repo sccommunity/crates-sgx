@@ -1,6 +1,6 @@
 [package]
 name = "lock_api"
-version = "0.3.4"
+version = "0.4.1"
 authors = ["Amanieu d'Antras <amanieu@gmail.com>"]
 description = "Wrappers to create fully-featured Mutex and RwLock types. Compatible with no_std."
 license = "Apache-2.0/MIT"
@@ -10,13 +10,16 @@ categories = ["concurrency", "no-std"]
 edition = "2018"
 
 [dependencies]
-scopeguard = { version = "1.0", default-features = false }
-owning_ref = { version = "0.4", optional = true }
+scopeguard = { path = "../../scopeguard", version = "1.0", default-features = false }
+owning_ref = { path = "../../owning-ref-rs", version = "0.4", optional = true }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 
 # Optional dependency for supporting serde.  Optional crates automatically
 # create a feature with the same name as the crate, so if you need serde
 # support, just pass "--features serde" when building this crate.
-serde = {version = "1.0.90", default-features = false, optional = true}
+serde = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.0+sgx1.1.2", default-features = false, optional = true }
 
 [features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
 nightly = []

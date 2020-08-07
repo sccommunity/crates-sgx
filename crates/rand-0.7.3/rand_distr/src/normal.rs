@@ -201,11 +201,12 @@ where StandardNormal: Distribution<N>
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::*;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn test_normal() {
         let norm = Normal::new(10.0, 10.0).unwrap();
         let mut rng = crate::test::rng(210);
@@ -213,14 +214,14 @@ mod tests {
             norm.sample(&mut rng);
         }
     }
-    #[test]
-    #[should_panic]
+    // #[test_case]
+    // #[should_panic]
     fn test_normal_invalid_sd() {
         Normal::new(10.0, -1.0).unwrap();
     }
 
 
-    #[test]
+    #[test_case]
     fn test_log_normal() {
         let lnorm = LogNormal::new(10.0, 10.0).unwrap();
         let mut rng = crate::test::rng(211);
@@ -228,13 +229,13 @@ mod tests {
             lnorm.sample(&mut rng);
         }
     }
-    #[test]
-    #[should_panic]
+    // #[test_case]
+    // #[should_panic]
     fn test_log_normal_invalid_sd() {
         LogNormal::new(10.0, -1.0).unwrap();
     }
 
-    #[test]
+    #[test_case]
     fn value_stability() {
         fn test_samples<N: Float + core::fmt::Debug, D: Distribution<N>>(
             distr: D, zero: N, expected: &[N],

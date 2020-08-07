@@ -7,7 +7,7 @@ use std::convert::{TryFrom};
 use std::hash::{Hash, Hasher};
 use std::str::FromStr;
 use std::{fmt, mem};
-
+use std::prelude::v1::*;
 /// Represents an HTTP header field name
 ///
 /// Header field names identify the header. Header sets may include multiple

@@ -2,13 +2,13 @@
 //!
 //! LZ77 is a compression algorithm used in [DEFLATE](https://tools.ietf.org/html/rfc1951).
 pub use libflate_lz77::*;
-
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::*;
     use crate::deflate::symbol::Symbol;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     // See: https://github.com/sile/libflate/issues/21
     fn issue21() {
         let mut enc = DefaultLz77Encoder::new();

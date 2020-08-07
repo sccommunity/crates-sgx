@@ -63,7 +63,7 @@ use futures::{Async, AsyncSink, Poll, Sink, StartSend, Stream};
 use std::ops;
 use std::sync::atomic::AtomicUsize;
 use std::sync::atomic::Ordering::SeqCst;
-use std::sync::{Arc, Mutex, RwLock, RwLockReadGuard, Weak};
+use std::sync::{Arc, SgxMutex as Mutex, SgxRwLock as RwLock, SgxRwLockReadGuard as RwLockReadGuard, Weak};
 
 /// Receives values from the associated `Sender`.
 ///

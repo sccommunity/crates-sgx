@@ -10,6 +10,11 @@ homepage = "https://github.com/ctz/sct.rs"
 repository = "https://github.com/ctz/sct.rs"
 categories = ["network-programming", "cryptography"]
 
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+
 [dependencies]
-ring = "0.16.0"
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+ring = { path = "../ring" }
 untrusted = "0.7.0"

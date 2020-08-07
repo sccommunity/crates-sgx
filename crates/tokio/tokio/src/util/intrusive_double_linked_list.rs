@@ -346,10 +346,12 @@ impl<T> LinkedList<T> {
     }
 }
 
-#[cfg(all(test, feature = "std"))] // Tests make use of Vec at the moment
+
+#[cfg(all(feature = "enclave_unit_test", feature = "std"))]
 mod tests {
     use super::*;
-
+    use std::string::ToString;
+    use crates_unittest::test_case;
     fn collect_list<T: Copy>(mut list: LinkedList<T>) -> Vec<T> {
         let mut result = Vec::new();
         list.drain(|node| {

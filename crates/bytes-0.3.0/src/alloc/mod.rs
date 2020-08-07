@@ -102,7 +102,7 @@ impl Drop for MemRef {
         if 1 == self.mem().refs.fetch_sub(1, Ordering::Relaxed) {
             // Last ref dropped, free the memory
             unsafe {
-                let alloc: &Allocator = mem::transmute(self.mem().allocator);
+                let alloc: &dyn Allocator = mem::transmute(self.mem().allocator);
                 alloc.deallocate(self.mem_ptr());
             }
         }
@@ -115,13 +115,13 @@ unsafe impl Sync for MemRef { }
 /// Memory allocated by an Allocator must be prefixed with Mem
 pub struct Mem {
     // TODO: It should be possible to reduce the size of this struct
-    allocator: *const Allocator,
+    allocator: *const dyn Allocator,
     refs: AtomicUsize,
     len: usize,
 }
 
 impl Mem {
-    pub fn new(len: usize, allocator: *const Allocator) -> Mem {
+    pub fn new(len: usize, allocator: *const dyn Allocator) -> Mem {
         Mem {
             allocator: allocator,
             refs: AtomicUsize::new(1),

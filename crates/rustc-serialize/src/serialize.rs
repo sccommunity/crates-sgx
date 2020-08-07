@@ -21,6 +21,7 @@
 Core encoding and decoding interfaces.
 */
 
+use std::prelude::v1::*;
 use std::cell::{Cell, RefCell};
 use std::ffi::OsString;
 use std::path;
@@ -1561,7 +1562,7 @@ impl<D: Decoder> DecoderHelpers for D {
     }
 }
 
-#[test]
+#[cfg(feature = "enclave_unit_test")]
 #[allow(unused_variables)]
 fn capacity_rules() {
     use std::usize::MAX;

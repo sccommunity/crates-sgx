@@ -370,12 +370,13 @@ where
 pub struct Standard;
 
 
-#[cfg(all(test, feature = "std"))]
+#[cfg(all(enclave_unit_test, feature = "std"))]
 mod tests {
     use super::{Distribution, Uniform};
     use crate::Rng;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn test_distributions_iter() {
         use crate::distributions::Open01;
         let mut rng = crate::test::rng(210);
@@ -384,7 +385,7 @@ mod tests {
         println!("{:?}", results);
     }
 
-    #[test]
+    #[test_case]
     fn test_make_an_iter() {
         fn ten_dice_rolls_other_than_five<'a, R: Rng>(
             rng: &'a mut R,

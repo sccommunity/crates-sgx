@@ -1,3 +1,6 @@
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+use std::prelude::v1::*;
+
 use crate::Bytes;
 use core::fmt;
 use core::marker::PhantomData;

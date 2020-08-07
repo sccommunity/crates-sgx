@@ -8,7 +8,7 @@
 
 //! [*Unicode IDNA Compatibility Processing*
 //! (Unicode Technical Standard #46)](http://www.unicode.org/reports/tr46/)
-
+use std::prelude::v1::*;
 use self::Mapping::*;
 use punycode;
 #[allow(unused_imports, deprecated)]

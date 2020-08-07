@@ -1,6 +1,6 @@
 [package]
 name = "rmpv"
-version = "0.4.4"
+version = "0.4.5"
 authors = ["Evgeny Safronov <division494@gmail.com>"]
 license = "MIT"
 description = "Value variant for RMP"
@@ -13,12 +13,14 @@ edition = "2018"
 
 [features]
 with-serde = ["serde", "serde_bytes"]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
 
 [dependencies]
-serde_bytes = { version = "0.11.2", optional = true }
+serde_bytes = { path = "../../serde_bytes", version = "0.11.2", optional = true }
 rmp = { version = "0.8.8", path = "../rmp" }
-num-traits = "0.2.8"
-serde = { version = "1.0.99", optional = true }
-
+num-traits = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2" }
+serde = {  git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2", features = ["derive"], optional = true }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 [dev-dependencies]
 quickcheck = "0.9"

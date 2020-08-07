@@ -1,13 +1,64 @@
 #![allow(bad_style)]
 
 pub use self::inner::*;
+use libc::{time_t, c_long, c_int, c_ulong, c_char};
+
+const EPOCH_ADJUSTMENT_DAYS: c_long = 719468;
+const ADJUSTED_EPOCH_YEAR: c_int = 0;
+const ADJUSTED_EPOCH_WDAY: c_long = 3;
+const DAYS_PER_ERA: c_long = (400 - 97) * 365 + 97 * 366;
+const DAYS_PER_CENTURY: c_ulong = (100 - 24) * 365 + 24 * 366;
+const DAYS_PER_4_YEARS: c_ulong = 3 * 365 + 366;
+const DAYS_PER_YEAR: c_int = 365;
+const DAYS_IN_JANUARY: c_int = 31;
+const DAYS_IN_FEBRUARY: c_int = 28;
+const YEARS_PER_ERA: c_int = 400;
+
+const SECSPERMIN: c_long = 60;
+const MINSPERHOUR: c_long = 60;
+const HOURSPERDAY: c_long = 24;
+const SECSPERHOUR: c_long = SECSPERMIN * MINSPERHOUR;
+const SECSPERDAY: c_long = SECSPERHOUR * HOURSPERDAY;
+const DAYSPERWEEK: c_int = 7;
+
+const YEAR_BASE: c_int = 1900;
+
+const UTC: *const c_char = b"UTC\0" as *const u8 as *const c_char;
+
+struct relibc_tm {
+    pub tm_sec: c_int,
+    pub tm_min: c_int,
+    pub tm_hour: c_int,
+    pub tm_mday: c_int,
+    pub tm_mon: c_int,
+    pub tm_year: c_int,
+    pub tm_wday: c_int,
+    pub tm_yday: c_int,
+    pub tm_isdst: c_int,
+    pub tm_gmtoff: c_long,
+    pub tm_zone: *const c_char,
+}
+
+const empty_tm : relibc_tm = relibc_tm {
+    tm_sec: 0,
+    tm_min: 0,
+    tm_hour: 0,
+    tm_mday: 0,
+    tm_mon: 0,
+    tm_year: 0,
+    tm_wday: 0,
+    tm_yday: 0,
+    tm_isdst: 0,
+    tm_gmtoff: 0,
+    tm_zone: UTC,
+};
 
 #[cfg(any(
     all(target_arch = "wasm32", not(target_os = "emscripten")),
     target_env = "sgx"
 ))]
 mod common {
-    use Tm;
+    use crate::Tm;
 
     pub fn time_to_tm(ts: i64, tm: &mut Tm) {
         let leapyear = |year| -> bool {
@@ -46,7 +97,33 @@ mod common {
         let mut mon = 0;
         while dayno >= _ytab[if leapyear(year) { 1 } else { 0 }][mon] {
                 dayno -= _ytab[if leapyear(year) { 1 } else { 0 }][mon];
-                mon += 1;
+                mon += 1;struct relibc_tm {
+                    pub tm_sec: c_int,
+                    pub tm_min: c_int,
+                    pub tm_hour: c_int,
+                    pub tm_mday: c_int,
+                    pub tm_mon: c_int,
+                    pub tm_year: c_int,
+                    pub tm_wday: c_int,
+                    pub tm_yday: c_int,
+                    pub tm_isdst: c_int,
+                    pub tm_gmtoff: c_long,
+                    pub tm_zone: *const c_char,
+                }
+                
+                const empty_tm : relibc_tm = relibc_tm {
+                    tm_sec: 0,
+                    tm_min: 0,
+                    tm_hour: 0,
+                    tm_mday: 0,
+                    tm_mon: 0,
+                    tm_year: 0,
+                    tm_wday: 0,
+                    tm_yday: 0,
+                    tm_isdst: 0,
+                    tm_gmtoff: 0,
+                    tm_zone: UTC,
+                };
         }
         tm.tm_mon = mon as i32;
         tm.tm_mday = dayno as i32 + 1;
@@ -68,6 +145,8 @@ mod common {
             * 86400 + 3600 * h + 60 * mi + s
     }
 }
+
+
 
 #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
 mod inner {
@@ -211,12 +290,81 @@ mod inner {
     }
 }
 
+#[inline(always)]
+fn is_leap(y: c_int) -> c_int {
+    ((y % 4 == 0 && y % 100 != 0) || y % 400 == 0) as c_int
+}
+
+fn gmtime(timer: time_t) -> relibc_tm {
+
+    let (mut days, mut rem): (c_long, c_long);
+    let mut weekday: c_int;
+    let lcltime = timer;
+
+    let mut result : relibc_tm = empty_tm;
+    days = lcltime / SECSPERDAY + EPOCH_ADJUSTMENT_DAYS;
+    rem = lcltime % SECSPERDAY;
+    if rem < 0 {
+        rem += SECSPERDAY;
+        days -= 1;
+    }
+    result.tm_hour = (rem / SECSPERHOUR) as c_int;
+    rem %= SECSPERHOUR;
+    result.tm_min = (rem / SECSPERMIN) as c_int;
+    result.tm_sec = (rem % SECSPERMIN) as c_int;
+
+    weekday = ((ADJUSTED_EPOCH_WDAY + days) % DAYSPERWEEK as c_long) as c_int;
+    if weekday < 0 {
+        weekday += DAYSPERWEEK;
+    }
+    result.tm_wday = weekday;
+
+    let (year, month, day, yearday) = civil_from_days(days);
+    result.tm_yday = yearday;
+    result.tm_year = year - YEAR_BASE;
+    result.tm_mon = month;
+    result.tm_mday = day;
+
+    result.tm_isdst = 0;
+    result.tm_gmtoff = 0;
+    result.tm_zone = UTC;
+    result
+}
+
+fn civil_from_days(days: c_long) -> (c_int, c_int, c_int, c_int) {
+    let (era, year): (c_int, c_int);
+    let (erayear, mut yearday, mut month, day): (c_int, c_int, c_int, c_int);
+    let eraday: c_ulong;
+
+    era = (if days >= 0 {
+        days
+    } else {
+        days - (DAYS_PER_ERA - 1)
+    } / DAYS_PER_ERA) as c_int;
+    eraday = (days - era as c_long * DAYS_PER_ERA) as c_ulong;
+    let a = eraday / (DAYS_PER_4_YEARS - 1);
+    let b = eraday / DAYS_PER_CENTURY;
+    let c = eraday / (DAYS_PER_ERA as c_ulong - 1);
+    erayear = ((eraday - a + b - c) / 365) as c_int;
+    let d = DAYS_PER_YEAR * erayear + erayear / 4 - erayear / 100;
+    yearday = (eraday - d as c_ulong) as c_int;
+    month = (5 * yearday + 2) / 153;
+    day = yearday - (153 * month + 2) / 5 + 1;
+    month += if month < 10 { 2 } else { -10 };
+    year = ADJUSTED_EPOCH_YEAR + erayear + era * YEARS_PER_ERA + (month <= 1) as c_int;
+    yearday += if yearday >= DAYS_PER_YEAR - DAYS_IN_JANUARY - DAYS_IN_FEBRUARY {
+        -(DAYS_PER_YEAR - DAYS_IN_JANUARY - DAYS_IN_FEBRUARY)
+    } else {
+        DAYS_IN_JANUARY + DAYS_IN_FEBRUARY + is_leap(erayear)
+    };
+    return (year, month, day, yearday);
+}
+
 #[cfg(unix)]
 mod inner {
-    use libc::{self, time_t};
-    use std::mem;
-    use std::io;
-    use Tm;
+    use crate::sys::relibc_tm;
+    use crate::sys::gmtime;
+    use crate::Tm;
 
     #[cfg(any(target_os = "macos", target_os = "ios"))]
     pub use self::mac::*;
@@ -229,19 +377,32 @@ mod inner {
         static altzone: time_t;
     }
 
-    fn rust_tm_to_tm(rust_tm: &Tm, tm: &mut libc::tm) {
-        tm.tm_sec = rust_tm.tm_sec;
-        tm.tm_min = rust_tm.tm_min;
-        tm.tm_hour = rust_tm.tm_hour;
-        tm.tm_mday = rust_tm.tm_mday;
-        tm.tm_mon = rust_tm.tm_mon;
-        tm.tm_year = rust_tm.tm_year;
-        tm.tm_wday = rust_tm.tm_wday;
-        tm.tm_yday = rust_tm.tm_yday;
-        tm.tm_isdst = rust_tm.tm_isdst;
-    }
+    // fn rust_tm_to_tm(rust_tm: &Tm, tm: &mut libc::tm) {
+    //     tm.tm_sec = rust_tm.tm_sec;
+    //     tm.tm_min = rust_tm.tm_min;
+    //     tm.tm_hour = rust_tm.tm_hour;
+    //     tm.tm_mday = rust_tm.tm_mday;
+    //     tm.tm_mon = rust_tm.tm_mon;
+    //     tm.tm_year = rust_tm.tm_year;
+    //     tm.tm_wday = rust_tm.tm_wday;
+    //     tm.tm_yday = rust_tm.tm_yday;
+    //     tm.tm_isdst = rust_tm.tm_isdst;
+    // }
 
-    fn tm_to_rust_tm(tm: &libc::tm, utcoff: i32, rust_tm: &mut Tm) {
+    // fn tm_to_rust_tm(tm: &libc::tm, utcoff: i32, rust_tm: &mut Tm) {
+    //     rust_tm.tm_sec = tm.tm_sec;
+    //     rust_tm.tm_min = tm.tm_min;
+    //     rust_tm.tm_hour = tm.tm_hour;
+    //     rust_tm.tm_mday = tm.tm_mday;
+    //     rust_tm.tm_mon = tm.tm_mon;
+    //     rust_tm.tm_year = tm.tm_year;
+    //     rust_tm.tm_wday = tm.tm_wday;
+    //     rust_tm.tm_yday = tm.tm_yday;
+    //     rust_tm.tm_isdst = tm.tm_isdst;
+    //     rust_tm.tm_utcoff = utcoff;
+    // }
+    
+    fn tm_to_rust_tm(tm: &relibc_tm, gmtoff: i32, rust_tm: &mut Tm) {
         rust_tm.tm_sec = tm.tm_sec;
         rust_tm.tm_min = tm.tm_min;
         rust_tm.tm_hour = tm.tm_hour;
@@ -251,7 +412,7 @@ mod inner {
         rust_tm.tm_wday = tm.tm_wday;
         rust_tm.tm_yday = tm.tm_yday;
         rust_tm.tm_isdst = tm.tm_isdst;
-        rust_tm.tm_utcoff = utcoff;
+        rust_tm.tm_utcoff = gmtoff;
     }
 
     #[cfg(any(target_os = "nacl", target_os = "solaris", target_os = "illumos"))]
@@ -280,62 +441,73 @@ mod inner {
     }
 
     pub fn time_to_utc_tm(sec: i64, tm: &mut Tm) {
-        unsafe {
-            let sec = sec as time_t;
-            let mut out = mem::zeroed();
-            if libc::gmtime_r(&sec, &mut out).is_null() {
-                panic!("gmtime_r failed: {}", io::Error::last_os_error());
-            }
-            tm_to_rust_tm(&out, 0, tm);
-        }
+        // unsafe {
+        //     let sec = sec as time_t;
+        //     let mut out = mem::zeroed();
+        //     if libc::gmtime_r(&sec, &mut out).is_null() {
+        //         panic!("gmtime_r failed: {}", io::Error::last_os_error());
+        //     }
+        //     tm_to_rust_tm(&out, 0, tm);
+        // }
+
+        let rtm: relibc_tm = gmtime(sec);
+        let gmtoff = rtm.tm_gmtoff;
+        tm_to_rust_tm(&rtm,gmtoff as i32,tm);
     }
 
     pub fn time_to_local_tm(sec: i64, tm: &mut Tm) {
-        unsafe {
-            let sec = sec as time_t;
-            let mut out = mem::zeroed();
-            if libc::localtime_r(&sec, &mut out).is_null() {
-                panic!("localtime_r failed: {}", io::Error::last_os_error());
-            }
-            #[cfg(any(target_os = "solaris", target_os = "illumos"))]
-            let gmtoff = {
-                ::tzset();
-                // < 0 means we don't know; assume we're not in DST.
-                if out.tm_isdst == 0 {
-                    // timezone is seconds west of UTC, tm_gmtoff is seconds east
-                    -timezone
-                } else if out.tm_isdst > 0 {
-                    -altzone
-                } else {
-                    -timezone
-                }
-            };
-            #[cfg(not(any(target_os = "solaris", target_os = "illumos")))]
-            let gmtoff = out.tm_gmtoff;
-            tm_to_rust_tm(&out, gmtoff as i32, tm);
-        }
+        // unsafe {
+        //     let sec = sec as time_t;
+        //     let mut out = mem::zeroed();
+        //     if libc::localtime_r(&sec, &mut out).is_null() {
+        //         panic!("localtime_r failed: {}", io::Error::last_os_error());
+        //     }
+        //     #[cfg(any(target_os = "solaris", target_os = "illumos"))]
+        //     let gmtoff = {
+        //         ::tzset();
+        //         // < 0 means we don't know; assume we're not in DST.
+        //         if out.tm_isdst == 0 {
+        //             // timezone is seconds west of UTC, tm_gmtoff is seconds east
+        //             -timezone
+        //         } else if out.tm_isdst > 0 {
+        //             -altzone
+        //         } else {
+        //             -timezone
+        //         }
+        //     };
+        //     #[cfg(not(any(target_os = "solaris", target_os = "illumos")))]
+        //     let gmtoff = out.tm_gmtoff;
+        //     tm_to_rust_tm(&out, gmtoff as i32, tm);
+        // }
+        let rtm: relibc_tm = gmtime(sec);
+        let gmtoff = rtm.tm_gmtoff;
+        tm_to_rust_tm(&rtm,gmtoff as i32,tm);
     }
 
     pub fn utc_tm_to_time(rust_tm: &Tm) -> i64 {
-        #[cfg(all(target_os = "android", target_pointer_width = "32"))]
-        use libc::timegm64 as timegm;
-        #[cfg(not(any(
-            all(target_os = "android", target_pointer_width = "32"),
-            target_os = "nacl",
-            target_os = "solaris",
-            target_os = "illumos"
-        )))]
-        use libc::timegm;
+        // #[cfg(all(target_os = "android", target_pointer_width = "32"))]
+        // use libc::timegm64 as timegm;
+        // #[cfg(not(any(
+        //     all(target_os = "android", target_pointer_width = "32"),
+        //     target_os = "nacl",
+        //     target_os = "solaris",
+        //     target_os = "illumos"
+        // )))]
+        // use libc::timegm;
 
-        let mut tm = unsafe { mem::zeroed() };
-        rust_tm_to_tm(rust_tm, &mut tm);
-        unsafe { timegm(&mut tm) as i64 }
+        // let mut tm = unsafe { mem::zeroed() };
+        // rust_tm_to_tm(rust_tm, &mut tm);
+        // unsafe { timegm(&mut tm) as i64 }
+        println!("utc_tm_to_time unsupported due to timegm unsupported");
+        unimplemented!();
     }
 
     pub fn local_tm_to_time(rust_tm: &Tm) -> i64 {
-        let mut tm = unsafe { mem::zeroed() };
-        rust_tm_to_tm(rust_tm, &mut tm);
-        unsafe { libc::mktime(&mut tm) as i64 }
+        // let mut tm = unsafe { mem::zeroed() };
+        // rust_tm_to_tm(rust_tm, &mut tm);
+        // unsafe { libc::mktime(&mut tm) as i64 }
+        println!("local_tm_to_time unsupported due to timegm unsupported");
+        unimplemented!();
     }
 
     #[cfg(any(target_os = "macos", target_os = "ios"))]
@@ -410,23 +582,26 @@ mod inner {
             }
         }
     }
-
-    #[cfg(test)]
+    
+    #[cfg(feature = "enclave_unit_test")]
+    //#[cfg(test)]
     pub struct TzReset;
 
-    #[cfg(test)]
+    //#[cfg(test)]
+    #[cfg(feature = "enclave_unit_test")]
     pub fn set_los_angeles_time_zone() -> TzReset {
         use std::env;
         env::set_var("TZ", "America/Los_Angeles");
-        ::tzset();
+        crate::tzset();
         TzReset
     }
 
-    #[cfg(test)]
+    //#[cfg(test)]
+    #[cfg(feature = "enclave_unit_test")]
     pub fn set_london_with_dst_time_zone() -> TzReset {
         use std::env;
         env::set_var("TZ", "Europe/London");
-        ::tzset();
+        crate::tzset();
         TzReset
     }
 
@@ -437,18 +612,18 @@ mod inner {
         use std::ops::{Add, Sub};
         use libc;
 
-        use Duration;
+        use crate::Duration;
 
         pub fn get_time() -> (i64, i32) {
             let mut tv = libc::timespec { tv_sec: 0, tv_nsec: 0 };
-            unsafe { libc::clock_gettime(libc::CLOCK_REALTIME, &mut tv); }
+            unsafe { libc::ocall::clock_gettime(libc::CLOCK_REALTIME, &mut tv); }
             (tv.tv_sec as i64, tv.tv_nsec as i32)
         }
 
         pub fn get_precise_ns() -> u64 {
             let mut ts = libc::timespec { tv_sec: 0, tv_nsec: 0 };
             unsafe {
-                libc::clock_gettime(libc::CLOCK_MONOTONIC, &mut ts);
+                libc::ocall::clock_gettime(libc::CLOCK_MONOTONIC, &mut ts);
             }
             (ts.tv_sec as u64) * 1000000000 + (ts.tv_nsec as u64)
         }
@@ -480,7 +655,7 @@ mod inner {
                     }
                 };
                 unsafe {
-                    assert_eq!(0, libc::clock_gettime(libc::CLOCK_MONOTONIC,
+                    assert_eq!(0, libc::ocall::clock_gettime(libc::CLOCK_MONOTONIC,
                                                       &mut t.t));
                 }
                 t
@@ -495,7 +670,7 @@ mod inner {
                         Duration::nanoseconds(self.t.tv_nsec as i64 - other.t.tv_nsec as i64)
                 } else {
                     Duration::seconds(self.t.tv_sec as i64 - 1 - other.t.tv_sec as i64) +
-                        Duration::nanoseconds(self.t.tv_nsec as i64 + ::NSEC_PER_SEC as i64 -
+                        Duration::nanoseconds(self.t.tv_nsec as i64 + crate::NSEC_PER_SEC as i64 -
                                               other.t.tv_nsec as i64)
                 }
             }
@@ -522,12 +697,12 @@ mod inner {
 
                 self.t.tv_sec += seconds as libc::time_t;
                 self.t.tv_nsec += nanoseconds as nsec;
-                if self.t.tv_nsec >= ::NSEC_PER_SEC as nsec {
-                    self.t.tv_nsec -= ::NSEC_PER_SEC as nsec;
+                if self.t.tv_nsec >= crate::NSEC_PER_SEC as nsec {
+                    self.t.tv_nsec -= crate::NSEC_PER_SEC as nsec;
                     self.t.tv_sec += 1;
                 } else if self.t.tv_nsec < 0 {
                     self.t.tv_sec -= 1;
-                    self.t.tv_nsec += ::NSEC_PER_SEC as nsec;
+                    self.t.tv_nsec += crate::NSEC_PER_SEC as nsec;
                 }
                 self
             }

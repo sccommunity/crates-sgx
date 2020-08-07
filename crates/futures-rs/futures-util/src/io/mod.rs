@@ -12,6 +12,7 @@
 #[cfg(feature = "io-compat")]
 use crate::compat::Compat;
 use std::ptr;
+use std::prelude::v1::*;
 
 pub use futures_io::{
     AsyncRead, AsyncWrite, AsyncSeek, AsyncBufRead, Error, ErrorKind,

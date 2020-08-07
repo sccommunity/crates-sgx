@@ -3,3 +3,4 @@ members = [
     #"tokio-native-tls",
     "tokio-rustls"
 ]
+exclude = ["sgx-tests"]

@@ -158,7 +158,19 @@
 //! assert_eq!(uri.query(), None);
 //! ```
 
-#![deny(warnings, missing_docs, missing_debug_implementations)]
+
+
+
+//#![deny(warnings, missing_docs, missing_debug_implementations)]
+
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
+
 
 #[cfg(test)]
 #[macro_use]
@@ -182,6 +194,7 @@ mod byte_str;
 mod error;
 mod extensions;
 
+
 pub use crate::error::{Error, Result};
 pub use crate::extensions::Extensions;
 #[doc(no_inline)]
@@ -192,6 +205,10 @@ pub use crate::response::Response;
 pub use crate::status::StatusCode;
 pub use crate::uri::Uri;
 pub use crate::version::Version;
+
+
+
+
 
 fn _assert_types() {
     fn assert_send<T: Send>() {}

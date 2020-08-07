@@ -4,7 +4,7 @@ use std::error;
 use std::fmt::{self, Display, Formatter};
 use std::io::{self, Cursor, ErrorKind, Read};
 use std::str::{self, Utf8Error};
-
+use std::prelude::v1::*;
 use byteorder::{self, ReadBytesExt};
 
 use serde;

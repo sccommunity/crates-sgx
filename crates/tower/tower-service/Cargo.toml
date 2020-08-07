@@ -21,7 +21,14 @@ Trait representing an asynchronous, request / response based, client or server.
 categories = ["asynchronous", "network-programming"]
 edition = "2018"
 
-[dependencies]
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+
+
+
+[target.'cfg(not(target_env = "sgx"))'.dependencies]
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 
 [dev-dependencies]
 http = "0.2"

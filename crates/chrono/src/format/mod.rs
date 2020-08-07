@@ -21,23 +21,24 @@
 use alloc::boxed::Box;
 #[cfg(feature = "alloc")]
 use alloc::string::{String, ToString};
-#[cfg(any(feature = "alloc", feature = "std", test))]
+#[cfg(any(feature = "alloc", feature = "std", enclave_unit_test))]
 use core::borrow::Borrow;
 use core::fmt;
 use core::str::FromStr;
-#[cfg(any(feature = "std", test))]
+#[cfg(any(feature = "std", enclave_unit_test))]
 use std::error::Error;
 
-#[cfg(any(feature = "alloc", feature = "std", test))]
+#[cfg(any(feature = "alloc", feature = "std", enclave_unit_test))]
 use naive::{NaiveDate, NaiveTime};
-#[cfg(any(feature = "alloc", feature = "std", test))]
+#[cfg(any(feature = "alloc", feature = "std", enclave_unit_test))]
 use offset::{FixedOffset, Offset};
-#[cfg(any(feature = "alloc", feature = "std", test))]
+#[cfg(any(feature = "alloc", feature = "std", enclave_unit_test))]
 use {Datelike, Timelike};
 use {Month, ParseMonthError, ParseWeekdayError, Weekday};
 
 #[cfg(feature = "unstable-locales")]
 pub(crate) mod locales;
+use std::prelude::v1::*;
 
 pub use self::parse::parse;
 pub use self::parsed::Parsed;
@@ -264,12 +265,12 @@ pub enum Item<'a> {
     /// A literally printed and parsed text.
     Literal(&'a str),
     /// Same as `Literal` but with the string owned by the item.
-    #[cfg(any(feature = "alloc", feature = "std", test))]
+    #[cfg(any(feature = "alloc", feature = "std", enclave_unit_test))]
     OwnedLiteral(Box<str>),
     /// Whitespace. Prints literally but reads zero or more whitespace.
     Space(&'a str),
     /// Same as `Space` but with the string owned by the item.
-    #[cfg(any(feature = "alloc", feature = "std", test))]
+    #[cfg(any(feature = "alloc", feature = "std", enclave_unit_test))]
     OwnedSpace(Box<str>),
     /// Numeric item. Can be optionally padded to the maximal length (if any) when formatting;
     /// the parser simply ignores any padded whitespace and zeroes.
@@ -369,7 +370,7 @@ impl fmt::Display for ParseError {
     }
 }
 
-#[cfg(any(feature = "std", test))]
+#[cfg(any(feature = "std", enclave_unit_test))]
 impl Error for ParseError {
     #[allow(deprecated)]
     fn description(&self) -> &str {
@@ -387,7 +388,7 @@ const TOO_LONG: ParseError = ParseError(ParseErrorKind::TooLong);
 const BAD_FORMAT: ParseError = ParseError(ParseErrorKind::BadFormat);
 
 /// Formats single formatting item
-#[cfg(any(feature = "alloc", feature = "std", test))]
+#[cfg(any(feature = "alloc", feature = "std", enclave_unit_test))]
 pub fn format_item<'a>(
     w: &mut fmt::Formatter,
     date: Option<&NaiveDate>,
@@ -400,7 +401,7 @@ pub fn format_item<'a>(
     w.pad(&result)
 }
 
-#[cfg(any(feature = "alloc", feature = "std", test))]
+#[cfg(any(feature = "alloc", feature = "std", enclave_unit_test))]
 fn format_inner<'a>(
     result: &mut String,
     date: Option<&NaiveDate>,
@@ -457,7 +458,7 @@ fn format_inner<'a>(
 
     match *item {
         Item::Literal(s) | Item::Space(s) => result.push_str(s),
-        #[cfg(any(feature = "alloc", feature = "std", test))]
+        #[cfg(any(feature = "alloc", feature = "std", enclave_unit_test))]
         Item::OwnedLiteral(ref s) | Item::OwnedSpace(ref s) => result.push_str(s),
 
         Item::Numeric(ref spec, ref pad) => {
@@ -687,7 +688,7 @@ fn format_inner<'a>(
 
 /// Tries to format given arguments with given formatting items.
 /// Internally used by `DelayedFormat`.
-#[cfg(any(feature = "alloc", feature = "std", test))]
+#[cfg(any(feature = "alloc", feature = "std", enclave_unit_test))]
 pub fn format<'a, I, B>(
     w: &mut fmt::Formatter,
     date: Option<&NaiveDate>,
@@ -716,7 +717,7 @@ pub mod strftime;
 
 /// A *temporary* object which can be used as an argument to `format!` or others.
 /// This is normally constructed via `format` methods of each date and time type.
-#[cfg(any(feature = "alloc", feature = "std", test))]
+#[cfg(any(feature = "alloc", feature = "std", enclave_unit_test))]
 #[derive(Debug)]
 pub struct DelayedFormat<I> {
     /// The date view, if any.
@@ -731,7 +732,7 @@ pub struct DelayedFormat<I> {
     locale: Option<Locale>,
 }
 
-#[cfg(any(feature = "alloc", feature = "std", test))]
+#[cfg(any(feature = "alloc", feature = "std", enclave_unit_test))]
 impl<'a, I: Iterator<Item = B> + Clone, B: Borrow<Item<'a>>> DelayedFormat<I> {
     /// Makes a new `DelayedFormat` value out of local date and time.
     pub fn new(date: Option<NaiveDate>, time: Option<NaiveTime>, items: I) -> DelayedFormat<I> {
@@ -792,7 +793,7 @@ impl<'a, I: Iterator<Item = B> + Clone, B: Borrow<Item<'a>>> DelayedFormat<I> {
     }
 }
 
-#[cfg(any(feature = "alloc", feature = "std", test))]
+#[cfg(any(feature = "alloc", feature = "std", enclave_unit_test))]
 impl<'a, I: Iterator<Item = B> + Clone, B: Borrow<Item<'a>>> fmt::Display for DelayedFormat<I> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         #[cfg(feature = "unstable-locales")]

@@ -18,7 +18,7 @@ use percent_encoding::{percent_encode_byte, percent_decode};
 use std::borrow::{Borrow, Cow};
 use std::fmt;
 use std::str;
-
+use std::prelude::v1::*;
 
 /// Convert a byte string in the `application/x-www-form-urlencoded` syntax
 /// into a iterator of (name, value) pairs.

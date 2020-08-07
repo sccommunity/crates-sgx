@@ -2,7 +2,7 @@ use webpki;
 use sct;
 use std;
 use std::sync::Arc;
-
+use std::prelude::v1::*;
 use crate::key::Certificate;
 use crate::msgs::handshake::DigitallySignedStruct;
 use crate::msgs::handshake::SCTList;

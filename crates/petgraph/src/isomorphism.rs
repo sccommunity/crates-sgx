@@ -1,6 +1,6 @@
 use fixedbitset::FixedBitSet;
 use std::marker;
-
+use std::prelude::v1::*;
 use super::graph::{Graph, IndexType, NodeIndex};
 use super::{EdgeType, Incoming};
 

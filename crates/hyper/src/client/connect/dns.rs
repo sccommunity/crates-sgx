@@ -29,6 +29,7 @@ use std::str::FromStr;
 use std::task::{self, Poll};
 use std::{fmt, io, vec};
 
+use std::prelude::v1::*;
 use tokio::task::JoinHandle;
 use tower_service::Service;
 
@@ -303,7 +304,7 @@ mod sealed {
     use super::{IpAddr, Name};
     use crate::common::{task, Future, Poll};
     use tower_service::Service;
-
+    use std::prelude::v1::Box;
     // "Trait alias" for `Service<Name, Response = Addrs>`
     pub trait Resolve {
         type Addrs: Iterator<Item = IpAddr>;

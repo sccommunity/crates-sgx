@@ -1,4 +1,5 @@
 use std::fmt::{self, Display};
+use std::prelude::v1::*;
 use header::{self, Header, HeaderFormat, EntityTag, HttpDate};
 
 /// `If-Range` header, defined in [RFC7233](http://tools.ietf.org/html/rfc7233#section-3.2)
@@ -85,11 +86,13 @@ impl Display for IfRange {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod test_if_range {
     use std::str;
     use header::*;
     use super::IfRange as HeaderField;
+
+
     test_header!(test1, vec![b"Sat, 29 Oct 1994 19:43:31 GMT"]);
     test_header!(test2, vec![b"\"xyzzy\""]);
     test_header!(test3, vec![b"this-is-invalid"], None::<IfRange>);

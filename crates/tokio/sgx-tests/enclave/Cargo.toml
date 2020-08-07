@@ -1,0 +1,53 @@
+[package]
+name = "run-tests-enclave"
+version = "1.0.0"
+edition = "2018"
+
+[lib]
+name = "run_tests_enclave"
+crate-type = ["staticlib"]
+
+[workspace] 
+
+
+[features]
+
+default = ["full", "std", "mesalock_sgx", "crates_unittest", "inventory"]
+std = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd", "sgx_libc", "std", "sgx_signal"]
+
+full = []
+
+
+[dependencies]
+futures-sink = { path = "../../../futures-rs/futures-sink" }
+tokio-util = { path = "../../tokio-util", features = ["full"] }
+tokio-macros = { version = "0.2.4", path = "../../tokio-macros", optional = true }
+fnv = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2", optional = true }
+memchr = { path = "../../../rust-memchr", optional = true  }
+mio = { path = "../../../mio-0.6.x", optional = true, features = [] }
+iovec = { path = "../../../iovec"  }
+slab = { path = "../../../slab"  }
+lazy_static = { version = "1.0.2", features = ["spin_no_std"], optional = true }
+mio-uds = { path = "../../../mio-uds", optional = true }
+tokio-test = { version = "0.2.0", path = "../../../tokio/tokio-test" }
+futures = { path = "../../../futures-rs/futures", version = "0.3.0", features = ["async-await"] }
+futures-test = { path = "../../../futures-rs/futures-test" }
+#proptest = { path = "../../../proptest/proptest" }
+tempfile = { path = "../../../tempfile"}
+pin-project-lite = "0.1.1"
+futures-io = { path = "../../../futures-rs/futures-io" , optional = true }
+
+tokio = { path = "../../../tokio/tokio", features = ["full", "test-util", "rt-core", "stream", "sync", "time"]}
+bytes = { path = "../../../bytes" }
+futures-core = { path = "../../../futures-rs/futures-core", optional = true }
+futures-util = { path = "../../../futures-rs/futures-util" }
+
+inventory = { version = "0.1.6", optional = true }
+crates_unittest = { git = "https://github.com/Zha0Chan/crates-sgx-unittest.git", optional = true, default-features = true}
+
+[target.'cfg(not(target_env = "sgx"))'.dependencies]
+sgx_types = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true, features = ["thread", "untrusted_fs", "untrusted_time"] }
+sgx_libc = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+sgx_signal = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }

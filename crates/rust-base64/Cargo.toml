@@ -20,9 +20,13 @@ criterion = "0.3"
 rand = "0.6.1"
 
 [features]
-default = ["std"]
-alloc = []
-std = []
+default = ["std", "mesalock_sgx"]
+std = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd", "std"]
+#alloc = []
+
+[dependencies]
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 
 [profile.bench]
 # Useful for better disassembly when using `perf record` and `perf annotate`

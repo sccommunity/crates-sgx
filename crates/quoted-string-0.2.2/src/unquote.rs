@@ -1,4 +1,5 @@
 use std::borrow::Cow;
+use std::prelude::v1::*;
 use std::cmp::max;
 use super::iter::ContentChars;
 

@@ -28,11 +28,18 @@ bench = false
 debug = true
 
 [dependencies]
-fixedbitset = { version = "0.2.0", default-features = false }
-quickcheck = { optional = true, version = "0.8", default-features = false }
-indexmap = { version = "1.0.2" }
-serde = { version = "1.0", optional = true }
+fixedbitset = { path = "../fixedbitset", default-features = false }
+quickcheck = { path = "../quickcheck", optional = true, version = "0.8", default-features = false }
+indexmap = { path = "../indexmap", version = "1.0.2" }
+serde = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.0+sgx1.1.2", optional = true }
 serde_derive = { version = "1.0", optional = true }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+
+#fixedbitset = { version = "0.2.0", default-features = false }
+#quickcheck = { optional = true, version = "0.8", default-features = false }
+#indexmap = { version = "1.0.2" }
+#serde = { version = "1.0", optional = true }
+
 
 [dev-dependencies]
 rand = "0.5.5"
@@ -41,7 +48,8 @@ defmac = "0.1"
 itertools = { version = "0.8", default-features = false }
 
 [features]
-default = ["graphmap", "stable_graph", "matrix_graph"]
+mesalock_sgx = ["sgx_tstd"]
+default = ["mesalock_sgx", "graphmap", "stable_graph", "matrix_graph"]
 graphmap = []
 serde-1 = ["serde", "serde_derive"]
 stable_graph = []

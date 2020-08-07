@@ -61,7 +61,7 @@ use std::sync::Arc;
 use std::time::{Duration, Instant};
 use std::usize;
 use std::{cmp, fmt};
-
+use std::prelude::v1::Box;
 /// Timer implementation that drives [`Delay`], [`Interval`], and [`Timeout`].
 ///
 /// A `Timer` instance tracks the state necessary for managing time and

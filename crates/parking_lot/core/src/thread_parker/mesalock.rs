@@ -56,28 +56,28 @@ impl super::ThreadParkerT for ThreadParker {
         // We need to grab the mutex here because another thread may be
         // concurrently executing UnparkHandle::unpark, which is done without
         // holding the queue lock.
-        self.mutex.lock();
+        let _r = self.mutex.lock();
         let should_park = self.should_park.get();
-        self.mutex.unlock();
+        let _r = self.mutex.unlock();
         should_park
     }
 
     #[inline]
     unsafe fn park(&self) {
-        self.mutex.lock();
+        let _r = self.mutex.lock();
         while self.should_park.get() {
-            self.condvar.wait(&self.mutex);
+            let _r = self.condvar.wait(&self.mutex);
         }
-        self.mutex.unlock();
+        let _r = self.mutex.unlock();
     }
 
     #[inline]
     unsafe fn park_until(&self, timeout: Instant) -> bool {
-        self.mutex.lock();
+        let _r = self.mutex.lock();
         while self.should_park.get() {
             let now = Instant::now();
             if timeout <= now {
-                self.mutex.unlock();
+                let _r = self.mutex.unlock();
                 return false;
             }
             if timeout.elapsed().as_secs() > sgx_libc::time_t::max_value() as u64 {
@@ -89,19 +89,19 @@ impl super::ThreadParkerT for ThreadParker {
                         let _r = self.condvar.wait_timeout(&self.mutex, tm.elapsed());
                     },
                     None => {
-                        self.mutex.unlock();
+                        let _r = self.mutex.unlock();
                         return false;
                     }
                 };
             }
         }
-        self.mutex.unlock();
+        let _r = self.mutex.unlock();
         true
     }
 
     #[inline]
     unsafe fn unpark_lock(&self) -> UnparkHandle {
-        self.mutex.unlock();
+        let _r = self.mutex.unlock();
         UnparkHandle {
             thread_parker: self,
         }
@@ -138,8 +138,8 @@ impl Drop for ThreadParker {
         // Once it is used (locked/unlocked) or pthread_mutex_init() is called,
         // this behaviour no longer occurs. The same applies to condvars.
         unsafe {
-            self.mutex.destroy();
-            self.condvar.destroy();
+            let _r = self.mutex.destroy();
+            let _r = self.condvar.destroy();
         }
             
     }
@@ -157,8 +157,8 @@ impl super::UnparkHandleT for UnparkHandle {
         // We notify while holding the lock here to avoid races with the target
         // thread. In particular, the thread could exit after we unlock the
         // mutex, which would make the condvar access invalid memory.
-        (*self.thread_parker).condvar.signal();
-        (*self.thread_parker).mutex.unlock();
+        let _r = (*self.thread_parker).condvar.signal();
+        let _r = (*self.thread_parker).mutex.unlock();
     }
 }
 

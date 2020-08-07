@@ -1,5 +1,6 @@
 use std::fmt;
 use std::str::FromStr;
+use std::prelude::v1::*;
 use header::{Header, HeaderFormat};
 use header::parsing::{from_comma_delimited, fmt_comma_delimited};
 
@@ -167,32 +168,33 @@ impl FromStr for CacheDirective {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use header::Header;
     use super::*;
-
-    #[test]
+  
+    use crates_unittest::test_case;
+    #[test_case]
     fn test_parse_multiple_headers() {
         let cache = Header::parse_header(&[b"no-cache".to_vec(), b"private".to_vec()]);
         assert_eq!(cache.ok(), Some(CacheControl(vec![CacheDirective::NoCache,
                                                  CacheDirective::Private])))
     }
 
-    #[test]
+    #[test_case]
     fn test_parse_argument() {
         let cache = Header::parse_header(&[b"max-age=100, private".to_vec()]);
         assert_eq!(cache.ok(), Some(CacheControl(vec![CacheDirective::MaxAge(100),
                                                  CacheDirective::Private])))
     }
 
-    #[test]
+    #[test_case]
     fn test_parse_quote_form() {
         let cache = Header::parse_header(&[b"max-age=\"200\"".to_vec()]);
         assert_eq!(cache.ok(), Some(CacheControl(vec![CacheDirective::MaxAge(200)])))
     }
 
-    #[test]
+    #[test_case]
     fn test_parse_extension() {
         let cache = Header::parse_header(&[b"foo, bar=baz".to_vec()]);
         assert_eq!(cache.ok(), Some(CacheControl(vec![
@@ -200,7 +202,7 @@ mod tests {
             CacheDirective::Extension("bar".to_owned(), Some("baz".to_owned()))])))
     }
 
-    #[test]
+    #[test_case]
     fn test_parse_bad_syntax() {
         let cache: ::Result<CacheControl> = Header::parse_header(&[b"foo=".to_vec()]);
         assert_eq!(cache.ok(), None)

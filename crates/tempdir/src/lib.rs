@@ -56,10 +56,19 @@
 //!     Ok(())
 //! }
 //! ```
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+
+#[macro_use]
+extern crate sgx_tstd as std;
+
 
 extern crate rand;
 extern crate remove_dir_all;
-
+use std::prelude::v1::*;
 use std::env;
 use std::io::{self, Error, ErrorKind};
 use std::fmt;
@@ -67,6 +76,7 @@ use std::fs;
 use std::path::{self, PathBuf, Path};
 use rand::{thread_rng, Rng};
 use remove_dir_all::remove_dir_all;
+
 
 /// A directory in the filesystem that is automatically deleted when
 /// it goes out of scope.
@@ -123,7 +133,7 @@ const NUM_RETRIES: u32 = 1 << 31;
 // be enough to dissuade an attacker from trying to preemptively create names
 // of that length, but not so huge that we unnecessarily drain the random number
 // generator of entropy.
-const NUM_RAND_CHARS: usize = 12;
+//const NUM_RAND_CHARS: usize = 12;
 
 impl TempDir {
     /// Attempts to make a temporary directory inside of `env::temp_dir()` whose
@@ -199,7 +209,9 @@ impl TempDir {
 
         let mut rng = thread_rng();
         for _ in 0..NUM_RETRIES {
-            let suffix: String = rng.gen_ascii_chars().take(NUM_RAND_CHARS).collect();
+            //method not found in `rand::prelude::ThreadRng`
+            //let suffix: String = rng.gen_ascii_chars().take(NUM_RAND_CHARS).collect();
+            let suffix: String = format!("{}", rng.gen::<u64>());
             let leaf = if !prefix.is_empty() {
                 format!("{}.{}", prefix, suffix)
             } else {

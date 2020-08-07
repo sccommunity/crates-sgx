@@ -1,3 +1,5 @@
+use std::prelude::v1::*;
+
 /// The set of user configurable options for compiling zero or more regexes.
 #[derive(Clone, Debug)]
 #[allow(missing_docs)]
@@ -39,6 +41,7 @@ macro_rules! define_builder {
             use super::RegexOptions;
             use error::Error;
             use exec::ExecBuilder;
+            use std::borrow::ToOwned;
 
             use $regex_mod::Regex;
 
@@ -236,6 +239,7 @@ macro_rules! define_set_builder {
             use super::RegexOptions;
             use error::Error;
             use exec::ExecBuilder;
+            use std::borrow::ToOwned;
 
             use re_set::$regex_mod::RegexSet;
 

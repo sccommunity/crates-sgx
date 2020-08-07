@@ -74,12 +74,14 @@ impl SeedableRng for StdRng {
 impl CryptoRng for StdRng {}
 
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod test {
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
     use crate::rngs::StdRng;
     use crate::{RngCore, SeedableRng};
 
-    #[test]
+    #[test_case]
     fn test_stdrng_construction() {
         // Test value-stability of StdRng. This is expected to break any time
         // the algorithm is changed.

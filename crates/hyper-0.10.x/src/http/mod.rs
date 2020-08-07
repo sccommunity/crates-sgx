@@ -1,12 +1,15 @@
 //! Pieces pertaining to the HTTP message protocol.
 use std::borrow::Cow;
-
+use std::prelude::v1::*;
 use header::Connection;
 use header::ConnectionOption::{KeepAlive, Close};
 use header::Headers;
 use version::HttpVersion;
 use version::HttpVersion::{Http10, Http11};
 
+
+#[cfg(feature = "enclave_unit_test")]
+use crates_unittest::test_case;
 
 pub use self::message::{HttpMessage, RequestHead, ResponseHead, Protocol};
 
@@ -29,7 +32,7 @@ pub fn should_keep_alive(version: HttpVersion, headers: &Headers) -> bool {
     }
 }
 
-#[test]
+#[test_case]
 fn test_should_keep_alive() {
     let mut headers = Headers::new();
 

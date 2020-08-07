@@ -4,9 +4,9 @@ use std::collections::HashMap;
 use std::fmt;
 use std::io::{self, Read, Write};
 use std::net::{SocketAddr, Shutdown};
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, SgxMutex as Mutex};
 use std::sync::atomic::{AtomicBool, Ordering};
-
+use std::prelude::v1::*;
 use std::time::{Duration, Instant};
 
 use net::{NetworkConnector, NetworkStream, DefaultConnector};
@@ -271,7 +271,7 @@ impl<S: NetworkStream> PooledStream<S> {
         &self.inner.as_ref().expect("PooledStream lost its inner stream").stream
     }
 
-    #[cfg(test)]
+    #[cfg(feature = "enclave_unit_test")]
     fn get_mut(&mut self) -> &mut S {
         &mut self.inner.as_mut().expect("PooledStream lost its inner stream").stream
     }
@@ -392,14 +392,15 @@ impl<S> Drop for PooledStream<S> {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use std::net::Shutdown;
     use std::io::Read;
     use std::time::Duration;
     use mock::{MockConnector};
     use net::{NetworkConnector, NetworkStream};
-
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
     use super::{Pool, key};
 
     macro_rules! mocked {
@@ -408,7 +409,7 @@ mod tests {
         })
     }
 
-    #[test]
+    #[test_case]
     fn test_connect_and_drop() {
         let mut pool = mocked!();
         pool.set_idle_timeout(Some(Duration::from_millis(100)));
@@ -432,7 +433,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_double_connect_reuse() {
         let mut pool = mocked!();
         pool.set_idle_timeout(Some(Duration::from_millis(100)));
@@ -450,7 +451,7 @@ mod tests {
         let _ = stream1;
     }
 
-    #[test]
+    #[test_case]
     fn test_closed() {
         let pool = mocked!();
         let mut stream = pool.connect("127.0.0.1", 3000, "http").unwrap();
@@ -460,7 +461,7 @@ mod tests {
         assert_eq!(locked.conns.len(), 0);
     }
 
-    #[test]
+    #[test_case]
     fn test_eof_closes() {
         let pool = mocked!();
 
@@ -471,7 +472,7 @@ mod tests {
         assert_eq!(locked.conns.len(), 0);
     }
 
-    #[test]
+    #[test_case]
     fn test_read_conn_aborted() {
         let pool = mocked!();
 
@@ -484,7 +485,7 @@ mod tests {
         assert_eq!(locked.conns.len(), 0);
     }
 
-    #[test]
+    #[test_case]
     fn test_idle_timeout() {
         let mut pool = mocked!();
         pool.set_idle_timeout(Some(Duration::from_millis(10)));

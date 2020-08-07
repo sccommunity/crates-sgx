@@ -8,7 +8,7 @@ use crate::cipher;
 
 use ring;
 use std::fmt;
-
+use std::prelude::v1::*;
 /// Bulk symmetric encryption scheme used by a cipher suite.
 #[allow(non_camel_case_types)]
 #[derive(Debug, PartialEq)]

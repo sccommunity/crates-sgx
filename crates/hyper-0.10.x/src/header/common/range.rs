@@ -1,9 +1,11 @@
 use std::fmt::{self, Display};
 use std::str::FromStr;
-
+use std::prelude::v1::*;
 use header::{Header, HeaderFormat};
 use header::parsing::{from_one_raw_str, from_comma_delimited};
 
+#[cfg(feature = "enclave_unit_test")]
+use crates_unittest::test_case;
 /// `Range` header, defined in [RFC7233](https://tools.ietf.org/html/rfc7233#section-3.1)
 ///
 /// The "Range" header field on a GET request modifies the method
@@ -192,7 +194,7 @@ impl HeaderFormat for Range {
 
 }
 
-#[test]
+#[test_case]
 fn test_parse_bytes_range_valid() {
     let r: Range = Header::parse_header(&[b"bytes=1-100".to_vec()]).unwrap();
     let r2: Range = Header::parse_header(&[b"bytes=1-100,-".to_vec()]).unwrap();
@@ -222,7 +224,7 @@ fn test_parse_bytes_range_valid() {
 
 }
 
-#[test]
+#[test_case]
 fn test_parse_unregistered_range_valid() {
     let r: Range = Header::parse_header(&[b"custom=1-100,-100".to_vec()]).unwrap();
     let r2 =  Range::Unregistered("custom".to_owned(), "1-100,-100".to_owned());
@@ -237,7 +239,7 @@ fn test_parse_unregistered_range_valid() {
     assert_eq!(r, r2);
 }
 
-#[test]
+#[test_case]
 fn test_parse_invalid() {
     let r: ::Result<Range> = Header::parse_header(&[b"bytes=1-a,-".to_vec()]);
     assert_eq!(r.ok(), None);
@@ -261,7 +263,7 @@ fn test_parse_invalid() {
     assert_eq!(r.ok(), None);
 }
 
-#[test]
+#[test_case]
 fn test_fmt() {
     use header::Headers;
 

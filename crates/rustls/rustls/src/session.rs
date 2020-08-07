@@ -21,7 +21,7 @@ use crate::log::{warn, debug, error};
 
 use std::io;
 use std::collections::VecDeque;
-
+use std::prelude::v1::*;
 /// Generalises `ClientSession` and `ServerSession`
 pub trait Session: quic::QuicExt + Read + Write + Send + Sync {
     /// Read TLS content from `rd`.  This method does internal

@@ -19,7 +19,7 @@ pub fn connect(addr: SocketAddr) -> io::Result<net::TcpStream> {
                 .map_err(|err| {
                     // Close the socket if we hit an error, ignoring the error
                     // from closing since we can't pass back two errors.
-                    let _ = unsafe { libc::close(socket) };
+                    let _ = unsafe { libc::ocall::close(socket) };
                     err
                 })
         })
@@ -44,7 +44,7 @@ pub fn bind(addr: SocketAddr) -> io::Result<net::TcpListener> {
         .map_err(|err| {
             // Close the socket if we hit an error, ignoring the error
             // from closing since we can't pass back two errors.
-            let _ = unsafe { libc::close(socket) };
+            let _ = unsafe { libc::ocall::close(socket) };
             err
         })
         .map(|_| unsafe { net::TcpListener::from_raw_fd(socket) })

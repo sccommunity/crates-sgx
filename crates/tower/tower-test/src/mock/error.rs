@@ -1,6 +1,7 @@
 //! Error types
 
 use std::{error, fmt};
+use std::prelude::v1::Box;
 
 pub(crate) type Error = Box<dyn error::Error + Send + Sync>;
 

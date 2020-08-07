@@ -215,12 +215,14 @@ impl<Tz: TimeZone> Sub<FixedOffset> for DateTime<Tz> {
     }
 }
 
-#[cfg(test)]
+//#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
-    use super::FixedOffset;
     use offset::TimeZone;
-
-    #[test]
+    use super::FixedOffset;
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn test_date_extreme_offset() {
         // starting from 0.3 we don't have an offset exceeding one day.
         // this makes everything easier!

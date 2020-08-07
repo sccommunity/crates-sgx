@@ -2,6 +2,7 @@ use std::borrow::Cow;
 use std::fmt;
 use std::io;
 use std::ops::Deref;
+use std::prelude::v1::*;
 
 use ansi::RESET;
 use difference::Difference;
@@ -280,13 +281,14 @@ where <S as ToOwned>::Owned: fmt::Debug, &'a S: AsRef<[u8]> {
 
 // ---- tests ----
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
+    use std::prelude::v1::*;
     pub use super::super::ANSIStrings;
     pub use style::Style;
     pub use style::Colour::*;
-
-    #[test]
+    use crates_unittest::{ test_case };
+    #[test_case]
     fn no_control_codes_for_plain() {
         let one = Style::default().paint("one");
         let two = Style::default().paint("two");

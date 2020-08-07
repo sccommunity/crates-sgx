@@ -3,14 +3,13 @@
 use crate::stdlib::{
     fmt,
     hash::{Hash, Hasher},
-    ptr,
-    sync::Mutex,
+    sync::SgxMutex as Mutex,
     vec::Vec,
 };
 use crate::{
-    dispatcher::{self, Dispatch, Registrar},
+    dispatcher::{self, Dispatch},
+    metadata::{LevelFilter, Metadata},
     subscriber::Interest,
-    Metadata,
 };
 
 lazy_static! {
@@ -41,11 +40,24 @@ impl Registry {
     }
 
     fn rebuild_interest(&mut self) {
-        self.dispatchers.retain(Registrar::is_alive);
+        let mut max_level = LevelFilter::TRACE;
+        self.dispatchers.retain(|registrar| {
+            if let Some(dispatch) = registrar.upgrade() {
+                if let Some(level) = dispatch.max_level_hint() {
+                    if level > max_level {
+                        max_level = level;
+                    }
+                }
+                true
+            } else {
+                false
+            }
+        });
 
         self.callsites.iter().for_each(|&callsite| {
             self.rebuild_callsite_interest(callsite);
         });
+        LevelFilter::set_max(max_level);
     }
 }
 
@@ -92,6 +104,12 @@ pub struct Identifier(
 /// reconfiguration of filters always return [`Interest::sometimes()`] so that
 /// [`enabled`] is evaluated for every event.
 ///
+/// This function will also re-compute the global maximum level as determined by
+/// the [`Subscriber::max_level_hint`] method. If a [`Subscriber`]
+/// implementation changes the value returned by its `max_level_hint`
+/// implementation at runtime, then it **must** call this function after that
+/// value changes, in order for the change to be reflected.
+///
 /// [`Callsite`]: ../callsite/trait.Callsite.html
 /// [`enabled`]: ../subscriber/trait.Subscriber.html#tymethod.enabled
 /// [`Interest::sometimes()`]: ../subscriber/struct.Interest.html#method.sometimes
@@ -121,7 +139,7 @@ pub(crate) fn register_dispatch(dispatch: &Dispatch) {
 
 impl PartialEq for Identifier {
     fn eq(&self, other: &Identifier) -> bool {
-        ptr::eq(self.0, other.0)
+        self.0 as *const _ as *const () == other.0 as *const _ as *const ()
     }
 }
 

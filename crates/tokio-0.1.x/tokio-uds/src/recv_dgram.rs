@@ -4,7 +4,8 @@ use futures::{Async, Future, Poll};
 
 use std::io;
 use std::mem;
-
+use std::prelude::v1::String;
+use std::string::ToString;
 /// A future for receiving datagrams from a Unix datagram socket.
 ///
 /// An example that uses UDP sockets but is still applicable can be found at

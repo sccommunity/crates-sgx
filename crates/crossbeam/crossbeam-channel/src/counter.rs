@@ -2,9 +2,9 @@
 
 use std::isize;
 use std::ops;
-use std::process;
+//use std::process;
 use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
-
+use std::prelude::v1::*;
 /// Reference counter internals.
 struct Counter<C> {
     /// The number of senders associated with the channel.
@@ -52,7 +52,8 @@ impl<C> Sender<C> {
         // counter. It's very difficult to recover sensibly from such degenerate scenarios so we
         // just abort when the count becomes very large.
         if count > isize::MAX as usize {
-            process::abort();
+            //process::abort();
+            sgx_trts::trts::rsgx_abort();
         }
 
         Sender {
@@ -107,7 +108,8 @@ impl<C> Receiver<C> {
         // counter. It's very difficult to recover sensibly from such degenerate scenarios so we
         // just abort when the count becomes very large.
         if count > isize::MAX as usize {
-            process::abort();
+            //process::abort();
+            sgx_trts::trts::rsgx_abort();
         }
 
         Receiver {

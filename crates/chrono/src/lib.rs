@@ -406,12 +406,12 @@
 
 #![doc(html_root_url = "https://docs.rs/chrono/latest/")]
 #![cfg_attr(feature = "bench", feature(test))] // lib stability features as per RFC #507
-#![deny(missing_docs)]
+//#![deny(missing_docs)]
 #![deny(missing_debug_implementations)]
 #![deny(dead_code)]
 // lints are added all the time, we test on 1.13
 #![allow(unknown_lints)]
-#![cfg_attr(not(any(feature = "std", test)), no_std)]
+//#![cfg_attr(not(any(feature = "std", test)), no_std)]
 #![cfg_attr(feature = "cargo-clippy", allow(
     renamed_and_removed_lints,
     // The explicit 'static lifetimes are still needed for rustc 1.13-16
@@ -430,13 +430,49 @@
     // warning that putting a time in a hash table is probably a bad idea
     derive_hash_xor_eq,
 ))]
+#![cfg_attr(not(
+    all(
+        any(feature = "std", feature = "mesalock_sgx"),
+        target_env = "sgx",
+        target_vendor = "mesalock",
+    )),
+    no_std
+)]
 
+#![cfg_attr(
+    all(
+        any(feature = "std", feature = "mesalock_sgx"),
+        target_env = "sgx",
+        target_vendor = "mesalock",
+    ),
+    feature(rustc_private)
+)]
+
+
+#[cfg(all(
+    any(feature = "std", feature = "mesalock_sgx"),
+    not(target_env = "sgx"),
+    not(target_vendor = "mesalock"),
+))]
+#[macro_use]
+extern crate sgx_tstd as std;
+
+#[cfg(feature = "enclave_unit_test")]
+extern crate crates_unittest;
 #[cfg(feature = "alloc")]
 extern crate alloc;
-#[cfg(all(feature = "std", not(feature = "alloc")))]
-extern crate std as alloc;
-#[cfg(any(feature = "std", test))]
+#[cfg(all(feature = "std", target_env = "sgx"))]
 extern crate std as core;
+#[cfg(all(feature = "std", target_env = "sgx", not(feature="alloc")))]
+extern crate std as alloc;
+#[cfg(all(feature = "std", not(target_env = "sgx"), not(feature="alloc")))]
+extern crate sgx_tstd as alloc;
+
+
+// #[cfg(all(feature = "std", not(feature = "alloc")))]
+// extern crate std as alloc;
+// #[cfg(any(feature = "std", test))]
+// extern crate std as core;
 
 #[cfg(feature = "clock")]
 extern crate time as oldtime;
@@ -467,7 +503,7 @@ doctest!("../README.md");
 
 // this reexport is to aid the transition and should not be in the prelude!
 pub use oldtime::Duration;
-
+use std::prelude::v1::*;
 pub use date::{Date, MAX_DATE, MIN_DATE};
 #[cfg(feature = "rustc-serialize")]
 pub use datetime::rustc_serialize::TsSeconds;
@@ -857,10 +893,14 @@ mod weekday_serde {
         }
     }
 
-    #[cfg(test)]
+    //#[cfg(test)]
+    #[cfg(feature = "enclave_unit_test")]
     extern crate serde_json;
-
-    #[test]
+    #[cfg(feature = "enclave_unit_test")]
+    use std::prelude::v1::*;
+    #[cfg(feature = "enclave_unit_test")]
+    use crates_unittest::test_case;
+    #[test_case]
     fn test_serde_serialize() {
         use self::serde_json::to_string;
         use Weekday::*;
@@ -881,7 +921,7 @@ mod weekday_serde {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_serde_deserialize() {
         use self::serde_json::from_str;
         use Weekday::*;
@@ -1159,10 +1199,10 @@ mod month_serde {
         }
     }
 
-    #[cfg(test)]
+    #[cfg(feature = "enclave_unit_test")]
     extern crate serde_json;
 
-    #[test]
+    #[test_case]
     fn test_serde_serialize() {
         use self::serde_json::to_string;
         use Month::*;
@@ -1188,7 +1228,7 @@ mod month_serde {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_serde_deserialize() {
         use self::serde_json::from_str;
         use Month::*;
@@ -1401,14 +1441,16 @@ pub trait Timelike: Sized {
     }
 }
 
-#[cfg(test)]
+//#[cfg(test)] 
+#[cfg(feature = "enclave_unit_test")]
 extern crate num_iter;
-
+#[cfg(feature = "enclave_unit_test")]
 mod test {
     #[allow(unused_imports)]
     use super::*;
+	use crates_unittest::test_case;
 
-    #[test]
+    #[test_case]
     fn test_readme_doomsday() {
         use num_iter::range_inclusive;
 
@@ -1435,7 +1477,7 @@ mod test {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_month_enum_primitive_parse() {
         use num_traits::FromPrimitive;
 
@@ -1461,7 +1503,11 @@ mod test {
 ///
 /// The alternative implementation is not as short as the current one but it is simpler to
 /// understand, with less unexplained magic constants.
-#[test]
+
+#[cfg(feature = "enclave_unit_test")]
+use crates_unittest::test_case;
+#[cfg(feature = "enclave_unit_test")]
+#[test_case]
 fn test_num_days_from_ce_against_alternative_impl() {
     /// Returns the number of multiples of `div` in the range `start..end`.
     ///
@@ -1508,11 +1554,18 @@ fn test_num_days_from_ce_against_alternative_impl() {
         assert_eq!(mid_year.num_days_from_ce(), num_days_from_ce(&mid_year), "on {:?}", mid_year);
     }
 }
-
-#[test]
+#[cfg(feature = "enclave_unit_test")]
+#[test_case]
 fn test_month_enum_succ_pred() {
     assert_eq!(Month::January.succ(), Month::February);
     assert_eq!(Month::December.succ(), Month::January);
     assert_eq!(Month::January.pred(), Month::December);
     assert_eq!(Month::February.pred(), Month::January);
+}
+
+#[cfg(feature = "enclave_unit_test")]
+use crates_unittest::run_inventory_tests;
+#[cfg(feature = "enclave_unit_test")]
+pub fn run_tests() {
+    run_inventory_tests!();
 }

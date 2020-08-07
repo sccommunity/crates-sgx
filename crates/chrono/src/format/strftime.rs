@@ -474,9 +474,12 @@ impl<'a> Iterator for StrftimeItems<'a> {
         }
     }
 }
-
-#[cfg(test)]
-#[test]
+#[cfg(feature = "enclave_unit_test")]
+use std::prelude::v1::*;
+#[cfg(feature = "enclave_unit_test")]
+use crates_unittest::test_case;
+#[cfg(feature = "enclave_unit_test")]
+#[test_case]
 fn test_strftime_items() {
     fn parse_and_collect<'a>(s: &'a str) -> Vec<Item<'a>> {
         // map any error into `[Item::Error]`. useful for easy testing.
@@ -528,8 +531,8 @@ fn test_strftime_items() {
     assert_eq!(parse_and_collect("%#m"), [Item::Error]);
 }
 
-#[cfg(test)]
-#[test]
+#[cfg(feature = "enclave_unit_test")]
+#[test_case]
 fn test_strftime_docs() {
     use {FixedOffset, TimeZone, Timelike};
 

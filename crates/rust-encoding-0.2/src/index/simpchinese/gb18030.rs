@@ -4974,7 +4974,7 @@ pub fn backward(code: u32) -> u16 {
     BACKWARD_TABLE_LOWER[offset + ((code & 31) as usize)]
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 multi_byte_tests!(
     mod = gb18030,
     dups = [

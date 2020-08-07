@@ -1,4 +1,4 @@
-#![cfg_attr(not(any(test, feature = "use_std")), no_std)]
+//#![cfg_attr(not(any(test, feature = "use_std")), no_std)]
 #![doc(html_root_url = "https://docs.rs/scopeguard/1/")]
 
 //! A scope guard will run a given closure when it goes out of scope,
@@ -187,6 +187,34 @@
 //! The scopeguard 1.x release series will use a carefully considered version
 //! upgrade policy, where in a later 1.x version, we will raise the minimum
 //! required Rust version.
+
+
+#![cfg_attr(not(
+    all(
+        any(feature = "use_std", feature = "mesalock_sgx"),
+        target_env = "sgx",
+        target_vendor = "mesalock",
+    )),
+    no_std
+)]
+
+#![cfg_attr(
+    all(
+        any(feature = "use_std", feature = "mesalock_sgx"),
+        target_env = "sgx",
+        target_vendor = "mesalock",
+    ),
+    feature(rustc_private)
+)]
+
+#[cfg(all(
+    any(feature = "use_std", feature = "mesalock_sgx"),
+    not(target_env = "sgx"),
+    not(target_vendor = "mesalock"),
+))]
+#[macro_use]
+extern crate sgx_tstd as std;
+
 
 #[cfg(not(any(test, feature = "use_std")))]
 extern crate core as std;
@@ -473,14 +501,25 @@ impl<T, F, S> fmt::Debug for ScopeGuard<T, F, S>
     }
 }
 
-#[cfg(test)]
-mod tests {
+//#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
+extern crate crates_unittest;
+#[cfg(feature = "enclave_unit_test")]
+pub mod tests {
+    
     use super::*;
     use std::cell::Cell;
     use std::panic::catch_unwind;
     use std::panic::AssertUnwindSafe;
+    use std::prelude::v1::*;
+    
+    use crates_unittest::{ test_case, run_inventory_tests };
+    
+    pub fn run_tests() {
+        run_inventory_tests!();
+    }
 
-    #[test]
+    #[test_case]
     fn test_defer() {
         let drops = Cell::new(0);
         defer!(drops.set(1000));
@@ -488,7 +527,7 @@ mod tests {
     }
 
     #[cfg(feature = "use_std")]
-    #[test]
+    #[test_case]
     fn test_defer_success_1() {
         let drops = Cell::new(0);
         {
@@ -499,7 +538,7 @@ mod tests {
     }
 
     #[cfg(feature = "use_std")]
-    #[test]
+    #[test_case]
     fn test_defer_success_2() {
         let drops = Cell::new(0);
         let _ = catch_unwind(AssertUnwindSafe(|| {
@@ -510,7 +549,7 @@ mod tests {
     }
 
     #[cfg(feature = "use_std")]
-    #[test]
+    #[test_case]
     fn test_defer_unwind_1() {
         let drops = Cell::new(0);
         let _ = catch_unwind(AssertUnwindSafe(|| {
@@ -522,7 +561,7 @@ mod tests {
     }
 
     #[cfg(feature = "use_std")]
-    #[test]
+    #[test_case]
     fn test_defer_unwind_2() {
         let drops = Cell::new(0);
         {
@@ -531,7 +570,7 @@ mod tests {
         assert_eq!(drops.get(), 0);
     }
 
-    #[test]
+    #[test_case]
     fn test_only_dropped_by_closure_when_run() {
         let value_drops = Cell::new(0);
         let value = guard((), |()| value_drops.set(1 + value_drops.get()));
@@ -545,7 +584,7 @@ mod tests {
     }
 
     #[cfg(feature = "use_std")]
-    #[test]
+    #[test_case]
     fn test_dropped_once_when_not_run() {
         let value_drops = Cell::new(0);
         let value = guard((), |()| value_drops.set(1 + value_drops.get()));
@@ -566,7 +605,7 @@ mod tests {
         assert_eq!(closure_drops.get(), 0);
     }
 
-    #[test]
+    #[test_case]
     fn test_into_inner() {
         let dropped = Cell::new(false);
         let value = guard(42, |_| dropped.set(true));

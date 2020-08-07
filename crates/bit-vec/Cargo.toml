@@ -11,15 +11,18 @@ keywords = ["data-structures", "bitvec", "bitmask", "bitmap", "bit"]
 readme = "README.md"
 
 [dependencies]
-serde = { version = "1.0", default-features = false, features = ["derive"], optional = true }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+#serde = { version = "1.0", default-features = false, features = ["derive"], optional = true }
 
+serde = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2", features = ["derive"], optional = true }
 [dev-dependencies]
 serde_json = "1.0"
 rand = "0.7"
 rand_xorshift = "0.2"
 
 [features]
-default = ["std"]
+mesalock_sgx = ["sgx_tstd", "std"]
+default = ["mesalock_sgx", "std"]
 serde_std = ["std", "serde/std"]
 serde_no_std = ["serde/alloc"]
-std = []
+std = ["mesalock_sgx"]

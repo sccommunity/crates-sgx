@@ -127,17 +127,22 @@
 //! a `NetworkStream` and contain headers, a status, and an http version. They
 //! implement `Reader` and can be read to get the data out of a `Response`.
 //!
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
 
 extern crate base64;
 extern crate time;
 #[macro_use] extern crate url;
 extern crate unicase;
 extern crate httparse;
-extern crate num_cpus;
+//extern crate num_cpus;
 extern crate traitobject;
 extern crate typeable;
 
-#[cfg_attr(test, macro_use)]
+#[cfg(feature = "enclave_unit_test")]
+#[macro_use]
 extern crate language_tags;
 
 #[macro_use]
@@ -149,6 +154,11 @@ extern crate log;
 #[cfg(all(test, feature = "nightly"))]
 extern crate test;
 
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
+#[cfg(feature = "enclave_unit_test")]
+extern crate crates_unittest;
 
 pub use url::Url;
 pub use client::Client;
@@ -164,7 +174,7 @@ macro_rules! todo(
     })
 );
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 #[macro_use]
 mod mock;
 #[doc(hidden)]
@@ -199,4 +209,12 @@ fn _assert_types() {
     _assert_sync::<Client>();
     _assert_sync::<error::Error>();
     _assert_sync::<::client::pool::Pool<::net::DefaultConnector>>();
+}
+#[cfg(feature = "enclave_unit_test")]
+use std::prelude::v1::*;
+#[cfg(feature = "enclave_unit_test")]
+use crates_unittest::run_inventory_tests;  
+#[cfg(feature = "enclave_unit_test")]
+pub fn run_tests() {
+    run_inventory_tests!();
 }

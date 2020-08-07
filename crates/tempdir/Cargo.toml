@@ -20,6 +20,17 @@ keywords = ["fs", "file", "filesystem"]
 travis-ci = { repository = "rust-lang-nursery/tempdir" }
 appveyor = { repository = "rust-lang-libs/tempdir" }
 
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+
 [dependencies]
-rand = "0.4"
-remove_dir_all = "0.5"
+rand = { path = "../rand-0.7.3" }
+
+
+[target.'cfg(not(target_env = "sgx"))'.dependencies]
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true, features = ["untrusted_fs"] }
+remove_dir_all = { path = "../remove_dir_all" }
+
+#rand = "0.4"
+#remove_dir_all = "0.5"

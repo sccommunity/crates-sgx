@@ -142,12 +142,14 @@ impl RefCount {
     }
 }
 
-#[cfg(test)]
-mod tests {
+//#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
+pub mod tests {
     use super::*;
     use futures_util::future;
     use std::task::{Context, Poll};
-
+    use std::string::ToString;
+    use crates_unittest::{ test_case, run_inventory_tests };
     struct Svc;
     impl Service<()> for Svc {
         type Response = ();
@@ -163,7 +165,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn default() {
         let mut svc = PendingRequests::new(Svc, CompleteOnResponse);
         assert_eq!(svc.load(), Count(0));
@@ -181,7 +183,7 @@ mod tests {
         assert_eq!(svc.load(), Count(0));
     }
 
-    #[test]
+    #[test_case]
     fn with_completion() {
         #[derive(Clone)]
         struct IntoHandle;

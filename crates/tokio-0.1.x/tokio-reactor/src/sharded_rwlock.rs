@@ -9,11 +9,11 @@ use std::collections::HashMap;
 use std::marker::PhantomData;
 use std::mem;
 use std::ops::{Deref, DerefMut};
-use std::sync::Mutex;
+use std::sync::SgxMutex as Mutex;
 use std::thread::{self, ThreadId};
-
+use std::prelude::v1::Vec;
 use crossbeam_utils::CachePadded;
-use num_cpus;
+//use num_cpus;
 use parking_lot;
 
 /// A scalable read-writer lock.
@@ -46,7 +46,7 @@ impl<T> RwLock<T> {
     pub fn new(value: T) -> RwLock<T> {
         // The number of shards is a power of two so that the modulo operation in `read` becomes a
         // simple bitwise "and".
-        let num_shards = num_cpus::get().next_power_of_two();
+        let num_shards = 1;//num_cpus::get().next_power_of_two();
 
         RwLock {
             shards: (0..num_shards)

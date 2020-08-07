@@ -45,7 +45,7 @@
     html_favicon_url = "https://www.rust-lang.org/favicon.ico",
     html_root_url = "https://rust-random.github.io/rand/"
 )]
-#![deny(missing_docs)]
+//#![deny(missing_docs)]
 #![deny(missing_debug_implementations)]
 #![doc(test(attr(allow(unused_variables), deny(warnings))))]
 #![cfg_attr(not(feature = "std"), no_std)]
@@ -56,7 +56,24 @@
     clippy::float_cmp
 )]
 
-#[cfg(all(feature = "alloc", not(feature = "std")))] extern crate alloc;
+#![cfg_attr(any(not(feature="std"),
+            all(feature = "mesalock_sgx", not(target_env = "sgx"))),
+             no_std)]
+#![cfg_attr(all(feature="alloc", not(feature="std")), feature(alloc))]
+
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"), feature(rustc_private))]
+
+#![allow(clippy::excessive_precision, clippy::unreadable_literal, clippy::float_cmp)]
+
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
+
+#[cfg(any(all(feature="std", not(feature="mesalock_sgx")),
+          target_env = "sgx"))]
+extern crate core;
+
+#[cfg(all(feature="alloc", not(feature="std")))] extern crate alloc;
 
 #[allow(unused)]
 macro_rules! trace { ($($x:tt)*) => (
@@ -554,11 +571,16 @@ where Standard: Distribution<T> {
     thread_rng().gen()
 }
 
-#[cfg(test)]
-mod test {
+#[cfg(feature = "enclave_unit_test")]
+pub mod test {
+    use std::prelude::v1::*;
     use super::*;
     use crate::rngs::mock::StepRng;
     #[cfg(all(not(feature = "std"), feature = "alloc"))] use alloc::boxed::Box;
+    use crates_unittest::{ test_case, run_inventory_tests };
+    pub fn run_tests() {
+        run_inventory_tests!();
+    }
 
     /// Construct a deterministic RNG with the given seed
     pub fn rng(seed: u64) -> impl RngCore {
@@ -568,7 +590,7 @@ mod test {
         rand_pcg::Pcg32::new(seed, INC)
     }
 
-    #[test]
+   #[test_case]
     fn test_fill_bytes_default() {
         let mut r = StepRng::new(0x11_22_33_44_55_66_77_88, 0);
 
@@ -588,7 +610,7 @@ mod test {
         }
     }
 
-    #[test]
+   #[test_case]
     fn test_fill() {
         let x = 9041086907909331047; // a random u64
         let mut rng = StepRng::new(x, 0);
@@ -612,7 +634,7 @@ mod test {
         assert_eq!(array[1], warray[1].0);
     }
 
-    #[test]
+   #[test_case]
     fn test_fill_empty() {
         let mut array = [0u32; 0];
         let mut rng = StepRng::new(0, 1);
@@ -620,7 +642,7 @@ mod test {
         rng.fill(&mut array[..]);
     }
 
-    #[test]
+   #[test_case]
     fn test_gen_range() {
         let mut r = rng(101);
         for _ in 0..1000 {
@@ -641,21 +663,21 @@ mod test {
         }
     }
 
-    #[test]
-    #[should_panic]
+    // #[test_case]
+    // #[should_panic]
     fn test_gen_range_panic_int() {
         let mut r = rng(102);
         r.gen_range(5, -2);
     }
 
-    #[test]
-    #[should_panic]
+//    #[test_case]
+//     #[should_panic]
     fn test_gen_range_panic_usize() {
         let mut r = rng(103);
         r.gen_range(5, 2);
     }
 
-    #[test]
+   #[test_case]
     fn test_gen_bool() {
         let mut r = rng(105);
         for _ in 0..5 {
@@ -664,7 +686,7 @@ mod test {
         }
     }
 
-    #[test]
+   #[test_case]
     fn test_rng_trait_object() {
         use crate::distributions::{Distribution, Standard};
         let mut rng = rng(109);
@@ -675,7 +697,7 @@ mod test {
         let _c: u8 = Standard.sample(&mut r);
     }
 
-    #[test]
+   #[test_case]
     #[cfg(feature = "alloc")]
     fn test_rng_boxed_trait() {
         use crate::distributions::{Distribution, Standard};
@@ -687,7 +709,7 @@ mod test {
         let _c: u8 = Standard.sample(&mut r);
     }
 
-    #[test]
+   #[test_case]
     #[cfg(feature = "std")]
     fn test_random() {
         // not sure how to test this aside from just getting some values
@@ -702,7 +724,7 @@ mod test {
         ) = random();
     }
 
-    #[test]
+   #[test_case]
     #[cfg_attr(miri, ignore)] // Miri is too slow
     fn test_gen_ratio_average() {
         const NUM: u32 = 3;

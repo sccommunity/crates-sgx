@@ -1,0 +1,16 @@
+[package]
+name = "run-tests"
+version = "1.0.0"
+build = "build.rs"
+edition = "2018"
+
+[workspace]
+
+[dependencies]
+sgx_types = { git = "https://github.com/apache/teaclave-sgx-sdk.git" }
+sgx_urts = { git = "https://github.com/apache/teaclave-sgx-sdk.git"}
+
+[patch.'https://github.com/apache/teaclave-sgx-sdk.git']
+sgx_types = { git = "https://github.com/Zha0Chan/incubator-teaclave-sgx-sdk.git" }
+sgx_urts = { git = "https://github.com/Zha0Chan/incubator-teaclave-sgx-sdk.git"}
+

@@ -3,6 +3,7 @@ use std::io;
 use std::ops::DerefMut;
 use std::pin::Pin;
 use std::task::{Context, Poll};
+use std::prelude::v1::*;
 
 /// Writes bytes asynchronously.
 ///

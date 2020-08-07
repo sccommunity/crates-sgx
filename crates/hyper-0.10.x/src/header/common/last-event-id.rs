@@ -1,3 +1,5 @@
+use std::prelude::v1::*;
+
 header! {
     /// `Last-Event-ID` header, defined in
     /// [RFC3864](https://html.spec.whatwg.org/multipage/references.html#refsRFC3864)

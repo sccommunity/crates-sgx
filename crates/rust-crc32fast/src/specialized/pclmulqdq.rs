@@ -1,6 +1,6 @@
-#[cfg(target_arch = "x86")]
-use core::arch::x86 as arch;
-#[cfg(target_arch = "x86_64")]
+//#[cfg(target_arch = "x86")]
+//use core::arch::x86 as arch;
+//#[cfg(target_arch = "x86_64")]
 use core::arch::x86_64 as arch;
 
 #[derive(Clone)]
@@ -25,16 +25,16 @@ impl State {
 
     #[cfg(feature = "std")]
     pub fn new(state: u32) -> Option<Self> {
-        if is_x86_feature_detected!("pclmulqdq")
-            && is_x86_feature_detected!("sse2")
-            && is_x86_feature_detected!("sse4.1")
-        {
-            // SAFETY: The conditions above ensure that all
-            //         required instructions are supported by the CPU.
+        //if is_x86_feature_detected!("pclmulqdq")
+        //    && is_x86_feature_detected!("sse2")
+        //    && is_x86_feature_detected!("sse4.1")
+        //{
+        //    // SAFETY: The conditions above ensure that all
+        //    //         required instructions are supported by the CPU.
             Some(Self { state })
-        } else {
-            None
-        }
+        //} else {
+        //    None
+        //}
     }
 
     pub fn update(&mut self, buf: &[u8]) {
@@ -68,6 +68,8 @@ const U_PRIME: i64 = 0x1F7011641;
 
 #[cfg(feature = "std")]
 unsafe fn debug(s: &str, a: arch::__m128i) -> arch::__m128i {
+    #[cfg(not(target_env = "sgx"))]
+    use std::{print, println};
     if false {
         union A {
             a: arch::__m128i,
@@ -202,8 +204,9 @@ unsafe fn get(a: &mut &[u8]) -> arch::__m128i {
     return r;
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod test {
+ 
     quickcheck! {
         fn check_against_baseline(init: u32, chunks: Vec<(Vec<u8>, usize)>) -> bool {
             let mut baseline = super::super::super::baseline::State::new(init);

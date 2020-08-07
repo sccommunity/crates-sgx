@@ -1,5 +1,7 @@
 //! A hash set implemented using `IndexMap`
 
+use std::prelude::v1::*;
+
 #[cfg(feature = "rayon")]
 pub use rayon::set as rayon;
 
@@ -63,29 +65,15 @@ type Bucket<T> = super::Bucket<T, ()>;
 /// assert!(letters.contains(&'u'));
 /// assert!(!letters.contains(&'y'));
 /// ```
+#[derive(Clone)]
 #[cfg(has_std)]
 pub struct IndexSet<T, S = RandomState> {
     map: IndexMap<T, (), S>,
 }
 #[cfg(not(has_std))]
+#[derive(Clone)]
 pub struct IndexSet<T, S> {
     map: IndexMap<T, (), S>,
-}
-
-impl<T, S> Clone for IndexSet<T, S>
-where
-    T: Clone,
-    S: Clone,
-{
-    fn clone(&self) -> Self {
-        IndexSet {
-            map: self.map.clone(),
-        }
-    }
-
-    fn clone_from(&mut self, other: &Self) {
-        self.map.clone_from(&other.map);
-    }
 }
 
 impl<T, S> Entries for IndexSet<T, S> {
@@ -539,13 +527,6 @@ where
         IntoIter {
             iter: self.map.sorted_by(move |a, &(), b, &()| cmp(a, b)).iter,
         }
-    }
-
-    /// Reverses the order of the set’s values in place.
-    ///
-    /// Computes in **O(n)** time and **O(1)** space.
-    pub fn reverse(&mut self) {
-        self.map.reverse()
     }
 
     /// Clears the `IndexSet`, returning all values as a drain iterator.

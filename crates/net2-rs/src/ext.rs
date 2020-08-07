@@ -14,6 +14,7 @@ use std::io;
 use std::mem;
 use std::net::{TcpStream, TcpListener, UdpSocket, Ipv4Addr, Ipv6Addr};
 use std::net::ToSocketAddrs;
+use sgx_libc::ocall::{setsockopt, send, recv, getsockopt};
 
 use {TcpBuilder, UdpBuilder, FromInner};
 use sys;
@@ -39,7 +40,7 @@ cfg_if! {
 
 use std::time::Duration;
 
-#[cfg(any(unix, target_os = "redox", target_os = "wasi"))] use libc::*;
+#[cfg(any(unix, target_os = "redox", target_os = "wasi"))] use sgx_libc::*;
 #[cfg(any(unix, target_os = "redox"))] use std::os::unix::prelude::*;
 #[cfg(target_os = "wasi")] use std::os::wasi::prelude::*;
 #[cfg(target_os = "redox")] pub type Socket = usize;
@@ -670,7 +671,7 @@ cfg_if! {
     } else if #[cfg(any(target_os = "openbsd", target_os = "netbsd"))] {
         use libc::SO_KEEPALIVE as KEEPALIVE_OPTION;
     } else if #[cfg(unix)] {
-        use libc::TCP_KEEPIDLE as KEEPALIVE_OPTION;
+        use sgx_libc::TCP_KEEPIDLE as KEEPALIVE_OPTION;
     } else if #[cfg(target_os = "redox")] {
         use libc::TCP_KEEPIDLE as KEEPALIVE_OPTION;
     } else {
@@ -1318,9 +1319,9 @@ fn set_nonblocking(sock: Socket, nonblocking: bool) -> io::Result<()> {
 
 #[cfg(unix)]
 fn set_nonblocking(sock: Socket, nonblocking: bool) -> io::Result<()> {
-    let mut nonblocking = nonblocking as c_ulong;
+    let mut nonblocking = nonblocking as c_int;
     ::cvt(unsafe {
-        ioctl(sock, FIONBIO, &mut nonblocking)
+        c::ioctl_arg1(sock, FIONBIO, &mut nonblocking)
     }).map(|_| ())
 }
 

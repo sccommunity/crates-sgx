@@ -15,15 +15,20 @@ Experimental std::future::Future and async/await support for Tokio
 categories = ["asynchronous"]
 
 [features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
 # This feature comes with no promise of stability. Things will
 # break with each patch release. Use at your own risk.
 async-await-preview = ["futures/nightly"]
 
 [dependencies]
-futures = "0.1.23"
-tokio-io = "0.1.7"
+futures = { path = "../../futures-rs_01" }
+tokio-io = { path = "../tokio-io" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+#futures = "0.1.23"
+#tokio-io = "0.1.7"
 
 [dev-dependencies]
-bytes = "0.4.9"
-hyper = "0.12.8"
-tokio = { version = "0.1.8", path = "../tokio" }
+#bytes = "0.4.9"
+#hyper = "0.12.8"
+#tokio = { version = "0.1.8", path = "../tokio" }

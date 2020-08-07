@@ -74,7 +74,7 @@
 //! [`AsyncWrite`]: tokio::io::AsyncWrite
 //! [`Connection`]: Connection
 use std::fmt;
-
+use std::prelude::v1::Box;
 use ::http::Response;
 
 #[cfg(feature = "tcp")]
@@ -239,7 +239,7 @@ where
 
 pub(super) mod sealed {
     use std::error::Error as StdError;
-
+    use std::prelude::v1::Box;
     use ::http::Uri;
     use tokio::io::{AsyncRead, AsyncWrite};
 

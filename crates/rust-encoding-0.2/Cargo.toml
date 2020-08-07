@@ -11,9 +11,18 @@ keywords = ["encoding", "unicode", "charset"]
 readme = "README.md"
 license = "MIT"
 
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+enclave_unit_test = ["crates_unittest", "inventory"]
+
 [lib]
 name = "encoding"
 
+[dependencies]
+crates_unittest = { git = "https://github.com/Zha0Chan/crates-sgx-unittest.git", optional = true, default-features = false}
+inventory = { version = "0.1.6", optional = true }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true, features = ["untrusted_fs"] }
 # version policy for index tables:
 # - major: addition or deletion of index tables
 # - minor: any content changes to index tables, numbered by the date

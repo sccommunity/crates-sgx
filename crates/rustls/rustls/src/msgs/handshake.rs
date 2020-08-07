@@ -12,7 +12,7 @@ use crate::key;
 
 #[cfg(feature = "logging")]
 use crate::log::warn;
-
+use std::prelude::v1::*;
 use std::fmt;
 use std::io::Write;
 use std::collections;

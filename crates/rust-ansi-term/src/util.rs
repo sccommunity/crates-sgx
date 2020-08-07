@@ -1,6 +1,6 @@
 use display::*;
 use std::ops::Deref;
-
+use std::prelude::v1::*;
 /// Return a substring of the given ANSIStrings sequence, while keeping the formatting.
 pub fn sub_string<'a>(start: usize, len: usize, strs: &ANSIStrings<'a>) -> Vec<ANSIString<'static>> {
     let mut vec = Vec::new();
@@ -54,13 +54,16 @@ pub fn unstyled_len(strs: &ANSIStrings) -> usize {
     l
 }
 
-#[cfg(test)]
+
+
+#[cfg(feature = "enclave_unit_test")]
 mod test {
+    use std::prelude::v1::*;
     use Colour::*;
     use display::*;
     use super::*;
-
-    #[test]
+    use crates_unittest::{ test_case };
+    #[test_case]
     fn test() {
         let l = [
             Black.paint("first"),

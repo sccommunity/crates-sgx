@@ -165,17 +165,18 @@ float_impls! { f64x4, u64x4, f64, u64, 52, 1023 }
 float_impls! { f64x8, u64x8, f64, u64, 52, 1023 }
 
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::*;
     use crate::rngs::mock::StepRng;
-
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
     const EPSILON32: f32 = ::core::f32::EPSILON;
     const EPSILON64: f64 = ::core::f64::EPSILON;
 
     macro_rules! test_f32 {
         ($fnn:ident, $ty:ident, $ZERO:expr, $EPSILON:expr) => {
-            #[test]
+            #[test_case]
             fn $fnn() {
                 // Standard
                 let mut zeros = StepRng::new(0, 0);
@@ -215,7 +216,7 @@ mod tests {
 
     macro_rules! test_f64 {
         ($fnn:ident, $ty:ident, $ZERO:expr, $EPSILON:expr) => {
-            #[test]
+            #[test_case]
             fn $fnn() {
                 // Standard
                 let mut zeros = StepRng::new(0, 0);
@@ -251,7 +252,7 @@ mod tests {
     #[cfg(feature = "simd_support")]
     test_f64! { f64x8_edge_cases, f64x8, f64x8::splat(0.0), f64x8::splat(EPSILON64) }
 
-    #[test]
+    #[test_case]
     fn value_stability() {
         fn test_samples<T: Copy + core::fmt::Debug + PartialEq, D: Distribution<T>>(
             distr: &D, zero: T, expected: &[T],

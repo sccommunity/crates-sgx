@@ -6,6 +6,7 @@ use chrono::prelude::*;
 use std::fmt::Debug;
 use std::fs::{File, OpenOptions};
 use std::path::Path;
+use std::prelude::v1::*;
 
 #[derive(Debug)]
 pub(crate) struct InnerAppender {

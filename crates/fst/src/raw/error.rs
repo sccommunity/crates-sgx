@@ -1,7 +1,7 @@
 use std::fmt;
 use std::str;
 use std::string::FromUtf8Error;
-
+use std::prelude::v1::*;
 use crate::raw::FstType;
 
 /// An error that occurred while using a finite state transducer.

@@ -5,7 +5,7 @@ use io::MapNonBlock;
 use std::io::{Read, Write};
 use std::path::Path;
 pub use std::net::Shutdown;
-use std::process;
+//use std::process;
 
 pub use sys::Io;
 

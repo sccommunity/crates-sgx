@@ -5,7 +5,7 @@ use std::fmt;
 use std::io::{self, Write, BufWriter, BufRead, Read};
 use std::net::Shutdown;
 use std::time::Duration;
-
+use std::prelude::v1::*;
 use httparse;
 use url::Position as UrlPosition;
 
@@ -985,11 +985,12 @@ pub const LF: u8 = b'\n';
 /// The bytes `\r\n`.
 pub const LINE_ENDING: &'static str = "\r\n";
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use std::error::Error;
     use std::io::{self, Read, Write};
-
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
 
     use buffer::BufReader;
     use mock::MockStream;
@@ -997,7 +998,7 @@ mod tests {
 
     use super::{read_chunk_size, parse_request, parse_response, Http11Message};
 
-    #[test]
+    #[test_case]
     fn test_write_chunked() {
         use std::str::from_utf8;
         let mut w = super::HttpWriter::ChunkedWriter(Vec::new());
@@ -1008,7 +1009,7 @@ mod tests {
         assert_eq!(s, "7\r\nfoo bar\r\nD\r\nbaz quux herp\r\n0\r\n\r\n");
     }
 
-    #[test]
+    #[test_case]
     fn test_write_sized() {
         use std::str::from_utf8;
         let mut w = super::HttpWriter::SizedWriter(Vec::new(), 8);
@@ -1020,7 +1021,7 @@ mod tests {
         assert_eq!(s, "foo barb");
     }
 
-    #[test]
+    #[test_case]
     fn test_read_chunk_size() {
         fn read(s: &str, result: u64) {
             assert_eq!(read_chunk_size(&mut s.as_bytes()).unwrap(), result);
@@ -1062,7 +1063,7 @@ mod tests {
         read_err("1;no CRLF");
     }
 
-    #[test]
+    #[test_case]
     fn test_read_sized_early_eof() {
         let mut r = super::HttpReader::SizedReader(MockStream::with_input(b"foo bar"), 10);
         let mut buf = [0u8; 10];
@@ -1072,7 +1073,7 @@ mod tests {
         assert_eq!(e.description(), "early eof");
     }
 
-    #[test]
+    #[test_case]
     fn test_read_chunked_early_eof() {
         let mut r = super::HttpReader::ChunkedReader(MockStream::with_input(b"\
             9\r\n\
@@ -1086,14 +1087,14 @@ mod tests {
         assert_eq!(e.description(), "early eof");
     }
 
-    #[test]
+    #[test_case]
     fn test_read_sized_zero_len_buf() {
         let mut r = super::HttpReader::SizedReader(MockStream::with_input(b"foo bar"), 7);
         let mut buf = [0u8; 0];
         assert_eq!(r.read(&mut buf).unwrap(), 0);
     }
 
-    #[test]
+    #[test_case]
     fn test_read_chunked_zero_len_buf() {
         let mut r = super::HttpReader::ChunkedReader(MockStream::with_input(b"\
             7\r\n\
@@ -1105,7 +1106,7 @@ mod tests {
         assert_eq!(r.read(&mut buf).unwrap(), 0);
     }
 
-    #[test]
+    #[test_case]
     fn test_read_chunked_fully_consumes() {
         let mut r = super::HttpReader::ChunkedReader(MockStream::with_input(b"0\r\n\r\n"), None);
         let mut buf = [0; 1];
@@ -1118,7 +1119,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_message_get_incoming_invalid_content_length() {
         let raw = MockStream::with_input(
             b"HTTP/1.1 200 OK\r\nContent-Length: asdf\r\n\r\n");
@@ -1127,14 +1128,14 @@ mod tests {
         assert!(msg.close_connection().is_ok());
     }
 
-    #[test]
+    #[test_case]
     fn test_parse_incoming() {
         let mut raw = MockStream::with_input(b"GET /echo HTTP/1.1\r\nHost: hyper.rs\r\n\r\n");
         let mut buf = BufReader::new(&mut raw);
         parse_request(&mut buf).unwrap();
     }
 
-    #[test]
+    #[test_case]
     fn test_parse_raw_status() {
         let mut raw = MockStream::with_input(b"HTTP/1.1 200 OK\r\n\r\n");
         let mut buf = BufReader::new(&mut raw);
@@ -1150,7 +1151,7 @@ mod tests {
     }
 
 
-    #[test]
+    #[test_case]
     fn test_parse_tcp_closed() {
         use std::io::ErrorKind;
         use error::Error;

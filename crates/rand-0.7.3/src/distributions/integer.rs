@@ -160,11 +160,12 @@ simd_impl!(512, u8x64, i8x64, u16x32, i16x32, u32x16, i32x16, u64x8, i64x8,);
 ))]
 simd_impl!((__m64, u8x8), (__m128i, u8x16), (__m256i, u8x32),);
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::*;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn test_integers() {
         let mut rng = crate::test::rng(806);
 
@@ -185,7 +186,7 @@ mod tests {
         rng.sample::<u128, _>(Standard);
     }
 
-    #[test]
+    #[test_case]
     fn value_stability() {
         fn test_samples<T: Copy + core::fmt::Debug + PartialEq>(zero: T, expected: &[T])
         where Standard: Distribution<T> {

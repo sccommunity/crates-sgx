@@ -15,7 +15,11 @@ include = [
   "LICENSE-MIT",
   "src/**/*"
 ]
-
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
 [dependencies]
-env_logger = "0.7.0"
-log = "0.4"
+env_logger = { path = "../env_logger" }
+log = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+

@@ -6,9 +6,9 @@ use std::mem;
 use std::ops::{Deref, DerefMut};
 use std::panic::{RefUnwindSafe, UnwindSafe};
 use std::sync::{LockResult, PoisonError, TryLockError, TryLockResult};
-use std::sync::{Mutex, RwLock, RwLockReadGuard, RwLockWriteGuard};
+use std::sync::{SgxMutex as Mutex, SgxRwLock as RwLock, SgxRwLockReadGuard as RwLockReadGuard, SgxRwLockWriteGuard as RwLockWriteGuard};
 use std::thread::{self, ThreadId};
-
+use std::prelude::v1::*;
 use crate::CachePadded;
 use lazy_static::lazy_static;
 

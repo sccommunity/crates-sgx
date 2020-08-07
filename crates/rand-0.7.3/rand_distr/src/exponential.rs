@@ -136,11 +136,12 @@ where Exp1: Distribution<N>
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod test {
     use super::*;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn test_exp() {
         let exp = Exp::new(10.0).unwrap();
         let mut rng = crate::test::rng(221);
@@ -148,18 +149,18 @@ mod test {
             assert!(exp.sample(&mut rng) >= 0.0);
         }
     }
-    #[test]
-    #[should_panic]
+    // #[test_case]
+    // #[should_panic]
     fn test_exp_invalid_lambda_zero() {
         Exp::new(0.0).unwrap();
     }
-    #[test]
-    #[should_panic]
+    // #[test_case]
+    // #[should_panic]
     fn test_exp_invalid_lambda_neg() {
         Exp::new(-10.0).unwrap();
     }
 
-    #[test]
+    #[test_case]
     fn value_stability() {
         fn test_samples<N: Float + core::fmt::Debug, D: Distribution<N>>(
             distr: D, zero: N, expected: &[N],

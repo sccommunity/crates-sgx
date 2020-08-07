@@ -2,7 +2,7 @@
 
 #[cfg(not(std))]
 use crate::internal_prelude::*;
-
+use std::prelude::v1::*;
 /// Various well-known formats, along with the possibility for a custom format
 /// (provided either at compile-time or runtime).
 #[allow(clippy::missing_docs_in_private_items)] // variants

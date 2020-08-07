@@ -12,7 +12,7 @@ use core::{
 };
 #[cfg(std)]
 use std::time::SystemTime;
-
+use std::prelude::v1::*;
 /// Combined date and time.
 #[cfg_attr(serde, derive(serde::Serialize))]
 #[cfg_attr(serde, serde(into = "crate::serde::PrimitiveDateTime"))]
@@ -759,13 +759,18 @@ impl From<PrimitiveDateTime> for SystemTime {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 #[rustfmt::skip::macros(date)]
-mod test {
+pub(crate)mod test {
     use super::*;
+    use std::string::ToString;
+  
 
-    #[test]
-    fn new() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn new() {
+        assert!(new_inner().is_ok());
+    }
+    fn new_inner() -> crate::Result<()> {
         assert_eq!(
             PrimitiveDateTime::new(date!(2019-01-01), time!(0:00)),
             date!(2019-01-01).midnight(),
@@ -773,16 +778,22 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    #[cfg(std)]
-    #[allow(deprecated)]
+    #[crates_unittest::test_case]
     fn now() {
+        #[cfg(std)]
+        #[allow(deprecated)]
         assert!(PrimitiveDateTime::now().year() >= 2019);
     }
-
-    #[test]
+   
+    #[crates_unittest::test_case]
+    fn unix_epoch() {
+        #[cfg(std)]
+        #[allow(deprecated)]
+        assert!(unix_epoch_inner().is_ok());
+    }
+    #[cfg(std)]     
     #[allow(deprecated)]
-    fn unix_epoch() -> crate::Result<()> {
+    fn unix_epoch_inner() -> crate::Result<()> {
         assert_eq!(
             PrimitiveDateTime::unix_epoch(),
             date!(1970-01-01).midnight()
@@ -790,9 +801,14 @@ mod test {
         Ok(())
     }
 
-    #[test]
+    #[crates_unittest::test_case]
+    fn from_unix_timestamp() {
+        #[allow(deprecated)]
+        assert!(from_unix_timestamp_inner().is_ok());
+    }
+
     #[allow(deprecated)]
-    fn from_unix_timestamp() -> crate::Result<()> {
+    fn from_unix_timestamp_inner() -> crate::Result<()> {
         assert_eq!(
             PrimitiveDateTime::from_unix_timestamp(0),
             PrimitiveDateTime::unix_epoch()
@@ -804,64 +820,98 @@ mod test {
         Ok(())
     }
 
-    #[test]
+    #[crates_unittest::test_case]
+    fn timestamp() {
+        #[allow(deprecated)]
+        assert!(timestamp_inner().is_ok());
+    }        
     #[allow(deprecated)]
-    fn timestamp() -> crate::Result<()> {
+    fn timestamp_inner() -> crate::Result<()> {
         assert_eq!(PrimitiveDateTime::unix_epoch().timestamp(), 0);
         assert_eq!(date!(2019-01-01).midnight().timestamp(), 1_546_300_800);
         Ok(())
     }
 
-    #[test]
-    fn date() -> crate::Result<()> {
+
+    #[crates_unittest::test_case]
+    fn date() {
+        assert!(date_inner().is_ok());
+    }
+
+    fn date_inner() -> crate::Result<()> {
         assert_eq!(date!(2019-01-01).midnight().date(), date!(2019-01-01));
         Ok(())
     }
 
-    #[test]
-    fn time() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn time() {
+        assert!(time_inner().is_ok()); 
+    }
+    fn time_inner() -> crate::Result<()> {
         assert_eq!(date!(2019-01-01).midnight().time(), time!(0:00));
         Ok(())
     }
 
-    #[test]
-    fn year() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn year() {
+        assert!(year_inner().is_ok()); 
+    }
+
+    fn year_inner() -> crate::Result<()> {
         assert_eq!(date!(2019-01-01).midnight().year(), 2019);
         assert_eq!(date!(2019-12-31).midnight().year(), 2019);
         assert_eq!(date!(2020-01-01).midnight().year(), 2020);
         Ok(())
     }
 
-    #[test]
-    fn month() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn month() {
+        assert!(month_inner().is_ok()); 
+    }
+    fn month_inner() -> crate::Result<()> {
         assert_eq!(date!(2019-01-01).midnight().month(), 1);
         assert_eq!(date!(2019-12-31).midnight().month(), 12);
         Ok(())
     }
 
-    #[test]
-    fn day() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn day() {
+        assert!(day_inner().is_ok()); 
+    }    
+
+    fn day_inner() -> crate::Result<()> {
         assert_eq!(date!(2019-01-01).midnight().day(), 1);
         assert_eq!(date!(2019-12-31).midnight().day(), 31);
         Ok(())
     }
 
-    #[test]
-    fn month_day() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn month_day() {
+        assert!(month_day_inner().is_ok()); 
+    }
+
+    fn month_day_inner() -> crate::Result<()> {
         assert_eq!(date!(2019-01-01).midnight().month_day(), (1, 1));
         assert_eq!(date!(2019-12-31).midnight().month_day(), (12, 31));
         Ok(())
     }
 
-    #[test]
-    fn ordinal() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn ordinal() {
+        assert!(ordinal_inner().is_ok()); 
+    }    
+
+    fn ordinal_inner() -> crate::Result<()> {
         assert_eq!(date!(2019-01-01).midnight().ordinal(), 1);
         assert_eq!(date!(2019-12-31).midnight().ordinal(), 365);
         Ok(())
     }
 
-    #[test]
-    fn week() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn week() {
+        assert!(week_inner().is_ok()); 
+    }
+    fn week_inner() -> crate::Result<()> {
         assert_eq!(date!(2019-01-01).midnight().week(), 1);
         assert_eq!(date!(2019-10-04).midnight().week(), 40);
         assert_eq!(date!(2020-01-01).midnight().week(), 1);
@@ -870,8 +920,12 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn sunday_based_week() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn sunday_based_week() {
+        assert!(sunday_based_week_inner().is_ok()); 
+    }
+
+    fn sunday_based_week_inner() -> crate::Result<()> {
         assert_eq!(date!(2019-01-01).midnight().sunday_based_week(), 0);
         assert_eq!(date!(2020-01-01).midnight().sunday_based_week(), 0);
         assert_eq!(date!(2020-12-31).midnight().sunday_based_week(), 52);
@@ -879,8 +933,11 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn monday_based_week() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn monday_based_week() {
+        assert!(monday_based_week_inner().is_ok()); 
+    }    
+    fn monday_based_week_inner() -> crate::Result<()> {
         assert_eq!(date!(2019-01-01).midnight().monday_based_week(), 0);
         assert_eq!(date!(2020-01-01).midnight().monday_based_week(), 0);
         assert_eq!(date!(2020-12-31).midnight().monday_based_week(), 52);
@@ -888,8 +945,11 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn weekday() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn weekday() {
+        assert!(weekday_inner().is_ok());
+    }
+    fn weekday_inner() -> crate::Result<()> {
         use Weekday::*;
         assert_eq!(date!(2019-01-01).midnight().weekday(), Tuesday);
         assert_eq!(date!(2019-02-01).midnight().weekday(), Friday);
@@ -906,29 +966,41 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn hour() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn hour() {
+        assert!(hour_inner().is_ok());
+    }
+    fn hour_inner() -> crate::Result<()> {
         assert_eq!(date!(2019-01-01).with_time(time!(0:00)).hour(), 0);
         assert_eq!(date!(2019-01-01).with_time(time!(23:59:59)).hour(), 23);
         Ok(())
     }
 
-    #[test]
-    fn minute() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn minute() {
+        assert!(minute_inner().is_ok());
+    }
+    fn minute_inner() -> crate::Result<()> {
         assert_eq!(date!(2019-01-01).with_time(time!(0:00)).minute(), 0);
         assert_eq!(date!(2019-01-01).with_time(time!(23:59:59)).minute(), 59);
         Ok(())
     }
 
-    #[test]
-    fn second() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn second() {
+        assert!(second_inner().is_ok());
+    } 
+    fn second_inner() -> crate::Result<()> {
         assert_eq!(date!(2019-01-01).with_time(time!(0:00)).second(), 0);
         assert_eq!(date!(2019-01-01).with_time(time!(23:59:59)).second(), 59);
         Ok(())
     }
 
-    #[test]
-    fn millisecond() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn millisecond() {
+        assert!(millisecond_inner().is_ok());
+    }
+    fn millisecond_inner() -> crate::Result<()> {
         assert_eq!(date!(2019-01-01).midnight().millisecond(), 0);
         assert_eq!(
             date!(2019-01-01)
@@ -939,8 +1011,11 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn microsecond() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn microsecond() {
+        assert!(microsecond_inner().is_ok());
+    }
+    fn microsecond_inner() -> crate::Result<()> {
         assert_eq!(date!(2019-01-01).midnight().microsecond(), 0);
         assert_eq!(
             date!(2019-01-01)
@@ -951,8 +1026,11 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn nanosecond() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn nanosecond() {
+        assert!(nanosecond_inner().is_ok());
+    }
+    fn nanosecond_inner() -> crate::Result<()> {
         assert_eq!(date!(2019-01-01).midnight().nanosecond(), 0);
         assert_eq!(
             date!(2019-01-01)
@@ -963,9 +1041,14 @@ mod test {
         Ok(())
     }
 
+   
+    #[crates_unittest::test_case]
+    fn using_offset() {
+        #[allow(deprecated)]
+        assert!(using_offset_inner().is_ok());
+    }
     #[allow(deprecated)]
-    #[test]
-    fn using_offset() -> crate::Result<()> {
+    fn using_offset_inner() -> crate::Result<()> {
         assert_eq!(
             date!(2019-01-01)
                 .midnight()
@@ -976,8 +1059,11 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn assume_offset() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn assume_offset() {
+        assert!(assume_offset_inner().is_ok());
+    }
+    fn assume_offset_inner() -> crate::Result<()> {
         assert_eq!(
             date!(2019-01-01)
                 .midnight()
@@ -995,8 +1081,11 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn assume_utc() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn assume_utc() {
+        assert!(assume_utc_inner().is_ok());
+    }
+    fn assume_utc_inner() -> crate::Result<()> {
         assert_eq!(
             date!(2019-01-01).midnight().assume_utc().timestamp(),
             1_546_300_800,
@@ -1004,8 +1093,11 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn format() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn format() {
+        assert!(format_inner().is_ok());
+    }
+    fn format_inner() -> crate::Result<()> {
         assert_eq!(
             date!(2019-01-02).midnight().format("%F %r"),
             "2019-01-02 12:00:00 am"
@@ -1013,8 +1105,11 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn parse() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn parse() {
+        assert!(parse_inner().is_ok()); 
+    }
+    fn parse_inner() -> crate::Result<()> {
         assert_eq!(
             PrimitiveDateTime::parse("2019-01-02 00:00:00", "%F %T"),
             Ok(date!(2019-01-02).midnight()),
@@ -1030,8 +1125,11 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn add_duration() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn add_duration() {
+        assert!(add_duration_inner().is_ok());
+    }
+    fn add_duration_inner() -> crate::Result<()> {
         assert_eq!(
             date!(2019-01-01).midnight() + 5.days(),
             date!(2019-01-06).midnight(),
@@ -1055,8 +1153,11 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn add_std_duration() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn add_std_duration() {
+        assert!(add_std_duration_inner().is_ok());
+    }
+    fn add_std_duration_inner() -> crate::Result<()> {
         assert_eq!(
             date!(2019-01-01).midnight() + 5.std_days(),
             date!(2019-01-06).midnight(),
@@ -1072,8 +1173,11 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn add_assign_duration() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn add_assign_duration() {
+        assert!(add_assign_duration_inner().is_ok());
+    }
+    fn add_assign_duration_inner() -> crate::Result<()> {
         let mut ny19 = date!(2019-01-01).midnight();
         ny19 += 5.days();
         assert_eq!(ny19, date!(2019-01-06).midnight());
@@ -1092,8 +1196,11 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn add_assign_std_duration() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn add_assign_std_duration() {
+        assert!(add_assign_std_duration_inner().is_ok());
+    }
+    fn add_assign_std_duration_inner() -> crate::Result<()> {
         let mut ny19 = date!(2019-01-01).midnight();
         ny19 += 5.std_days();
         assert_eq!(ny19, date!(2019-01-06).midnight());
@@ -1108,8 +1215,11 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn sub_duration() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn sub_duration() {
+        assert!(sub_duration_inner().is_ok());
+    }    
+    fn sub_duration_inner() -> crate::Result<()> {
         assert_eq!(
             date!(2019-01-06).midnight() - 5.days(),
             date!(2019-01-01).midnight(),
@@ -1133,8 +1243,11 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn sub_std_duration() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn sub_std_duration() {
+        assert!(sub_std_duration_inner().is_ok());
+    }
+    fn sub_std_duration_inner() -> crate::Result<()> {
         assert_eq!(
             date!(2019-01-06).midnight() - 5.std_days(),
             date!(2019-01-01).midnight(),
@@ -1150,8 +1263,11 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn sub_assign_duration() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn sub_assign_duration() {
+        assert!(sub_assign_duration_inner().is_ok());
+    }
+    fn sub_assign_duration_inner() -> crate::Result<()> {
         let mut ny19 = date!(2019-01-06).midnight();
         ny19 -= 5.days();
         assert_eq!(ny19, date!(2019-01-01).midnight());
@@ -1170,8 +1286,11 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn sub_assign_std_duration() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn sub_assign_std_duration() {
+        assert!(sub_assign_std_duration_inner().is_ok());
+    }
+    fn sub_assign_std_duration_inner() -> crate::Result<()> {
         let mut ny19 = date!(2019-01-06).midnight();
         ny19 -= 5.std_days();
         assert_eq!(ny19, date!(2019-01-01).midnight());
@@ -1186,8 +1305,11 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn sub_datetime() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn sub_datetime() {
+        assert!(sub_datetime_inner().is_ok());
+    }
+    fn sub_datetime_inner() -> crate::Result<()> {
         assert_eq!(
             date!(2019-01-02).midnight() - date!(2019-01-01).midnight(),
             1.days()
@@ -1207,9 +1329,13 @@ mod test {
         Ok(())
     }
 
-    #[test]
+    #[crates_unittest::test_case]
+    fn std_sub_datetime() {
+        #[cfg(std)]
+        assert!(std_sub_datetime_inner().is_ok());
+    }
     #[cfg(std)]
-    fn std_sub_datetime() -> crate::Result<()> {
+    fn std_sub_datetime_inner() -> crate::Result<()> {
         assert_eq!(
             SystemTime::from(date!(2019-01-02).midnight()) - date!(2019-01-01).midnight(),
             1.days()
@@ -1229,9 +1355,13 @@ mod test {
         Ok(())
     }
 
-    #[test]
+    #[crates_unittest::test_case]
+    fn sub_std() {
+        #[cfg(std)]
+        assert!(sub_std_inner().is_ok());
+    }
     #[cfg(std)]
-    fn sub_std() -> crate::Result<()> {
+    fn sub_std_inner() -> crate::Result<()> {
         assert_eq!(
             date!(2019-01-02).midnight() - SystemTime::from(date!(2019-01-01).midnight()),
             1.days()
@@ -1251,8 +1381,11 @@ mod test {
         Ok(())
     }
 
-    #[test]
-    fn ord() -> crate::Result<()> {
+    #[crates_unittest::test_case]
+    fn ord() {
+        assert!(ord_inner().is_ok());
+    }
+    fn ord_inner() -> crate::Result<()> {
         use Ordering::*;
         assert_eq!(
             date!(2019-01-01)
@@ -1347,7 +1480,7 @@ mod test {
         Ok(())
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     #[cfg(std)]
     #[allow(deprecated)]
     fn eq_std() {
@@ -1356,7 +1489,7 @@ mod test {
         assert_eq!(now_datetime, now_systemtime);
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     #[cfg(std)]
     #[allow(deprecated)]
     fn std_eq() {
@@ -1365,9 +1498,13 @@ mod test {
         assert_eq!(now_datetime, now_systemtime);
     }
 
-    #[test]
+    #[crates_unittest::test_case]
+    fn ord_std() {
+        #[cfg(std)]
+        assert!(ord_std_inner().is_ok());
+    }
     #[cfg(std)]
-    fn ord_std() -> crate::Result<()> {
+    fn ord_std_inner() -> crate::Result<()> {
         assert_eq!(
             date!(2019-01-01).midnight(),
             SystemTime::from(date!(2019-01-01).midnight())
@@ -1413,9 +1550,13 @@ mod test {
         Ok(())
     }
 
-    #[test]
+    #[crates_unittest::test_case]
+    fn std_ord() {
+        #[cfg(std)]
+        assert!(std_ord_inner().is_ok());
+    }
     #[cfg(std)]
-    fn std_ord() -> crate::Result<()> {
+    fn std_ord_inner() -> crate::Result<()> {
         assert_eq!(
             SystemTime::from(date!(2019-01-01).midnight()),
             date!(2019-01-01).midnight()
@@ -1461,7 +1602,7 @@ mod test {
         Ok(())
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     #[cfg(std)]
     #[allow(deprecated)]
     fn from_std() {
@@ -1471,7 +1612,7 @@ mod test {
         );
     }
 
-    #[test]
+    #[crates_unittest::test_case]
     #[cfg(std)]
     #[allow(deprecated)]
     fn to_std() {

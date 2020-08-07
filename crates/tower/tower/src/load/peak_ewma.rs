@@ -13,7 +13,7 @@ use super::completion::{CompleteOnResponse, TrackCompletion, TrackCompletionFutu
 use super::Load;
 use std::task::{Context, Poll};
 use std::{
-    sync::{Arc, Mutex},
+    sync::{Arc, SgxMutex as Mutex},
     time::Duration,
 };
 use tokio::time::Instant;
@@ -304,12 +304,15 @@ fn nanos(d: Duration) -> f64 {
     n + s
 }
 
-#[cfg(test)]
-mod tests {
+//#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
+pub mod tests {
     use futures_util::future;
     use std::time::Duration;
     use tokio::time;
     use tokio_test::{assert_ready, assert_ready_ok, task};
+    use std::string::ToString;
+    use crates_unittest::{ test_case, run_inventory_tests };
 
     use super::*;
 
@@ -330,7 +333,7 @@ mod tests {
 
     /// The default RTT estimate decays, so that new nodes are considered if the
     /// default RTT is too high.
-    #[tokio::test]
+    #[crates_unittest::test]
     async fn default_decay() {
         time::pause();
 
@@ -354,7 +357,7 @@ mod tests {
 
     // /// The default RTT estimate decays, so that new nodes are considered if the
     // /// default RTT is too high.
-    #[tokio::test]
+    #[crates_unittest::test]
     async fn compound_decay() {
         time::pause();
 
@@ -390,7 +393,7 @@ mod tests {
         assert!(svc.load() < Cost(100_000.0));
     }
 
-    #[test]
+    #[test_case]
     fn nanos() {
         assert_eq!(super::nanos(Duration::new(0, 0)), 0.0);
         assert_eq!(super::nanos(Duration::new(0, 123)), 123.0);

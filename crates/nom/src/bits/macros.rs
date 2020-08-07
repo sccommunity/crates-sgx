@@ -40,7 +40,7 @@ macro_rules! bits (
   );
 );
 
-/// Counterpart to bits, bytes! transforms its bit stream input into a byte slice for the underlying
+/// Counterpart to `bits`, `bytes!` transforms its bit stream input into a byte slice for the underlying
 /// parser, allowing byte-slice parsers to work on bit streams.
 ///
 /// Signature:
@@ -132,13 +132,14 @@ macro_rules! tag_bits (
   )
 );
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
   use crate::error::ErrorKind;
   use crate::internal::{Err, IResult, Needed};
   use crate::lib::std::ops::{AddAssign, Shl, Shr};
-
-  #[test]
+  use std::string::ToString;
+  use crates_unittest::test_case;
+  #[test_case]
   fn take_bits() {
     let input = [0b10_10_10_10, 0b11_11_00_00, 0b00_11_00_11];
     let sl = &input[..];
@@ -161,7 +162,7 @@ mod tests {
     assert_eq!(r, Err(Err::Incomplete(Needed::new(22))));
   }
 
-  #[test]
+  #[test_case]
   fn tag_bits() {
     let input = [0b10_10_10_10, 0b11_11_00_00, 0b00_11_00_11];
     let sl = &input[..];
@@ -179,7 +180,7 @@ mod tests {
     )
   );
 
-  #[test]
+  #[test_case]
   fn chain_bits() {
     let input = [0b10_10_10_10, 0b11_11_00_00, 0b00_11_00_11];
     let sl = &input[..];
@@ -189,7 +190,7 @@ mod tests {
   }
 
   named!(ch_bytes<(u8, u8)>, bits!(ch));
-  #[test]
+  #[test_case]
   fn bits_to_bytes() {
     let input = [0b10_10_10_10, 0b11_11_00_00, 0b00_11_00_11];
     assert_eq!(ch_bytes(&input[..]), Ok((&input[2..], (5, 15))));
@@ -204,7 +205,7 @@ mod tests {
     bits_bytes_bs,
     bits!(bytes!(crate::combinator::rest::<_, (&[u8], ErrorKind)>))
   );
-  #[test]
+  #[test_case]
   fn bits_bytes() {
     let input = [0b10_10_10_10];
     assert_eq!(
@@ -244,7 +245,7 @@ mod tests {
     }
   }
 
-  #[test]
+  #[test_case]
   fn non_privitive_type() {
     let input = [0b10_10_10_10, 0b11_11_00_00, 0b00_11_00_11];
     let sl = &input[..];

@@ -1,4 +1,4 @@
-//! general purpose combinators
+//! General purpose combinators
 
 #![allow(unused_imports)]
 
@@ -19,7 +19,7 @@ use crate::traits::{Compare, CompareResult, Offset, Slice};
 #[macro_use]
 mod macros;
 
-/// Return the remaining input
+/// Return the remaining input.
 ///
 /// ```rust
 /// # use nom::error::ErrorKind;
@@ -36,7 +36,7 @@ where
   Ok((input.slice(input.input_len()..), input))
 }
 
-/// Return the length of the remaining input
+/// Return the length of the remaining input.
 ///
 /// ```rust
 /// # use nom::error::ErrorKind;
@@ -53,7 +53,7 @@ where
   Ok((input, len))
 }
 
-/// maps a function on the result of a parser
+/// Maps a function on the result of a parser.
 ///
 /// ```rust
 /// # #[macro_use] extern crate nom;
@@ -91,7 +91,7 @@ where
   map(first, second).parse(input)
 }
 
-/// applies a function returning a Result over the result of a parser
+/// Applies a function returning a `Result` over the result of a parser.
 ///
 /// ```rust
 /// # #[macro_use] extern crate nom;
@@ -143,7 +143,7 @@ where
   map_res(first, second)(input)
 }
 
-/// applies a function returning an Option over the result of a parser
+/// Applies a function returning an `Option` over the result of a parser.
 ///
 /// ```rust
 /// # #[macro_use] extern crate nom;
@@ -195,7 +195,7 @@ where
   map_opt(first, second)(input)
 }
 
-/// applies a parser over the result of another one
+/// Applies a parser over the result of another one.
 ///
 /// ```rust
 /// # #[macro_use] extern crate nom;
@@ -242,7 +242,7 @@ where
   map_parser(first, second)(input)
 }
 
-/// creates a new parser from the output of the first parser, then apply that parser over the rest of the input
+/// Creates a new parser from the output of the first parser, then apply that parser over the rest of the input.
 ///
 /// ```rust
 /// # #[macro_use] extern crate nom;
@@ -273,7 +273,7 @@ where
   }
 }
 
-/// optional parser: will return None if not successful
+/// Optional parser: Will return `None` if not successful.
 ///
 /// ```rust
 /// # #[macro_use] extern crate nom;
@@ -312,7 +312,7 @@ where
   opt(f)(input)
 }
 
-/// calls the parser if the condition is met
+/// Calls the parser if the condition is met.
 ///
 /// ```rust
 /// # #[macro_use] extern crate nom;
@@ -358,7 +358,7 @@ where
   cond(b, f)(input)
 }
 
-/// tries to apply its parser without consuming the input
+/// Tries to apply its parser without consuming the input.
 ///
 /// ```rust
 /// # #[macro_use] extern crate nom;
@@ -394,7 +394,7 @@ where
   peek(f)(input)
 }
 
-/// transforms Incomplete into Error
+/// Transforms Incomplete into `Error`.
 ///
 /// ```rust
 /// # #[macro_use] extern crate nom;
@@ -430,7 +430,7 @@ where
   complete(f)(input)
 }
 
-/// succeeds if all the input has been consumed by its child parser
+/// Succeeds if all the input has been consumed by its child parser.
 ///
 /// ```rust
 /// # #[macro_use] extern crate nom;
@@ -461,10 +461,10 @@ where
   }
 }
 
-/// returns the result of the child parser if it satisfies a verification function
+/// Returns the result of the child parser if it satisfies a verification function.
 ///
-/// the verification function takes as argument a reference to the output of the
-/// parser
+/// The verification function takes as argument a reference to the output of the
+/// parser.
 ///
 /// ```rust
 /// # #[macro_use] extern crate nom;
@@ -517,7 +517,7 @@ where
   verify(first, second)(input)
 }
 
-/// returns the provided value if the child parser succeeds
+/// Returns the provided value if the child parser succeeds.
 ///
 /// ```rust
 /// # #[macro_use] extern crate nom;
@@ -554,7 +554,7 @@ where
   value(val, parser)(input)
 }
 
-/// succeeds if the child parser returns an error
+/// Succeeds if the child parser returns an error.
 ///
 /// ```rust
 /// # #[macro_use] extern crate nom;
@@ -591,7 +591,7 @@ where
   not(parser)(input)
 }
 
-/// if the child parser was successful, return the consumed input as produced value
+/// If the child parser was successful, return the consumed input as produced value.
 ///
 /// ```rust
 /// # #[macro_use] extern crate nom;
@@ -636,7 +636,7 @@ where
   recognize(parser)(input)
 }
 
-/// transforms an error to failure
+/// Transforms an error to failure.
 ///
 /// ```rust
 /// # #[macro_use] extern crate nom;
@@ -669,10 +669,10 @@ where
   cut(parser)(input)
 }
 
-/// creates an iterator from input data and a parser
+/// Creates an iterator from input data and a parser.
 ///
-/// call the iterator's [finish] method to get the remaining input if successful,
-/// or the error value if we encountered an error
+/// Call the iterator's [finish] method to get the remaining input if successful,
+/// or the error value if we encountered an error.
 ///
 /// ```rust
 /// use nom::{combinator::iterator, IResult, bytes::complete::tag, character::complete::alpha1, sequence::terminated};
@@ -699,7 +699,7 @@ where
   }
 }
 
-/// main structure associated to the [iterator] function
+/// Main structure associated to the [iterator] function.
 pub struct ParserIterator<I, E, F> {
   iterator: F,
   input: I,
@@ -707,7 +707,7 @@ pub struct ParserIterator<I, E, F> {
 }
 
 impl<I: Clone, E, F> ParserIterator<I, E, F> {
-  /// returns the remaining input if parsing was successful, or the error if we encountered an error
+  /// Returns the remaining input if parsing was successful, or the error if we encountered an error.
   pub fn finish(mut self) -> IResult<I, (), E> {
     match self.state.take().unwrap() {
       State::Running | State::Done => Ok((self.input.clone(), ())),
@@ -760,14 +760,43 @@ enum State<E> {
   Incomplete(Needed),
 }
 
-#[cfg(test)]
+/// a parser which always succeeds with given value without consuming any input.
+///
+/// It can be used for example as the last alternative in `alt` to
+/// specify the default case.
+///
+/// ```rust
+/// # #[macro_use] extern crate nom;
+/// # use nom::{Err,error::ErrorKind, IResult};
+/// use nom::branch::alt;
+/// use nom::combinator::{success, value};
+/// use nom::character::complete::char;
+/// # fn main() {
+///
+/// let mut parser = success::<_,_,(_,ErrorKind)>(10);
+/// assert_eq!(parser("xyz"), Ok(("xyz", 10)));
+///
+/// let mut sign = alt((value(-1, char('-')), value(1, char('+')), success::<_,_,(_,ErrorKind)>(1)));
+/// assert_eq!(sign("+10"), Ok(("10", 1)));
+/// assert_eq!(sign("-10"), Ok(("10", -1)));
+/// assert_eq!(sign("10"), Ok(("10", 1)));
+/// # }
+/// ```
+pub fn success<I: Clone + Slice<RangeTo<usize>>, O: Clone, E: ParseError<I>>(val: O) -> impl Fn(I) -> IResult<I, O, E>
+{
+  move |input: I| {
+    Ok((input, val.clone()))
+  }
+}
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
   use super::*;
   use crate::bytes::complete::take;
   use crate::error::ParseError;
   use crate::internal::{Err, IResult, Needed};
   use crate::number::complete::be_u8;
-
+  use std::string::ToString;
+  use crates_unittest::test_case;
   macro_rules! assert_parse(
     ($left: expr, $right: expr) => {
       let res: $crate::IResult<_, _, (_, ErrorKind)> = $left;
@@ -775,7 +804,7 @@ mod tests {
     };
   );
 
-  /*#[test]
+  /*#[test_case]
   fn t1() {
     let v1:Vec<u8> = vec![1,2,3];
     let v2:Vec<u8> = vec![4,5,6];
@@ -785,7 +814,7 @@ mod tests {
   }*/
 
   /*
-  #[test]
+  #[test_case]
   fn end_of_input() {
       let not_over = &b"Hello, world!"[..];
       let is_over = &b""[..];
@@ -799,21 +828,21 @@ mod tests {
   }
   */
 
-  #[test]
+  #[test_case]
   fn rest_on_slices() {
     let input: &[u8] = &b"Hello, world!"[..];
     let empty: &[u8] = &b""[..];
     assert_parse!(rest(input), Ok((empty, input)));
   }
 
-  #[test]
+  #[test_case]
   fn rest_on_strs() {
     let input: &str = "Hello, world!";
     let empty: &str = "";
     assert_parse!(rest(input), Ok((empty, input)));
   }
 
-  #[test]
+  #[test_case]
   fn rest_len_on_slices() {
     let input: &[u8] = &b"Hello, world!"[..];
     assert_parse!(rest_len(input), Ok((input, input.len())));
@@ -843,7 +872,7 @@ mod tests {
     crate::character::streaming::alphanumeric1(input)
   }
 
-  #[test]
+  #[test_case]
   fn test_flat_map() {
     let input: &[u8] = &[3, 100, 101, 102, 103, 104][..];
     assert_parse!(
@@ -852,7 +881,7 @@ mod tests {
     );
   }
 
-  #[test]
+  #[test_case]
   fn test_map_opt() {
     let input: &[u8] = &[50][..];
     assert_parse!(
@@ -865,7 +894,7 @@ mod tests {
     );
   }
 
-  #[test]
+  #[test_case]
   fn test_map_parser() {
     let input: &[u8] = &[100, 101, 102, 103, 104][..];
     assert_parse!(
@@ -874,7 +903,7 @@ mod tests {
     );
   }
 
-  #[test]
+  #[test_case]
   fn test_all_consuming() {
     let input: &[u8] = &[100, 101, 102][..];
     assert_parse!(
@@ -887,7 +916,7 @@ mod tests {
     );
   }
 
-  #[test]
+  #[test_case]
   #[allow(unused)]
   fn test_verify_ref() {
     use crate::bytes::complete::take;
@@ -905,7 +934,7 @@ mod tests {
     }
   }
 
-  #[test]
+  #[test_case]
   #[cfg(feature = "alloc")]
   fn test_verify_alloc() {
     use crate::bytes::complete::take;

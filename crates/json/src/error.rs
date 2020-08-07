@@ -1,5 +1,6 @@
 //! When serializing or deserializing JSON goes wrong.
 
+use std::prelude::v1::*;
 use crate::io;
 use crate::lib::str::FromStr;
 use crate::lib::*;

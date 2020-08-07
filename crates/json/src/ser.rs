@@ -1,5 +1,6 @@
 //! Serialize a Rust data structure into JSON data.
 
+use std::prelude::v1::*;
 use crate::error::{Error, ErrorCode, Result};
 use crate::io;
 use crate::lib::num::FpCategory;

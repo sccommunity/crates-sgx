@@ -3,7 +3,7 @@
 // See README.md and LICENSE.txt for details.
 
 //! An interface for retrieving an encoding (or a set of encodings) from a string/numeric label.
-
+use std::prelude::v1::*;
 use all;
 use types::EncodingRef;
 
@@ -319,13 +319,14 @@ pub fn encoding_from_windows_code_page(cp: usize) -> Option<EncodingRef> {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
-    extern crate test;
+    //extern crate test;
     use all;
     use super::encoding_from_whatwg_label;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::{ test_case };
+    #[test_case]
     fn test_encoding_from_whatwg_label() {
         assert!(encoding_from_whatwg_label("utf-8").is_some());
         assert!(encoding_from_whatwg_label("UTF-8").is_some());
@@ -346,11 +347,11 @@ mod tests {
         }
     }
 
-    #[bench]
-    fn bench_encoding_from_whatwg_label(bencher: &mut test::Bencher) {
-        bencher.iter(|| test::black_box({
-            encoding_from_whatwg_label("iso-8859-bazinga")
-        }))
-    }
+    // #[bench]
+    // fn bench_encoding_from_whatwg_label(bencher: &mut test::Bencher) {
+    //     bencher.iter(|| test::black_box({
+    //         encoding_from_whatwg_label("iso-8859-bazinga")
+    //     }))
+    // }
 }
 

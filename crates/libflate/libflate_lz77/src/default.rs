@@ -1,6 +1,6 @@
 use std::cmp;
 use std::collections::HashMap;
-
+use std::prelude::v1::*;
 use super::Code;
 use super::Lz77Encode;
 use super::Sink;

@@ -2,7 +2,7 @@ use std::cell::RefCell;
 use std::fmt;
 use std::mem;
 use std::rc::Rc;
-
+use std::prelude::v1::*;
 use dense;
 use state_id::{dead_id, StateID};
 

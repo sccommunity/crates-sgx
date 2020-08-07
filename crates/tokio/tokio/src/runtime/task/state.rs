@@ -289,7 +289,7 @@ impl State {
     }
 
     pub(super) fn ref_inc(&self) {
-        use std::process;
+        //use std::process;
         use std::sync::atomic::Ordering::Relaxed;
 
         // Using a relaxed ordering is alright here, as knowledge of the
@@ -307,7 +307,8 @@ impl State {
 
         // If the reference count overflowed, abort.
         if prev > isize::max_value() as usize {
-            process::abort();
+            //process::abort();
+	        sgx_trts::trts::rsgx_abort();
         }
     }
 

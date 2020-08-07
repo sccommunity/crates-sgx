@@ -3,7 +3,7 @@
 // See README.md and LICENSE.txt for details.
 
 //! UTF-16.
-
+use std::prelude::v1::*;
 use std::convert::Into;
 use std::marker::PhantomData;
 use util::as_char;
@@ -301,15 +301,16 @@ impl<E: Endian> RawDecoder for UTF16Decoder<E> {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     // little endian and big endian is symmetric to each other, there's no need to test both.
     // since big endian is easier to inspect we test UTF_16BE only.
 
     use super::UTF_16BE_ENCODING as UTF_16BE;
     use types::*;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::{ test_case };
+    #[test_case]
     fn test_encoder_valid() {
         let mut e = UTF_16BE.raw_encoder();
         assert_feed_ok!(e, "\u{0}\
@@ -351,7 +352,7 @@ mod tests {
         assert_finish_ok!(e, []);
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_valid() {
         let mut d = UTF_16BE.raw_decoder();
         assert_feed_ok!(d, [0x00, 0x00,
@@ -393,7 +394,7 @@ mod tests {
         assert_finish_ok!(d, "");
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_valid_partial_bmp() {
         let mut d = UTF_16BE.raw_decoder();
         assert_feed_ok!(d, [], [0x12], "");
@@ -409,7 +410,7 @@ mod tests {
         assert_finish_ok!(d, "");
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_valid_partial_non_bmp() {
         let mut d = UTF_16BE.raw_decoder();
         assert_feed_ok!(d, [], [0xd8], "");
@@ -435,7 +436,7 @@ mod tests {
         assert_finish_ok!(d, "");
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_invalid_partial() {
         let mut d = UTF_16BE.raw_decoder();
         assert_feed_ok!(d, [], [0x12], "");
@@ -454,7 +455,7 @@ mod tests {
         assert_finish_err!(d, "");
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_invalid_lone_upper_surrogate() {
         let mut d = UTF_16BE.raw_decoder();
         assert_feed_ok!(d, [], [0xd8, 0x00], "");
@@ -475,7 +476,7 @@ mod tests {
         assert_finish_err!(d, "");
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_invalid_lone_upper_surrogate_partial() {
         let mut d = UTF_16BE.raw_decoder();
         assert_feed_ok!(d, [], [0xd8], "");
@@ -502,7 +503,7 @@ mod tests {
         assert_finish_err!(d, "");
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_invalid_lone_lower_surrogate() {
         let mut d = UTF_16BE.raw_decoder();
         assert_feed_err!(d, [], [0xdc, 0x00], [], "");
@@ -515,7 +516,7 @@ mod tests {
         assert_finish_ok!(d, "");
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_invalid_lone_lower_surrogate_partial() {
         let mut d = UTF_16BE.raw_decoder();
         assert_feed_ok!(d, [], [0xdc], "");
@@ -531,7 +532,7 @@ mod tests {
         assert_finish_ok!(d, "");
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_invalid_one_byte_before_finish() {
         let mut d = UTF_16BE.raw_decoder();
         assert_feed_ok!(d, [], [0x12], "");
@@ -542,7 +543,7 @@ mod tests {
         assert_finish_err!(d, "");
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_invalid_three_bytes_before_finish() {
         let mut d = UTF_16BE.raw_decoder();
         assert_feed_ok!(d, [], [0xd8, 0x00, 0xdc], "");
@@ -553,7 +554,7 @@ mod tests {
         assert_finish_err!(d, "");
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_invalid_three_bytes_before_finish_partial() {
         let mut d = UTF_16BE.raw_decoder();
         assert_feed_ok!(d, [], [0xd8], "");
@@ -572,7 +573,7 @@ mod tests {
         assert_finish_err!(d, "");
     }
 
-    #[test]
+    #[test_case]
     fn test_decoder_feed_after_finish() {
         let mut d = UTF_16BE.raw_decoder();
         assert_feed_ok!(d, [0x12, 0x34], [0x12], "\u{1234}");

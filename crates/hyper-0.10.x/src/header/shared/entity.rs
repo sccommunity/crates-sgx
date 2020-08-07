@@ -1,6 +1,6 @@
 use std::str::FromStr;
 use std::fmt::{self, Display};
-
+use std::prelude::v1::*;
 // check that each char in the slice is either:
 // 1. %x21, or
 // 2. in the range %x23 to %x7E, or
@@ -138,11 +138,12 @@ impl FromStr for EntityTag {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::EntityTag;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn test_etag_parse_success() {
         // Expected success
         assert_eq!("\"foobar\"".parse::<EntityTag>().unwrap(),
@@ -156,7 +157,7 @@ mod tests {
         assert_eq!("W/\"\"".parse::<EntityTag>().unwrap(), EntityTag::weak("".to_owned()));
     }
 
-    #[test]
+    #[test_case]
     fn test_etag_parse_failures() {
         // Expected failures
         assert!("no-dquotes".parse::<EntityTag>().is_err());
@@ -167,7 +168,7 @@ mod tests {
         assert!("matched-\"dquotes\"".parse::<EntityTag>().is_err());
     }
 
-    #[test]
+    #[test_case]
     fn test_etag_fmt() {
         assert_eq!(format!("{}", EntityTag::strong("foobar".to_owned())), "\"foobar\"");
         assert_eq!(format!("{}", EntityTag::strong("".to_owned())), "\"\"");
@@ -176,7 +177,7 @@ mod tests {
         assert_eq!(format!("{}", EntityTag::weak("".to_owned())), "W/\"\"");
     }
 
-    #[test]
+    #[test_case]
     fn test_cmp() {
         // | ETag 1  | ETag 2  | Strong Comparison | Weak Comparison |
         // |---------|---------|-------------------|-----------------|

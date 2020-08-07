@@ -139,7 +139,7 @@ impl RingBuf {
 
 impl Clone for RingBuf {
     fn clone(&self) -> RingBuf {
-        use std::cmp;
+        
 
         let mut ret = RingBuf::new(self.cap);
 

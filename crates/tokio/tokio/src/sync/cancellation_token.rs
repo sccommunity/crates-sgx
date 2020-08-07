@@ -10,7 +10,7 @@ use core::pin::Pin;
 use core::ptr::NonNull;
 use core::sync::atomic::Ordering;
 use core::task::{Context, Poll, Waker};
-
+use std::prelude::v1::*;
 /// A token which can be used to signal a cancellation request to one or more
 /// tasks.
 ///

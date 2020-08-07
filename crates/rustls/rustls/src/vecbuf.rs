@@ -2,7 +2,7 @@ use std::io::Read;
 use std::io;
 use std::cmp;
 use std::collections::VecDeque;
-
+use std::prelude::v1::*;
 /// This is a byte buffer that is built from a vector
 /// of byte vectors.  This avoids extra copies when
 /// appending a new byte vector, at the expense of

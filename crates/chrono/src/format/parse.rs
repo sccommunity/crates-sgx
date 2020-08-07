@@ -495,13 +495,16 @@ impl str::FromStr for DateTime<FixedOffset> {
         parsed.to_datetime()
     }
 }
-
-#[cfg(test)]
-#[test]
+#[cfg(feature = "enclave_unit_test")]
+use std::prelude::v1::*;
+#[cfg(feature = "enclave_unit_test")]
+use crates_unittest::test_case;
+#[cfg(feature = "enclave_unit_test")]
+#[test_case]
 fn test_parse() {
     use super::IMPOSSIBLE;
     use super::*;
-
+  
     // workaround for Rust issue #22255
     fn parse_all(s: &str, items: &[Item]) -> ParseResult<Parsed> {
         let mut parsed = Parsed::new();
@@ -785,8 +788,8 @@ fn test_parse() {
            nanosecond: 567_890_000, timestamp: 12_345_678_901_234);
 }
 
-#[cfg(test)]
-#[test]
+#[cfg(feature = "enclave_unit_test")]
+#[test_case]
 fn test_rfc2822() {
     use super::NOT_ENOUGH;
     use super::*;
@@ -842,8 +845,8 @@ fn test_rfc2822() {
     }
 }
 
-#[cfg(test)]
-#[test]
+#[cfg(feature = "enclave_unit_test")]
+#[test_case]
 fn parse_rfc850() {
     use {TimeZone, Utc};
 
@@ -874,13 +877,13 @@ fn parse_rfc850() {
     }
 }
 
-#[cfg(test)]
-#[test]
+#[cfg(feature = "enclave_unit_test")]
+#[test_case]
 fn test_rfc3339() {
     use super::*;
     use offset::FixedOffset;
     use DateTime;
-
+    
     // Test data - (input, Ok(expected result after parse and format) or Err(error code))
     let testdates = [
         ("2015-01-20T17:35:20-08:00", Ok("2015-01-20T17:35:20-08:00")), // normal case

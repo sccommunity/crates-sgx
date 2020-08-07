@@ -11,5 +11,14 @@ documentation = "http://kimundi.github.io/owning-ref-rs/owning_ref/index.html"
 repository = "https://github.com/Kimundi/owning-ref-rs"
 keywords = ["reference", "sibling", "field", "owning"]
 
+[features]
+mesalock_sgx = ["sgx_tstd"]
+default = ["mesalock_sgx"]
+enclave_unit_test = ["crates_unittest",  "inventory"]
+
 [dependencies]
-stable_deref_trait = "1.0.0"
+stable_deref_trait = { path = "../stable_deref_trait"}
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2",  optional = true }
+#stable_deref_trait = "1.0.0"
+crates_unittest = { git = "https://github.com/Zha0Chan/crates-sgx-unittest.git", optional = true, default-features = false}
+inventory = { version = "0.1.6", optional = true }

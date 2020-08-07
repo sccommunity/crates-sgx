@@ -7,7 +7,7 @@ use http::method::Method;
 use std::collections::VecDeque;
 use std::hash::{Hash, Hasher};
 use std::{cmp, mem, usize};
-
+use std::prelude::v1::*;
 /// HPACK encoder table
 #[derive(Debug)]
 pub struct Table {

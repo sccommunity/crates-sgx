@@ -1,10 +1,13 @@
+use std::prelude::v1::*;
 use std::collections::HashMap;
 use std::collections::hash_map::RandomState;
 use std::convert::TryFrom;
 use std::hash::{BuildHasher, Hash, Hasher};
 use std::iter::{FromIterator, FusedIterator};
 use std::marker::PhantomData;
+
 use std::{fmt, mem, ops, ptr, vec};
+
 
 use crate::Error;
 
@@ -3236,7 +3239,7 @@ where
 
 mod into_header_name {
     use super::{Entry, HdrName, HeaderMap, HeaderName};
-
+    
     /// A marker trait used to identify values that can be used as insert keys
     /// to a `HeaderMap`.
     pub trait IntoHeaderName: Sealed {}
@@ -3328,8 +3331,9 @@ mod into_header_name {
 }
 
 mod as_header_name {
+    use std::prelude::v1::*;
     use super::{Entry, HdrName, HeaderMap, HeaderName, InvalidHeaderName};
-
+   
     /// A marker trait used to identify values that can be used as search keys
     /// to a `HeaderMap`.
     pub trait AsHeaderName: Sealed {}

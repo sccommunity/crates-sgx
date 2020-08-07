@@ -1,3 +1,5 @@
+use std::prelude::v1::*;
+
 use super::Value;
 use crate::lib::*;
 use crate::map::Map;
@@ -130,6 +132,7 @@ where
 
 // Prevent users from implementing the Index trait.
 mod private {
+    use std::prelude::v1::*;
     pub trait Sealed {}
     impl Sealed for usize {}
     impl Sealed for str {}

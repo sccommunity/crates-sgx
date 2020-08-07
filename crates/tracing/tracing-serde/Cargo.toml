@@ -17,9 +17,14 @@ categories = [
 ]
 keywords = ["logging", "tracing", "serialization"]
 
-[dependencies]
-serde = "1"
-tracing-core = { path = "../tracing-core", version = "0.1.2"}
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
 
+[dependencies]
+#serde = "1"
+serde = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2", features = ["derive"] }
+tracing-core = { path = "../tracing-core", version = "0.1.2"}
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 [badges]
 maintenance = { status = "experimental" }

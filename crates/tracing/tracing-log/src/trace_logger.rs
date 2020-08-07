@@ -24,7 +24,7 @@ use std::{
     fmt::{self, Write},
     sync::{
         atomic::{AtomicUsize, Ordering},
-        Mutex,
+        SgxMutex as Mutex,
     },
 };
 use tracing_core::{
@@ -32,7 +32,7 @@ use tracing_core::{
     span::{self, Id},
     Event, Metadata, Subscriber,
 };
-
+use std::prelude::v1::*;
 /// A `tracing` [`Subscriber`] implementation that logs all recorded
 /// trace events.
 ///

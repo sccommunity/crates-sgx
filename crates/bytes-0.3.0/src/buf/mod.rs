@@ -9,7 +9,7 @@ pub use self::byte::{ByteBuf, MutByteBuf, ROByteBuf};
 pub use self::ring::RingBuf;
 pub use self::slice::{SliceBuf, MutSliceBuf};
 pub use self::take::Take;
-
+use std::prelude::v1::*;
 use {BufError, RopeBuf};
 use std::{cmp, fmt, io, ptr, usize};
 
@@ -273,7 +273,7 @@ impl<'a, R: io::Read+'a> Source for &'a mut R {
         let mut cnt = 0;
 
         while buf.has_remaining() {
-            let i = try!(self.read(unsafe { buf.mut_bytes() }));
+            let i = self.read(unsafe { buf.mut_bytes() })?;
 
             if i == 0 {
                 break;
@@ -293,7 +293,7 @@ impl<'a, R: io::Read+'a> Source for &'a mut R {
  *
  */
 
-impl Buf for Box<Buf+'static> {
+impl Buf for Box<dyn Buf+'static> {
     fn remaining(&self) -> usize {
         (**self).remaining()
     }
@@ -311,7 +311,7 @@ impl Buf for Box<Buf+'static> {
     }
 }
 
-impl fmt::Debug for Box<Buf+'static> {
+impl fmt::Debug for Box<dyn Buf+'static> {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         write!(fmt, "Box<Buf> {{ remaining: {} }}", self.remaining())
     }
@@ -407,7 +407,7 @@ macro_rules! impl_read {
 impl_read!(ByteBuf);
 impl_read!(ROByteBuf);
 impl_read!(RopeBuf);
-impl_read!(Box<Buf+'static>);
+impl_read!(Box<dyn Buf+'static>);
 
 macro_rules! impl_write {
     ($ty:ty) => {

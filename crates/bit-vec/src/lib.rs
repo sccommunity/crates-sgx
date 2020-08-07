@@ -80,11 +80,35 @@
 //! assert_eq!(num_primes, 1_229);
 //! ```
 
-#![no_std]
+//#![no_std]
+#![cfg_attr(not(
+    all(
+        any(feature = "std", feature = "mesalock_sgx"),
+        target_env = "sgx",
+        target_vendor = "mesalock",
+    )),
+    no_std
+)]
 
-#[cfg(any(test, feature = "std"))]
+#![cfg_attr(
+    all(
+        any(feature = "std", feature = "mesalock_sgx"),
+        target_env = "sgx",
+        target_vendor = "mesalock",
+    ),
+    feature(rustc_private)
+)]
+#[cfg(all(
+    any(test, feature = "std", feature = "mesalock_sgx"),
+    not(target_env = "sgx"),
+    not(target_vendor = "mesalock"),
+))]
 #[macro_use]
-extern crate std;
+extern crate sgx_tstd as std;
+
+// #[cfg(any(test, feature = "std"))]
+// #[macro_use]
+// extern crate std;
 #[cfg(feature="std")]
 use std::vec::Vec;
 

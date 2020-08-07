@@ -1,5 +1,5 @@
 use mime::Mime;
-
+use std::prelude::v1::*;
 use header::{QualityItem, qitem};
 
 header! {

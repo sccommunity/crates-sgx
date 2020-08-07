@@ -1,4 +1,6 @@
 use mime::Mime;
+use std::prelude::v1::*;
+
 
 header! {
     /// `Content-Type` header, defined in

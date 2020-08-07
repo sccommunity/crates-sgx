@@ -11,7 +11,7 @@
 use crate::filter::Filter;
 use futures_util::future;
 use pin_project::pin_project;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, SgxMutex as Mutex};
 use std::time::Duration;
 use std::{
     pin::Pin,

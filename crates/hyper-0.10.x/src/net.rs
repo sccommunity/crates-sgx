@@ -5,7 +5,7 @@ use std::io::{self, ErrorKind, Read, Write};
 use std::net::{SocketAddr, ToSocketAddrs, TcpStream, TcpListener, Shutdown};
 use std::mem;
 use std::sync::Arc;
-
+use std::prelude::v1::*;
 use std::time::Duration;
 
 use typeable::Typeable;
@@ -612,12 +612,13 @@ impl<S: SslClient, C: NetworkConnector<Stream=HttpStream>> NetworkConnector for 
 #[doc(hidden)]
 pub type DefaultConnector = HttpConnector;
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use mock::MockStream;
     use super::{NetworkStream};
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn test_downcast_box_stream() {
         // FIXME: Use Type ascription
         let stream: Box<NetworkStream + Send> = Box::new(MockStream::new());
@@ -626,7 +627,7 @@ mod tests {
         assert_eq!(mock, Box::new(MockStream::new()));
     }
 
-    #[test]
+    #[test_case]
     fn test_downcast_unchecked_box_stream() {
         // FIXME: Use Type ascription
         let stream: Box<NetworkStream + Send> = Box::new(MockStream::new());

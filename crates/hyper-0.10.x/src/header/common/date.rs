@@ -1,4 +1,5 @@
 use header::HttpDate;
+use std::prelude::v1::*;
 
 header! {
     /// `Date` header, defined in [RFC7231](http://tools.ietf.org/html/rfc7231#section-7.1.1.2)

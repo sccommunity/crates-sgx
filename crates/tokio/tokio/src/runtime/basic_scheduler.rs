@@ -8,10 +8,10 @@ use std::cell::RefCell;
 use std::collections::VecDeque;
 use std::fmt;
 use std::future::Future;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, SgxMutex as Mutex};
 use std::task::Poll::Ready;
 use std::time::Duration;
-
+use std::prelude::v1::*;
 /// Executes tasks on the current thread
 pub(crate) struct BasicScheduler<P>
 where

@@ -301,6 +301,14 @@ data structures found in the standard library, such as `BTreeSet` and
 
 #![deny(missing_docs)]
 
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
+
 #[cfg(all(feature = "levenshtein", doctest))]
 doc_comment::doctest!("../README.md");
 

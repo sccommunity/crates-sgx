@@ -6,7 +6,7 @@
 // copied, modified, or distributed except according to those terms.
 
 use std::collections::BinaryHeap;
-use std::sync::Mutex;
+use std::sync::SgxMutex as Mutex;
 use std::usize;
 
 // Thread ID manager which allocates thread IDs. It attempts to aggressively

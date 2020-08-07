@@ -1,4 +1,5 @@
 // Re-export H2 crate
+use std::prelude::v1::*;
 pub use h2;
 
 pub use h2::client;

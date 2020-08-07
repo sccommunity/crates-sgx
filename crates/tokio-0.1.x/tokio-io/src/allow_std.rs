@@ -1,5 +1,7 @@
 use futures::{Async, Poll};
 use std::{fmt, io};
+use std::prelude::v1::*;
+
 use {AsyncRead, AsyncWrite};
 
 /// A simple wrapper type which allows types that only implement

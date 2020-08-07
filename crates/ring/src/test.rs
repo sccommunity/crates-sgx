@@ -123,8 +123,8 @@ use alloc::{format, string::String, vec::Vec};
 #[cfg(feature = "alloc")]
 use crate::{bits, digest, error};
 
-#[cfg(any(feature = "std", feature = "test_logging"))]
-extern crate std;
+//#[cfg(any(feature = "std", feature = "test_logging"))]
+//extern crate std;
 
 /// `compile_time_assert_clone::<T>();` fails to compile if `T` doesn't
 /// implement `Clone`.

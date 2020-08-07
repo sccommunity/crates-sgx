@@ -16,6 +16,7 @@ use super::prepare::{IsolatingRunSequence, LevelRun, not_removed_by_x9, removed_
 use super::level::Level;
 
 use BidiClass::*;
+use std::prelude::v1::*;
 
 /// 3.3.4 Resolving Weak Types
 ///

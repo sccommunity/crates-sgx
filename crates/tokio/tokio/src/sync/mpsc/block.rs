@@ -8,6 +8,7 @@ use std::mem::MaybeUninit;
 use std::ops;
 use std::ptr::{self, NonNull};
 use std::sync::atomic::Ordering::{self, AcqRel, Acquire, Release};
+use std::prelude::v1::*;
 
 /// A block in a linked list.
 ///

@@ -8,8 +8,8 @@ use lazy_static::lazy_static;
 use std::ops;
 use std::pin::Pin;
 use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::Mutex;
-
+use std::sync::SgxMutex as Mutex;
+use std::prelude::v1::*;
 pub(crate) type EventId = usize;
 
 /// State for a specific event, whether a notification is pending delivery,

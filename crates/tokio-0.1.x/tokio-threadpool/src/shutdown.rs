@@ -5,7 +5,7 @@ use crossbeam_deque::Injector;
 use futures::task::AtomicTask;
 use futures::{Async, Future, Poll};
 
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, SgxMutex as Mutex};
 
 /// Future that resolves when the thread pool is shutdown.
 ///

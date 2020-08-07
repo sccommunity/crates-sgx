@@ -20,7 +20,7 @@ Most of the rest of the types are streams from set operations.
 */
 use std::cmp;
 use std::fmt;
-
+use std::prelude::v1::*;
 use crate::automaton::{AlwaysMatch, Automaton};
 use crate::bytes;
 use crate::error::Result;
@@ -645,6 +645,16 @@ impl<D> Fst<D> {
     #[inline]
     pub fn into_inner(self) -> D {
         self.data
+    }
+
+    /// Maps the underlying data of the fst to another data type.
+    #[inline]
+    pub fn map_data<F, T>(self, mut f: F) -> Result<Fst<T>>
+    where
+        F: FnMut(D) -> T,
+        T: AsRef<[u8]>,
+    {
+        Fst::new(f(self.into_inner()))
     }
 }
 

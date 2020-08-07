@@ -29,7 +29,10 @@ use offset::Local;
 use offset::{FixedOffset, Offset, TimeZone, Utc};
 use Date;
 use {Datelike, Timelike, Weekday};
+use std::prelude::v1::*;
 
+#[cfg(feature = "enclave_unit_test")]
+use crates_unittest::test_case;
 /// Specific formatting options for seconds. This may be extended in the
 /// future, so exhaustive matching in external code is not recommended.
 ///
@@ -828,8 +831,8 @@ impl From<DateTime<Utc>> for js_sys::Date {
         js_date
     }
 }
-
-#[test]
+#[cfg(feature = "enclave_unit_test")]
+#[test_case]
 fn test_auto_conversion() {
     let utc_dt = Utc.ymd(2018, 9, 5).and_hms(23, 58, 0);
     let cdt_dt = FixedOffset::west(5 * 60 * 60).ymd(2018, 9, 5).and_hms(18, 58, 0);
@@ -1056,22 +1059,23 @@ pub mod rustc_serialize {
         }
     }
 
-    #[cfg(test)]
+    //#[cfg(test)] 
+    #[cfg(feature = "enclave_unit_test")]
     use rustc_serialize::json;
 
-    #[test]
+    #[test_case]
     fn test_encodable() {
         super::test_encodable_json(json::encode, json::encode);
     }
 
-    #[cfg(feature = "clock")]
-    #[test]
+    #[cfg(feature="clock")]
+    #[test_case]
     fn test_decodable() {
         super::test_decodable_json(json::decode, json::decode, json::decode);
     }
 
-    #[cfg(feature = "clock")]
-    #[test]
+    #[cfg(feature="clock")]
+    #[test_case]
     fn test_decodable_timestamps() {
         super::test_decodable_json_timestamps(json::decode, json::decode, json::decode);
     }
@@ -2133,18 +2137,25 @@ pub mod serde {
         }
     }
 
-    #[cfg(test)]
+    //#[cfg(test)] 
+    #[cfg(feature = "enclave_unit_test")]
+    extern crate serde_json;
+    //#[cfg(test)] 
+    #[cfg(feature = "enclave_unit_test")]
     extern crate bincode;
-    #[cfg(test)]
+    #[cfg(feature = "enclave_unit_test")]
+    use std::prelude::v1::*;
+    #[cfg(feature = "enclave_unit_test")]
+    use crates_unittest::test_case;
     extern crate serde_json;
 
-    #[test]
+    #[test_case]
     fn test_serde_serialize() {
         super::test_encodable_json(self::serde_json::to_string, self::serde_json::to_string);
     }
 
     #[cfg(feature = "clock")]
-    #[test]
+    #[test_case]
     fn test_serde_deserialize() {
         super::test_decodable_json(
             |input| self::serde_json::from_str(&input),
@@ -2153,7 +2164,7 @@ pub mod serde {
         );
     }
 
-    #[test]
+    #[test_case]
     fn test_serde_bincode() {
         // Bincode is relevant to test separately from JSON because
         // it is not self-describing.
@@ -2167,7 +2178,8 @@ pub mod serde {
     }
 }
 
-#[cfg(test)]
+//#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::DateTime;
     use naive::{NaiveDate, NaiveTime};
@@ -2178,8 +2190,9 @@ mod tests {
     use std::time::{SystemTime, UNIX_EPOCH};
     #[cfg(feature = "clock")]
     use Datelike;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;	
+    #[test_case]
     #[allow(non_snake_case)]
     fn test_datetime_offset() {
         let Est = FixedOffset::west(5 * 60 * 60);
@@ -2241,7 +2254,7 @@ mod tests {
         assert!(*Edt.ymd(2014, 5, 6).and_hms(7, 8, 9).offset() != Est);
     }
 
-    #[test]
+    #[test_case]
     fn test_datetime_date_and_time() {
         let tz = FixedOffset::east(5 * 60 * 60);
         let d = tz.ymd(2014, 5, 6).and_hms(7, 8, 9);
@@ -2268,8 +2281,8 @@ mod tests {
         assert!(utc_d < d);
     }
 
-    #[test]
-    #[cfg(feature = "clock")]
+    #[test_case]
+    #[cfg(feature="clock")]
     fn test_datetime_with_timezone() {
         let local_now = Local::now();
         let utc_now = local_now.with_timezone(&Utc);
@@ -2277,7 +2290,7 @@ mod tests {
         assert_eq!(local_now, local_now2);
     }
 
-    #[test]
+    #[test_case]
     #[allow(non_snake_case)]
     fn test_datetime_rfc2822_and_rfc3339() {
         let EDT = FixedOffset::east(5 * 60 * 60);
@@ -2328,7 +2341,7 @@ mod tests {
         );
     }
 
-    #[test]
+    #[test_case]
     fn test_rfc3339_opts() {
         use SecondsFormat::*;
         let pst = FixedOffset::east(8 * 60 * 60);
@@ -2350,15 +2363,15 @@ mod tests {
         assert_eq!(ut.to_rfc3339_opts(AutoSi, true), "2018-01-11T02:05:13.084660Z");
     }
 
-    #[test]
-    #[should_panic]
-    fn test_rfc3339_opts_nonexhaustive() {
-        use SecondsFormat;
-        let dt = Utc.ymd(1999, 10, 9).and_hms(1, 2, 3);
-        dt.to_rfc3339_opts(SecondsFormat::__NonExhaustive, true);
-    }
+    // #[test_case]
+    // #[should_panic]
+    // fn test_rfc3339_opts_nonexhaustive() {
+    //     use SecondsFormat;
+    //     let dt = Utc.ymd(1999, 10, 9).and_hms(1, 2, 3);
+    //     dt.to_rfc3339_opts(SecondsFormat::__NonExhaustive, true);
+    // }
 
-    #[test]
+    #[test_case]
     fn test_datetime_from_str() {
         assert_eq!(
             "2015-02-18T23:16:9.15Z".parse::<DateTime<FixedOffset>>(),
@@ -2400,7 +2413,7 @@ mod tests {
         // no test for `DateTime<Local>`, we cannot verify that much.
     }
 
-    #[test]
+    #[test_case]
     fn test_datetime_parse_from_str() {
         let ymdhms = |y, m, d, h, n, s, off| FixedOffset::east(off).ymd(y, m, d).and_hms(h, n, s);
         assert_eq!(
@@ -2419,7 +2432,7 @@ mod tests {
         );
     }
 
-    #[test]
+    #[test_case]
     fn test_to_string_round_trip() {
         let dt = Utc.ymd(2000, 1, 1).and_hms(0, 0, 0);
         let _dt: DateTime<Utc> = dt.to_string().parse().unwrap();
@@ -2431,23 +2444,23 @@ mod tests {
         let _dt: DateTime<FixedOffset> = ndt_fixed.to_string().parse().unwrap();
     }
 
-    #[test]
-    #[cfg(feature = "clock")]
+    #[test_case]
+    #[cfg(feature="clock")]
     fn test_to_string_round_trip_with_local() {
         let ndt = Local::now();
         let _dt: DateTime<FixedOffset> = ndt.to_string().parse().unwrap();
     }
 
-    #[test]
-    #[cfg(feature = "clock")]
+    #[test_case]
+    #[cfg(feature="clock")]
     fn test_datetime_format_with_local() {
         // if we are not around the year boundary, local and UTC date should have the same year
         let dt = Local::now().with_month(5).unwrap();
         assert_eq!(dt.format("%Y").to_string(), dt.with_timezone(&Utc).format("%Y").to_string());
     }
 
-    #[test]
-    #[cfg(feature = "clock")]
+    #[test_case]
+    #[cfg(feature="clock")]
     fn test_datetime_is_copy() {
         // UTC is known to be `Copy`.
         let a = Utc::now();
@@ -2455,8 +2468,8 @@ mod tests {
         assert_eq!(a, b);
     }
 
-    #[test]
-    #[cfg(feature = "clock")]
+    #[test_case]
+    #[cfg(feature="clock")]
     fn test_datetime_is_send() {
         use std::thread;
 
@@ -2469,7 +2482,7 @@ mod tests {
         .unwrap();
     }
 
-    #[test]
+    #[test_case]
     fn test_subsecond_part() {
         let datetime = Utc.ymd(2014, 7, 8).and_hms_nano(9, 10, 11, 1234567);
 
@@ -2478,7 +2491,7 @@ mod tests {
         assert_eq!(1234567, datetime.timestamp_subsec_nanos());
     }
 
-    #[test]
+    #[test_case]
     #[cfg(not(target_os = "windows"))]
     fn test_from_system_time() {
         use std::time::Duration;
@@ -2517,7 +2530,7 @@ mod tests {
         assert_eq!(SystemTime::from(epoch.with_timezone(&FixedOffset::west(28800))), UNIX_EPOCH);
     }
 
-    #[test]
+    #[test_case]
     #[cfg(target_os = "windows")]
     fn test_from_system_time() {
         use std::time::Duration;
@@ -2557,7 +2570,7 @@ mod tests {
         assert_eq!(SystemTime::from(epoch.with_timezone(&FixedOffset::west(28800))), UNIX_EPOCH);
     }
 
-    #[test]
+    #[test_case]
     fn test_datetime_format_alignment() {
         let datetime = Utc.ymd(2007, 01, 02);
 

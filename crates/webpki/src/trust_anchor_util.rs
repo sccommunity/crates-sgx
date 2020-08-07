@@ -19,7 +19,7 @@ use crate::{
     cert::{certificate_serial_number, parse_cert_internal, Cert, EndEntityOrCA},
     Error, TrustAnchor,
 };
-
+use std::prelude::v1::*;
 /// Interprets the given DER-encoded certificate as a `TrustAnchor`. The
 /// certificate is not validated. In particular, there is no check that the
 /// certificate is self-signed or even that the certificate has the cA basic

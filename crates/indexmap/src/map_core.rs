@@ -11,7 +11,7 @@
 use alloc::boxed::Box;
 #[cfg(not(has_std))]
 use std::vec::Vec;
-
+use std::prelude::v1::*;
 use std::cmp::{max, Ordering};
 use std::fmt;
 use std::iter::FromIterator;

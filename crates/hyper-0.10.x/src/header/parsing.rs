@@ -5,7 +5,7 @@ use std::str;
 use std::str::FromStr;
 use std::fmt::{self, Display};
 use url::percent_encoding;
-
+use std::prelude::v1::*;
 use header::shared::Charset;
 
 /// Reads a single raw string when parsing a header.
@@ -149,12 +149,14 @@ impl Display for ExtendedValue {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use header::shared::Charset;
     use super::{ExtendedValue, parse_extended_value};
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+   
+    #[test_case]
     fn test_parse_extended_value_with_encoding_and_language_tag() {
         let expected_language_tag = langtag!(en);
         // RFC 5987, Section 3.2.2
@@ -168,7 +170,7 @@ mod tests {
         assert_eq!(vec![163, b' ', b'r', b'a', b't', b'e', b's'], extended_value.value);
     }
 
-    #[test]
+    #[test_case]
     fn test_parse_extended_value_with_encoding() {
         // RFC 5987, Section 3.2.2
         // Extended notation, using the Unicode characters U+00A3 (POUND SIGN)
@@ -181,26 +183,26 @@ mod tests {
         assert_eq!(vec![194, 163, b' ', b'a', b'n', b'd', b' ', 226, 130, 172, b' ', b'r', b'a', b't', b'e', b's'], extended_value.value);
     }
 
-    #[test]
+    #[test_case]
     fn test_parse_extended_value_missing_language_tag_and_encoding() {
         // From: https://greenbytes.de/tech/tc2231/#attwithfn2231quot2
         let result = parse_extended_value("foo%20bar.html");
         assert!(result.is_err());
     }
 
-    #[test]
+    #[test_case]
     fn test_parse_extended_value_partially_formatted() {
         let result = parse_extended_value("UTF-8'missing third part");
         assert!(result.is_err());
     }
 
-    #[test]
+    #[test_case]
     fn test_parse_extended_value_partially_formatted_blank() {
         let result = parse_extended_value("blank second part'");
         assert!(result.is_err());
     }
 
-    #[test]
+    #[test_case]
     fn test_fmt_extended_value_with_encoding_and_language_tag() {
         let extended_value = ExtendedValue {
             charset: Charset::Iso_8859_1,
@@ -210,7 +212,7 @@ mod tests {
         assert_eq!("ISO-8859-1'en'%A3%20rates", format!("{}", extended_value));
     }
 
-    #[test]
+    #[test_case]
     fn test_fmt_extended_value_with_encoding() {
         let extended_value = ExtendedValue {
             charset: Charset::Ext("UTF-8".to_string()),

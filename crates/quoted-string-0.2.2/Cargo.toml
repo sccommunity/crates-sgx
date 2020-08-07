@@ -16,5 +16,11 @@ categories    = ["encoding"]
 travis-ci = { repository = "1aim/quoted-string", branch = "master" }
 maintenance = { status = "actively-developed" }
 
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+
 [dependencies]
-quick-error = "1.2.1"
+#quick-error = "1.2.1"
+quick-error = { path = "../quick-error-1.2.1" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }

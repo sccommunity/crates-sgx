@@ -13,6 +13,8 @@
 #[cfg(feature = "query_encoding")] extern crate encoding;
 
 use std::borrow::Cow;
+use std::prelude::v1::*;
+
 #[cfg(feature = "query_encoding")] use std::fmt::{self, Debug, Formatter};
 
 #[cfg(feature = "query_encoding")] use self::encoding::types::{DecoderTrap, EncoderTrap};

@@ -12,7 +12,7 @@ use crate::{
     internal_prelude::*,
 };
 use core::fmt::{self, Formatter};
-
+use std::prelude::v1::*;
 /// The format as specified by RFC3339.
 pub(crate) mod rfc3339 {
     use super::*;

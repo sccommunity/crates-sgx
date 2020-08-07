@@ -11,7 +11,7 @@ homepage = "https://github.com/seanmonstar/try-lock"
 documentation = "https://docs.rs/try-lock"
 readme = "README.md"
 [features]
-default = ["mesalock_sgx"]
+default = ["mesalock_sgx", "enclave_unit_test"]
 mesalock_sgx = ["sgx_tstd"]
 enclave_unit_test = ["sgx_tunittest"]
 

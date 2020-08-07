@@ -24,6 +24,7 @@ use std::ptr::{self, NonNull};
 use std::sync::atomic::Ordering::{self, AcqRel, Acquire, Relaxed, Release};
 use std::sync::Arc;
 use std::usize;
+use std::prelude::v1::Box;
 
 /// Futures-aware semaphore.
 pub struct Semaphore {

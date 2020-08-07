@@ -2,7 +2,7 @@
 use tokio_threadpool::Sender;
 
 use futures::future::{self, Future};
-
+use std::prelude::v1::Box;
 /// Executes futures on the runtime
 ///
 /// All futures spawned using this executor will be submitted to the associated

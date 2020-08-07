@@ -7,11 +7,20 @@ license = "MIT/Apache-2.0"
 readme = "README.md"
 keywords = ["time", "human", "human-friendly", "parser", "duration"]
 homepage = "https://github.com/tailhook/humantime"
+repository = "https://github.com/tailhook/humantime"
 documentation = "https://docs.rs/humantime"
-version = "2.0.0"
+version = "2.0.1"
 edition = "2018"
 authors = ["Paul Colomiets <paul@colomiets.name>"]
 categories = ["date-and-time"]
+
+
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+
+[target.'cfg(not(target_env = "sgx"))'.dependencies]
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 
 [lib]
 name = "humantime"

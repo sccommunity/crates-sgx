@@ -16,7 +16,7 @@ use core::{
 use instant::Instant;
 use smallvec::SmallVec;
 use std::time::Duration;
-
+use std::prelude::v1::*;
 cfg_if! {
     if #[cfg(all(
         target_arch = "wasm32",
@@ -1159,7 +1159,7 @@ mod deadlock_impl {
     use super::{get_hashtable, lock_bucket, with_thread_data, ThreadData, NUM_THREADS};
     use crate::thread_parker::{ThreadParkerT, UnparkHandleT};
     use crate::word_lock::WordLock;
-    use backtrace::Backtrace;
+    use sgx_backtrace::Backtrace;
     use petgraph;
     use petgraph::graphmap::DiGraphMap;
     use std::cell::{Cell, UnsafeCell};

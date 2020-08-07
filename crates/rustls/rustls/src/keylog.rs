@@ -3,8 +3,8 @@ use std::fs::{File, OpenOptions};
 use std::path::Path;
 use std::io;
 use std::io::Write;
-use std::sync::Mutex;
-
+use std::sync::SgxMutex as Mutex;
+use std::prelude::v1::*;
 #[cfg(feature = "logging")]
 use crate::log::warn;
 

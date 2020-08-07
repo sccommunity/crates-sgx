@@ -12,33 +12,42 @@ license = "MIT OR Apache-2.0"
 description = "Date and time library. Fully interoperable with the standard library. Mostly compatible with #![no_std]."
 build = "build.rs"
 
+
 [package.metadata.docs.rs]
 all-features = true
 targets = ["x86_64-unknown-linux-gnu"]
 
 [features]
-default = ["deprecated", "std"]
+default = ["deprecated", "std", "mesalock_sgx"]
 deprecated = []
 panicking-api = []
-std = ["libc", "winapi", "stdweb", "standback/std"]
-
+std = ["winapi", "stdweb", "standback/std", "mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd", "sgx_libc", "std"]
 # Internal usage. This is used when building for docs.rs and time-rs.github.io.
 # This feature should never be used by external users. It will likely be
 # removed in the first release after the `doc_cfg` feature gets stabilized.
 __doc = []
+enclave_unit_test = ["crates_unittest", "inventory"]
 
 [dependencies]
-cfg-if = "0.1.10"
-rand = { version = "0.7", optional = true, default-features = false }
-serde = { version = "1", optional = true, default-features = false, features = ["derive"] }
-standback = { version = "0.2.5", default-features = false }
+# cfg-if = "0.1.10"
+# rand = { version = "0.7", optional = true, default-features = false }
+# serde = { version = "1", optional = true, default-features = false, features = ["derive"] }
+# standback = { version = "0.2.5", default-features = false }
+cfg-if = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2" }
+rand = { path = "../rand-0.7.3",  optional = true, default-features = false }
+serde = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2",  optional = true, default-features = false, features = ["derive"] }
+standback = { path = "../standback", version = "0.2.5", default-features = false }
 time-macros = { version = "0.1", path = "time-macros" }
-
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true, features = ["untrusted_time"] }
+sgx_libc = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+crates_unittest = { git = "https://github.com/Zha0Chan/crates-sgx-unittest.git", optional = true, default-features = false }
+inventory = { version = "0.1.6", optional = true }
 [workspace]
 members = ["time-macros", "time-macros-impl"]
-
-[target.'cfg(unix)'.dependencies]
-libc = { version = "0.2", optional = true }
+exclude = ["sgx-tests"]
+# [target.'cfg(unix)'.dependencies]
+# libc = { version = "0.2", optional = true }
 
 [target.'cfg(windows)'.dependencies]
 winapi = { version = "0.3", features = ["minwinbase", "minwindef", "timezoneapi"], optional = true }

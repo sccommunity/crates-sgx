@@ -16,7 +16,7 @@ use crate::log::trace;
 use webpki;
 
 use std::mem;
-
+use std::prelude::v1::*;
 pub struct ServerCertDetails {
     pub cert_chain: CertificatePayload,
     pub ocsp_response: Vec<u8>,

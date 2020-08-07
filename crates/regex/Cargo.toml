@@ -1,6 +1,6 @@
 [package]
 name = "regex"
-version = "1.3.7"  #:version
+version = "1.3.9"  #:version
 authors = ["The Rust Project Developers"]
 license = "MIT OR Apache-2.0"
 readme = "README.md"
@@ -13,7 +13,7 @@ finite automata and guarantees linear time matching on all inputs.
 """
 categories = ["text-processing"]
 autotests = false
-exclude = ["/scripts/*", "/.github/*"]
+exclude = ["/scripts/*", "/.github/*", "/sgx/*"]
 
 [workspace]
 members = [
@@ -31,7 +31,7 @@ doctest = false
 # Features are documented in the "Crate features" section of the crate docs:
 # https://docs.rs/regex/*/#crate-features
 [features]
-default = ["std", "perf", "unicode", "regex-syntax/default"]
+default = ["std", "perf", "unicode", "regex-syntax/default", "mesalock_sgx"]
 
 # ECOSYSTEM FEATURES
 
@@ -43,8 +43,9 @@ default = ["std", "perf", "unicode", "regex-syntax/default"]
 std = []
 # The 'use_std' feature is DEPRECATED. It will be removed in regex 2. Until
 # then, it is an alias for the 'std' feature.
-use_std = ["std"]
+use_std = ["std", "mesalock_sgx"]
 
+mesalock_sgx = ["sgx_tstd", "std", "regex-syntax/mesalock_sgx"]
 
 # PERFORMANCE FEATURES
 
@@ -102,34 +103,43 @@ pattern = []
 
 # For very fast prefix literal matching.
 [dependencies.aho-corasick]
-version = "0.7.6"
+#version = "0.7.6"
 optional = true
+path = "../aho-corasick"
 
 # For skipping along search text quickly when a leading byte is known.
 [dependencies.memchr]
-version = "2.2.1"
+#version = "2.2.1"
 optional = true
+path = "../rust-memchr"
 
 # For managing regex caches quickly across multiple threads.
 [dependencies.thread_local]
-version = "1"
+#version = "1"
 optional = true
+path = "../thread_local-rs"
 
 # For parsing regular expressions.
 [dependencies.regex-syntax]
 path = "regex-syntax"
-version = "0.6.17"
+version = "0.6.18"
 default-features = false
+
+[dependencies]
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 
 [dev-dependencies]
 # For examples.
-lazy_static = "1"
+#lazy_static = "1"
 # For property based tests.
-quickcheck = { version = "0.8", default-features = false }
+#quickcheck = { version = "0.8", default-features = false }
 # For generating random test data.
-rand = "0.6.5"
+#rand = "0.6.5"
 # To check README's example
-doc-comment = "0.3"
+# TODO: Re-enable this once the MSRV is 1.43 or greater.
+# See: https://github.com/rust-lang/regex/issues/684
+# See: https://github.com/rust-lang/regex/issues/685
+# doc-comment = "0.3"
 
 # Run the test suite on the default behavior of Regex::new.
 # This includes a mish mash of NFAs and DFAs, which are chosen automatically

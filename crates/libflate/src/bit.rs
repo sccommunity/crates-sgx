@@ -173,12 +173,13 @@ pub(crate) struct BitReaderState {
     offset: u8,
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::*;
     use std::io;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn writer_works() {
         let mut writer = BitWriter::new(Vec::new());
         writer.write_bit(true).unwrap();
@@ -192,7 +193,7 @@ mod tests {
         assert_eq!(buf, [0b10100101, 0b01010101, 0b00000001]);
     }
 
-    #[test]
+    #[test_case]
     fn reader_works() {
         let buf = [0b10100101, 0b11010101];
         let mut reader = BitReader::new(&buf[..]);

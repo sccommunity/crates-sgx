@@ -4,12 +4,15 @@
 //!
 //! [`IoVec`]: struct.IoVec.html
 
-#[cfg(unix)]
-extern crate libc;
+#![no_std]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"), feature(rustc_private))]
+
+//#[cfg(unix)]
+extern crate sgx_libc as libc;
 
 mod sys;
 
-use std::{ops, mem};
+use core::{ops, mem};
 
 #[cfg(unix)]
 pub mod unix;
@@ -114,6 +117,7 @@ impl<'a> From<&'a [u8]> for &'a IoVec {
 }
 
 #[doc(hidden)]
+#[deprecated(since = "0.1", note = "aaa")]
 impl<'a> From<&'a mut [u8]> for &'a mut IoVec {
     fn from(bytes: &'a mut [u8]) -> &'a mut IoVec {
         IoVec::from_bytes_mut(bytes)
@@ -124,23 +128,23 @@ impl<'a> From<&'a mut [u8]> for &'a mut IoVec {
     }
 }
 
-#[doc(hidden)]
-impl<'a> Default for &'a IoVec {
-    fn default() -> Self {
-        panic!("this implementation was accidentally provided but is \
-                unfortunately unsound, it's recommended to stop using \
-                `IoVec::default` or construct a vector with a nonzero length");
-    }
-}
+//#[doc(hidden)]
+//impl<'a> Default for &'a IoVec {
+//    fn default() -> Self {
+//        panic!("this implementation was accidentally provided but is \
+//                unfortunately unsound, it's recommended to stop using \
+//                `IoVec::default` or construct a vector with a nonzero length");
+//    }
+//}
 
-#[doc(hidden)]
-impl<'a> Default for &'a mut IoVec {
-    fn default() -> Self {
-        panic!("this implementation was accidentally provided but is \
-                unfortunately unsound, it's recommended to stop using \
-                `IoVec::default` or construct a vector with a nonzero length");
-    }
-}
+//#[doc(hidden)]
+//impl<'a> Default for &'a mut IoVec {
+//    fn default() -> Self {
+//        panic!("this implementation was accidentally provided but is \
+//                unfortunately unsound, it's recommended to stop using \
+//                `IoVec::default` or construct a vector with a nonzero length");
+//    }
+//}
 
 #[cfg(test)]
 mod test {

@@ -1,5 +1,7 @@
 use std::fmt::{self, Display};
 use std::str::FromStr;
+use std::prelude::v1::*;
+
 use unicase::UniCase;
 
 header! {
@@ -66,7 +68,7 @@ header! {
         test_header!(
             test2, vec![b"websocket"],
             Some(Upgrade(vec![Protocol::new(ProtocolName::WebSocket, None)])));
-        #[test]
+        #[crates_unittest::test_case]
         fn test3() {
             let x: ::Result<Upgrade> = Header::parse_header(&[b"WEbSOCKet".to_vec()]);
             assert_eq!(x.ok(), Some(Upgrade(vec![Protocol::new(ProtocolName::WebSocket, None)])));

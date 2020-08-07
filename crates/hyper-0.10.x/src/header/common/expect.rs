@@ -1,6 +1,6 @@
 use std::fmt;
 use std::str;
-
+use std::prelude::v1::*;
 use unicase::UniCase;
 
 use header::{Header, HeaderFormat};

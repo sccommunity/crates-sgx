@@ -1,4 +1,6 @@
 use method::Method;
+use std::prelude::v1::*;
+
 
 header! {
     /// `Access-Control-Request-Method` header, part of

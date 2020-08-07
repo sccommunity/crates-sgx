@@ -1,5 +1,5 @@
-#![deny(warnings)]
-#![deny(missing_docs)]
+// #![deny(warnings)]
+// #![deny(missing_docs)]
 //! # SPMC
 //!
 //! A single producer, multiple consumers. Commonly used to implement
@@ -28,19 +28,34 @@
 //!   handle.join().unwrap();
 //! }
 //! ```
-
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
 mod channel;
 mod loom;
 
 pub use self::channel::{channel, Sender, Receiver};
 pub use std::sync::mpsc::{SendError, RecvError, TryRecvError};
 
-
-#[cfg(test)]
-mod tests {
+  
+#[cfg(feature = "enclave_unit_test")]
+extern crate crates_unittest;  
+#[cfg(feature = "enclave_unit_test")]
+pub mod tests {
+   
     use super::*;
+    use std::prelude::v1::*;
+    use crates_unittest::{ test_case, run_inventory_tests };
+  
+    pub fn run_tests() {
+        run_inventory_tests!();
+    }
 
-    #[test]
+   #[test_case]
     fn test_sanity() {
         let (mut tx, rx) = channel();
         tx.send(5).unwrap();
@@ -53,7 +68,7 @@ mod tests {
         assert_eq!(rx.try_recv(), Err(TryRecvError::Empty));
     }
 
-    #[test]
+   #[test_case]
     fn test_multiple_consumers() {
         let (mut tx, rx) = channel();
         let rx2 = rx.clone();
@@ -68,14 +83,14 @@ mod tests {
         assert_eq!(rx2.try_recv(), Err(TryRecvError::Empty));
     }
 
-    #[test]
+   #[test_case]
     fn test_send_on_dropped_chan() {
         let (mut tx, rx) = channel();
         drop(rx);
         assert_eq!(tx.send(5), Err(SendError(5)));
     }
 
-    #[test]
+   #[test_case]
     fn test_try_recv_on_dropped_chan() {
         let (mut tx, rx) = channel();
         tx.send(2).unwrap();
@@ -86,7 +101,7 @@ mod tests {
         assert_eq!(rx.recv(), Err(RecvError));
     }
 
-    #[test]
+   #[test_case]
     fn test_recv_blocks() {
         use std::thread;
         use std::sync::Arc;
@@ -104,7 +119,7 @@ mod tests {
         assert!(toggle.load(Ordering::Relaxed))
     }
 
-    #[test]
+   #[test_case]
     fn test_recv_unblocks_on_dropped_chan() {
         use std::thread;
 
@@ -116,7 +131,7 @@ mod tests {
         assert_eq!(rx.recv(), Err(RecvError));
     }
 
-    #[test]
+   #[test_case]
     fn test_send_sleep() {
         use std::thread;
         use std::time::Duration;
@@ -141,7 +156,7 @@ mod tests {
         }
     }
 
-    #[test]
+   #[test_case]
     fn test_tx_dropped_rxs_drain() {
         for l in 0..10 {
             println!("loop {}", l);
@@ -172,7 +187,7 @@ mod tests {
         }
     }
 
-    #[test]
+   #[test_case]
     fn msg_dropped() {
         use std::sync::Arc;
         use std::sync::atomic::{AtomicBool, Ordering};
@@ -198,7 +213,7 @@ mod tests {
     }
 
 
-    #[test]
+   #[test_case]
     fn msgs_dropped() {
         use std::sync::Arc;
         use std::sync::atomic::{AtomicUsize, Ordering};

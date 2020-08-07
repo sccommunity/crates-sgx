@@ -68,9 +68,11 @@ pub(crate) fn update_slow(prev: u32, buf: &[u8]) -> u32 {
     !crc
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod test {
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn slow() {
         assert_eq!(super::update_slow(0, b""), 0);
 

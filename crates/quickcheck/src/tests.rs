@@ -1,14 +1,20 @@
+use std::prelude::v1::*;
 use std::cmp::Ord;
 use std::collections::hash_map::DefaultHasher;
 use std::collections::{HashMap, HashSet};
 use std::hash::BuildHasherDefault;
 use std::path::PathBuf;
-
+use crates_unittest::{ test_case, run_inventory_tests };
 use rand;
 
 use super::{quickcheck, QuickCheck, StdGen, TestResult};
 
-#[test]
+  
+pub fn run_tests() {
+    run_inventory_tests!();
+}
+
+#[test_case]
 fn prop_oob() {
     fn prop() -> bool {
         let zero: Vec<bool> = vec![];
@@ -24,7 +30,7 @@ fn prop_oob() {
     }
 }
 
-#[test]
+#[test_case]
 fn prop_reverse_reverse() {
     fn prop(xs: Vec<usize>) -> bool {
         let rev: Vec<_> = xs.clone().into_iter().rev().collect();
@@ -48,7 +54,7 @@ quickcheck! {
     }
 }
 
-#[test]
+#[test_case]
 fn reverse_single() {
     fn prop(xs: Vec<usize>) -> TestResult {
         if xs.len() != 1 {
@@ -78,7 +84,7 @@ fn reverse_app() {
     quickcheck(prop as fn(Vec<usize>, Vec<usize>) -> bool);
 }
 
-#[test]
+#[test_case]
 fn max() {
     fn prop(x: isize, y: isize) -> TestResult {
         if x > y {
@@ -90,7 +96,7 @@ fn max() {
     quickcheck(prop as fn(isize, isize) -> TestResult);
 }
 
-#[test]
+#[test_case]
 fn sort() {
     fn prop(mut xs: Vec<isize>) -> bool {
         xs.sort_by(|x, y| x.cmp(y));
@@ -129,7 +135,7 @@ fn is_prime(n: usize) -> bool {
     n != 0 && n != 1 && (2..).take_while(|i| i * i <= n).all(|i| n % i != 0)
 }
 
-#[test]
+//#[test_case]
 #[should_panic]
 fn sieve_not_prime() {
     fn prop_all_prime(n: usize) -> bool {
@@ -138,7 +144,7 @@ fn sieve_not_prime() {
     quickcheck(prop_all_prime as fn(usize) -> bool);
 }
 
-#[test]
+//#[test_case]
 #[should_panic]
 fn sieve_not_all_primes() {
     fn prop_prime_iff_in_the_sieve(n: usize) -> bool {
@@ -155,19 +161,19 @@ fn testable_result() {
     quickcheck(result as fn() -> Result<bool, String>);
 }
 
-#[test]
+//#[test_case]
 #[should_panic]
 fn testable_result_err() {
     quickcheck(Err::<bool, i32> as fn(i32) -> Result<bool, i32>);
 }
 
-#[test]
+#[test_case]
 fn testable_unit() {
     fn do_nothing() {}
     quickcheck(do_nothing as fn());
 }
 
-#[test]
+#[test_case]
 fn testable_unit_panic() {
     fn panic() {
         panic!()
@@ -175,7 +181,7 @@ fn testable_unit_panic() {
     assert!(QuickCheck::new().quicktest(panic as fn()).is_err());
 }
 
-#[test]
+#[test_case]
 fn regression_issue_83() {
     fn prop(_: u8) -> bool {
         true
@@ -185,7 +191,7 @@ fn regression_issue_83() {
         .quickcheck(prop as fn(u8) -> bool)
 }
 
-#[test]
+#[test_case]
 fn regression_issue_83_signed() {
     fn prop(_: i8) -> bool {
         true
@@ -196,7 +202,7 @@ fn regression_issue_83_signed() {
 }
 
 // Test that we can show the message after panic
-#[test]
+//#[test_case]
 #[should_panic(expected = "foo")]
 fn panic_msg_1() {
     fn prop() -> bool {
@@ -205,7 +211,7 @@ fn panic_msg_1() {
     quickcheck(prop as fn() -> bool);
 }
 
-#[test]
+//#[test_case]
 #[should_panic(expected = "foo")]
 fn panic_msg_2() {
     fn prop() -> bool {
@@ -215,7 +221,7 @@ fn panic_msg_2() {
     quickcheck(prop as fn() -> bool);
 }
 
-#[test]
+//#[test_case]
 #[should_panic(expected = "foo")]
 fn panic_msg_3() {
     fn prop() -> bool {
@@ -225,7 +231,7 @@ fn panic_msg_3() {
     quickcheck(prop as fn() -> bool);
 }
 
-#[test]
+//#[test_case]
 #[should_panic]
 fn regression_issue_107_hang() {
     fn prop(a: Vec<u8>) -> bool {
@@ -234,7 +240,7 @@ fn regression_issue_107_hang() {
     quickcheck(prop as fn(_) -> bool);
 }
 
-#[test]
+//#[test_case]
 #[should_panic(
     expected = "(Unable to generate enough tests, 0 not discarded.)"
 )]
@@ -249,7 +255,7 @@ fn all_tests_discarded_min_tests_passed_set() {
         .quickcheck(prop_discarded as fn(u8) -> TestResult)
 }
 
-#[test]
+#[test_case]
 fn all_tests_discarded_min_tests_passed_missing() {
     fn prop_discarded(_: u8) -> TestResult {
         TestResult::discard()

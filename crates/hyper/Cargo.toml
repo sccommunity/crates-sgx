@@ -20,46 +20,62 @@ include = [
 ]
 
 [dependencies]
-bytes = "0.5"
-futures-core = { version = "0.3", default-features = false }
-futures-channel = "0.3"
-futures-util = { version = "0.3", default-features = false }
-http = "0.2"
-http-body = "0.3.1"
-httparse = "1.0"
-h2 = "0.2.2"
-itoa = "0.4.1"
-log = "0.4"
+#bytes = "0.5"
+#futures-core = { version = "0.3", default-features = false }
+#futures-channel = "0.3"
+#futures-util = { version = "0.3", default-features = false }
+#http = "0.2"
+#http-body = "0.3.1"
+#h2 = "0.2.2"
+#itoa = "0.4.1"
+#log = "0.4"
+#time = "0.1"
+#tower-service = "0.3"
+#tokio = { version = "0.2.5" }
+#want = "0.3"
+#net2 = { version = "0.2.32", optional = true }
+
+bytes = { path = "../bytes" }
+futures-core = { path = "../futures-rs/futures-core", default-features = false }
+futures-channel = { path = "../futures-rs/futures-channel" }
+futures-util = { path = "../futures-rs/futures-util", default-features = false }
+http = { path = "../http" }
+http-body = { path = "../http-body" }
+httparse = { path = "../httparse"}
+h2 = { path = "../h2"}
+itoa = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2" }
+log = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2" }
 pin-project = "0.4"
-time = "0.1"
-tower-service = "0.3"
-tokio = { version = "0.2.5", features = ["sync"] }
-want = "0.3"
-
+time = { path = "../time-0.1" }
+tower-service = { path = "../tower/tower-service" }
+tokio = { path = "../tokio/tokio", features = ["sync"]}
+want = { path = "../want" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true, features = ["untrusted_time"] }
 # Optional
-
-net2 = { version = "0.2.32", optional = true }
+net2 = { path = "../net2-rs", optional = true }
 
 [dev-dependencies]
-futures-util = { version = "0.3", default-features = false, features = ["alloc"] }
-matches = "0.1"
-num_cpus = "1.0"
-pretty_env_logger = "0.4"
-spmc = "0.3"
-serde = "1.0"
-serde_derive = "1.0"
-serde_json = "1.0"
-tokio = { version = "0.2.2", features = ["fs", "macros", "io-std", "rt-util", "sync", "time", "test-util"] }
-tokio-test = "0.2"
-tokio-util = { version = "0.3", features = ["codec"] }
-tower-util = "0.3"
-url = "1.0"
+#futures-util = { version = "0.3", default-features = false, features = ["alloc"] }
+#matches = "0.1"
+#num_cpus = "1.0"
+#pretty_env_logger = "0.4"
+#spmc = "0.3"
+#serde = "1.0"
+#serde_derive = "1.0"
+#serde_json = "1.0"
+#tokio = { version = "0.2.2", features = ["fs", "macros", "io-std", "rt-util", "sync", "time", "test-util"] }
+#tokio-test = "0.2"
+#tokio-util = { version = "0.3", features = ["codec"] }
+#tower-util = "0.3"
+#url = "1.0"
 
 [features]
 default = [
     "runtime",
     "stream",
+    "mesalock_sgx"
 ]
+mesalock_sgx = ["sgx_tstd"]
 runtime = [
     "tcp",
     "tokio/rt-core",

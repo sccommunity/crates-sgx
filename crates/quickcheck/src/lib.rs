@@ -5,7 +5,10 @@
 //! [README](https://github.com/BurntSushi/quickcheck).
 
 #![cfg_attr(feature = "i128", feature(i128_type, i128))]
-
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
 #[cfg(feature = "use_logging")]
 extern crate env_logger;
 #[cfg(feature = "use_logging")]
@@ -13,6 +16,11 @@ extern crate env_logger;
 extern crate log;
 extern crate rand;
 extern crate rand_core;
+
+
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
 
 pub use crate::arbitrary::{
     empty_shrinker, single_shrinker, Arbitrary, Gen, StdGen, StdThreadGen,
@@ -86,5 +94,6 @@ macro_rules! info {
 mod arbitrary;
 mod tester;
 
-#[cfg(test)]
-mod tests;
+//#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
+pub mod tests;

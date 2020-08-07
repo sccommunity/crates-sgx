@@ -9,8 +9,10 @@
 //! library is activated, and it is activated by default.
 
 #![cfg_attr(all(feature = "read-initializer", feature = "std"), feature(read_initializer))]
-
-#![cfg_attr(not(feature = "std"), no_std)]
+#![cfg_attr(any(all(feature = "mesalock_sgx",
+                    not(target_env = "sgx")),
+                not(feature = "std")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"), feature(rustc_private))]
 
 #![warn(missing_docs, missing_debug_implementations, rust_2018_idioms, unreachable_pub)]
 // It cannot be included in the published code because this lints have false positives in the minimum required version.
@@ -24,12 +26,16 @@
 #[cfg(all(feature = "read-initializer", not(feature = "unstable")))]
 compile_error!("The `read-initializer` feature requires the `unstable` feature as an explicit opt-in to unstable features");
 
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+extern crate sgx_tstd as std;
+
 #[cfg(feature = "std")]
 mod if_std {
     use std::io;
     use std::ops::DerefMut;
     use std::pin::Pin;
     use std::task::{Context, Poll};
+    use std::prelude::v1::*;
 
     // Re-export some types from `std::io` so that users don't have to deal
     // with conflicts when `use`ing `futures::io` and `std::io`.

@@ -1,6 +1,6 @@
 use crate::raw::build::BuilderNode;
 use crate::raw::{CompiledAddr, NONE_ADDRESS};
-
+use std::prelude::v1::*;
 #[derive(Debug)]
 pub struct Registry {
     table: Vec<RegistryCell>,

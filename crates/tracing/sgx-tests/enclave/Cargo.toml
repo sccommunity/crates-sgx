@@ -1,0 +1,38 @@
+[package]
+name = "run-tests-enclave"
+version = "1.0.0"
+edition = "2018"
+
+[lib]
+name = "run_tests_enclave"
+crate-type = ["staticlib"]
+
+[features]
+default = ["crates_unittest", "inventory"]
+
+
+[dependencies]
+tracing = { path = "../../tracing" }
+tracing-core = { path = "../../tracing-core" }
+tracing-flame = { path = "../../tracing-flame" }
+tracing-subscriber = { path = "../../tracing-subscriber" }
+crates_unittest = { git = "https://github.com/Zha0Chan/crates-sgx-unittest.git", optional = true, default-features = false }
+inventory = { version = "0.1.6", optional = true }
+tempfile = { path = "../../../tempfile" }
+tempdir = { path = "../../../tempdir" }
+tokio = { path = "../../../tokio-0.1.x/tokio" }
+tokio-test = { path = "../../../tokio/tokio-test" }
+tracing-futures = { path = "../../tracing-futures" }
+tracing-log = { path = "../../tracing-log" }
+log = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2" }
+[dependencies.appender]
+package = "tracing-appender"
+path = "../../tracing-appender"
+features = ["enclave_unit_test"]
+[dependencies.error]
+package = "tracing-error"
+path = "../../tracing-error"
+features = ["enclave_unit_test"]
+
+[target.'cfg(not(target_env = "sgx"))'.dependencies]
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", features = ["thread", "untrusted_fs"] }

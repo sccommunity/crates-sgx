@@ -1,7 +1,8 @@
 use bytes::{BufMut, BytesMut};
 use std::{cmp, io, str, usize};
 use tokio_io::_tokio_codec::{Decoder, Encoder};
-
+use std::prelude::v1::String;
+use std::string::ToString;
 /// A simple `Codec` implementation that splits up data into lines.
 #[derive(Clone, Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub struct LinesCodec {

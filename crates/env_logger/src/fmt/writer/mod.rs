@@ -173,11 +173,12 @@ fn parse_write_style(spec: &str) -> WriteStyle {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::*;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;     
+    #[test_case]
     fn parse_write_style_valid() {
         let inputs = vec![
             ("auto", WriteStyle::Auto),
@@ -190,7 +191,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn parse_write_style_invalid() {
         let inputs = vec!["", "true", "false", "NEVER!!"];
 

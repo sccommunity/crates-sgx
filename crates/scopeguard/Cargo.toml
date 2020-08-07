@@ -18,9 +18,18 @@ shorthands for guards with one of the implemented strategies.
 keywords = ["scope-guard", "defer", "panic", "unwind"]
 categories = ["rust-patterns", "no-std"]
 
+
 [features]
-default = ["use_std"]
-use_std = []
+default = ["mesalock_sgx", "use_std"]
+use_std = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd", "use_std"]
+enclave_unit_test = ["crates_unittest", "inventory"]
+
+[dependencies]
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+crates_unittest = { git = "https://github.com/Zha0Chan/crates-sgx-unittest.git", optional = true, default-features = false }
+inventory = { version = "0.1.6", optional = true }
+
 
 [package.metadata.release]
 no-dev-version = true

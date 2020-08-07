@@ -5,7 +5,7 @@ use futures::{Async, Future, Poll};
 use std::io;
 use std::mem;
 use std::path::Path;
-
+use std::string::ToString;
 /// A future for writing a buffer to a Unix datagram socket.
 #[derive(Debug)]
 pub struct SendDgram<T, P> {

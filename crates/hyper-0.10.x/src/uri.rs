@@ -3,9 +3,11 @@ use std::fmt::{Display, self};
 use std::str::FromStr;
 use url::Url;
 use url::ParseError as UrlError;
-
+use std::prelude::v1::*;
 use Error;
 
+#[cfg(feature = "enclave_unit_test")]
+use crates_unittest::test_case;
 /// The Request-URI of a Request's StartLine.
 ///
 /// From Section 5.3, Request Target:
@@ -84,7 +86,7 @@ impl Display for RequestUri {
     }
 }
 
-#[test]
+#[test_case]
 fn test_uri_fromstr() {
     fn read(s: &str, result: RequestUri) {
         assert_eq!(s.parse::<RequestUri>().unwrap(), result);
@@ -96,7 +98,7 @@ fn test_uri_fromstr() {
     read("/", RequestUri::AbsolutePath("/".to_owned()));
 }
 
-#[test]
+#[test_case]
 fn test_uri_display() {
     fn assert_display(expected_string: &str, request_uri: RequestUri) {
         assert_eq!(expected_string, format!("{}", request_uri));

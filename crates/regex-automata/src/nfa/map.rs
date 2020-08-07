@@ -34,7 +34,7 @@
 // are simple enough.
 
 use nfa::{StateID, Transition};
-
+use std::prelude::v1::*;
 // Basic FNV-1a hash constants as described in:
 // https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function
 const PRIME: u64 = 1099511628211;

@@ -1,6 +1,7 @@
 use super::{Buf};
 
 use std::io;
+use std::prelude::v1::*;
 
 /// Conversion into a `Buf`
 ///

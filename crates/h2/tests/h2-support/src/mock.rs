@@ -1,5 +1,5 @@
 use crate::SendFrame;
-
+use std::prelude::v1::*;
 use h2::frame::{self, Frame};
 use h2::{self, RecvError, SendError};
 
@@ -10,7 +10,7 @@ use tokio::io::{AsyncRead, AsyncReadExt, AsyncWrite, AsyncWriteExt};
 
 use super::assert::assert_frame_eq;
 use std::pin::Pin;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, SgxMutex as Mutex};
 use std::task::{Context, Poll, Waker};
 use std::time::Duration;
 use std::{cmp, io, usize};

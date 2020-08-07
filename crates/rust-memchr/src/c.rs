@@ -3,7 +3,7 @@
 
 #![allow(dead_code)]
 
-extern crate libc;
+extern crate sgx_libc as libc;
 
 use self::libc::{c_int, c_void, size_t};
 

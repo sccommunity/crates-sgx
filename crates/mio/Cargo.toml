@@ -23,7 +23,9 @@ exclude       = [
 publish = false
 
 [features]
-default = []
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd", "sgx_trts", "sgx_libc"]
+
 os-poll = []
 os-util = []
 tcp = []
@@ -32,10 +34,46 @@ uds = []
 extra-docs = []
 
 [dependencies]
-log = "0.4.8"
+#log = "0.4.8"
+log = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2" }
 
-[target.'cfg(unix)'.dependencies]
-libc = "0.2.69"
+#[target.'cfg(unix)'.dependencies]
+#libc = "0.2.69"
+
+
+[target.'cfg(not(all(target_env = "sgx", target_vendor = "mesalock")))'.dependencies]
+sgx_tstd = { git = "https://github.com/Zha0Chan/incubator-teaclave-sgx-sdk.git", features = ["net", "untrusted_fs", "untrusted_time"], optional = true }
+sgx_libc = { git = "https://github.com/Zha0Chan/incubator-teaclave-sgx-sdk.git", optional = true }
+sgx_trts = { git = "https://github.com/Zha0Chan/incubator-teaclave-sgx-sdk.git", optional = true }
+[patch.'https://github.com/apache/teaclave-sgx-sdk.git']
+sgx_align_struct_attribute = {  git = "https://github.com/Zha0Chan/incubator-teaclave-sgx-sdk.git" }
+sgx_alloc = { git = "https://github.com/Zha0Chan/incubator-teaclave-sgx-sdk.git" }
+sgx_backtrace = {  git = "https://github.com/Zha0Chan/incubator-teaclave-sgx-sdk.git" }
+sgx_backtrace_sys = { git = "https://github.com/Zha0Chan/incubator-teaclave-sgx-sdk.git" }
+sgx_build_helper = { git = "https://github.com/Zha0Chan/incubator-teaclave-sgx-sdk.git" }
+sgx_cov = { git = "https://github.com/Zha0Chan/incubator-teaclave-sgx-sdk.git" }
+sgx_crypto_helper = {  git = "https://github.com/Zha0Chan/incubator-teaclave-sgx-sdk.git" }
+sgx_demangle = {  git = "https://github.com/Zha0Chan/incubator-teaclave-sgx-sdk.git" }
+sgx_libc = {  git = "https://github.com/Zha0Chan/incubator-teaclave-sgx-sdk.git" }
+sgx_no_tstd = {  git = "https://github.com/Zha0Chan/incubator-teaclave-sgx-sdk.git" }
+sgx_rand = {  git = "https://github.com/Zha0Chan/incubator-teaclave-sgx-sdk.git" }
+sgx_rand_derive = {  git = "https://github.com/Zha0Chan/incubator-teaclave-sgx-sdk.git" }
+sgx_serialize = {  git = "https://github.com/Zha0Chan/incubator-teaclave-sgx-sdk.git" }
+sgx_serialize_derive = {  git = "https://github.com/Zha0Chan/incubator-teaclave-sgx-sdk.git" }
+sgx_serialize_derive_internals = {  git = "https://github.com/Zha0Chan/incubator-teaclave-sgx-sdk.git" }
+sgx_tcrypto = {  git = "https://github.com/Zha0Chan/incubator-teaclave-sgx-sdk.git" }
+sgx_tcrypto_helper = {  git = "https://github.com/Zha0Chan/incubator-teaclave-sgx-sdk.git" }
+sgx_tdh = {  git = "https://github.com/Zha0Chan/incubator-teaclave-sgx-sdk.git" }
+sgx_tkey_exchange = {  git = "https://github.com/Zha0Chan/incubator-teaclave-sgx-sdk.git" }
+sgx_tprotected_fs = {  git = "https://github.com/Zha0Chan/incubator-teaclave-sgx-sdk.git" }
+sgx_trts = {  git = "https://github.com/Zha0Chan/incubator-teaclave-sgx-sdk.git" }
+sgx_tse = {  git = "https://github.com/Zha0Chan/incubator-teaclave-sgx-sdk.git" }
+sgx_tseal = {  git = "https://github.com/Zha0Chan/incubator-teaclave-sgx-sdk.git" }
+sgx_tstd = {  git = "https://github.com/Zha0Chan/incubator-teaclave-sgx-sdk.git" }
+sgx_tunittest = {  git = "https://github.com/Zha0Chan/incubator-teaclave-sgx-sdk.git" }
+sgx_types = {  git = "https://github.com/Zha0Chan/incubator-teaclave-sgx-sdk.git" }
+sgx_unwind = {  git = "https://github.com/Zha0Chan/incubator-teaclave-sgx-sdk.git" }
+#sgx_signal = {  git = "https://github.com/Zha0Chan/incubator-teaclave-sgx-sdk.git" }
 
 [target.'cfg(windows)'.dependencies]
 miow   = "0.3.3"
@@ -44,8 +82,9 @@ ntapi  = "0.3"
 lazy_static = "1.4.0"
 
 [dev-dependencies]
-env_logger = { version = "0.6.2", default-features = false }
-net2       = "0.2.33"
+#env_logger = { version = "0.6.2", default-features = false }
+#net2       = "0.2.33"
+
 
 [package.metadata.docs.rs]
 all-features = true

@@ -3,8 +3,9 @@ use futures::future::join;
 use futures::StreamExt;
 use h2_support::assert_ping;
 use h2_support::prelude::*;
-
-#[tokio::test]
+use std::string::ToString;
+use crates_unittest::{ test_case };
+#[crates_unittest::test]
 async fn recv_single_ping() {
     let _ = env_logger::try_init();
     let (m, mut mock) = mock::new();
@@ -34,7 +35,7 @@ async fn recv_single_ping() {
     join(mock, h2).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn recv_multiple_pings() {
     let _ = env_logger::try_init();
     let (io, mut client) = mock::new();
@@ -56,7 +57,7 @@ async fn recv_multiple_pings() {
     join(client, srv).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn pong_has_highest_priority() {
     let _ = env_logger::try_init();
     let (io, mut client) = mock::new();
@@ -94,7 +95,7 @@ async fn pong_has_highest_priority() {
     join(client, srv).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn user_ping_pong() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -136,7 +137,7 @@ async fn user_ping_pong() {
     join(srv, client).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn user_notifies_when_connection_closes() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();

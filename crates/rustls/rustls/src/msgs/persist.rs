@@ -8,7 +8,7 @@ use webpki;
 
 use std::mem;
 use std::cmp;
-
+use std::prelude::v1::*;
 // These are the keys and values we store in session storage.
 
 // --- Client types ---

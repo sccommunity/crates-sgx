@@ -1,12 +1,10 @@
+#[cfg(feature = "std")]
+use std::prelude::v1::*;
 use crate::{
     encode::{add_padding, encode_to_slice},
     Config,
 };
-#[cfg(any(feature = "alloc", feature = "std", test))]
-use alloc::string::String;
 use core::cmp;
-#[cfg(any(feature = "alloc", feature = "std", test))]
-use core::str;
 
 /// The output mechanism for ChunkedEncoder's encoded bytes.
 pub trait Sink {
@@ -101,7 +99,7 @@ impl<'a> Sink for StringSink<'a> {
     type Error = ();
 
     fn write_encoded_bytes(&mut self, s: &[u8]) -> Result<(), Self::Error> {
-        self.string.push_str(str::from_utf8(s).unwrap());
+        self.string.push_str(std::str::from_utf8(s).unwrap());
 
         Ok(())
     }

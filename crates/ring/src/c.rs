@@ -26,26 +26,26 @@ pub(crate) type int = i32;
 pub(crate) type uint = u32;
 pub(crate) type size_t = usize;
 
-#[cfg(all(test, any(unix, windows)))]
-mod tests {
-    use crate::c;
-
-    #[test]
-    fn test_libc_compatible() {
-        {
-            let x: c::int = 1;
-            let _x: libc::c_int = x;
-        }
-
-        {
-            let x: c::uint = 1;
-            let _x: libc::c_uint = x;
-        }
-
-        {
-            let x: c::size_t = 1;
-            let _x: libc::size_t = x;
-            let _x: usize = x;
-        }
-    }
-}
+//#[cfg(all(test, any(unix, windows)))]
+//mod tests {
+//    use crate::c;
+//
+//    #[test]
+//    fn test_libc_compatible() {
+//        {
+//            let x: c::int = 1;
+//            let _x: libc::c_int = x;
+//        }
+//
+//        {
+//            let x: c::uint = 1;
+//            let _x: libc::c_uint = x;
+//        }
+//
+//        {
+//            let x: c::size_t = 1;
+//            let _x: libc::size_t = x;
+//            let _x: usize = x;
+//        }
+//    }
+//}

@@ -5,7 +5,7 @@ use crate::key;
 use crate::hash_hs;
 
 use std::mem;
-
+use std::prelude::v1::*;
 pub struct HandshakeDetails {
     pub transcript: hash_hs::HandshakeHash,
     pub hash_at_server_fin: Vec<u8>,

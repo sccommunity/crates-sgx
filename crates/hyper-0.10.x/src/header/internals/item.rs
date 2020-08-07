@@ -2,7 +2,7 @@ use std::any::Any;
 use std::any::TypeId;
 use std::fmt;
 use std::str::from_utf8;
-
+use std::prelude::v1::*;
 use super::cell::{OptCell, PtrMapCell};
 use header::{Header, HeaderFormat, MultilineFormatter};
 

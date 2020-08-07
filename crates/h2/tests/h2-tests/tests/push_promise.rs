@@ -1,8 +1,11 @@
 use futures::future::join;
 use futures::{StreamExt, TryStreamExt};
 use h2_support::prelude::*;
+use std::string::ToString;
+use crates_unittest::{ test_case };
+use std::prelude::v1::*;
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn recv_push_works() {
     let _ = env_logger::try_init();
 
@@ -59,7 +62,7 @@ async fn recv_push_works() {
     join(mock, h2).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn pushed_streams_arent_dropped_too_early() {
     // tests that by default, received push promises work
     let _ = env_logger::try_init();
@@ -126,7 +129,7 @@ async fn pushed_streams_arent_dropped_too_early() {
     join(mock, h2).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn recv_push_when_push_disabled_is_conn_error() {
     let _ = env_logger::try_init();
 
@@ -184,7 +187,7 @@ async fn recv_push_when_push_disabled_is_conn_error() {
     join(mock, h2).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn pending_push_promises_reset_when_dropped() {
     let _ = env_logger::try_init();
 
@@ -231,7 +234,7 @@ async fn pending_push_promises_reset_when_dropped() {
     join(srv, client).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn recv_push_promise_over_max_header_list_size() {
     let _ = env_logger::try_init();
     let (io, mut srv) = mock::new();
@@ -281,7 +284,7 @@ async fn recv_push_promise_over_max_header_list_size() {
     join(srv, client).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn recv_invalid_push_promise_headers_is_stream_protocol_error() {
     // Unsafe method or content length is stream protocol error
     let _ = env_logger::try_init();
@@ -346,7 +349,7 @@ fn recv_push_promise_with_wrong_authority_is_stream_error() {
     // if server is foo.com, :authority = bar.com is stream error
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn recv_push_promise_skipped_stream_id() {
     let _ = env_logger::try_init();
 
@@ -400,7 +403,7 @@ async fn recv_push_promise_skipped_stream_id() {
     join(mock, h2).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn recv_push_promise_dup_stream_id() {
     let _ = env_logger::try_init();
 

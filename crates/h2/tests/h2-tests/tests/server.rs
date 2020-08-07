@@ -4,11 +4,13 @@ use futures::future::{join, poll_fn};
 use futures::StreamExt;
 use h2_support::prelude::*;
 use tokio::io::AsyncWriteExt;
-
+use std::string::ToString;
+use crates_unittest::{ test_case };
+use std::prelude::v1::*;
 const SETTINGS: &'static [u8] = &[0, 0, 0, 4, 0, 0, 0, 0, 0];
 const SETTINGS_ACK: &'static [u8] = &[0, 0, 0, 4, 1, 0, 0, 0, 0];
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn read_preface_in_multiple_frames() {
     let _ = env_logger::try_init();
 
@@ -26,7 +28,7 @@ async fn read_preface_in_multiple_frames() {
     assert!(h2.next().await.is_none());
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn server_builder_set_max_concurrent_streams() {
     let _ = env_logger::try_init();
     let (io, mut client) = mock::new();
@@ -70,7 +72,7 @@ async fn server_builder_set_max_concurrent_streams() {
     join(client, h2).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn serve_request() {
     let _ = env_logger::try_init();
     let (io, mut client) = mock::new();
@@ -105,7 +107,7 @@ async fn serve_request() {
     join(client, srv).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn serve_connect() {
     let _ = env_logger::try_init();
     let (io, mut client) = mock::new();
@@ -136,7 +138,7 @@ async fn serve_connect() {
     join(client, srv).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn push_request() {
     let _ = env_logger::try_init();
     let (io, mut client) = mock::new();
@@ -220,7 +222,7 @@ async fn push_request() {
     join(client, srv).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn push_request_against_concurrency() {
     let _ = env_logger::try_init();
     let (io, mut client) = mock::new();
@@ -304,7 +306,7 @@ async fn push_request_against_concurrency() {
     join(client, srv).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn push_request_with_data() {
     let _ = env_logger::try_init();
     let (io, mut client) = mock::new();
@@ -370,7 +372,7 @@ async fn push_request_with_data() {
     join(client, srv).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn push_request_between_data() {
     let _ = env_logger::try_init();
     let (io, mut client) = mock::new();
@@ -441,7 +443,7 @@ async fn push_request_between_data() {
 #[ignore]
 fn accept_with_pending_connections_after_socket_close() {}
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn recv_invalid_authority() {
     let _ = env_logger::try_init();
     let (io, mut client) = mock::new();
@@ -468,7 +470,7 @@ async fn recv_invalid_authority() {
     join(client, srv).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn recv_connection_header() {
     let _ = env_logger::try_init();
     let (io, mut client) = mock::new();
@@ -505,7 +507,7 @@ async fn recv_connection_header() {
     join(client, srv).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn sends_reset_cancel_when_req_body_is_dropped() {
     let _ = env_logger::try_init();
     let (io, mut client) = mock::new();
@@ -537,7 +539,7 @@ async fn sends_reset_cancel_when_req_body_is_dropped() {
     join(client, srv).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn abrupt_shutdown() {
     let _ = env_logger::try_init();
     let (io, mut client) = mock::new();
@@ -581,7 +583,7 @@ async fn abrupt_shutdown() {
     join(client, srv).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn graceful_shutdown() {
     let _ = env_logger::try_init();
     let (io, mut client) = mock::new();
@@ -656,7 +658,7 @@ async fn graceful_shutdown() {
     join(client, srv).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn goaway_even_if_client_sent_goaway() {
     let _ = env_logger::try_init();
     let (io, mut client) = mock::new();
@@ -705,7 +707,7 @@ async fn goaway_even_if_client_sent_goaway() {
     join(client, srv).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn sends_reset_cancel_when_res_body_is_dropped() {
     let _ = env_logger::try_init();
     let (io, mut client) = mock::new();
@@ -759,7 +761,7 @@ async fn sends_reset_cancel_when_res_body_is_dropped() {
     join(client, srv).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn too_big_headers_sends_431() {
     let _ = env_logger::try_init();
     let (io, mut client) = mock::new();
@@ -795,7 +797,7 @@ async fn too_big_headers_sends_431() {
     join(client, srv).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn too_big_headers_sends_reset_after_431_if_not_eos() {
     let _ = env_logger::try_init();
     let (io, mut client) = mock::new();
@@ -830,7 +832,7 @@ async fn too_big_headers_sends_reset_after_431_if_not_eos() {
     join(client, srv).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn poll_reset() {
     let _ = env_logger::try_init();
     let (io, mut client) = mock::new();
@@ -870,7 +872,7 @@ async fn poll_reset() {
     join(client, srv).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn poll_reset_io_error() {
     let _ = env_logger::try_init();
     let (io, mut client) = mock::new();
@@ -911,7 +913,7 @@ async fn poll_reset_io_error() {
     join(client, srv).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn poll_reset_after_send_response_is_user_error() {
     let _ = env_logger::try_init();
     let (io, mut client) = mock::new();
@@ -965,7 +967,7 @@ async fn poll_reset_after_send_response_is_user_error() {
     join(client, srv).await;
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn server_error_on_unclean_shutdown() {
     let _ = env_logger::try_init();
     let (io, mut client) = mock::new();
@@ -978,7 +980,7 @@ async fn server_error_on_unclean_shutdown() {
     srv.await.expect_err("should error");
 }
 
-#[tokio::test]
+#[crates_unittest::test]
 async fn request_without_authority() {
     let _ = env_logger::try_init();
     let (io, mut client) = mock::new();

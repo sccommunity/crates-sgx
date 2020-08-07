@@ -9,7 +9,7 @@ use crate::error::TLSError;
 use crate::session::SessionSecrets;
 use crate::suites::SupportedCipherSuite;
 use crate::key_schedule::{derive_traffic_key, derive_traffic_iv};
-
+use std::prelude::v1::*;
 /// Objects with this trait can decrypt TLS messages.
 pub trait MessageDecrypter : Send + Sync {
     fn decrypt(&self, m: Message, seq: u64) -> Result<Message, TLSError>;

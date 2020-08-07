@@ -2,7 +2,7 @@ use std::cmp;
 use std::collections::hash_map::Entry;
 use std::collections::{HashMap, HashSet};
 use std::fmt;
-
+use std::prelude::v1::*;
 use utf8_ranges::{Utf8Range, Utf8Sequences};
 
 use crate::automaton::Automaton;

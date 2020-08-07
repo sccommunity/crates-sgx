@@ -1,5 +1,6 @@
 //! Definition of a TOML value
 
+use std::prelude::v1::*;
 use std::collections::{BTreeMap, HashMap};
 use std::fmt;
 use std::hash::Hash;

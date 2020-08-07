@@ -12,7 +12,7 @@ use std::task::{Context, Poll, Waker};
 use tokio::io::AsyncWrite;
 
 use crate::PollExt;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, SgxMutex as Mutex};
 use std::{fmt, io};
 
 #[derive(Debug)]
