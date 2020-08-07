@@ -14,7 +14,11 @@ categories = ["data-structures", "no-std"]
 
 [build-dependencies]
 
+[dependencies]
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+
 [dependencies.serde]
+path = "../serde/serde"
 version = "1.0"
 optional = true
 default-features = false
@@ -35,8 +39,9 @@ name = "arraystring"
 harness = false
 
 [features]
-default = ["std"]
-std = []
+default = ["std", "mesalock_sgx"]
+std = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd", "std"]
 
 array-sizes-33-128 = []
 array-sizes-129-255 = []
