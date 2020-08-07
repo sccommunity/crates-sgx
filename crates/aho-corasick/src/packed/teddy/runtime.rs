@@ -48,7 +48,8 @@
 //
 // All variants are fairly heavily tested in src/packed/tests.rs.
 
-use std::arch::x86_64::*;
+use std::prelude::v1::*;
+use core::arch::x86_64::*;
 use std::mem;
 
 use packed::pattern::{PatternID, Patterns};

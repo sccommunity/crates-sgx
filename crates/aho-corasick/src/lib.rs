@@ -183,16 +183,27 @@ disabled via
 
 // We can never be truly no_std, but we could be alloc-only some day, so
 // require the std feature for now.
+
+#![cfg_attr(all(feature = "mesalock_sgx", not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"), feature(rustc_private))]
+
 #[cfg(not(feature = "std"))]
 compile_error!("`std` feature is currently required to build this crate");
 
-extern crate memchr;
-// #[cfg(doctest)]
-// #[macro_use]
-// extern crate doc_comment;
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
 
-// #[cfg(doctest)]
-// doctest!("../README.md");
+#[cfg(all(feature = "mesalock_sgx", target_env = "sgx"))]
+extern crate core;
+
+extern crate memchr;
+#[cfg(test)]
+#[macro_use]
+extern crate doc_comment;
+
+#[cfg(test)]
+doctest!("../README.md");
 
 pub use ahocorasick::{
     AhoCorasick, AhoCorasickBuilder, FindIter, FindOverlappingIter, MatchKind,

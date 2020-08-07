@@ -1,3 +1,4 @@
+use std::prelude::v1::*;
 use std::mem::size_of;
 
 use ahocorasick::MatchKind;

@@ -1,5 +1,6 @@
 // See the README in this directory for an explanation of the Teddy algorithm.
 
+use std::prelude::v1::*;
 use std::cmp;
 use std::collections::BTreeMap;
 use std::fmt;
@@ -86,23 +87,24 @@ impl Builder {
         if patterns.len() > 64 {
             return None;
         }
-        let has_ssse3 = is_x86_feature_detected!("ssse3");
-        let has_avx = is_x86_feature_detected!("avx2");
-        let avx = if self.avx == Some(true) {
-            if !has_avx {
-                return None;
-            }
-            true
-        } else if self.avx == Some(false) {
-            if !has_ssse3 {
-                return None;
-            }
-            false
-        } else if !has_ssse3 && !has_avx {
-            return None;
-        } else {
-            has_avx
-        };
+        //let has_ssse3 = is_x86_feature_detected!("ssse3");
+        //let has_avx = is_x86_feature_detected!("avx2");
+        //let avx = if self.avx == Some(true) {
+        //    if !has_avx {
+        //        return None;
+        //    }
+        //    true
+        //} else if self.avx == Some(false) {
+        //    if !has_ssse3 {
+        //        return None;
+        //    }
+        //    false
+        //} else if !has_ssse3 && !has_avx {
+        //    return None;
+        //} else {
+        //    has_avx
+        //};
+        let avx = true;
         let fat = match self.fat {
             None => avx && patterns.len() > 32,
             Some(false) => false,
