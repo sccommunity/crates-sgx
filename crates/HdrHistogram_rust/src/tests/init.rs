@@ -1,6 +1,7 @@
 use crate::tests::helpers::histo64;
-
-#[test]
+use std::prelude::v1::*;
+use crates_unittest::test_case;
+#[test_case]
 fn init_fields_smallest_possible_array() {
     let h = histo64(1, 2, 0);
 
@@ -22,7 +23,7 @@ fn init_fields_smallest_possible_array() {
     assert_eq!(63, h.leading_zero_count_base);
 }
 
-#[test]
+#[test_case]
 fn init_fields_max_value_max_precision_largest_possible_array() {
     let h = histo64(1, u64::max_value(), 5);
 
@@ -48,7 +49,7 @@ fn init_fields_max_value_max_precision_largest_possible_array() {
     assert_eq!(64 - 17 - 1, h.leading_zero_count_base);
 }
 
-#[test]
+#[test_case]
 fn init_fields_max_value_medium_precision() {
     let h = histo64(1, u64::max_value(), 3);
 
@@ -75,7 +76,7 @@ fn init_fields_max_value_medium_precision() {
     assert_eq!(64 - 10 - 1, h.leading_zero_count_base);
 }
 
-#[test]
+#[test_case]
 fn init_fields_1_bucket_medium_precision() {
     let h = histo64(1, 2000, 3);
 
@@ -98,7 +99,7 @@ fn init_fields_1_bucket_medium_precision() {
     assert_eq!(64 - 10 - 1, h.leading_zero_count_base);
 }
 
-#[test]
+#[test_case]
 fn init_fields_max_value_0_precision_most_buckets() {
     let h = histo64(1, u64::max_value(), 0);
 
@@ -122,7 +123,7 @@ fn init_fields_max_value_0_precision_most_buckets() {
     assert_eq!(64 - 1, h.leading_zero_count_base);
 }
 
-#[test]
+#[test_case]
 fn init_fields_max_value_0_precision_increased_min_value() {
     let h = histo64(1000, u64::max_value(), 0);
 
@@ -148,7 +149,7 @@ fn init_fields_max_value_0_precision_increased_min_value() {
     assert_eq!(64 - 9 - 1, h.leading_zero_count_base);
 }
 
-#[test]
+#[test_case]
 fn init_fields_max_value_max_precision_increased_min_value() {
     let h = histo64(1000, u64::max_value(), 5);
 
@@ -177,7 +178,7 @@ fn init_fields_max_value_max_precision_increased_min_value() {
     assert_eq!(64 - 9 - 17 - 1, h.leading_zero_count_base);
 }
 
-#[test]
+#[test_case]
 fn init_fields_10m_max_1k_min_middle_precision() {
     let h = histo64(1000, 10_000_000, 3);
 
@@ -207,7 +208,7 @@ fn init_fields_10m_max_1k_min_middle_precision() {
     assert_eq!(64 - 9 - 10 - 1, h.leading_zero_count_base);
 }
 
-#[test]
+#[test_case]
 fn init_fields_max_value_max_unit_magnitude_0_precision() {
     let h = histo64(u64::max_value() / 4, u64::max_value(), 0);
 
@@ -238,7 +239,7 @@ fn init_fields_max_value_max_unit_magnitude_0_precision() {
     assert_eq!(64 - 62 - 1, h.leading_zero_count_base);
 }
 
-#[test]
+#[test_case]
 fn init_fields_max_value_max_unit_magnitude_max_precision() {
     let h = histo64(1 << 45, u64::max_value(), 5);
 

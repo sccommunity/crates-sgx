@@ -182,7 +182,7 @@ use std::{fmt, io};
 
 use super::{Counter, Histogram};
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests;
 
 #[cfg(all(test, feature = "bench_private"))]

@@ -1,15 +1,16 @@
-#[cfg(all(feature = "sync", test))]
+//#[cfg(all(feature = "sync", test))]
 mod sync {
     use hdrhistogram::{sync::SyncHistogram, Histogram};
     use std::sync::{atomic, Arc};
     use std::{thread, time};
-    
+    use crates_unittest::test_case;
+    use std::prelude::v1::*;
     const TRACKABLE_MAX: u64 = 3600 * 1000 * 1000;
     // Store up to 2 * 10^3 in single-unit precision. Can be 5 at most.
     const SIGFIG: u8 = 3;
     const TEST_VALUE_LEVEL: u64 = 4;
 
-    #[test]
+    #[test_case]
     fn record_through() {
         let mut h: SyncHistogram<_> = Histogram::<u64>::new_with_max(TRACKABLE_MAX, SIGFIG)
             .unwrap()
@@ -19,7 +20,7 @@ mod sync {
         assert_eq!(h.len(), 1);
     }
 
-    #[test]
+    #[test_case]
     fn recorder_drop() {
         let mut h: SyncHistogram<_> = Histogram::<u64>::new_with_max(TRACKABLE_MAX, SIGFIG)
             .unwrap()
@@ -34,26 +35,31 @@ mod sync {
         jh.join().unwrap();
     }
 
-    #[test]
+    //#[test_case]
     fn record_nodrop() {
         let mut h: SyncHistogram<_> = Histogram::<u64>::new_with_max(TRACKABLE_MAX, SIGFIG)
             .unwrap()
             .into();
         let barrier = Arc::new(std::sync::Barrier::new(2));
+        
         let mut r = h.recorder();
         let b = Arc::clone(&barrier);
         let jh = thread::spawn(move || {
             r += TEST_VALUE_LEVEL;
             b.wait();
         });
+        
         h.refresh();
+        println!("len  {}", h.len());   
         assert_eq!(h.count_at(TEST_VALUE_LEVEL), 1);
         assert_eq!(h.len(), 1);
+      
         barrier.wait();
         jh.join().unwrap();
+        
     }
 
-    #[test]
+    #[test_case]
     fn phase_timeout() {
         let mut h: SyncHistogram<_> = Histogram::<u64>::new_with_max(TRACKABLE_MAX, SIGFIG)
             .unwrap()
@@ -69,7 +75,7 @@ mod sync {
         assert_eq!(h.len(), 1);
     }
 
-    #[test]
+    #[test_case]
     fn recorder_drop_staged() {
         let mut h: SyncHistogram<_> = Histogram::<u64>::new_with_max(TRACKABLE_MAX, SIGFIG)
             .unwrap()
@@ -104,7 +110,7 @@ mod sync {
         assert_eq!(h.len(), n);
     }
 
-    #[test]
+    #[test_case]
     fn phase_no_wait_after_drop() {
         let mut h: SyncHistogram<_> = Histogram::<u64>::new_with_max(TRACKABLE_MAX, SIGFIG)
             .unwrap()
@@ -118,13 +124,13 @@ mod sync {
         assert_eq!(h.len(), 0);
     }
 
-    #[test]
+    #[test_case]
     fn mt_record_static() {
         let mut h: SyncHistogram<_> = Histogram::<u64>::new_with_max(TRACKABLE_MAX, SIGFIG)
             .unwrap()
             .into();
 
-        let n = 16;
+        let n = 3;
         let barrier = Arc::new(std::sync::Barrier::new(n + 1));
         let jhs: Vec<_> = (0..n)
             .map(|_| {
@@ -147,7 +153,7 @@ mod sync {
         assert_eq!(h.len(), jhs.into_iter().map(|r| r.join().unwrap()).sum());
     }
 
-    #[test]
+    #[test_case]
     fn refresh_times_out() {
         let mut h: SyncHistogram<_> = Histogram::<u64>::new_with_max(TRACKABLE_MAX, SIGFIG)
             .unwrap()
@@ -157,13 +163,13 @@ mod sync {
         h.refresh_timeout(time::Duration::from_millis(100));
     }
 
-    #[test]
+    #[test_case]
     fn mt_record_dynamic() {
         let mut h: SyncHistogram<_> = Histogram::<u64>::new_with_max(TRACKABLE_MAX, SIGFIG)
             .unwrap()
             .into();
 
-        let n = 16;
+        let n = 2;
         let barrier = Arc::new(std::sync::Barrier::new(n + 1));
         let jhs: Vec<_> = (0..n)
             .map(|_| {
@@ -189,7 +195,7 @@ mod sync {
         assert_eq!(h.len(), jhs.into_iter().map(|r| r.join().unwrap()).sum());
     }
 
-    #[test]
+    #[test_case]
     fn idle_recorder() {
         let mut h: SyncHistogram<_> = Histogram::<u64>::new_with_max(TRACKABLE_MAX, SIGFIG)
             .unwrap()
@@ -214,7 +220,7 @@ mod sync {
         jh.join().unwrap();
     }
 
-    #[test]
+    #[test_case]
     fn clone_idle_recorder() {
         let mut h: SyncHistogram<_> = Histogram::<u64>::new_with_max(TRACKABLE_MAX, SIGFIG)
             .unwrap()
@@ -259,7 +265,7 @@ mod sync {
         assert_eq!(h.len(), n);
     }
 
-    #[test]
+    #[test_case]
     fn concurrent_writes() {
         let mut h: SyncHistogram<_> = Histogram::<u64>::new_with_max(TRACKABLE_MAX, SIGFIG)
             .unwrap()

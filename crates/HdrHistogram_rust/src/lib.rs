@@ -194,17 +194,31 @@
     unused_results,
     variant_size_differences
 )]
+
 // Enable feature(test) is enabled so that we can have benchmarks of private code
 #![cfg_attr(all(test, feature = "bench_private"), feature(test))]
+
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
+
+
 
 #[cfg(feature = "serialization")]
 #[macro_use]
 extern crate nom;
 
+
+
 use num_traits::ToPrimitive;
 use std::borrow::Borrow;
 use std::cmp;
 use std::ops::{AddAssign, SubAssign};
+use std::prelude::v1::Vec;
 
 use iterators::HistogramIterator;
 
@@ -1842,7 +1856,8 @@ where
 // TODO: hash
 
 #[path = "tests/tests.rs"]
-#[cfg(test)]
+//#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests;
 
 mod core;

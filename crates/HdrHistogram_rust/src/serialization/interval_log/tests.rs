@@ -6,8 +6,9 @@ use std::{iter, time};
 use super::super::super::*;
 use super::super::*;
 use super::*;
-
-#[test]
+use std::prelude::v1::*;
+use crates_unittest::test_case;
+#[test_case]
 fn write_header_comment() {
     let mut buf = Vec::new();
     let mut serializer = V2Serializer::new();
@@ -20,7 +21,7 @@ fn write_header_comment() {
     assert_eq!(&b"#foo\n"[..], &buf[..]);
 }
 
-#[test]
+#[test_case]
 fn write_header_then_interval_comment() {
     let mut buf = Vec::new();
     let mut serializer = V2Serializer::new();
@@ -37,7 +38,7 @@ fn write_header_then_interval_comment() {
     assert_eq!("#foo\n#bar\n#baz\n", str::from_utf8(&buf[..]).unwrap());
 }
 
-#[test]
+#[test_case]
 fn write_comment_control_characters_still_parseable() {
     let mut buf = Vec::new();
     let mut serializer = V2Serializer::new();
@@ -83,7 +84,7 @@ fn write_comment_control_characters_still_parseable() {
     assert_eq!(None, i.next());
 }
 
-#[test]
+#[test_case]
 fn write_comment_newline_wraps() {
     let mut buf = Vec::new();
     let mut serializer = V2Serializer::new();
@@ -103,7 +104,7 @@ fn write_comment_newline_wraps() {
     );
 }
 
-#[test]
+#[test_case]
 fn write_headers_multiple_times_only_last_is_used() {
     let mut buf = Vec::new();
     let mut serializer = V2Serializer::new();
@@ -128,7 +129,7 @@ fn write_headers_multiple_times_only_last_is_used() {
     assert_eq!(expected, str::from_utf8(&buf[..]).unwrap());
 }
 
-#[test]
+#[test_case]
 fn write_interval_histo_no_tag() {
     let mut buf = Vec::new();
     let mut serializer = V2Serializer::new();
@@ -159,7 +160,7 @@ fn write_interval_histo_no_tag() {
     assert_eq!(expected, str::from_utf8(&buf[..]).unwrap());
 }
 
-#[test]
+#[test_case]
 fn write_interval_histo_with_tag() {
     let mut buf = Vec::new();
     let mut serializer = V2Serializer::new();
@@ -187,7 +188,7 @@ fn write_interval_histo_with_tag() {
     );
 }
 
-#[test]
+#[test_case]
 fn write_start_time() {
     let mut buf = Vec::new();
     let mut serializer = V2Serializer::new();
@@ -203,7 +204,7 @@ fn write_start_time() {
     );
 }
 
-#[test]
+#[test_case]
 fn write_base_time() {
     let mut buf = Vec::new();
     let mut serializer = V2Serializer::new();
@@ -221,7 +222,7 @@ fn write_base_time() {
     );
 }
 
-#[test]
+#[test_case]
 fn parse_duration_full_ns() {
     let (rest, dur) = fract_sec_duration(b"123456.789012345foo").unwrap();
 
@@ -229,7 +230,7 @@ fn parse_duration_full_ns() {
     assert_eq!(b"foo", rest);
 }
 
-#[test]
+#[test_case]
 fn parse_duration_scale_ns() {
     let (rest, dur) = fract_sec_duration(b"123456.789012foo").unwrap();
 
@@ -237,7 +238,7 @@ fn parse_duration_scale_ns() {
     assert_eq!(b"foo", rest);
 }
 
-#[test]
+#[test_case]
 fn parse_duration_too_many_ns() {
     let (rest, dur) = fract_sec_duration(b"123456.7890123456foo").unwrap();
 
@@ -246,7 +247,7 @@ fn parse_duration_too_many_ns() {
     assert_eq!(b"foo", rest);
 }
 
-#[test]
+#[test_case]
 fn duration_fp_roundtrip_accuracy() {
     let mut rng = rand::thread_rng();
 
@@ -281,7 +282,7 @@ fn duration_fp_roundtrip_accuracy() {
     assert_eq!(0, errors.len());
 }
 
-#[test]
+#[test_case]
 fn parse_start_time_with_human_date() {
     let (rest, e) = start_time(
         b"#[StartTime: 1441812279.474 (seconds since epoch), Wed Sep 09 08:24:39 PDT 2015]\nfoo",
@@ -294,7 +295,7 @@ fn parse_start_time_with_human_date() {
     assert_eq!(b"foo", rest);
 }
 
-#[test]
+#[test_case]
 fn parse_start_time_without_human_date() {
     // Can't be bothered to format a timestamp for humans, so we don't write that data. It's just
     // another part that could be wrong -- what if it disagrees with the seconds since epoch?
@@ -307,7 +308,7 @@ fn parse_start_time_without_human_date() {
     assert_eq!(b"foo", rest);
 }
 
-#[test]
+#[test_case]
 fn parse_base_time() {
     let (rest, e) = base_time(b"#[BaseTime: 1441812279.474 (seconds since epoch)]\nfoo").unwrap();
 
@@ -317,7 +318,7 @@ fn parse_base_time() {
     assert_eq!(b"foo", rest);
 }
 
-#[test]
+#[test_case]
 fn parse_legend() {
     let input = b"\"StartTimestamp\",\"Interval_Length\",\"Interval_Max\",\
     \"Interval_Compressed_Histogram\"\nfoo";
@@ -326,14 +327,14 @@ fn parse_legend() {
     assert_eq!(b"foo", rest);
 }
 
-#[test]
+#[test_case]
 fn parse_comment() {
     let (rest, _) = comment_line(b"#SomeOtherComment\nfoo").unwrap();
 
     assert_eq!(b"foo", rest);
 }
 
-#[test]
+#[test_case]
 fn parse_interval_hist_no_tag() {
     let (rest, e) = interval_hist(b"0.127,1.007,2.769,couldBeBase64\nfoo").unwrap();
 
@@ -349,7 +350,7 @@ fn parse_interval_hist_no_tag() {
     assert_eq!(b"foo", rest);
 }
 
-#[test]
+#[test_case]
 fn parse_interval_hist_with_tag() {
     let (rest, e) = interval_hist(b"Tag=t,0.127,1.007,2.769,couldBeBase64\nfoo").unwrap();
 
@@ -365,7 +366,7 @@ fn parse_interval_hist_with_tag() {
     assert_eq!(b"foo", rest);
 }
 
-#[test]
+#[test_case]
 fn iter_with_ignored_prefix() {
     let mut data = Vec::new();
     data.extend_from_slice(b"#I'm a comment\n");
@@ -390,7 +391,7 @@ fn iter_with_ignored_prefix() {
     assert_eq!(vec![expected0, expected1], entries)
 }
 
-#[test]
+#[test_case]
 fn iter_without_ignored_prefix() {
     let mut data = Vec::new();
     data.extend_from_slice(b"Tag=t,0.127,1.007,2.769,couldBeBase64\n");
@@ -413,7 +414,7 @@ fn iter_without_ignored_prefix() {
     assert_eq!(vec![expected0, expected1], entries)
 }
 
-#[test]
+#[test_case]
 fn iter_multiple_entrties_with_interleaved_ignored() {
     let mut data = Vec::new();
     data.extend_from_slice(b"#I'm a comment\n");
@@ -443,7 +444,7 @@ fn iter_multiple_entrties_with_interleaved_ignored() {
     assert_eq!(vec![expected0, expected1, expected2], entries)
 }
 
-#[test]
+#[test_case]
 fn iter_all_ignored_empty_iter() {
     let mut data = Vec::new();
     data.extend_from_slice(b"#I'm a comment\n");

@@ -3,11 +3,13 @@ use super::{Serializer, V2_COMPRESSED_COOKIE};
 use crate::core::counter::Counter;
 use crate::Histogram;
 use byteorder::{BigEndian, WriteBytesExt};
-use flate2::write::ZlibEncoder;
-use flate2::Compression;
+//use flate2::write::ZlibEncoder;
+//use flate2::Compression;
+use libflate::zlib::Encoder;
+
 use std::io::{self, Write};
 use std::{self, error, fmt};
-
+use std::prelude::v1::Vec;
 /// Errors that occur during serialization.
 #[derive(Debug)]
 pub enum V2DeflateSerializeError {
@@ -114,9 +116,12 @@ impl Serializer for V2DeflateSerializer {
 
         {
             // TODO reuse deflate buf, or switch to lower-level flate2::Compress
-            let mut compressor = ZlibEncoder::new(&mut self.compressed_buf, Compression::default());
+            //let mut compressor = ZlibEncoder::new(&mut self.compressed_buf, Compression::default());
+            //compressor.write_all(&self.uncompressed_buf[0..uncompressed_len])?;
+            //let _ = compressor.finish()?;
+            let mut compressor = Encoder::new(&mut self.compressed_buf).unwrap();
             compressor.write_all(&self.uncompressed_buf[0..uncompressed_len])?;
-            let _ = compressor.finish()?;
+            let _ = compressor.finish().into_result()?;
         }
 
         // fill in length placeholder. Won't underflow since length is always at least 8, and won't

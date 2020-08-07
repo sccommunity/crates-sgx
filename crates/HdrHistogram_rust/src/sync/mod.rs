@@ -6,7 +6,7 @@ use std::borrow::Borrow;
 use std::borrow::BorrowMut;
 use std::marker::PhantomData;
 use std::ops::{AddAssign, Deref, DerefMut};
-use std::sync::{atomic, Arc, Mutex};
+use std::sync::{atomic, Arc, SgxMutex as Mutex};
 use std::time;
 
 /// A write-only handle to a [`SyncHistogram`].
@@ -72,7 +72,6 @@ impl<C: Counter> Drop for Recorder<C> {
         let h = Histogram::new_from(&self.local);
         let h = std::mem::replace(&mut self.local, h);
         let _ = self.shared.sender.send(h).is_ok(); // if this is err, the reader went away
-
         // explicitly drop guard to ensure we don't accidentally drop it above
         drop(truth);
     }
@@ -311,10 +310,10 @@ impl<C: Counter> SyncHistogram<C> {
                 .add(&h)
                 .expect("TODO: failed to merge histogram");
         }
-
+       
         // make sure no recorders can join or leave in the middle of this
         let recorders = self.shared.truth.lock().unwrap().recorders;
-
+       
         // then, we tell writers to phase
         let _ = self.shared.phase.fetch_add(1, atomic::Ordering::AcqRel);
 
@@ -339,13 +338,11 @@ impl<C: Counter> SyncHistogram<C> {
                     .recv()
                     .expect("SyncHistogram has an Arc<Shared> with a Receiver")
             };
-
             self.merged
                 .add(&h)
                 .expect("TODO: failed to merge histogram");
             phased += 1;
         }
-
         // we also gobble up extra histograms we may have been sent from more dropped writers
         while let Ok(h) = self.receiver.try_recv() {
             self.merged

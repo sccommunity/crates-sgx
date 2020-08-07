@@ -1,7 +1,8 @@
 use super::super::{CreationError, Histogram};
 use crate::tests::helpers::histo64;
-
-#[test]
+use std::prelude::v1::*;
+use crates_unittest::test_case;
+#[test_case]
 fn unit_magnitude_0_index_calculations() {
     let h = histo64(1_u64, 1_u64 << 32, 3);
     assert_eq!(2048, h.sub_bucket_count);
@@ -35,7 +36,7 @@ fn unit_magnitude_0_index_calculations() {
     );
 }
 
-#[test]
+#[test_case]
 fn unit_magnitude_4_index_calculations() {
     let h = histo64(1_u64 << 12, 1_u64 << 32, 3);
     assert_eq!(2048, h.sub_bucket_count);
@@ -84,7 +85,7 @@ fn unit_magnitude_4_index_calculations() {
     );
 }
 
-#[test]
+#[test_case]
 fn unit_magnitude_52_sub_bucket_magnitude_11_index_calculations() {
     // maximum unit magnitude for this precision
     let h = histo64(1_u64 << 52, u64::max_value(), 3);
@@ -127,7 +128,7 @@ fn unit_magnitude_52_sub_bucket_magnitude_11_index_calculations() {
     assert_eq!(1024 + 1023, h.sub_bucket_for(u64::max_value(), 1));
 }
 
-#[test]
+#[test_case]
 fn unit_magnitude_53_sub_bucket_magnitude_11_throws() {
     assert_eq!(
         CreationError::CannotRepresentSigFigBeyondLow,
@@ -135,7 +136,7 @@ fn unit_magnitude_53_sub_bucket_magnitude_11_throws() {
     );
 }
 
-#[test]
+#[test_case]
 fn unit_magnitude_55_sub_bucket_magnitude_8_ok() {
     let h = histo64(1_u64 << 55, 1_u64 << 63, 2);
     assert_eq!(256, h.sub_bucket_count);
@@ -152,7 +153,7 @@ fn unit_magnitude_55_sub_bucket_magnitude_8_ok() {
     assert_eq!(128 + 127, h.sub_bucket_for(u64::max_value(), 1));
 }
 
-#[test]
+#[test_case]
 fn unit_magnitude_62_sub_bucket_magnitude_1_ok() {
     let h = histo64(1_u64 << 62, 1_u64 << 63, 0);
     assert_eq!(2, h.sub_bucket_count);
@@ -169,39 +170,39 @@ fn unit_magnitude_62_sub_bucket_magnitude_1_ok() {
     assert_eq!(1, h.sub_bucket_for(u64::max_value(), 1));
 }
 
-#[test]
+#[test_case]
 fn bucket_for_smallest_value_in_first_bucket() {
     let h = histo64(1, 100_000, 3);
     assert_eq!(0, h.bucket_for(0))
 }
 
-#[test]
+#[test_case]
 fn bucket_for_biggest_value_in_first_bucket() {
     let h = histo64(1, 100_000, 3);
     // sub bucket size 2048, and first bucket uses all 2048 slots
     assert_eq!(0, h.bucket_for(2047))
 }
 
-#[test]
+#[test_case]
 fn bucket_for_smallest_value_in_second_bucket() {
     let h = histo64(1, 100_000, 3);
     assert_eq!(1, h.bucket_for(2048))
 }
 
-#[test]
+#[test_case]
 fn bucket_for_biggest_value_in_second_bucket() {
     let h = histo64(1, 100_000, 3);
     // second value uses only 1024 slots, but scales by 2
     assert_eq!(1, h.bucket_for(4095))
 }
 
-#[test]
+#[test_case]
 fn bucket_for_smallest_value_in_third_bucket() {
     let h = histo64(1, 100_000, 3);
     assert_eq!(2, h.bucket_for(4096))
 }
 
-#[test]
+#[test_case]
 fn bucket_for_smallest_value_in_last_bucket() {
     let h = histo64(1, 100_000, 3);
 
@@ -209,7 +210,7 @@ fn bucket_for_smallest_value_in_last_bucket() {
     assert_eq!(6, h.bucket_for(65536))
 }
 
-#[test]
+#[test_case]
 fn bucket_for_value_below_smallest_clamps_to_zero() {
     let h = histo64(1024, 100_000, 3);
 
@@ -220,7 +221,7 @@ fn bucket_for_value_below_smallest_clamps_to_zero() {
     assert_eq!(0, h.bucket_for(1024))
 }
 
-#[test]
+#[test_case]
 fn bucket_for_value_above_biggest_isnt_clamped_at_max_bucket() {
     let h = histo64(1, 100_000, 3);
 
@@ -229,7 +230,7 @@ fn bucket_for_value_above_biggest_isnt_clamped_at_max_bucket() {
     assert_eq!(26, h.bucket_for(100_000_000_000));
 }
 
-#[test]
+#[test_case]
 fn sub_bucket_for_zero_value_in_first_bucket() {
     let h = histo64(1, 100_000, 3);
     // below min distinguishable value, but still gets bucketed into 0
@@ -237,14 +238,14 @@ fn sub_bucket_for_zero_value_in_first_bucket() {
     assert_eq!(0, h.sub_bucket_for(value, h.bucket_for(value)))
 }
 
-#[test]
+#[test_case]
 fn sub_bucket_for_smallest_distinguishable_value_in_first_bucket() {
     let h = histo64(1, 100_000, 3);
     let value = 1;
     assert_eq!(1, h.sub_bucket_for(value, h.bucket_for(value)))
 }
 
-#[test]
+#[test_case]
 fn sub_bucket_for_zero_value_in_first_bucket_unit_magnitude_2() {
     let h = histo64(4, 100_000, 3);
     let value = 0;
@@ -252,7 +253,7 @@ fn sub_bucket_for_zero_value_in_first_bucket_unit_magnitude_2() {
     assert_eq!(0, h.sub_bucket_for(value, h.bucket_for(value)))
 }
 
-#[test]
+#[test_case]
 fn sub_bucket_for_smaller_than_distinguishable_value_in_first_bucket_unit_magnitude_2() {
     let h = histo64(4, 100_000, 3);
     let value = 3;
@@ -260,7 +261,7 @@ fn sub_bucket_for_smaller_than_distinguishable_value_in_first_bucket_unit_magnit
     assert_eq!(0, h.sub_bucket_for(value, h.bucket_for(value)))
 }
 
-#[test]
+#[test_case]
 fn sub_bucket_for_smallest_distinguishable_value_in_first_bucket_unit_magnitude_2() {
     let h = histo64(4, 100_000, 3);
     let value = 4;
@@ -268,7 +269,7 @@ fn sub_bucket_for_smallest_distinguishable_value_in_first_bucket_unit_magnitude_
     assert_eq!(1, h.sub_bucket_for(value, h.bucket_for(value)))
 }
 
-#[test]
+#[test_case]
 fn sub_bucket_for_largest_value_in_first_bucket_unit_magnitude_2() {
     let h = histo64(4, 100_000, 3);
     let value = 2048 * 4 - 1;
@@ -276,7 +277,7 @@ fn sub_bucket_for_largest_value_in_first_bucket_unit_magnitude_2() {
     assert_eq!(2047, h.sub_bucket_for(value, h.bucket_for(value)))
 }
 
-#[test]
+#[test_case]
 fn sub_bucket_for_smallest_value_in_second_bucket_unit_magnitude_2() {
     let h = histo64(4, 100_000, 3);
     let value = 2048 * 4;
@@ -284,14 +285,14 @@ fn sub_bucket_for_smallest_value_in_second_bucket_unit_magnitude_2() {
     assert_eq!(1024, h.sub_bucket_for(value, h.bucket_for(value)))
 }
 
-#[test]
+#[test_case]
 fn sub_bucket_for_largest_value_in_first_bucket() {
     let h = histo64(1, 100_000, 3);
     let value = 2047;
     assert_eq!(2047, h.sub_bucket_for(value, h.bucket_for(value)))
 }
 
-#[test]
+#[test_case]
 fn sub_bucket_for_smallest_value_in_second_bucket() {
     let h = histo64(1, 100_000, 3);
     let value = 2048;
@@ -300,7 +301,7 @@ fn sub_bucket_for_smallest_value_in_second_bucket() {
     assert_eq!(1024, h.sub_bucket_for(value, h.bucket_for(value)))
 }
 
-#[test]
+#[test_case]
 fn sub_bucket_for_biggest_value_in_second_bucket() {
     let h = histo64(1, 100_000, 3);
     let value = 4095;
@@ -309,7 +310,7 @@ fn sub_bucket_for_biggest_value_in_second_bucket() {
     assert_eq!(2047, h.sub_bucket_for(value, h.bucket_for(value)))
 }
 
-#[test]
+#[test_case]
 fn sub_bucket_for_smallest_value_in_third_bucket() {
     let h = histo64(1, 100_000, 3);
     let value = 4096;
@@ -317,7 +318,7 @@ fn sub_bucket_for_smallest_value_in_third_bucket() {
     assert_eq!(1024, h.sub_bucket_for(value, h.bucket_for(value)))
 }
 
-#[test]
+#[test_case]
 fn sub_bucket_for_value_below_smallest_clamps_to_zero() {
     let h = histo64(1024, 100_000, 3);
 
@@ -327,7 +328,7 @@ fn sub_bucket_for_value_below_smallest_clamps_to_zero() {
     assert_eq!(1, h.sub_bucket_for(1024, 0))
 }
 
-#[test]
+#[test_case]
 fn sub_bucket_for_value_above_biggest_still_works() {
     let h = histo64(1, 1024 * 1024, 3);
 
@@ -345,50 +346,50 @@ fn sub_bucket_for_value_above_biggest_still_works() {
     );
 }
 
-#[test]
+#[test_case]
 fn index_for_first_bucket_first_entry() {
     let h = histo64(1, 100_000, 3);
     assert_eq!(0, h.index_for(0).unwrap());
 }
 
-#[test]
+#[test_case]
 fn index_for_first_bucket_first_distinguishable_entry() {
     let h = histo64(1, 100_000, 3);
     assert_eq!(1, h.index_for(1).unwrap());
 }
 
-#[test]
+#[test_case]
 fn index_for_first_bucket_last_entry() {
     let h = histo64(1, 100_000, 3);
     assert_eq!(2047, h.index_for(2047).unwrap());
 }
 
-#[test]
+#[test_case]
 fn index_for_second_bucket_last_entry() {
     let h = histo64(1, 100_000, 3);
     assert_eq!(2048 + 1023, h.index_for(2048 + 2047).unwrap());
 }
 
-#[test]
+#[test_case]
 fn index_for_second_bucket_last_entry_indistinguishable() {
     let h = histo64(1, 100_000, 3);
     assert_eq!(2048 + 1023, h.index_for(2048 + 2046).unwrap());
 }
 
-#[test]
+#[test_case]
 fn index_for_second_bucket_first_entry() {
     let h = histo64(1, 100_000, 3);
     assert_eq!(2048, h.index_for(2048).unwrap());
 }
 
-#[test]
+#[test_case]
 fn index_for_below_smallest() {
     let h = histo64(1024, 100_000, 3);
 
     assert_eq!(0, h.index_for(512).unwrap());
 }
 
-#[test]
+#[test_case]
 fn index_for_way_past_largest_value_exceeds_length() {
     let h = histo64(1, 100_000, 3);
 

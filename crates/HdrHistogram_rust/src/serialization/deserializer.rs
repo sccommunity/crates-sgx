@@ -1,12 +1,13 @@
 use super::{V2_COMPRESSED_COOKIE, V2_COOKIE};
 use crate::{Counter, Histogram, RestatState};
 use byteorder::{BigEndian, ReadBytesExt};
-use flate2::read::ZlibDecoder;
+//use flate2::read::ZlibDecoder;
+use libflate::zlib::Decoder;
 use num_traits::ToPrimitive;
 use std::io::{self, Cursor, Read};
 use std::marker::PhantomData;
 use std::{self, error, fmt};
-
+use std::prelude::v1::Vec;
 /// Errors that can happen during deserialization.
 #[derive(Debug)]
 pub enum DeserializeError {
@@ -124,7 +125,9 @@ impl Deserializer {
             .ok_or(DeserializeError::UsizeTypeTooSmall)?;
 
         // TODO reuse deflate buf, or switch to lower-level flate2::Decompress
-        let mut deflate_reader = ZlibDecoder::new(reader.take(payload_len as u64));
+        //let mut deflate_reader = ZlibDecoder::new(reader.take(payload_len as u64));
+        //let inner_cookie = deflate_reader.read_u32::<BigEndian>()?;
+        let mut deflate_reader = Decoder::new(reader.take(payload_len as u64)).unwrap();
         let inner_cookie = deflate_reader.read_u32::<BigEndian>()?;
         if inner_cookie != V2_COOKIE {
             return Err(DeserializeError::InvalidCookie);

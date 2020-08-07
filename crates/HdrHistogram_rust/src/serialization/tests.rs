@@ -15,13 +15,14 @@ use rand::{Rng, SeedableRng};
 use std::fmt::{Debug, Display};
 use std::io::Cursor;
 use std::iter::once;
-
+use std::prelude::v1::*;
+use crates_unittest::test_case;
 use self::rand_varint::*;
 
 #[path = "rand_varint.rs"]
 mod rand_varint;
 
-#[test]
+#[test_case]
 fn serialize_all_zeros() {
     let h = histo64(1, 2047, 3);
     let mut s = V2Serializer::new();
@@ -47,7 +48,7 @@ fn serialize_all_zeros() {
     assert_eq!(1.0, reader.read_f64::<BigEndian>().unwrap());
 }
 
-#[test]
+#[test_case]
 fn serialize_roundtrip_all_zeros() {
     let orig = histo64(1, 2047, 3);
     let mut s = V2Serializer::new();
@@ -90,7 +91,7 @@ fn serialize_roundtrip_all_zeros() {
     assert_eq!(orig.counts, deser.counts);
 }
 
-#[test]
+#[test_case]
 fn serialize_roundtrip_1_count_for_every_value_1_bucket() {
     let mut h = histo64(1, 2047, 3);
     assert_eq!(1, h.bucket_count);
@@ -114,7 +115,7 @@ fn serialize_roundtrip_1_count_for_every_value_1_bucket() {
     assert_deserialized_histogram_matches_orig(h, h2);
 }
 
-#[test]
+#[test_case]
 fn serialize_roundtrip_1_count_for_every_value_2_buckets() {
     let mut h = histo64(1, 4095, 3);
     assert_eq!(2, h.bucket_count);
@@ -138,47 +139,47 @@ fn serialize_roundtrip_1_count_for_every_value_2_buckets() {
     assert_deserialized_histogram_matches_orig(h, h2);
 }
 
-#[test]
+#[test_case]
 fn serialize_roundtrip_random_v2_u64() {
     do_serialize_roundtrip_random(V2Serializer::new(), i64::max_value() as u64);
 }
 
-#[test]
+#[test_case]
 fn serialize_roundtrip_random_v2_u32() {
     do_serialize_roundtrip_random(V2Serializer::new(), u32::max_value());
 }
 
-#[test]
+#[test_case]
 fn serialize_roundtrip_random_v2_u16() {
     do_serialize_roundtrip_random(V2Serializer::new(), u16::max_value());
 }
 
-#[test]
+#[test_case]
 fn serialize_roundtrip_random_v2_u8() {
     do_serialize_roundtrip_random(V2Serializer::new(), u8::max_value());
 }
 
-#[test]
+#[test_case]
 fn serialize_roundtrip_random_v2_deflate_u64() {
     do_serialize_roundtrip_random(V2DeflateSerializer::new(), i64::max_value() as u64);
 }
 
-#[test]
+#[test_case]
 fn serialize_roundtrip_random_v2_deflate_u32() {
     do_serialize_roundtrip_random(V2DeflateSerializer::new(), u32::max_value());
 }
 
-#[test]
+#[test_case]
 fn serialize_roundtrip_random_v2_deflate_u16() {
     do_serialize_roundtrip_random(V2DeflateSerializer::new(), u16::max_value());
 }
 
-#[test]
+#[test_case]
 fn serialize_roundtrip_random_v2_deflate_u8() {
     do_serialize_roundtrip_random(V2DeflateSerializer::new(), u8::max_value());
 }
 
-#[test]
+#[test_case]
 fn encode_counts_all_zeros() {
     let h = histo64(1, u64::max_value(), 3);
     let counts_len = h.counts.len();
@@ -194,7 +195,7 @@ fn encode_counts_all_zeros() {
     assert_eq!(0, zig_zag_decode(varint_read(&mut cursor).unwrap()));
 }
 
-#[test]
+#[test_case]
 fn encode_counts_last_count_incremented() {
     let mut h = histo64(1, 2047, 3);
     let counts_len = h.counts.len();
@@ -218,7 +219,7 @@ fn encode_counts_last_count_incremented() {
     assert_eq!(3, cursor.position());
 }
 
-#[test]
+#[test_case]
 fn encode_counts_first_count_incremented() {
     let mut h = histo64(1, 2047, 3);
     let counts_len = h.counts.len();
@@ -241,7 +242,7 @@ fn encode_counts_first_count_incremented() {
     // max is 1, so rest isn't set
 }
 
-#[test]
+#[test_case]
 fn encode_counts_first_and_last_count_incremented() {
     let mut h = histo64(1, 2047, 3);
     let counts_len = h.counts.len();
@@ -271,7 +272,7 @@ fn encode_counts_first_and_last_count_incremented() {
     assert_eq!(4, cursor.position());
 }
 
-#[test]
+#[test_case]
 fn encode_counts_count_too_big() {
     let mut h = histo64(1, 2047, 3);
     let mut vec = vec![0; counts_array_max_encoded_size(h.counts.len()).unwrap()];
@@ -284,7 +285,7 @@ fn encode_counts_count_too_big() {
     );
 }
 
-#[test]
+#[test_case]
 fn varint_write_3_bit_value() {
     let mut buf = [0; 9];
     let length = varint_write(6, &mut buf[..]);
@@ -292,7 +293,7 @@ fn varint_write_3_bit_value() {
     assert_eq!(0x6, buf[0]);
 }
 
-#[test]
+#[test_case]
 fn varint_write_7_bit_value() {
     let mut buf = [0; 9];
     let length = varint_write(127, &mut buf[..]);
@@ -300,7 +301,7 @@ fn varint_write_7_bit_value() {
     assert_eq!(0x7F, buf[0]);
 }
 
-#[test]
+#[test_case]
 fn varint_write_9_bit_value() {
     let mut buf = [0; 9];
     let length = varint_write(256, &mut buf[..]);
@@ -309,7 +310,7 @@ fn varint_write_9_bit_value() {
     assert_eq!(vec![0x80, 0x02].as_slice(), &buf[0..length]);
 }
 
-#[test]
+#[test_case]
 fn varint_write_u64_max() {
     let mut buf = [0; 9];
     let length = varint_write(u64::max_value(), &mut buf[..]);
@@ -317,159 +318,159 @@ fn varint_write_u64_max() {
     assert_eq!(vec![0xFF; 9].as_slice(), &buf[..]);
 }
 
-#[test]
+#[test_case]
 fn varint_read_u64_max() {
     let input = &mut Cursor::new(vec![0xFF; 9]);
     assert_eq!(u64::max_value(), varint_read(input).unwrap());
 }
 
-#[test]
+#[test_case]
 fn varint_read_u64_zero() {
     let input = &mut Cursor::new(vec![0x00; 9]);
     assert_eq!(0, varint_read(input).unwrap());
 }
 
-#[test]
+#[test_case]
 fn varint_write_read_roundtrip_rand_1_byte() {
     do_varint_write_read_roundtrip_rand(1);
 }
 
-#[test]
+#[test_case]
 fn varint_write_read_roundtrip_rand_2_byte() {
     do_varint_write_read_roundtrip_rand(2);
 }
 
-#[test]
+#[test_case]
 fn varint_write_read_roundtrip_rand_3_byte() {
     do_varint_write_read_roundtrip_rand(3);
 }
 
-#[test]
+#[test_case]
 fn varint_write_read_roundtrip_rand_4_byte() {
     do_varint_write_read_roundtrip_rand(4);
 }
 
-#[test]
+#[test_case]
 fn varint_write_read_roundtrip_rand_5_byte() {
     do_varint_write_read_roundtrip_rand(5);
 }
 
-#[test]
+#[test_case]
 fn varint_write_read_roundtrip_rand_6_byte() {
     do_varint_write_read_roundtrip_rand(6);
 }
 
-#[test]
+#[test_case]
 fn varint_write_read_roundtrip_rand_7_byte() {
     do_varint_write_read_roundtrip_rand(7);
 }
 
-#[test]
+#[test_case]
 fn varint_write_read_roundtrip_rand_8_byte() {
     do_varint_write_read_roundtrip_rand(8);
 }
 
-#[test]
+#[test_case]
 fn varint_write_read_roundtrip_rand_9_byte() {
     do_varint_write_read_roundtrip_rand(9);
 }
 
-#[test]
+#[test_case]
 fn varint_write_read_slice_roundtrip_rand_1_byte() {
     do_varint_write_read_slice_roundtrip_rand(1);
 }
 
-#[test]
+#[test_case]
 fn varint_write_read_slice_roundtrip_rand_2_byte() {
     do_varint_write_read_slice_roundtrip_rand(2);
 }
 
-#[test]
+#[test_case]
 fn varint_write_read_slice_roundtrip_rand_3_byte() {
     do_varint_write_read_slice_roundtrip_rand(3);
 }
 
-#[test]
+#[test_case]
 fn varint_write_read_slice_roundtrip_rand_4_byte() {
     do_varint_write_read_slice_roundtrip_rand(4);
 }
 
-#[test]
+#[test_case]
 fn varint_write_read_slice_roundtrip_rand_5_byte() {
     do_varint_write_read_slice_roundtrip_rand(5);
 }
 
-#[test]
+#[test_case]
 fn varint_write_read_slice_roundtrip_rand_6_byte() {
     do_varint_write_read_slice_roundtrip_rand(6);
 }
 
-#[test]
+#[test_case]
 fn varint_write_read_slice_roundtrip_rand_7_byte() {
     do_varint_write_read_slice_roundtrip_rand(7);
 }
 
-#[test]
+#[test_case]
 fn varint_write_read_slice_roundtrip_rand_8_byte() {
     do_varint_write_read_slice_roundtrip_rand(8);
 }
 
-#[test]
+#[test_case]
 fn varint_write_read_slice_roundtrip_rand_9_byte() {
     do_varint_write_read_slice_roundtrip_rand(9);
 }
 
-#[test]
+#[test_case]
 fn zig_zag_encode_0() {
     assert_eq!(0, zig_zag_encode(0));
 }
 
-#[test]
+#[test_case]
 fn zig_zag_encode_neg_1() {
     assert_eq!(1, zig_zag_encode(-1));
 }
 
-#[test]
+#[test_case]
 fn zig_zag_encode_1() {
     assert_eq!(2, zig_zag_encode(1));
 }
 
-#[test]
+#[test_case]
 fn zig_zag_decode_0() {
     assert_eq!(0, zig_zag_decode(0));
 }
 
-#[test]
+#[test_case]
 fn zig_zag_decode_1() {
     assert_eq!(-1, zig_zag_decode(1));
 }
 
-#[test]
+#[test_case]
 fn zig_zag_decode_2() {
     assert_eq!(1, zig_zag_decode(2));
 }
 
-#[test]
+#[test_case]
 fn zig_zag_encode_i64_max() {
     assert_eq!(u64::max_value() - 1, zig_zag_encode(i64::max_value()));
 }
 
-#[test]
+#[test_case]
 fn zig_zag_encode_i64_min() {
     assert_eq!(u64::max_value(), zig_zag_encode(i64::min_value()));
 }
 
-#[test]
+#[test_case]
 fn zig_zag_decode_u64_max_to_i64_min() {
     assert_eq!(i64::min_value(), zig_zag_decode(u64::max_value()))
 }
 
-#[test]
+#[test_case]
 fn zig_zag_decode_u64_max_penultimate_to_i64_max() {
     assert_eq!(i64::max_value(), zig_zag_decode(u64::max_value() - 1))
 }
 
-#[test]
+#[test_case]
 fn zig_zag_roundtrip_random() {
     let mut rng = rand::rngs::SmallRng::from_entropy();
 

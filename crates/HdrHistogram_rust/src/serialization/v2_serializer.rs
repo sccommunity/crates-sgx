@@ -3,7 +3,7 @@ use crate::{Counter, Histogram};
 use byteorder::{BigEndian, WriteBytesExt};
 use std::io::{self, Write};
 use std::{error, fmt};
-
+use std::prelude::v1::Vec;
 /// Errors that occur during serialization.
 #[derive(Debug)]
 pub enum V2SerializeError {

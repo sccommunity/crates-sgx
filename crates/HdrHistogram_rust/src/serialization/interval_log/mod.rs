@@ -216,7 +216,7 @@ use std::error::Error;
 use std::fmt::Write;
 use std::str::FromStr;
 use std::{fmt, io, ops, str, time};
-
+use std::prelude::v1::{Vec, String, ToOwned};
 use nom::branch::alt;
 use nom::bytes::complete::{tag, take, take_until, take_while1};
 use nom::character::complete::char;
@@ -818,5 +818,5 @@ fn fract_sec_tuple(input: &[u8]) -> FResult {
     Ok((input, (secs, nanos_str)))
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests;

@@ -1,6 +1,6 @@
 use super::Histogram;
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 pub fn histo64(
     lowest_discernible_value: u64,
     highest_trackable_value: u64,

@@ -4,7 +4,10 @@
 use rand::distributions::uniform::Uniform;
 use rand::distributions::Distribution;
 use rand::Rng;
-
+#[cfg(feature = "enclave_unit_test")]
+use std::prelude::v1::*;
+#[cfg(feature = "enclave_unit_test")]
+use crates_unittest::test_case;
 /// Smallest number in our varint encoding that takes the given number of bytes
 pub fn smallest_number_in_n_byte_varint(byte_length: usize) -> u64 {
     assert!(byte_length <= 9 && byte_length >= 1);
@@ -111,8 +114,8 @@ impl<R: Rng> Iterator for RandomVarintEncodedLengthIter<R> {
         Some(value_range.sample(&mut self.rng))
     }
 }
-
-#[test]
+#[cfg(feature = "enclave_unit_test")]
+#[test_case]
 fn largest_number_in_7_bit_chunk_correct() {
     // 8 chunks (indices 0-7) of 7 bits gets you to 56 bits. Last byte in varint is handled
     // differently, so we don't test that here.
