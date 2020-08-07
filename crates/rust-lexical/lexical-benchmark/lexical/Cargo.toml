@@ -1,0 +1,39 @@
+[package]
+name = "lexical-benchmark"
+version = "0.0.1"
+authors = ["Alex Huszagh <ahuszagh@gmail.com>"]
+publish = false
+
+[dependencies.lexical-core]
+path = "../../lexical-core"
+default-features = false
+features = []
+
+[dev-dependencies]
+criterion = "0.3"
+lazy_static = "1"
+serde_json = "1.0"
+
+[features]
+default = ["correct", "ryu", "std"]
+correct = ["lexical-core/correct"]
+format = ["lexical-core/format"]
+grisu3 = ["lexical-core/grisu3"]
+radix = ["lexical-core/radix"]
+rounding = ["lexical-core/rounding"]
+ryu = ["lexical-core/ryu"]
+std = ["lexical-core/std"]
+trim_floats = ["lexical-core/trim_floats"]
+noinline = ["lexical-core/noinline"]
+unchecked_index = ["lexical-core/unchecked_index"]
+
+[[bench]]
+name = "atof"
+path = "benches/atof.rs"
+harness = false
+
+[profile.bench]
+opt-level = 3
+debug = false
+debug-assertions = false
+lto = true

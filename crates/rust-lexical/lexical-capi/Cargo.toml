@@ -1,0 +1,64 @@
+[package]
+authors = ["Alex Huszagh <ahuszagh@gmail.com>"]
+autobenches = false
+categories = ["parsing", "encoding", "no-std", "value-formatting"]
+description = "A C-API for rust-lexical."
+documentation = "https://docs.rs/lexical-capi"
+edition = "2018"
+keywords = ["parsing", "lexical", "encoding", "no_std"]
+license = "MIT/Apache-2.0"
+name = "lexical-capi"
+# Since we don't have a Rust API, there's no reason to publish it to crates.io.
+publish = false
+readme = "README.md"
+repository = "https://github.com/Alexhuszagh/rust-lexical/tree/master/lexical-capi"
+version = "0.7.4"
+
+[lib]
+crate-type = ["cdylib", "staticlib"]
+
+[badges]
+travis-ci = { repository = "Alexhuszagh/rust-lexical" }
+
+[dependencies]
+lexical-core = { path = "../lexical-core", version = "^0.7.4", default-features = false }
+
+[features]
+default = ["correct", "ryu", "std"]
+# Use the correct atof parser.
+correct = ["lexical-core/correct"]
+# Add support for different float string formats.
+format = ["lexical-core/format"]
+# Use the optimized Grisu3 implementation from dtoa (not recommended).
+grisu3 = ["lexical-core/grisu3"]
+# Add support for [parsing non-decimal float and integer strings.
+radix = ["lexical-core/radix"]
+# Allow custom rounding schemes, at the cost of slower performance.
+rounding = ["lexical-core/rounding"]
+# Use the optimized Ryu implementation.
+ryu = ["lexical-core/ryu"]
+# Use the `std` library.
+std = ["lexical-core/std"]
+# Trim a trailing ".0" from an exported float string, and represent -0.0 as "0".
+trim_floats = ["lexical-core/trim_floats"]
+# Don't force bounds checking with indexing not-known to be valid at compile time.
+# This may lead to memory safety issues.
+unchecked_index = ["lexical-core/unchecked_index"]
+# Don't inline when using perftools.
+# Testing only.
+noinline = ["lexical-core/noinline"]
+
+# Use heavy optimizations for release builds, and make our panics to detect
+# internal logic errors safe for FFI, via abort.
+[profile.dev]
+opt-level = 0
+debug = true
+lto = false
+panic = 'abort'
+
+[profile.release]
+opt-level = 3
+debug = false
+debug-assertions = false
+lto = true
+panic = 'abort'
