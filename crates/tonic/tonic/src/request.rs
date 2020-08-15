@@ -6,7 +6,7 @@ use http::Extensions;
 use std::net::SocketAddr;
 #[cfg(feature = "transport")]
 use std::sync::Arc;
-
+use std::prelude::v1::*;
 /// A gRPC request and metadata from an RPC call.
 #[derive(Debug)]
 pub struct Request<T> {

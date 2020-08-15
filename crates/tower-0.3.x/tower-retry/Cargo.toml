@@ -21,15 +21,22 @@ Retry failed requests.
 categories = ["asynchronous", "network-programming"]
 edition = "2018"
 
+
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+
+
 [dependencies]
-tower-service = "0.3"
-tower-layer = "0.3"
-tokio = { version = "0.2", features = ["time"] }
+tower-service = { version = "0.3", path = "../tower-service" }
+tower-layer = { version = "0.3", path = "../tower-layer" }
+tokio = { path = "../../tokio/tokio", version = "0.2", features = ["time"] }
 pin-project = "0.4"
-futures-core = { version = "0.3", default-features = false }
+futures-core = { path = "../../futures-rs/futures-core", version = "0.3" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true, features = ["untrusted_time"] }
 
 [dev-dependencies]
-tower-test = { version = "0.3", path = "../tower-test" }
-tokio = { version  = "0.2", features = ["macros", "test-util"] }
-tokio-test = "0.2"
-futures-util = { version = "0.3", default-features = false }
+# tower-test = { version = "0.3", path = "../tower-test" }
+# tokio = { version  = "0.2", features = ["macros", "test-util"] }
+# tokio-test = "0.2"
+# futures-util = { version = "0.3", default-features = false }

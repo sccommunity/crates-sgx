@@ -23,7 +23,7 @@ categories = ["web-programming", "network-programming", "asynchronous"]
 keywords = ["rpc", "grpc", "async", "futures", "protobuf"]
 
 [features]
-default = ["transport", "codegen", "prost"]
+default = ["mesalock_sgx", "transport", "codegen", "prost"]
 codegen = ["async-trait"]
 transport = [
     "hyper",
@@ -36,51 +36,55 @@ transport = [
 tls = ["transport", "tokio-rustls"]
 tls-roots = ["tls", "rustls-native-certs"]
 prost = ["prost1", "prost-derive"]
-
+mesalock_sgx = ["sgx_tstd"]
 # [[bench]]
 # name = "bench_main"
 # harness = false
 
 [dependencies]
-bytes = "0.5"
-futures-core = { version = "0.3", default-features = false }
-futures-util = { version = "0.3", default-features = false }
-tracing = "0.1"
-http = "0.2"
-base64 = "0.12"
+bytes = { path = "../../bytes" }
+futures-core = { path = "../../futures-rs/futures-core", version = "0.3" }
+futures-util = { path = "../../futures-rs/futures-util", version = "0.3" }
+tracing = { path = "../../tracing/tracing" }
+http = { path = "../../http" }
+base64 = { path = "../../rust-base64" }
 
-percent-encoding = "2.0"
-tower-service = "0.3"
-tokio-util = { version = "0.3", features = ["codec"] }
-async-stream = "0.2"
-http-body = "0.3"
+percent-encoding = { path = "../../rust-url/percent_encoding"}
+tower-service =  { path = "../../tower-0.3.x/tower-service" }
+tokio-util = { path = "../../tokio/tokio-util", version = "0.3", features = ["codec"] }
+async-stream = { path = "../../async-stream/async-stream" }
+http-body = { path = "../../http-body" }
 pin-project = "0.4.17"
 
 # prost
-prost1 = { package = "prost", version = "0.6", optional = true }
-prost-derive = { version = "0.6", optional = true }
+prost1 = { path = "../../prost", package = "prost", version = "0.6", optional = true }
+prost-derive = { path = "../../prost/prost-derive", version = "0.6", optional = true }
 
 # codegen
 async-trait = { version = "0.1.13", optional = true }
 
 # transport
-hyper = { version = "0.13.4", features = ["stream"], optional = true }
-tokio = { version = "0.2.13", features = ["tcp"], optional = true }
-tower = { version = "0.3", optional = true}
-tower-make = { version = "0.3", features = ["connect"] }
-tower-balance =  { version = "0.3", optional = true }
-tower-load = { version = "0.3", optional = true }
-tracing-futures = { version = "0.2", optional = true }
+hyper = { path = "../../hyper", version = "0.13.4", features = ["stream"], optional = true }
+tokio = { path = "../../tokio/tokio", version = "0.2.13", features = ["tcp"], optional = true }
+tower = { path = "../../tower-0.3.x/tower", optional = true }
+
+
+tower-make = { path = "../../tower-0.3.x/tower-make", version = "0.3", features = ["connect"] }
+tower-balance =  { path = "../../tower-0.3.x/tower-balance", version = "0.3", optional = true }
+tower-load = { path = "../../tower-0.3.x/tower-load", version = "0.3", optional = true }
+tracing-futures = { path = "../../tracing/tracing-futures", version = "0.2", optional = true }
 
 # rustls
-tokio-rustls = { version = "0.14", optional = true }
-rustls-native-certs = { version = "0.4", optional = true }
+tokio-rustls = { path = "../../tls/tokio-rustls", version = "0.14", optional = true }
+rustls-native-certs = { path = "../../rustls-native-certs", version = "0.4", optional = true }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+
 
 [dev-dependencies]
-tokio = { version = "0.2", features = ["rt-core", "macros"] }
-static_assertions = "1.0"
-rand = "0.7"
-bencher = "0.1.5"
+# tokio = { version = "0.2", features = ["rt-core", "macros"] }
+# static_assertions = "1.0"
+# rand = "0.7"
+# bencher = "0.1.5"
 
 [package.metadata.docs.rs]
 all-features = true

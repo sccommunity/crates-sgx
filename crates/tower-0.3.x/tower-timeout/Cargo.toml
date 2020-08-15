@@ -21,8 +21,14 @@ Apply a timeout to requests, ensuring completion within a fixed time duration.
 categories = ["asynchronous", "network-programming"]
 edition = "2018"
 
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+
 [dependencies]
-tower-service = "0.3"
-tower-layer = "0.3"
-tokio = { version = "0.2", features = ["time"] }
+tower-service = { path = "../tower-service", version = "0.3" }
+tower-layer = { path = "../tower-layer", version = "0.3" }
+tokio = { path = "../../tokio/tokio", version = "0.2", features = ["time"] }
 pin-project = "0.4"
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+

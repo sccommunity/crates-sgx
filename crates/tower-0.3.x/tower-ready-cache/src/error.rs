@@ -1,5 +1,5 @@
 //! Errors
-
+use std::prelude::v1::*;
 /// A generic error type.
 pub type Error = Box<dyn std::error::Error + Send + Sync>;
 

@@ -9,7 +9,7 @@
 use std::error::Error;
 use std::fmt::{self, Formatter, Write};
 use std::str;
-
+use std::prelude::v1::*;
 use form_urlencoded::EncodingOverride;
 use host::{Host, HostInternal};
 use percent_encoding::{percent_encode, utf8_percent_encode, AsciiSet, CONTROLS};

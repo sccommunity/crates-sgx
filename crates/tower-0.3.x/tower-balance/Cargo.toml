@@ -23,31 +23,33 @@ edition = "2018"
 
 [features]
 log = ["tracing/log"]
-default = ["log"]
+default = ["log", "mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
 
 [dependencies]
-futures-util = { version = "0.3", default-features = false } 
-futures-core = { version = "0.3", default-features = false }
+futures-util = { path = "../../futures-rs/futures-util", version = "0.3" } 
+futures-core = { path = "../../futures-rs/futures-core", version = "0.3" }
 pin-project = "0.4"
-indexmap = "1.0.2"
-tracing = "0.1"
-rand = { version = "0.7", features = ["small_rng"] } 
-tokio = { version = "0.2", features = ["sync", "time"] }
+indexmap = { path = "../../indexmap" }
+tracing = { path = "../../tracing/tracing" }
+rand = { path = "../../rand-0.7.3", version = "0.7", features = ["small_rng"] } 
+tokio = { path = "../../tokio/tokio", version = "0.2", features = ["sync", "time"] }
 tower-discover = { version = "0.3", path = "../tower-discover" }
-tower-layer = "0.3"
+tower-layer = { version = "0.3", path = "../tower-layer" }
 tower-load = { version = "0.3", path = "../tower-load" }
-tower-service = "0.3"
+tower-service = { version = "0.3", path = "../tower-service" }
 tower-ready-cache = { version = "0.3", path = "../tower-ready-cache" }
-tower-make = "0.3"
-slab = "0.4"
+tower-make = { version = "0.3", path = "../tower-make" }
+slab = { path = "../../slab" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 
 [dev-dependencies]
-tracing-subscriber = "0.1.1"
-hdrhistogram = "6.0"
-quickcheck = { version = "0.6", default-features = false }
-tokio = { version = "0.2", features = ["macros", "stream"] }
-tokio-test = "0.2"
-tower-buffer = { version = "0.3", path = "../tower-buffer" }
-tower-limit = { version = "0.3", path = "../tower-limit" }
-tower-test = { version = "0.3", path = "../tower-test" }
-tower = { version = "0.3", path = "../tower" }
+# tracing-subscriber = "0.1.1"
+# hdrhistogram = "6.0"
+# quickcheck = { version = "0.6", default-features = false }
+# tokio = { version = "0.2", features = ["macros"] } 
+# tokio-test = "0.2"
+# tower-buffer = { version = "0.3", path = "../tower-buffer" }
+# tower-limit = { version = "0.3", path = "../tower-limit" }
+# tower-test = { version = "0.3", path = "../tower-test" }
+# tower = { version = "0.3", path = "../tower" }

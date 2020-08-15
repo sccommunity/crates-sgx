@@ -16,11 +16,11 @@ use tower_service::Service;
 use std::{
     collections::HashMap,
     future::Future,
-    sync::{Arc, Mutex},
+    sync::{Arc, SgxMutex as Mutex},
     task::{Context, Poll},
     u64,
 };
-
+use std::prelude::v1::*;
 /// Spawn a layer onto a mock service.
 pub fn spawn_layer<T, U, L>(layer: L) -> (Spawn<L::Service>, Handle<T, U>)
 where

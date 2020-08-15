@@ -23,17 +23,19 @@ categories = ["asynchronous", "network-programming"]
 edition = "2018"
 
 [features]
-default = ["call-all"]
+default = ["call-all", "mesalock_sgx"]
 call-all = ["futures-util"]
+mesalock_sgx = ["sgx_tstd"]
 
 [dependencies]
-tower-service = "0.3"
+tower-service ={ version = "0.3", path = "../tower-service" }
 pin-project = "0.4"
-futures-core = { version = "0.3", default-features = false }
+futures-core = { path = "../../futures-rs/futures-core", version = "0.3" }
 
 # Optional
 
-futures-util = { version = "0.3", optional = true, default-features = false, features = ["alloc"] }
+futures-util = { path = "../../futures-rs/futures-util", version = "0.3", optional = true, features = ["alloc"] }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 
 [dev-dependencies]
 tokio-test = "0.2"

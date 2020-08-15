@@ -26,7 +26,7 @@ pub fn generate<T: Service>(service: &T, proto_path: &str) -> TokenStream {
         pub mod #server_mod {
             #![allow(unused_variables, dead_code, missing_docs)]
             use tonic::codegen::*;
-
+            use std::prelude::v1::*;
             #generated_trait
 
             #service_doc

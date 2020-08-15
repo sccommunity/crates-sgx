@@ -7,7 +7,7 @@ use std::pin::Pin;
 use std::task::{Context, Poll};
 use tower_make::MakeConnection;
 use tower_service::Service;
-
+use std::prelude::v1::*;
 #[cfg(not(feature = "tls"))]
 pub(crate) fn connector<C>(inner: C) -> Connector<C> {
     Connector::new(inner)

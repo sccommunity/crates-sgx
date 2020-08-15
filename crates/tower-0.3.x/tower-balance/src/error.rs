@@ -1,7 +1,7 @@
 //! Error types
 
 use std::fmt;
-
+use std::prelude::v1::*;
 pub(crate) type Error = Box<dyn std::error::Error + Send + Sync>;
 
 /// An error returned when the balancer's endpoint discovery stream fails.

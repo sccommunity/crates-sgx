@@ -11,7 +11,7 @@ use idna::domain_to_unicode;
 use parser::default_port;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use Url;
-
+use std::prelude::v1::*;
 pub fn url_origin(url: &Url) -> Origin {
     let scheme = url.scheme();
     match scheme {

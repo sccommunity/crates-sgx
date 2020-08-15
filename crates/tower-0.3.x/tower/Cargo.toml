@@ -24,26 +24,27 @@ keywords = ["io", "async", "non-blocking", "futures", "service"]
 edition = "2018"
 
 [features]
-default = ["full", "log"]
+default = ["full", "log",  "mesalock_sgx"]
 full = []
 log = ["tower-buffer/log"]
-
+mesalock_sgx = ["sgx_tstd"]
 [dependencies]
-tower-buffer = { version = "0.3", path = "../tower-buffer", default-features = false }
+tower-buffer = { version = "0.3", path = "../tower-buffer" }
 tower-discover = { version = "0.3", path = "../tower-discover" }
-tower-layer = "0.3"
+tower-layer = { path = "../tower-layer", version = "0.3" }
 tower-limit = { version = "0.3", path = "../tower-limit" }
 tower-load-shed = { version = "0.3", path = "../tower-load-shed" }
 tower-retry = { version = "0.3", path = "../tower-retry" }
-tower-service = "0.3"
+tower-service = { version = "0.3", path = "../tower-service" }
 tower-timeout = { version = "0.3", path = "../tower-timeout" }
 tower-util = { version = "0.3", path = "../tower-util", features = ["call-all"] }
-futures-core = { version = "0.3", default-features = false }
+futures-core = { path = "../../futures-rs/futures-core", version = "0.3" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 
 [dev-dependencies]
 # env_logger = { version = "0.5.3", default-features = false }
-futures-util = { version = "0.3", default-features = false }
-tokio = { version = "0.2", features = ["macros"] }
+#futures-util = { version = "0.3", default-features = false }
+#tokio = { version = "0.2", features = ["macros"] }
 # log = "0.4.1"
 # # tokio = "0.2"
-tower-test = { version = "0.3", path = "../tower-test" }
+#tower-test = { version = "0.3", path = "../tower-test" }

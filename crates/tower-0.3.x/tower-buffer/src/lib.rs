@@ -13,7 +13,13 @@
 //! out of the buffer and dispatching them to the inner service. By adding a
 //! buffer and a dedicated task, the `Buffer` layer in front of the service can
 //! be `Clone` even if the inner service is not.
-
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
 pub mod error;
 pub mod future;
 mod layer;

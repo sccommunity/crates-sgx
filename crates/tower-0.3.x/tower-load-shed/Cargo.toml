@@ -22,11 +22,16 @@ known as load-shedding.
 categories = ["asynchronous", "network-programming"]
 edition = "2018"
 
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+
 [dependencies]
-tower-service = "0.3"
-tower-layer = "0.3"
+tower-service = { version = "0.3", path = "../tower-service" }
+tower-layer = { version = "0.3", path = "../tower-layer" }
 pin-project = "0.4"
-futures-core = { version = "0.3", default-features = false }
+futures-core = { path = "../../futures-rs/futures-core", version = "0.3" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 
 [dev-dependencies]
 tokio-test = "0.2"

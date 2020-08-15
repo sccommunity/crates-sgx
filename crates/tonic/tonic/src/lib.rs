@@ -60,7 +60,7 @@
 //! [`rustls`]: https://docs.rs/rustls
 //! [`client`]: client/index.html
 //! [`transport`]: transport/index.html
-
+#![feature(proc_macro_hygiene)]
 #![recursion_limit = "256"]
 #![warn(
     missing_debug_implementations,
@@ -75,6 +75,13 @@
 #![doc(issue_tracker_base_url = "https://github.com/hyperium/tonic/issues/")]
 #![doc(test(no_crate_inject, attr(deny(rust_2018_idioms))))]
 #![cfg_attr(docsrs, feature(doc_cfg))]
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
 
 pub mod body;
 pub mod client;
@@ -103,7 +110,7 @@ pub use interceptor::Interceptor;
 pub use request::{IntoRequest, IntoStreamingRequest, Request};
 pub use response::Response;
 pub use status::{Code, Status};
-
+use std::prelude::v1::*;
 pub(crate) type Error = Box<dyn std::error::Error + Send + Sync>;
 
 #[doc(hidden)]

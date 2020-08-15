@@ -21,15 +21,20 @@ Drives service readiness via a spawned task
 categories = ["asynchronous", "network-programming"]
 edition = "2018"
 
-[dependencies]
-futures-core = { version = "0.3", default-features = false }
-futures-util = { version = "0.3", default-features = false }
-pin-project = "0.4"
-tower-service = "0.3"
-tower-layer = "0.3"
-tokio = { version = "0.2", features = ["sync"] }
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
 
-[dev-dependencies]
-tower-test = { version = "0.3", path = "../tower-test" }
-tokio-test = "0.2"
-tokio = { version = "0.2", features = ["macros"] }
+[dependencies]
+futures-core = { path = "../../futures-rs/futures-core", version = "0.3" }
+futures-util = { path = "../../futures-rs/futures-util", version = "0.3" }
+pin-project = "0.4"
+tower-service = { path = "../tower-service", version = "0.3" }
+tower-layer = { path = "../tower-layer", version = "0.3" }
+tokio = { path = "../../tokio/tokio", version = "0.2", features = ["sync", "rt-threaded"] }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true, features = ["thread"] }
+
+# [dev-dependencies]
+# tower-test = { version = "0.3", path = "../tower-test" }
+# tokio-test = "0.2"
+# tokio = { version = "0.2", features = ["macros"] }

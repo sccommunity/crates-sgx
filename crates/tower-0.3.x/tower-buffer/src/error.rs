@@ -1,7 +1,7 @@
 //! Error types
 
 use std::{fmt, sync::Arc};
-
+use std::prelude::v1::*;
 /// An error produced by a `Service` wrapped by a `Buffer`
 #[derive(Debug)]
 pub struct ServiceError {

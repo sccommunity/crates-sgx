@@ -7,7 +7,7 @@
 // except according to those terms.
 
 use std::borrow::Cow;
-
+use std::prelude::v1::*;
 pub type EncodingOverride<'a> = Option<&'a dyn Fn(&str) -> Cow<[u8]>>;
 
 pub(crate) fn encode<'a>(encoding_override: EncodingOverride, input: &'a str) -> Cow<'a, [u8]> {

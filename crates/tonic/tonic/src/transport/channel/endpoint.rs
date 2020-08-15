@@ -13,7 +13,7 @@ use std::{
     time::Duration,
 };
 use tower_make::MakeConnection;
-
+use std::prelude::v1::*;
 /// Channel builder.
 ///
 /// This struct is used to build and configure HTTP/2 channels.

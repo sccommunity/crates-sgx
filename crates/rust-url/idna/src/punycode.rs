@@ -15,7 +15,7 @@
 
 use std::char;
 use std::u32;
-
+use std::prelude::v1::*;
 // Bootstring parameters for Punycode
 static BASE: u32 = 36;
 static T_MIN: u32 = 1;

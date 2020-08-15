@@ -18,6 +18,7 @@ use tower::{
     util::BoxService,
     ServiceBuilder, ServiceExt,
 };
+use std::prelude::v1::*;
 use tower_load::Load;
 use tower_service::Service;
 

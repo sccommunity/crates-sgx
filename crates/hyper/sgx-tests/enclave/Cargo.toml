@@ -35,7 +35,7 @@ futures-util = { path = "../../../futures-rs/futures-util", version = "0.3", def
 pretty_env_logger = { path = "../../../pretty-env-logger" }
 futures-core = { path = "../../../futures-rs/futures-core", default-features = false }
 futures-channel = { path = "../../../futures-rs/futures-channel" }
-tower-service = { path = "../../../tower/tower-service" }
+tower-service = { path = "../../../tower-0.3.x/tower-service" }
 http = { path = "../../../http" }
 http-body = { path = "../../../http-body" }
 httparse = { path = "../../../httparse"}

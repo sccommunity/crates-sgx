@@ -4,7 +4,7 @@
 #![allow(dead_code)]
 
 use std::{error::Error as StdError, fmt};
-
+use std::prelude::v1::*;
 type Source = Box<dyn StdError + Send + Sync + 'static>;
 
 /// Error's that originate from the client or server;

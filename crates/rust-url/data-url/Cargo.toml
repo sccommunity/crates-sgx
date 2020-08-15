@@ -6,8 +6,13 @@ description = "Processing of data: URL according to WHATWG’s Fetch Standard"
 repository = "https://github.com/servo/rust-url"
 license = "MIT OR Apache-2.0"
 
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+
 [dependencies]
-matches = "0.1"
+matches = { path = "../../matches" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 
 [dev-dependencies]
 rustc-test = "0.3"

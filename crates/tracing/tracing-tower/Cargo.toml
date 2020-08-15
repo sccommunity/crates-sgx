@@ -24,6 +24,13 @@ tower-make = [
 ]
 mesalock_sgx = ["sgx_tstd"]
 
+[dependencies.tower_make]
+package = "tower"
+features = ["make"]
+path = "../../tower/tower"
+version = "0.3"
+optional = true
+
 [dependencies]
 tracing = { path = "../tracing", version = "0.1"}
 tracing-futures = { version = "0.2.1", path = "../tracing-futures", features = ["std-future"] }
@@ -33,9 +40,11 @@ tracing-futures = { version = "0.2.1", path = "../tracing-futures", features = [
 #tower_make = { package = "tower-make", version = "0.3", optional = true }
 
 futures = { path = "../../futures-rs/futures" }
-tower-service = { path = "../../tower/tower-service" }
-tower-layer = { path = "../../tower/tower-layer", optional = true }
-tower_make = { package = "tower-make", path = "../../tower-make-0.3.0", version = "0.3", optional = true }
+tower-service = { path = "../../tower-0.3.x/tower-service" }
+tower-layer = { path = "../../tower-0.3.x/tower-layer", optional = true }
+#tower_make = { package = "tower-make", path = "../../tower-make-0.3.0", version = "0.3", optional = true }
+
+
 pin-project = { version = "0.4", optional = true }
 #http = { version = "0.2", optional = true }
 http = { path = "../../http", optional = true }

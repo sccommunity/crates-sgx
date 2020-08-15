@@ -106,6 +106,14 @@ assert_eq!(css_url.as_str(), "http://servo.github.io/rust-url/main.css");
 */
 
 #![doc(html_root_url = "https://docs.rs/url/2.1.1")]
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
+
 
 #[macro_use]
 extern crate matches;
@@ -130,7 +138,7 @@ use std::net::{IpAddr, SocketAddr, ToSocketAddrs};
 use std::ops::{Range, RangeFrom, RangeTo};
 use std::path::{Path, PathBuf};
 use std::str;
-
+use std::prelude::v1::*;
 use std::convert::TryFrom;
 
 pub use form_urlencoded::EncodingOverride;

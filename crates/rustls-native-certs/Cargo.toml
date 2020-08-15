@@ -10,8 +10,13 @@ homepage = "https://github.com/ctz/rustls-native-certs"
 repository = "https://github.com/ctz/rustls-native-certs"
 categories = ["network-programming", "cryptography"]
 
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+
 [dependencies]
-rustls = "0.18.0"
+rustls = { path = "../rustls/rustls"}
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true, features = ["untrusted_fs"] }
 
 [dev-dependencies]
 webpki = "0.21"
@@ -23,7 +28,7 @@ untrusted = "0.7.0"
 schannel = "0.1.15"
 
 [target.'cfg(all(unix, not(target_os = "macos")))'.dependencies]
-openssl-probe = "0.1.2"
+openssl-probe = { path = "../openssl-probe"}
 
 [target.'cfg(target_os = "macos")'.dependencies]
 security-framework = "1.0.0"

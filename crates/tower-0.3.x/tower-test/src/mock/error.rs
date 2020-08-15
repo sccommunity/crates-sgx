@@ -1,7 +1,7 @@
 //! Error types
 
 use std::{error, fmt};
-
+use std::prelude::v1::*;
 pub(crate) type Error = Box<dyn error::Error + Send + Sync>;
 
 /// Error yielded when a mocked service does not yet accept requests.

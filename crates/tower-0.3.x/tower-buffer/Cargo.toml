@@ -23,17 +23,19 @@ edition = "2018"
 
 [features]
 log = ["tracing/log"]
-default = ["log"]
+default = ["log", "mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
 
 [dependencies]
-futures-core = { version = "0.3", default-features = false }
+futures-core = { path = "../../futures-rs/futures-core", version = "0.3" }
 pin-project = "0.4"
-tower-service = "0.3"
-tower-layer = "0.3"
-tokio = { version = "0.2", features = ["rt-core", "sync"] }
-tracing = "0.1.2"
+tower-service = { version = "0.3", path = "../tower-service" }
+tower-layer = { version = "0.3", path = "../tower-layer" }
+tokio = { path = "../../tokio/tokio", version = "0.2", features = ["rt-core", "sync"] }
+tracing = { path = "../../tracing/tracing" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 
-[dev-dependencies]
-tower-test = { version = "0.3", path = "../tower-test" }
-tokio-test = { version = "0.2" }
-tokio = { version = "0.2", features = ["macros"] }
+# [dev-dependencies]
+# tower-test = { version = "0.3", path = "../tower-test" }
+# tokio-test = { version = "0.2" }
+# tokio = { version = "0.2", features = ["macros"] }

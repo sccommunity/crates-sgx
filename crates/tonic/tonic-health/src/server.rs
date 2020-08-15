@@ -11,7 +11,7 @@ use tokio::sync::{watch, RwLock};
 #[cfg(feature = "transport")]
 use tonic::transport::NamedService;
 use tonic::{Request, Response, Status};
-
+use std::prelude::v1::*;
 /// Creates a `HealthReporter` and a linked `HealthServer` pair. Together,
 /// these types can be used to serve the gRPC Health Checking service.
 ///

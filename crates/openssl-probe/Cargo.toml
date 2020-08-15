@@ -9,3 +9,9 @@ description = """
 Tool for helping to find SSL certificate locations on the system for OpenSSL
 """
 readme = "README.md"
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+
+[dependencies]
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true, features = ["untrusted_fs"] }

@@ -16,7 +16,7 @@ use std::{
     sync::atomic::{AtomicPtr, AtomicUsize},
     thread,
 };
-
+use std::prelude::v1::*;
 use std::fmt;
 use std::ptr::{self, NonNull};
 use std::sync::atomic::Ordering::{self, AcqRel, Acquire, Relaxed, Release};

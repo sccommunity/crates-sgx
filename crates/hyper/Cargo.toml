@@ -47,7 +47,7 @@ itoa = { git = "https://github.com/universal-secure-computing-community/crates-s
 log = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2" }
 pin-project = "0.4"
 time = { path = "../time-0.1" }
-tower-service = { path = "../tower/tower-service" }
+tower-service = { path = "../tower-0.3.x/tower-service" }
 tokio = { path = "../tokio/tokio", features = ["sync"]}
 want = { path = "../want" }
 sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true, features = ["untrusted_time"] }

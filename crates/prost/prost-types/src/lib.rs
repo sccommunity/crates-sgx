@@ -9,7 +9,14 @@
 //!
 //! [1]: https://developers.google.com/protocol-buffers/docs/reference/google.protobuf
 
-#![cfg_attr(not(feature = "std"), no_std)]
+//#![cfg_attr(not(feature = "std"), no_std)]
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
 
 use core::convert::TryFrom;
 use core::i32;

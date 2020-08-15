@@ -10,7 +10,7 @@ use std::{
     task::{Context, Poll},
 };
 use tower_service::Service;
-
+use std::prelude::v1::*;
 /// Combine two different service types into a single type.
 ///
 /// Both services must be of the same request, response, and error types.

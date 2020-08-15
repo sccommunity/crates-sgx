@@ -21,8 +21,13 @@ Automatically recreate a new `Service` instance when an error is encountered.
 categories = ["asynchronous", "network-programming"]
 edition = "2018"
 
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+
 [dependencies]
-log = "0.4.1"
-tower-service = "0.3"
-tower-make = "0.3"
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+log = { path = "../../log" }
+tower-service = { version = "0.3", path = "../tower-service" }
+tower-make = { version = "0.3", path = "../tower-make" }
 pin-project = "0.4"

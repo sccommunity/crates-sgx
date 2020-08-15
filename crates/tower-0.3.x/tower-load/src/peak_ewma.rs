@@ -10,7 +10,7 @@ use std::{
     task::{Context, Poll},
 };
 use std::{
-    sync::{Arc, Mutex},
+    sync::{Arc, SgxMutex as Mutex},
     time::Duration,
 };
 use tokio::time::Instant;

@@ -14,18 +14,20 @@ categories = ["network-programming", "asynchronous"]
 keywords = ["rpc", "grpc", "async", "healthcheck"]
 
 [features]
-default = ["transport"]
+default = ["transport", "mesalock_sgx"]
 transport = ["tonic/transport"]
+mesalock_sgx = ["sgx_tstd"]
 
 [dependencies]
-async-stream = "0.2"
-tokio = { version = "0.2", features = ["sync", "stream"] }
+async-stream = { path = "../../async-stream/async-stream" }
+tokio = { path = "../../tokio/tokio", version = "0.2", features = ["sync", "stream"] }
 tonic = { version = "0.3", path = "../tonic", features = ["codegen", "prost"] }
-bytes = "0.5"
-prost = "0.6"
+bytes = { path = "../../bytes" }
+prost = { path = "../../prost" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 
 [dev-dependencies]
-tokio = { version = "0.2", features = ["rt-core", "macros"]}
+# tokio = { version = "0.2", features = ["rt-core", "macros"]}
 
 [build-dependencies]
 tonic-build = { version = "0.3", path = "../tonic-build" }

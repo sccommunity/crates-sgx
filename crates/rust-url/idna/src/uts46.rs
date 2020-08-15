@@ -16,7 +16,7 @@ use std::{error::Error as StdError, fmt};
 use unicode_bidi::{bidi_class, BidiClass};
 use unicode_normalization::char::is_combining_mark;
 use unicode_normalization::UnicodeNormalization;
-
+use std::prelude::v1::*;
 include!("uts46_mapping_table.rs");
 
 const PUNYCODE_PREFIX: &'static str = "xn--";

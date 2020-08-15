@@ -5,7 +5,7 @@ use http::header::{HeaderMap, HeaderValue};
 use percent_encoding::{percent_decode, percent_encode, AsciiSet, CONTROLS};
 use std::{borrow::Cow, error::Error, fmt};
 use tracing::{debug, trace, warn};
-
+use std::prelude::v1::*;
 const ENCODING_SET: &AsciiSet = &CONTROLS
     .add(b' ')
     .add(b'"')

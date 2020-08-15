@@ -7,7 +7,7 @@ use super::key::{InvalidMetadataKey, MetadataKey};
 use super::value::MetadataValue;
 
 use std::marker::PhantomData;
-
+use std::prelude::v1::*;
 /// A set of gRPC custom metadata entries.
 ///
 /// # Examples
@@ -2015,7 +2015,7 @@ impl<'a, 'b: 'a, VE: ValueEncoding> IntoIterator for &'b GetAll<'a, VE> {
 mod into_metadata_key {
     use super::{MetadataMap, MetadataValue, ValueEncoding};
     use crate::metadata::key::MetadataKey;
-
+    use std::prelude::v1::*;
     /// A marker trait used to identify values that can be used as insert keys
     /// to a `MetadataMap`.
     pub trait IntoMetadataKey<VE: ValueEncoding>: Sealed<VE> {}
@@ -2114,7 +2114,7 @@ mod as_metadata_key {
     use super::{MetadataMap, MetadataValue, ValueEncoding};
     use crate::metadata::key::{InvalidMetadataKey, MetadataKey};
     use http::header::{Entry, GetAll, HeaderValue};
-
+    use std::prelude::v1::*;
     /// A marker trait used to identify values that can be used as search keys
     /// to a `MetadataMap`.
     pub trait AsMetadataKey<VE: ValueEncoding>: Sealed<VE> {}
@@ -2421,7 +2421,7 @@ mod as_metadata_key {
 mod as_encoding_agnostic_metadata_key {
     use super::{MetadataMap, ValueEncoding};
     use crate::metadata::key::MetadataKey;
-
+    use std::prelude::v1::*;
     /// A marker trait used to identify values that can be used as search keys
     /// to a `MetadataMap`, for operations that don't expose the actual value.
     pub trait AsEncodingAgnosticMetadataKey: Sealed {}

@@ -3,7 +3,7 @@ use crate::codec::EncodeBuf;
 use crate::{Code, Status};
 use prost1::Message;
 use std::marker::PhantomData;
-
+use std::prelude::v1::*;
 /// A [`Codec`] that implements `application/grpc+proto` via the prost library..
 #[derive(Debug, Clone)]
 pub struct ProstCodec<T, U> {

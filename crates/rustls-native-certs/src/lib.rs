@@ -3,10 +3,19 @@
 //!
 //! It consists of a single function [load_native_certs](fn.load_native_certs.html) which returns a
 //! `rustls::RootCertStore` pre-filled from the native certificate store.
-
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
 /// Like `Result<T,E>`, but allows for functions that can return partially complete
 /// work alongside an error.
+
+
 pub type PartialResult<T, E> = Result<T, (Option<T>, E)>;
+
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
 
 #[cfg(all(unix, not(target_os = "macos")))]
 mod unix;
@@ -22,5 +31,7 @@ use windows as platform;
 mod macos;
 #[cfg(target_os = "macos")]
 use macos as platform;
+
+
 
 pub use platform::load_native_certs;

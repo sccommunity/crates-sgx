@@ -1,5 +1,5 @@
 use std::{error, fmt};
-
+use std::prelude::v1::*;
 /// Error returned if the inner `Service` has not been set.
 #[derive(Debug)]
 pub struct None(());

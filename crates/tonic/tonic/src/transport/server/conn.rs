@@ -6,7 +6,7 @@ use std::net::SocketAddr;
 use tokio::net::TcpStream;
 #[cfg(feature = "tls")]
 use tokio_rustls::rustls::Session;
-
+use std::prelude::v1::*;
 /// Trait that connected IO resources implement.
 ///
 /// The goal for this trait is to allow users to implement

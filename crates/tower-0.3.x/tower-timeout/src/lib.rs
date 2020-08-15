@@ -10,7 +10,12 @@
 //!
 //! If the response does not complete within the specified timeout, the response
 //! will be aborted.
-
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+extern crate sgx_tstd as std;
 pub mod error;
 pub mod future;
 mod layer;
@@ -21,7 +26,7 @@ use crate::{error::Error, future::ResponseFuture};
 use std::task::{Context, Poll};
 use std::time::Duration;
 use tower_service::Service;
-
+use std::prelude::v1::*;
 /// Applies a timeout to requests.
 #[derive(Debug, Clone)]
 pub struct Timeout<T> {

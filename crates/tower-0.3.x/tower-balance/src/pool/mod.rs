@@ -29,7 +29,7 @@ use tower_discover::{Change, Discover};
 use tower_load::Load;
 use tower_make::MakeService;
 use tower_service::Service;
-
+use std::prelude::v1::*;
 #[cfg(test)]
 mod test;
 

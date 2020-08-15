@@ -7,18 +7,24 @@
     rust_2018_idioms,
     unreachable_pub
 )]
-
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
 use futures_util::future;
 use log::error;
 use pin_project::pin_project;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, SgxMutex as Mutex};
 use std::time::Duration;
 use std::{
     pin::Pin,
     task::{Context, Poll},
 };
 use tower_filter::Filter;
-
+use std::prelude::v1::*;
 mod delay;
 mod latency;
 mod rotating_histogram;

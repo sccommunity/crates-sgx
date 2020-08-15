@@ -126,7 +126,7 @@ pub mod make {
     #[cfg_attr(docsrs, doc(cfg(feature = "tower-layer")))]
     impl<S, R, G, T> tower_layer::Layer<S> for MakeLayer<R, T, G>
     where
-        S: tower_make::MakeService<T, R>,
+        S: tower_make::make::MakeService<T, R>,
         G: GetSpan<R> + Clone,
     {
         type Service = MakeService<S, R, G>;
@@ -154,7 +154,7 @@ pub mod make {
 
     impl<S, R, G, T> tower_service::Service<T> for MakeService<S, R, G>
     where
-        S: tower_make::MakeService<T, R>,
+        S: tower_make::make::MakeService<T, R>,
         G: GetSpan<R> + Clone,
     {
         type Response = Service<S::Service, R, G>;
@@ -182,7 +182,7 @@ pub mod make {
     {
         pub fn new<T>(inner: S, get_span: G) -> Self
         where
-            S: tower_make::MakeService<T, R>,
+            S: tower_make::make::MakeService<T, R>,
         {
             Self {
                 get_span,

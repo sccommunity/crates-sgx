@@ -11,7 +11,7 @@ use std::{
     pin::Pin,
     task::{Context, Poll},
 };
-
+use std::prelude::v1::*;
 /// A trait alias for [`http_body::Body`].
 pub trait Body: sealed::Sealed + Send + Sync {
     /// The body data type.

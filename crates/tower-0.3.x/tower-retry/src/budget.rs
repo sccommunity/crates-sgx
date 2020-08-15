@@ -4,12 +4,12 @@ use std::{
     fmt,
     sync::{
         atomic::{AtomicIsize, Ordering},
-        Mutex,
+        SgxMutex as Mutex,
     },
     time::Duration,
 };
 use tokio::time::Instant;
-
+use std::prelude::v1::*;
 /// Represents a "budget" for retrying requests.
 ///
 /// This is useful for limiting the amount of retries a service can perform

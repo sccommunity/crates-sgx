@@ -13,7 +13,7 @@
 
 use parser::{default_port, Context, Input, Parser, SchemeType};
 use {idna, Host, ParseError, Position, Url};
-
+use std::prelude::v1::*;
 /// https://url.spec.whatwg.org/#dom-url-domaintoascii
 pub fn domain_to_ascii(domain: &str) -> String {
     match Host::parse(domain) {

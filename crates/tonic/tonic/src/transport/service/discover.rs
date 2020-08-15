@@ -1,7 +1,7 @@
 use super::super::service;
 use super::connection::Connection;
 use crate::transport::Endpoint;
-
+use std::prelude::v1::*;
 use std::{
     future::Future,
     hash::Hash,

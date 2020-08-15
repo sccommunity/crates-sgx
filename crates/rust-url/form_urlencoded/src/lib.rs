@@ -12,6 +12,13 @@
 //!
 //! Converts between a string (such as an URL’s query string)
 //! and a sequence of (name, value) pairs.
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
 
 extern crate percent_encoding;
 #[macro_use]
@@ -21,7 +28,7 @@ use percent_encoding::{percent_decode, percent_encode_byte};
 use query_encoding::decode_utf8_lossy;
 use std::borrow::{Borrow, Cow};
 use std::str;
-
+use std::prelude::v1::*;
 mod query_encoding;
 
 pub use query_encoding::EncodingOverride;

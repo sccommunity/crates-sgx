@@ -30,7 +30,7 @@ futures-util = { path = "../../futures-rs/futures-util", version = "0.3", defaul
 tokio = { path = "../../tokio/tokio", version = "0.2", features = ["sync"]}
 tower-layer = { version = "0.3", path = "../tower-layer" }
 tokio-test = { path = "../../tokio/tokio-test"}
-tower-service = { path = "../tower-service", version = "0.3" }
+tower-service = { path = "../../tower/tower-service", version = "0.3" }
 pin-project = "0.4.17"
 
 [target.'cfg(not(target_env = "sgx"))'.dependencies]

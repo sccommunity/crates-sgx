@@ -21,15 +21,20 @@ Limit maximum request rate to a `Service`.
 categories = ["asynchronous", "network-programming"]
 edition = "2018"
 
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+
 [dependencies]
-futures-core = { version = "0.3", default-features = false }
-tower-service = "0.3"
-tower-layer = "0.3"
-tower-load = "0.3"
-tokio = { version = "0.2", features = ["time"] }
+futures-core = { path = "../../futures-rs/futures-core", version = "0.3" }
+tower-service = { version = "0.3", path = "../tower-service" }
+tower-layer = { version = "0.3", path = "../tower-layer" }
+tower-load = { version = "0.3", path = "../tower-load" }
+tokio = { path = "../../tokio/tokio", version = "0.2", features = ["time"] }
 pin-project = "0.4"
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 
 [dev-dependencies]
-tower-test = { version = "0.3", path = "../tower-test" }
-tokio-test = "0.2"
-tokio = { version = "0.2", features = ["macros", "test-util"] }
+# tower-test = { version = "0.3", path = "../tower-test" }
+# tokio-test = "0.2"
+# tokio = { version = "0.2", features = ["macros", "test-util"] }

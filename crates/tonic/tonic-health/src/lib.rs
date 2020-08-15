@@ -5,7 +5,7 @@
 //! An example can be found [here].
 //!
 //! [here]: https://github.com/hyperium/tonic/blob/master/examples/src/health/server.rs
-
+#![feature(proc_macro_hygiene)]
 #![warn(
     missing_debug_implementations,
     missing_docs,
@@ -19,7 +19,13 @@
 #![doc(issue_tracker_base_url = "https://github.com/hyperium/tonic/issues/")]
 #![doc(test(no_crate_inject, attr(deny(rust_2018_idioms))))]
 #![cfg_attr(docsrs, feature(doc_cfg))]
-
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
 use std::fmt::{Display, Formatter};
 
 mod proto {

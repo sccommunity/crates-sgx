@@ -14,7 +14,7 @@ use serde::{Deserialize, Serialize};
 use std::cmp;
 use std::fmt::{self, Formatter};
 use std::net::{Ipv4Addr, Ipv6Addr};
-
+use std::prelude::v1::*;
 #[cfg_attr(feature = "serde", derive(Deserialize, Serialize))]
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub(crate) enum HostInternal {

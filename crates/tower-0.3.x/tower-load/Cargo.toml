@@ -21,15 +21,20 @@ Strategies for measuring the load of a service
 categories = ["asynchronous", "network-programming"]
 edition = "2018"
 
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+
 [dependencies]
-futures-core = { version = "0.3", default-features = false }
-log = "0.4.1"
-tokio = { version = "0.2", features = ["time"] }
-tower-service = "0.3"
+futures-core = { path = "../../futures-rs/futures-core", version = "0.3" }
+log = { path = "../../log" }
+tokio = { path = "../../tokio/tokio", version = "0.2", features = ["time"] }
+tower-service = { version = "0.3", path = "../tower-service" }
 tower-discover = { version = "0.3", path = "../tower-discover" }
 pin-project = "0.4"
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 
 [dev-dependencies]
-tokio-test = "0.2"
-tokio = { version = "0.2", features = ["macros", "test-util" ] }
-futures-util = { version = "0.3", default-features = false }
+# tokio-test = "0.2"
+# tokio = { version = "0.2", features = ["macros", "test-util" ] }
+# futures-util = { version = "0.3", default-features = false }

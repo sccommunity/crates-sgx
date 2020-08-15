@@ -14,9 +14,14 @@ readme = "../README.md"
 categories = ["web-programming", "network-programming", "asynchronous"]
 keywords = ["rpc", "grpc", "protobuf"]
 
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+
 [dependencies]
-prost = "0.6"
-prost-types = "0.6"
+prost = { path = "../../prost" }
+prost-types = { path = "../../prost/prost-types" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 
 [build-dependencies]
 prost-build = "0.6"

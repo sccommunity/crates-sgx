@@ -1,3 +1,4 @@
+use std::prelude::v1::*;
 /// Represents a X509 certificate.
 #[derive(Debug, Clone)]
 pub struct Certificate {

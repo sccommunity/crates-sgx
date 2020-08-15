@@ -3,7 +3,7 @@ use http::header::HeaderValue;
 use std::error::Error;
 use std::fmt;
 use std::hash::Hash;
-
+use std::prelude::v1::*;
 /// A possible error when converting a `MetadataValue` from a string or byte
 /// slice.
 #[derive(Debug)]

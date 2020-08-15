@@ -21,13 +21,20 @@ Caches a set of services
 categories = ["asynchronous", "network-programming"]
 edition = "2018"
 
+
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+
+
 [dependencies]
-futures-core = { version = "0.3", default-features = false }
-futures-util = { version = "0.3", default-features = false, features = ["alloc"] }
-indexmap = "1.0.2"
-log = "0.4.1"
-tokio = { version = "0.2", features = ["sync"] } 
-tower-service = "0.3"
+futures-core = { path = "../../futures-rs/futures-core", version = "0.3" }
+futures-util = { path = "../../futures-rs/futures-util", version = "0.3", features = ["alloc"] }
+indexmap = { path = "../../indexmap" }
+log = { path = "../../log" }
+tokio = { path = "../../tokio/tokio", version = "0.2", features = ["sync"] } 
+tower-service = { version = "0.3", path = "../tower-service" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 
 [dev-dependencies]
 tower-test = { version = "0.3", path = "../tower-test" }

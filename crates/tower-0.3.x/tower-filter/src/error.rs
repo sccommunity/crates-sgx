@@ -1,7 +1,7 @@
 //! Error types
 
 use std::{error, fmt};
-
+use std::prelude::v1::*;
 /// Error produced by `Filter`
 #[derive(Debug)]
 pub struct Error {

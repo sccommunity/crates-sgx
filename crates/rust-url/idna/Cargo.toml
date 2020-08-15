@@ -7,6 +7,10 @@ repository = "https://github.com/servo/rust-url/"
 license = "MIT/Apache-2.0"
 autotests = false
 
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+
 [lib]
 doctest = false
 test = false
@@ -23,6 +27,11 @@ rustc-test = "0.3"
 serde_json = "1.0"
 
 [dependencies]
-unicode-bidi = "0.3"
-unicode-normalization = "0.1.5"
-matches = "0.1"
+#unicode-bidi = "0.3"
+unicode-bidi = { path = "../../unicode-bidi" }
+unicode-normalization = { path = "../../unicode-normalization", default-features = false }
+#unicode-normalization = { git = "https://github.com/mesalock-linux/unicode-normalization-sgx" }
+matches = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2" }
+#matches = "0.1"
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
+

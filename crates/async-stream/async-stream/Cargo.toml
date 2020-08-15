@@ -19,10 +19,14 @@ homepage = "https://github.com/tokio-rs/async-stream"
 repository = "https://github.com/tokio-rs/async-stream"
 readme = "README.md"
 
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+
 [dependencies]
 async-stream-impl = { version = "0.3.0", path = "../async-stream-impl" }
-futures-core = "0.3"
-
+futures-core = { path = "../../futures-rs/futures-core" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 [dev-dependencies]
 futures-util = "0.3"
 tokio = { version = "0.2", features = ["full"] }

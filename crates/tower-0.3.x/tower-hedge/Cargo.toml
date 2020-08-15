@@ -5,16 +5,22 @@ authors = ["Alex Leong <adlleong@gmail.com>"]
 edition = "2018"
 publish = false
 
+
+[features]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
+
 [dependencies]
-hdrhistogram = "6.0"
-log = "0.4.1"
-tower-service = "0.3"
+hdrhistogram = { path = "../../HdrHistogram_rust" }
+log = { path = "../../log" }
+tower-service = { version = "0.3", path = "../tower-service" }
 tower-filter = { version = "0.3", path = "../tower-filter" }
-tokio = { version = "0.2", features = ["time"] }
-futures-util = { version = "0.3", default-features = false }
+tokio = { path = "../../tokio/tokio", version = "0.2", features = ["time"] }
+futures-util = { path = "../../futures-rs/futures-util", version = "0.3" }
 pin-project = "0.4"
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 
 [dev-dependencies]
-tower-test = { version = "0.3", path = "../tower-test" }
-tokio-test = "0.2"
-tokio = { version = "0.2", features = ["macros", "test-util"] }
+# tower-test = { version = "0.3", path = "../tower-test" }
+# tokio-test = "0.2"
+# tokio = { version = "0.2", features = ["macros", "test-util"] }

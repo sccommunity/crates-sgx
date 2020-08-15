@@ -15,7 +15,10 @@ edition = "2018"
 
 [features]
 connect = ["tokio"]
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
 
 [dependencies]
-tower-service = "0.3"
-tokio = { version = "0.2", optional = true }
+tower-service = { version = "0.3", path = "../tower-service" }
+tokio = { path = "../../tokio/tokio", version = "0.2", optional = true }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }

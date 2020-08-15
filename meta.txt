@@ -5,6 +5,7 @@ aho_corasick, 0.7.13, https://github.com/BurntSushi/aho-corasick, 39b029bb222eb0
 arrayvec, 0.5.1, https://github.com/bluss/arrayvec, 4043c58de78646ffdd268155eb8941e57c33dc6b, Apache-2.0, full
 assert_matches, 1.3.0, https://github.com/murarth/assert_matches, e6e28fda619713ea3787f6a8d2f7171364d66791, Apache-2.0, none-no-std
 ansi_term, 0.12.1, https://github.com/ogham/rust-ansi-term, ff7eba98d55ad609c7fcc8c7bb0859b37c7545cc, MIT, full
+async-stream, 0.3.0, https://github.com/tokio-rs/async-stream, d346ad2d77b11855969b82c9d16bd78ec84e4863, MIT, full
 bincode, 1.3.1, https://github.com/servo/bincode, c39317133cc6c5524eea0bb3a4efca7fb2ffd8fb, MIT, full
 bit-set, 0.5.2, https://github.com/contain-rs/bit-set, 8ba6d0d96e9df714d55167b7b6ccde96885cf46d, Apache-2.0, none
 bit-vec, 0.6.2, https://github.com/contain-rs/bit-vec, 219e4804504cf22f7c707352ad460d3ad9aa09df, Apache-2.0, none
@@ -62,9 +63,11 @@ num-integer, 0.1.42, https://github.com/rust-num/num-integer, 0f9ba577371cbb8904
 num-traits, 0.2.11, https://github.com/rust-num/num-traits, 93ff6dc382f35d292830515156693f008bc61c6d, MIT/Apache-2.0, full
 once_cell, 1.4.0, https://github.com/matklad/once_cell, 0b65b1523453a0cfbdeeb756a77e0b85e03ea7bf, Apache-2.0, full
 owning-ref-rs, 0.4.1, https://github.com/Kimundi/owning-ref-rs, 677c5bbe33210e65ababfd46eeb2b7aaab41f94d, MIT, full
+openssl-probe, 0.1.3, https://github.com/alexcrichton/openssl-probe, ac9c261ca82b0abe8051f4fa2c7d88c38473cff3, MIT/Apache-2.0, full
 parking_lot, 0.11.0, https://github.com/Amanieu/parking_lot, 74218898303e2ccbc57b864ad868b859f57e1fb8, Apache-2.0, full
 petgraph, 0.5.1, https://github.com/petgraph/petgraph, a50735df8534e960d9f57afccee712fdd3c69867, Apache-2.0, full
 pretty-env-logger, 0.4.0, https://github.com/seanmonstar/pretty-env-logger, 5cb49cade25fffb504135c1a166ff345d993c054, Apache-2.0, full
+prost, 0.6.1, https://github.com/danburkert/prost, a1cccbcee343e2c444e1cd2738c7fba2599fc391, Apache-2.0, full
 quick-error, 1.2.1, https://github.com/tailhook/quick-error, c03b56cdb17ba3af23180496127e2556dce6c379, Apache-2.0, full
 quoted-string, 0.2.2, https://github.com/dac-gmbh/quoted-string, null, Apache-2.0, full
 rand, 0.7.3, https://github.com/rust-random/rand, 074cb6a997f91db653f8a53c755ddc07495ab429, MIT, full
@@ -81,6 +84,8 @@ rust-threadpool, 1.7.1, https://github.com/rust-threadpool/rust-threadpool, 808f
 ryu, 1.0.3, https://github.com/dtolnay/ryu, 664db527610d0d9cfccecd38029fc8d2d80bc303, MIT/Apache-2.0, none-no-std
 rustc-serialize, 0.3.24, https://github.com/rust-lang-deprecated/rustc-serialize, 71b8d6ef874cb53209406824317575c06a7727e0, MIT/Apache-2.0, full
 rustls, 0.18.0, https://github.com/ctz/rustls, 881bdcb5f62da6128d51021d457129627aff3ff1, Apache-2.0/ISC/MIT, full
+rustls-native-certs, 0.4.0, https://github.com/ctz/rustls-native-certs, 3e97326a0998d526bf7782fd03be96e5adcac39d, Apache-2.0/ISC/MIT, full
+
 serde, 1.0.106, https://github.com/serde-rs/serde/, d1564525ad5172edeac5a73ebe0680dbe735e63a, Apache-2.0, partial
 spin-rs, 0.5.2, https://github.com/mvdnes/spin-rs, 7516c8037d3d15712ba4d8499ab075e97a19d778, MIT, none-no-std
 sval, 0.5.1, https://github.com/sval-rs/sval, 85ccf03b78736d910a1ae92c39690640d1cbfef8, Apache-2.0, partial
@@ -107,12 +112,15 @@ tokio-serde, 0.6.1, https://github.com/carllerche/tokio-serde, 7217fb5be0fd854de
 toml-rs, 0.5.6, https://github.com/alexcrichton/toml-rs.git, 940fcf9e183ab4f29204ef4f3ea92c01de8cc08a, Apache-2, full 
 tower, 0.3.1, https://github.com/tower-rs/tower, ab7518ef1360fc6a0624d30364c315a51c569ca2, MIT, full
 tower-make, 0.3.0, https://github.com/tower-rs/tower, null, MIT, none
+tower-balance, 0.3.0, https://github.com/tower-rs/tower, null, MIT, none
+tower, 0.3.x, 0f9eb648a5654bfe4f95c008074aac28fd6fc80c, https://github.com/tower-rs/tower, MIT, full
 tracing, 0.1.18, https://github.com/tokio-rs/tracing, 002497bcb4f1b91b474536ce2e3676be9284dcb0, MIT, partial
 try-lock, 0.2.2, https://github.com/seanmonstar/try-lock, 90a682467dfbaf762a8986d406c6af6851af2ebd, MIT, full
 traitobject, 0.1.0, https://github.com/reem/rust-traitobject, b3471a15917b2caf5a8b27debb0b4b390fc6634f, MIT/Apache-2.0, none
 typeable, 0.1.2, https://github.com/reem/rust-typeable, 99e26e44905fc61211e6ad4f910eb9652b747289, MIT, none
 tonic, 0.3.0, https://github.com/hyperium/tonic, 73938e1e0ade5826ffbcf873d7e3e4ee96b7e13a, MIT, full
 url, 1.7.2, https://github.com/servo/rust-url, 695351be29b015a29f39f55e44f4b88a947b3844, MIT/Apache-2.0, none
+url, 2.1.1, https://github.com/servo/rust-url, 0a92c73a37725aacddcfbeaac4c6bfc40fdf0a1b, MIT/Apache-2.0, none
 unicase, 1.0.0, https://github.com/seanmonstar/unicase, 7b116bc70c16b972a06c2e084ad1e9f3edfbaa2f, MIT, none
 unicode-bidi, 0.3.4, https://github.com/servo/unicode-bidi, 4fc3449e460e5fb7794e923a4cce6700eb8d9e81, MIT/Apache-2.0, full
 unicode-normalization, 0.1.14, https://github.com/unicode-rs/unicode-normalization, 83ba5d1048ded2d207c932ea664154b3e2b578fa, MIT/Apache-2.0, none
