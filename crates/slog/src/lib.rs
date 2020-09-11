@@ -2443,7 +2443,7 @@ fn assert_to_string_from_str<T>(expected: T)
 
     assert_eq!(expected, actual, "Invalid value parsed from string representation of {:?}", actual);
 }
-
+#[cfg(feature = "enclave_unit_test")]
 #[test_case]
 fn filter_level_accepts_tests() {
     assert_eq!(true, FilterLevel::Warning.accepts(Level::Error));

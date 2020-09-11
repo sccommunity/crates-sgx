@@ -14,16 +14,16 @@ readme = "README.md"
 [features]
 nested-values = ["slog/nested-values"]
 dynamic-keys = ["slog/dynamic-keys"]
-default = []
-
+default = ["mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd"]
 [lib]
 path = "lib.rs"
 
 [dependencies]
-slog = "2.1"
-thread_local = "1"
-take_mut = "0.2.0"
-crossbeam-channel = "0.4"
-
+slog = { path = "../slog" }
+thread_local = { path = "../thread_local-rs" }
+take_mut = { path = "../take_mut" }
+crossbeam-channel = { path = "../crossbeam/crossbeam-channel" }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
 [package.metadata.docs.rs]
 features = ["nested-values", "dynamic-keys"]

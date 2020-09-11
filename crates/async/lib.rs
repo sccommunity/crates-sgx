@@ -47,6 +47,14 @@
 
 // {{{ Imports & meta
 #![warn(missing_docs)]
+#![cfg_attr(all(feature = "mesalock_sgx", not(target_env = "sgx")), no_std)]
+#![cfg_attr(
+    all(target_env = "sgx", target_vendor = "mesalock"),
+    feature(rustc_private)
+)]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
+extern crate sgx_tstd as std;
 
 #[macro_use]
 extern crate slog;
@@ -64,10 +72,10 @@ use std::error::Error;
 use std::fmt;
 use std::sync;
 use std::{io, thread};
-
+use std::prelude::v1::*;
 use std::sync::atomic::AtomicUsize;
 use std::sync::atomic::Ordering;
-use std::sync::Mutex;
+use std::sync::SgxMutex as Mutex;
 use take_mut::take;
 // }}}
 
@@ -417,7 +425,7 @@ impl AsyncCore {
     ) -> Result<
         &crossbeam_channel::Sender<AsyncMsg>,
         std::sync::PoisonError<
-            sync::MutexGuard<crossbeam_channel::Sender<AsyncMsg>>,
+            sync::SgxMutexGuard<crossbeam_channel::Sender<AsyncMsg>>,
         >,
     > {
         self.tl_sender.get_or_try(|| Ok(self.ref_sender.clone()))
