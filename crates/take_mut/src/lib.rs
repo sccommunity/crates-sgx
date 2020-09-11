@@ -11,9 +11,16 @@
 #![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
             feature(rustc_private))]
 #[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+#[macro_use]
 extern crate sgx_tstd as std;
 
 use std::panic;
+#[cfg(feature = "enclave_unit_test")]
+use std::prelude::v1::*;
+#[cfg(feature = "enclave_unit_test")]
+extern crate crates_unittest;
+#[cfg(feature = "enclave_unit_test")]
+use crates_unittest::test_case;
 
 pub mod scoped;
 
@@ -48,8 +55,8 @@ pub fn take<T, F>(mut_ref: &mut T, closure: F)
         ptr::write(mut_ref, new_t);
     }
 }
-
-#[test]
+#[cfg(feature = "enclave_unit_test")]
+#[test_case]
 fn it_works() {
     #[derive(PartialEq, Eq, Debug)]
     enum Foo {A, B};
@@ -110,8 +117,8 @@ pub fn take_or_recover<T, F, R>(mut_ref: &mut T, recover: R, closure: F)
 
 
 
-
-#[test]
+#[cfg(feature = "enclave_unit_test")]
+#[test_case]
 fn it_works_recover() {
     #[derive(PartialEq, Eq, Debug)]
     enum Foo {A, B};
@@ -130,8 +137,8 @@ fn it_works_recover() {
     });
     assert_eq!(&foo, &Foo::B);
 }
-
-#[test]
+#[cfg(feature = "enclave_unit_test")]
+#[test_case]
 fn it_works_recover_panic() {
     #[derive(PartialEq, Eq, Debug)]
     enum Foo {A, B, C};
@@ -158,5 +165,11 @@ fn it_works_recover_panic() {
     assert_eq!(&foo, &Foo::C);
 }
 
-
-
+#[cfg(feature = "enclave_unit_test")]
+pub mod tests {
+    use std::prelude::v1::*;
+    use crates_unittest::run_inventory_tests;
+    pub fn run_tests() {
+        run_inventory_tests!();
+    }
+}

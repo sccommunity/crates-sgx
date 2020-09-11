@@ -34,6 +34,10 @@ use std;
 use std::panic;
 use std::cell::Cell;
 use std::marker::PhantomData;
+#[cfg(feature = "enclave_unit_test")]
+use std::prelude::v1::*;
+#[cfg(feature = "enclave_unit_test")]
+use crates_unittest::test_case;
 
 /// Represents a scope within which, it is possible to take a `T` from a `&mut T` as long as the `&mut T` outlives the scope.
 pub struct Scope<'s> {
@@ -139,7 +143,8 @@ impl<'c, 'm, T: 'm, F: FnOnce() -> T> Drop for Hole<'c, 'm, T, F> {
     }
 }
 
-#[test]
+#[cfg(feature = "enclave_unit_test")]
+#[test_case]
 fn scope_based_take() {
     #[derive(Debug)]
     struct Foo;
@@ -159,8 +164,8 @@ fn scope_based_take() {
     });
     println!("{:?}", &bar);
 }
-
-#[test]
+#[cfg(feature = "enclave_unit_test")]
+#[test_case]
 fn panic_on_recovered_panic() {
     use std::panic;
     
