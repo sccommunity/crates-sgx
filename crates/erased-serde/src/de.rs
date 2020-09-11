@@ -1232,14 +1232,14 @@ where
 }
 
 // TEST ////////////////////////////////////////////////////////////////////////
-
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::*;
     use crate::alloc::ToOwned;
     use core::fmt::Debug;
     use serde_derive::Deserialize;
-
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
     fn test_json<'de, T>(json: &'de [u8])
     where
         T: serde::Deserialize<'de> + PartialEq + Debug,
@@ -1261,12 +1261,12 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_value() {
         test_json::<serde_json::Value>(br#"["a", 1, [true], {"a": 1}]"#);
     }
 
-    #[test]
+    #[test_case]
     fn test_struct() {
         #[derive(Deserialize, PartialEq, Debug)]
         struct S {
@@ -1276,7 +1276,7 @@ mod tests {
         test_json::<S>(br#"{"f":256}"#);
     }
 
-    #[test]
+    #[test_case]
     fn test_enum() {
         #[derive(Deserialize, PartialEq, Debug)]
         enum E {
@@ -1292,13 +1292,13 @@ mod tests {
         test_json::<E>(br#"{"Struct":{"t":true,"f":false}}"#);
     }
 
-    #[test]
+    #[test_case]
     fn test_borrowed() {
         let bytes = br#""borrowed""#.to_owned();
         test_json::<&str>(&bytes);
     }
 
-    #[test]
+    #[test_case]
     fn assert_deserializer() {
         fn assert<'de, T: serde::Deserializer<'de>>() {}
 

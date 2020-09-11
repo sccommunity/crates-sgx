@@ -152,3 +152,14 @@ pub use crate::ser::{serialize, Serialize, Serializer};
 // Not public API.
 #[doc(hidden)]
 pub mod private;
+
+
+#[cfg(feature = "enclave_unit_test")]
+pub mod tests {
+    use std::prelude::v1::*;
+    use crates_unittest::run_inventory_tests;
+
+    pub fn run_tests() {
+        run_inventory_tests!();
+    }
+}

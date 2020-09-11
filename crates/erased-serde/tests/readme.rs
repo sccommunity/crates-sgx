@@ -3,8 +3,11 @@
 use erased_serde::{Deserializer, Serialize, Serializer};
 use std::collections::BTreeMap as Map;
 use std::io;
-
-#[test]
+use std::prelude::v1::*;
+#[cfg(feature = "enclave_unit_test")]
+use crates_unittest::test_case;
+#[cfg(feature = "enclave_unit_test")]
+#[test_case]
 fn serialization() {
     // Construct some serializers.
     let json = &mut serde_json::Serializer::new(io::stdout());
@@ -33,7 +36,7 @@ fn serialization() {
     value.erased_serialize(format).unwrap();
 }
 
-#[test]
+#[test_case]
 fn deserialization() {
     static JSON: &'static [u8] = br#"{"A": 65, "B": 66}"#;
     static CBOR: &'static [u8] = &[162, 97, 65, 24, 65, 97, 66, 24, 66];

@@ -97,13 +97,14 @@ macro_rules! __internal_serialize_trait_object {
 
 // TEST ////////////////////////////////////////////////////////////////////////
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use crate::Serialize;
-
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
     fn assert_serialize<T: ?Sized + serde::Serialize>() {}
 
-    #[test]
+    #[test_case]
     fn test_plain() {
         trait Trait: Serialize {}
 
@@ -112,7 +113,7 @@ mod tests {
         assert_serialize::<dyn Trait + Send>();
     }
 
-    #[test]
+    #[test_case]
     fn test_type_parameter() {
         trait Trait<T>: Serialize {}
 
@@ -121,7 +122,7 @@ mod tests {
         assert_serialize::<dyn Trait<u32> + Send>();
     }
 
-    #[test]
+    #[test_case]
     fn test_generic_bound() {
         trait Trait<T: PartialEq<T>, U>: Serialize {}
 
@@ -130,7 +131,7 @@ mod tests {
         assert_serialize::<dyn Trait<u32, ()> + Send>();
     }
 
-    #[test]
+    #[test_case]
     fn test_where_clause() {
         trait Trait<T>: Serialize
         where

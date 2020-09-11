@@ -13,12 +13,18 @@ edition = "2018"
 
 [dependencies]
 #serde = { version = "1.0.63", default-features = false }
-serde = { git = "https://github.com/universal-secure-computing-community/crates-sgx.git", tag = "v0.3.1+sgx1.1.2", features = ["derive"] }
+serde = { path = "../serde/serde", features = ["derive"] }
 sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
-[dev-dependencies]
-serde_cbor = "0.11"
-serde_derive = "1.0"
-serde_json = "1.0"
+crates_unittest = { git = "https://github.com/Zha0Chan/crates-sgx-unittest.git", optional = true, default-features = false }
+inventory = { version = "0.1.6", optional = true }
+serde_cbor = { path = "../cbor", optional = true }
+serde_derive = { path = "../serde/serde_derive", optional = true }
+serde_json = { path = "../json", optional = true }
+
+# [dev-dependencies]
+# serde_cbor = "0.11"
+# serde_derive = "1.0"
+# serde_json = "1.0"
 
 [features]
 # Note: at least one of "std" or "alloc" must be enabled.
@@ -27,6 +33,7 @@ std = ["serde/std", "mesalock_sgx"]
 alloc = ["serde/alloc"] # requires Rust 1.36+
 unstable-debug = []
 mesalock_sgx = ["sgx_tstd", "std"]
+enclave_unit_test = ["crates_unittest", "inventory", "serde_derive", "serde_cbor", "serde_json"]
 
 [[test]]
 name = "test"
@@ -34,6 +41,6 @@ path = "tests/readme.rs"
 
 [workspace]
 members = ["explanation", "tests/crate"]
-
+exclude = ["sgx-tests"]
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]

@@ -115,8 +115,13 @@ impl Fingerprint {
         }
     }
 }
+#[cfg(feature = "enclave_unit_test")]
+use std::prelude::v1::*;
+#[cfg(feature = "enclave_unit_test")]
+use crates_unittest::test_case;
 
-#[test]
+#[cfg(feature = "enclave_unit_test")]
+#[test_case]
 fn test_fingerprint() {
     assert_eq!(Fingerprint::of::<usize>(), Fingerprint::of::<usize>());
     assert_eq!(Fingerprint::of::<&str>(), Fingerprint::of::<&'static str>());

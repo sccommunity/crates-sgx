@@ -984,12 +984,13 @@ where
 
 // TEST ////////////////////////////////////////////////////////////////////////
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::*;
     use crate::alloc::{vec, Vec};
     use serde_derive::Serialize;
-
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
     fn test_json<T>(t: T)
     where
         T: serde::Serialize,
@@ -1029,12 +1030,12 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn test_vec() {
         test_json(vec!["a", "b"]);
     }
 
-    #[test]
+    #[test_case]
     fn test_struct() {
         #[derive(Serialize)]
         struct S {
@@ -1044,7 +1045,7 @@ mod tests {
         test_json(S { f: 256 });
     }
 
-    #[test]
+    #[test_case]
     fn test_enum() {
         #[derive(Serialize)]
         enum E {
@@ -1060,7 +1061,7 @@ mod tests {
         test_json(E::Struct { t: true, f: false });
     }
 
-    #[test]
+    #[test_case]
     fn assert_serialize() {
         fn assert<T: serde::Serialize>() {}
 
@@ -1081,7 +1082,7 @@ mod tests {
         assert::<Vec<Box<dyn Serialize + Send>>>();
     }
 
-    #[test]
+    #[test_case]
     fn assert_serializer() {
         fn assert<T: serde::Serializer>() {}
 
