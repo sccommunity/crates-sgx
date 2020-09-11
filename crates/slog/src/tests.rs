@@ -1,15 +1,18 @@
 use {Discard, Logger, Never, KV, Drain, OwnedKVList, Record, AsFmtSerializer};
-
+use std::prelude::v1::*;
+use crates_unittest::{test_case, run_inventory_tests};
 // Separate module to test lack of imports
 mod no_imports {
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
     use {Discard, Logger};
     /// ensure o! macro expands without error inside a module
-    #[test]
+    #[test_case]
     fn test_o_macro_expansion() {
         let _ = Logger::root(Discard, o!("a" => "aa"));
     }
     /// ensure o! macro expands without error inside a module
-    #[test]
+    #[test_case]
     fn test_slog_o_macro_expansion() {
         let _ = Logger::root(Discard, slog_o!("a" => "aa"));
     }
@@ -19,8 +22,9 @@ mod no_imports {
 mod std_only {
     use super::super::*;
     use std;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn logger_fmt_debug_sanity() {
         let root = Logger::root(Discard, o!("a" => "aa"));
         let log = root.new(o!("b" => "bb", "c" => "cc"));
@@ -28,7 +32,7 @@ mod std_only {
         assert_eq!(format!("{:?}", log), "Logger(c, b, a)");
     }
 
-    #[test]
+    #[test_case]
     fn multichain() {
         #[derive(Clone)]
         struct CheckOwned;
@@ -61,7 +65,7 @@ mod std_only {
     }
 }
 
-#[test]
+#[test_case]
 fn expressions() {
     use super::{Record, Result, Serializer, KV};
 
@@ -187,7 +191,7 @@ fn expressions() {
 }
 
 #[cfg(integer128)]
-#[test]
+#[test_case]
 fn integer_128_types() {
     let log = Logger::root(Discard, o!("version" => env!("CARGO_PKG_VERSION")));
 
@@ -195,7 +199,7 @@ fn integer_128_types() {
     info!(log, "u128 = {}", 42u128; "foo" => 7u128);
 }
 
-#[test]
+#[test_case]
 fn expressions_fmt() {
     let log = Logger::root(Discard, o!("version" => env!("CARGO_PKG_VERSION")));
 
@@ -205,7 +209,7 @@ fn expressions_fmt() {
     info!(log, "message"; "f" => %f, "d" => ?d);
 }
 
-#[test]
+#[test_case]
 fn display_and_alternate_display() {
     use core::fmt;
     use core::cell::Cell;
@@ -259,7 +263,7 @@ fn display_and_alternate_display() {
     info!(log, ""; "n" => %Example, "a" => #%Example);
 }
 
-#[test]
+#[test_case]
 fn makers() {
     use ::*;
     let drain = Duplicate(
@@ -272,7 +276,7 @@ fn makers() {
     );
 }
 
-#[test]
+#[test_case]
 fn simple_logger_erased() {
     use ::*;
 
@@ -285,7 +289,7 @@ fn simple_logger_erased() {
     takes_arced_drain(log.to_erased());
 }
 
-#[test]
+#[test_case]
 fn logger_to_erased() {
     use ::*;
 
@@ -301,7 +305,7 @@ fn logger_to_erased() {
     takes_arced_drain(log.into_erased());
 }
 
-#[test]
+#[test_case]
 fn logger_by_ref() {
     use ::*;
     let drain = Discard.filter_level(Level::Warning).map(Fuse);
@@ -311,7 +315,7 @@ fn logger_by_ref() {
     info!(&log, "message"; "f" => %f, "d" => ?d);
 }
 
-#[test]
+#[test_case]
 fn test_never_type_clone() {
     // We just want to make sure that this compiles
     fn _do_not_run() {
@@ -321,9 +325,14 @@ fn test_never_type_clone() {
     // Always pass if we compiled
 }
 
-#[test]
+#[test_case]
 fn can_hash_keys() {
     use std::collections::HashSet;
     use Key;
     let tab: HashSet<Key> = ["foo"].iter().map(|&k| k.into()).collect();
+}
+
+
+pub fn run_tests() {
+    run_inventory_tests!();
 }

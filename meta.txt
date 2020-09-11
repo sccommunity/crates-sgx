@@ -24,6 +24,7 @@ dtoa, 0.4.5, https://github.com/dtolnay/dtoa, 9e9231b6925b4c4003b8c51332bf526aac
 either, 1.5.3, https://github.com/bluss/either, cd15a341118b5af765450dcb6380c6dee17ed0f2, MIT/Apache-2.0, full
 env_logger, 0.7.1, https://github.com/env-logger-rs/env_logger, b8c3754a1de50ac720657d2f328ea98148e1d80d, Apache-2.0, full
 encoding, 0.2.33, https://github.com/lifthrasiir/rust-encoding, 4e79c35ab6a351881a86dbff565c4db0085cc113, MIT, full
+erased-serde, 0.3.12, https://github.com/dtolnay/erased-serde, a5bf024e54fa2b159bb77ea1ab7c9fad75912a29, MIT/Apache-2.0, full
 fixedbitset, 0.3.0, https://github.com/petgraph/fixedbitset, 4d6590f482b4510074fe4532dcee232293a4615a, Apache-2.0, full
 fst, 0.4.4, https://github.com/BurntSushi/fst, 17bbc05c914d648b7346a12838ecdc21f67c76e1, Unlicense/MIT, full
 futures, 0.3.5, https://github.com/rust-lang/futures-rs, 19831dbecd13961fbd4243c1114663e24299c33d, MIT/Apache-2.0, full
@@ -85,7 +86,6 @@ ryu, 1.0.3, https://github.com/dtolnay/ryu, 664db527610d0d9cfccecd38029fc8d2d80b
 rustc-serialize, 0.3.24, https://github.com/rust-lang-deprecated/rustc-serialize, 71b8d6ef874cb53209406824317575c06a7727e0, MIT/Apache-2.0, full
 rustls, 0.18.0, https://github.com/ctz/rustls, 881bdcb5f62da6128d51021d457129627aff3ff1, Apache-2.0/ISC/MIT, full
 rustls-native-certs, 0.4.0, https://github.com/ctz/rustls-native-certs, 3e97326a0998d526bf7782fd03be96e5adcac39d, Apache-2.0/ISC/MIT, full
-
 serde, 1.0.106, https://github.com/serde-rs/serde/, d1564525ad5172edeac5a73ebe0680dbe735e63a, Apache-2.0, partial
 spin-rs, 0.5.2, https://github.com/mvdnes/spin-rs, 7516c8037d3d15712ba4d8499ab075e97a19d778, MIT, none-no-std
 sval, 0.5.1, https://github.com/sval-rs/sval, 85ccf03b78736d910a1ae92c39690640d1cbfef8, Apache-2.0, partial
@@ -97,6 +97,7 @@ slab, 0.4.2, https://github.com/carllerche/slab, f1327f72fb14fb387e07a6123300eb7
 spmc, 0.3.0, https://github.com/seanmonstar/spmc, 47deaaa59ea5eea8f16e178920047f9ca5f53dea, Apache-2.0, full
 stable_deref_trait, 1.1.1, https://github.com/storyyeller/stable_deref_trait, 6c13c264ab53861e2de68033fe9407b9b9f4ff76, Apache-2.0, none
 standback, 0.2.9, https://github.com/jhpratt/standback, 610627510d762d17cbae8c35b836741617b1e1fe, Apache-2.0, none
+slog, 2.6.0, https://github.com/slog-rs/slog, 65f49fd9454fb7744f3702bca50b23c7d8873074, MPL-2.0/MIT/Apache-2.0, full
 tempdir, 0.3.7, https://github.com/rust-lang-deprecated/tempdir, 403f918d9f3708ca144c727d20d2c1f8738767fc, MIT/Apache-2.0, full
 tempfile, 3.1.0, https://github.com/Stebalien/tempfile, b87eefb6234f9125780dea5ff86b15894636ba5b, MIT/Apache-2.0, full
 termcolor, 1.1.0, https://github.com/BurntSushi/termcolor, 7451f801bc8f654a54b194a0ea5df81a37bc57e6, MIT/UNLICENSE, none

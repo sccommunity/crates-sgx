@@ -301,13 +301,39 @@
 
 // {{{ Imports & meta
 #![warn(missing_docs)]
-#![no_std]
+//#![no_std]
+
+#![cfg_attr(not(
+    all(
+        any(feature = "std", feature = "mesalock_sgx"),
+        target_env = "sgx",
+        target_vendor = "mesalock",
+    )),
+    no_std
+)]
+
+#![cfg_attr(
+    all(
+        any(feature = "std", feature = "mesalock_sgx"),
+        target_env = "sgx",
+        target_vendor = "mesalock",
+    ),
+    feature(rustc_private)
+)]
+
+#[cfg(all(
+    any(feature = "std", feature = "mesalock_sgx"),
+    not(target_env = "sgx"),
+    not(target_vendor = "mesalock"),
+))]
+#[macro_use]
+extern crate sgx_tstd as std;
 
 #[cfg(not(feature = "std"))]
 extern crate alloc;
-#[macro_use]
-#[cfg(feature = "std")]
-extern crate std;
+//#[macro_use]
+// #[cfg(feature = "std")]
+// extern crate std;
 
 mod key;
 pub use self::key::Key;
@@ -2028,10 +2054,10 @@ where
 }
 
 #[cfg(feature = "std")]
-impl<'a, D: Drain> From<std::sync::PoisonError<std::sync::MutexGuard<'a, D>>>
+impl<'a, D: Drain> From<std::sync::PoisonError<std::sync::SgxMutexGuard<'a, D>>>
     for MutexDrainError<D> {
     fn from(
-        _: std::sync::PoisonError<std::sync::MutexGuard<'a, D>>,
+        _: std::sync::PoisonError<std::sync::SgxMutexGuard<'a, D>>,
     ) -> MutexDrainError<D> {
         MutexDrainError::Mutex
     }
@@ -2051,7 +2077,7 @@ where
 }
 
 #[cfg(feature = "std")]
-impl<D: Drain> Drain for std::sync::Mutex<D> {
+impl<D: Drain> Drain for std::sync::SgxMutex<D> {
     type Ok = D::Ok;
     type Err = MutexDrainError<D>;
     fn log(
@@ -2276,21 +2302,29 @@ impl Level {
     }
 }
 
-#[test]
+#[cfg(feature = "enclave_unit_test")]
+use std::prelude::v1::*;
+#[cfg(feature = "enclave_unit_test")]
+extern crate crates_unittest;
+#[cfg(feature = "enclave_unit_test")]
+use crates_unittest::test_case;
+
+#[cfg(feature = "enclave_unit_test")]
+#[test_case]
 fn level_at_least() {
     assert!(Level::Debug.is_at_least(Level::Debug));
     assert!(Level::Debug.is_at_least(Level::Trace));
     assert!(!Level::Debug.is_at_least(Level::Info));
 }
-
-#[test]
+#[cfg(feature = "enclave_unit_test")]
+#[test_case]
 fn filter_level_sanity() {
     assert!(Level::Critical.as_usize() > FilterLevel::Off.as_usize());
     assert!(Level::Critical.as_usize() == FilterLevel::Critical.as_usize());
     assert!(Level::Trace.as_usize() == FilterLevel::Trace.as_usize());
 }
-
-#[test]
+#[cfg(feature = "enclave_unit_test")]
+#[test_case]
 fn level_from_str() {
     refute_from_str::<Level>("off");
     assert_from_str(Level::Critical, "critical");
@@ -2319,8 +2353,8 @@ fn level_from_str() {
     refute_from_str::<Level>(" info");
     refute_from_str::<Level>("desinfo");
 }
-
-#[test]
+#[cfg(feature = "enclave_unit_test")]
+#[test_case]
 fn filter_level_from_str() {
     assert_from_str(FilterLevel::Off, "off");
     assert_from_str(FilterLevel::Critical, "critical");
@@ -2350,7 +2384,7 @@ fn filter_level_from_str() {
     refute_from_str::<FilterLevel>("desinfo");
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 fn assert_from_str<T>(expected: T, level_str: &str)
     where
         T: FromStr + fmt::Debug + PartialEq,
@@ -2363,7 +2397,7 @@ fn assert_from_str<T>(expected: T, level_str: &str)
     assert_eq!(expected, actual, "Invalid filter level parsed from '{}'", level_str);
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 fn refute_from_str<T>(level_str: &str)
     where
         T: FromStr + fmt::Debug {
@@ -2373,9 +2407,9 @@ fn refute_from_str<T>(level_str: &str)
         panic!("Parsing filter level '{}' succeeded: {:?}", level_str, level)
     }
 }
-
+#[cfg(feature = "enclave_unit_test")]
 #[cfg(feature = "std")]
-#[test]
+#[test_case]
 fn level_to_string_and_from_str_are_compatible() {
     assert_to_string_from_str(Level::Critical);
     assert_to_string_from_str(Level::Error);
@@ -2384,9 +2418,9 @@ fn level_to_string_and_from_str_are_compatible() {
     assert_to_string_from_str(Level::Debug);
     assert_to_string_from_str(Level::Trace);
 }
-
+#[cfg(feature = "enclave_unit_test")]
 #[cfg(feature = "std")]
-#[test]
+#[test_case]
 fn filter_level_to_string_and_from_str_are_compatible() {
     assert_to_string_from_str(FilterLevel::Off);
     assert_to_string_from_str(FilterLevel::Critical);
@@ -2396,8 +2430,8 @@ fn filter_level_to_string_and_from_str_are_compatible() {
     assert_to_string_from_str(FilterLevel::Debug);
     assert_to_string_from_str(FilterLevel::Trace);
 }
-
-#[cfg(all(test, feature = "std"))]
+#[cfg(feature = "enclave_unit_test")]
+#[cfg(feature = "std")]
 fn assert_to_string_from_str<T>(expected: T)
     where
         T: std::string::ToString + FromStr + PartialEq + fmt::Debug,
@@ -2410,7 +2444,7 @@ fn assert_to_string_from_str<T>(expected: T)
     assert_eq!(expected, actual, "Invalid value parsed from string representation of {:?}", actual);
 }
 
-#[test]
+#[test_case]
 fn filter_level_accepts_tests() {
     assert_eq!(true, FilterLevel::Warning.accepts(Level::Error));
     assert_eq!(true, FilterLevel::Warning.accepts(Level::Warning));
@@ -3661,8 +3695,8 @@ pub mod ser {
 // }}}
 
 // {{{ Test
-#[cfg(test)]
-mod tests;
+#[cfg(feature = "enclave_unit_test")]
+pub mod tests;
 
 // }}}
 

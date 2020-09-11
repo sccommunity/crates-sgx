@@ -29,9 +29,10 @@ debug-assertions = false
 [features]
 nested-values = ["erased-serde"]
 dynamic-keys = []
-std = []
+std = ["mesalock_sgx"]
 nothreads = []
-default = ["std"]
+default = ["std", "mesalock_sgx"]
+mesalock_sgx = ["sgx_tstd", "std"]
 
 max_level_off   = []
 max_level_error = []
@@ -46,10 +47,12 @@ release_max_level_warn  = []
 release_max_level_info  = []
 release_max_level_debug = []
 release_max_level_trace = []
-
+enclave_unit_test = ["crates_unittest", "inventory"]
 [dependencies]
-erased-serde = { version = "0.3", optional = true }
-
+erased-serde = { path = "../erased-serde", version = "0.3", optional = true }
+sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true, features = ["untrusted_fs", "untrusted_time"] }
+crates_unittest = { git = "https://github.com/Zha0Chan/crates-sgx-unittest.git", optional = true, default-features = false }
+inventory = { version = "0.1.6", optional = true }
 [[example]]
 name = "singlethread"
 required-features = ["nothreads"]
@@ -61,3 +64,4 @@ features = ["std", "nested-values", "dynamic-keys"]
 members = [
   "crates/test_edition2018",
 ]
+exclude = ["sgx-tests"]
