@@ -98,6 +98,7 @@ spmc, 0.3.0, https://github.com/seanmonstar/spmc, 47deaaa59ea5eea8f16e178920047f
 stable_deref_trait, 1.1.1, https://github.com/storyyeller/stable_deref_trait, 6c13c264ab53861e2de68033fe9407b9b9f4ff76, Apache-2.0, none
 standback, 0.2.9, https://github.com/jhpratt/standback, 610627510d762d17cbae8c35b836741617b1e1fe, Apache-2.0, none
 slog, 2.6.0, https://github.com/slog-rs/slog, 65f49fd9454fb7744f3702bca50b23c7d8873074, MPL-2.0/MIT/Apache-2.0, full
+slog-async, 2.5.0, https://github.com/slog-rs/async, 25eb33bb984a7bd71751b52fb0e41efdd0d7a496, MPL-2.0/MIT/Apache-2.0, full
 tempdir, 0.3.7, https://github.com/rust-lang-deprecated/tempdir, 403f918d9f3708ca144c727d20d2c1f8738767fc, MIT/Apache-2.0, full
 tempfile, 3.1.0, https://github.com/Stebalien/tempfile, b87eefb6234f9125780dea5ff86b15894636ba5b, MIT/Apache-2.0, full
 termcolor, 1.1.0, https://github.com/BurntSushi/termcolor, 7451f801bc8f654a54b194a0ea5df81a37bc57e6, MIT/UNLICENSE, none
