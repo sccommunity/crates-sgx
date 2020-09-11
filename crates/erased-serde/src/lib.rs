@@ -96,14 +96,39 @@
 //! ```
 
 #![doc(html_root_url = "https://docs.rs/erased-serde/0.3.12")]
-#![cfg_attr(not(feature = "std"), no_std)]
+//#![cfg_attr(not(feature = "std"), no_std)]
+#![cfg_attr(not(
+    all(
+        any(feature = "std", feature = "mesalock_sgx"),
+        target_env = "sgx",
+        target_vendor = "mesalock",
+    )),
+    no_std
+)]
+
+#![cfg_attr(
+    all(
+        any(feature = "std", feature = "mesalock_sgx"),
+        target_env = "sgx",
+        target_vendor = "mesalock",
+    ),
+    feature(rustc_private)
+)]
+
+#[cfg(all(
+    any(feature = "std", feature = "mesalock_sgx"),
+    not(target_env = "sgx"),
+    not(target_vendor = "mesalock"),
+))]
+#[macro_use]
+extern crate sgx_tstd as std;
 
 mod alloc {
     #[cfg(not(feature = "std"))]
     extern crate alloc;
 
     #[cfg(feature = "std")]
-    use std as alloc;
+    use sgx_tstd as alloc;
 
     pub use self::alloc::borrow::ToOwned;
     pub use self::alloc::boxed::Box;
