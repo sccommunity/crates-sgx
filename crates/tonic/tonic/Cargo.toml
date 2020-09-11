@@ -22,6 +22,8 @@ readme = "../README.md"
 categories = ["web-programming", "network-programming", "asynchronous"]
 keywords = ["rpc", "grpc", "async", "futures", "protobuf"]
 
+
+
 [features]
 default = ["mesalock_sgx", "transport", "codegen", "prost"]
 codegen = ["async-trait"]
@@ -37,6 +39,7 @@ tls = ["transport", "tokio-rustls"]
 tls-roots = ["tls", "rustls-native-certs"]
 prost = ["prost1", "prost-derive"]
 mesalock_sgx = ["sgx_tstd"]
+enclave_unit_test = ["crates_unittest", "inventory"]
 # [[bench]]
 # name = "bench_main"
 # harness = false
@@ -78,7 +81,8 @@ tracing-futures = { path = "../../tracing/tracing-futures", version = "0.2", opt
 tokio-rustls = { path = "../../tls/tokio-rustls", version = "0.14", optional = true }
 rustls-native-certs = { path = "../../rustls-native-certs", version = "0.4", optional = true }
 sgx_tstd = { git = "https://github.com/apache/incubator-teaclave-sgx-sdk.git", tag = "v1.1.2", optional = true }
-
+crates_unittest = { git = "https://github.com/Zha0Chan/crates-sgx-unittest.git", optional = true, default-features = false }
+inventory = { version = "0.1.6", optional = true }
 
 [dev-dependencies]
 # tokio = { version = "0.2", features = ["rt-core", "macros"] }

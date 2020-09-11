@@ -90,12 +90,14 @@ impl<T> Response<T> {
     }
 }
 
-#[cfg(test)]
+
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::*;
     use crate::metadata::MetadataValue;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn reserved_headers_are_excluded() {
         let mut r = Response::new(1);
 

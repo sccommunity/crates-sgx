@@ -117,3 +117,14 @@ pub(crate) type Error = Box<dyn std::error::Error + Send + Sync>;
 #[cfg(feature = "codegen")]
 #[cfg_attr(docsrs, doc(cfg(feature = "codegen")))]
 pub mod codegen;
+
+
+#[cfg(feature = "enclave_unit_test")]
+pub mod tests {
+    use std::prelude::v1::*;
+    use crates_unittest::run_inventory_tests;
+
+    pub fn run_tests() {
+        run_inventory_tests!();
+    }
+}

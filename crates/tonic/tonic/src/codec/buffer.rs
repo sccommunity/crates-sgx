@@ -80,11 +80,12 @@ impl BufMut for EncodeBuf<'_> {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::*;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn decode_buf() {
         let mut payload = BytesMut::with_capacity(100);
         payload.put(&vec![0u8; 50][..]);
@@ -106,7 +107,7 @@ mod tests {
         assert!(!buf.has_remaining());
     }
 
-    #[test]
+    #[test_case]
     fn encode_buf() {
         let mut bytes = BytesMut::with_capacity(100);
         let mut buf = EncodeBuf::new(&mut bytes);

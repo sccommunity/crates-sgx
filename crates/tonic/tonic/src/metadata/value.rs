@@ -10,6 +10,8 @@ use std::marker::PhantomData;
 use std::str::FromStr;
 use std::{cmp, fmt};
 use std::prelude::v1::*;
+#[cfg(feature = "enclave_unit_test")]
+use crates_unittest::test_case;
 /// Represents a custom metadata field value.
 ///
 /// `MetadataValue` is used as the [`MetadataMap`] value.
@@ -433,7 +435,7 @@ macro_rules! from_integers {
             }
         }
 
-        #[test]
+        #[test_case]
         fn $name() {
             let n: $t = 55;
             let val = AsciiMetadataValue::from(n);
@@ -445,7 +447,7 @@ macro_rules! from_integers {
         }
     )*};
 }
-
+#[cfg(feature = "enclave_unit_test")]
 from_integers! {
     // integer type => maximum decimal length
 
@@ -457,31 +459,32 @@ from_integers! {
     from_u64: u64 => 20,
     from_i64: i64 => 20
 }
-
+#[cfg(feature = "enclave_unit_test")]
 #[cfg(target_pointer_width = "16")]
 from_integers! {
     from_usize: usize => 5,
     from_isize: isize => 6
 }
-
+#[cfg(feature = "enclave_unit_test")]
 #[cfg(target_pointer_width = "32")]
 from_integers! {
     from_usize: usize => 10,
     from_isize: isize => 11
 }
-
+#[cfg(feature = "enclave_unit_test")]
 #[cfg(target_pointer_width = "64")]
 from_integers! {
     from_usize: usize => 20,
     from_isize: isize => 20
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod from_metadata_value_tests {
     use super::*;
     use crate::metadata::map::MetadataMap;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn it_can_insert_metadata_key_as_metadata_value() {
         let mut map = MetadataMap::new();
         map.insert(
@@ -697,8 +700,8 @@ impl<'a, VE: ValueEncoding> PartialOrd<MetadataValue<VE>> for &'a str {
         self.as_bytes().partial_cmp(other.inner.as_bytes())
     }
 }
-
-#[test]
+#[cfg(feature = "enclave_unit_test")]
+#[test_case]
 fn test_debug() {
     let cases = &[
         ("hello", "\"hello\""),
@@ -716,8 +719,8 @@ fn test_debug() {
     sensitive.set_sensitive(true);
     assert_eq!("Sensitive", format!("{:?}", sensitive));
 }
-
-#[test]
+#[cfg(feature = "enclave_unit_test")]
+#[test_case]
 fn test_is_empty() {
     fn from_str<VE: ValueEncoding>(s: &str) -> MetadataValue<VE> {
         MetadataValue::<VE>::unchecked_from_header_value(s.parse().unwrap())
@@ -734,14 +737,14 @@ fn test_is_empty() {
     assert!(!from_str::<Ascii>("=====").is_empty());
     assert!(from_str::<Binary>("=====").is_empty());
 }
-
-#[test]
+#[cfg(feature = "enclave_unit_test")]
+#[test_case]
 fn test_from_shared_base64_encodes() {
     let value = BinaryMetadataValue::from_shared(Bytes::from_static(b"Hello")).unwrap();
     assert_eq!(value.as_encoded_bytes(), b"SGVsbG8");
 }
-
-#[test]
+#[cfg(feature = "enclave_unit_test")]
+#[test_case]
 fn test_value_eq_value() {
     type BMV = BinaryMetadataValue;
     type AMV = AsciiMetadataValue;
@@ -765,8 +768,8 @@ fn test_value_eq_value() {
         );
     }
 }
-
-#[test]
+#[cfg(feature = "enclave_unit_test")]
+#[test_case]
 fn test_value_eq_str() {
     type BMV = BinaryMetadataValue;
     type AMV = AsciiMetadataValue;
@@ -785,8 +788,8 @@ fn test_value_eq_str() {
     assert_eq!(BMV::from_static("SGVsbG8hIQ=="), "Hello!!");
     assert_eq!("Hello!!", BMV::from_static("SGVsbG8hIQ=="));
 }
-
-#[test]
+#[cfg(feature = "enclave_unit_test")]
+#[test_case]
 fn test_value_eq_bytes() {
     type BMV = BinaryMetadataValue;
     type AMV = AsciiMetadataValue;

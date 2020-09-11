@@ -724,11 +724,12 @@ impl From<i32> for Code {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::*;
     use crate::Error;
-
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
     #[derive(Debug)]
     struct Nested(Error);
 
@@ -744,7 +745,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_case]
     fn from_error_status() {
         let orig = Status::new(Code::OutOfRange, "weeaboo");
         let found = Status::from_error(&orig);
@@ -753,7 +754,7 @@ mod tests {
         assert_eq!(orig.message(), found.message());
     }
 
-    #[test]
+    #[test_case]
     fn from_error_unknown() {
         let orig: Error = "peek-a-boo".into();
         let found = Status::from_error(&*orig);
@@ -762,7 +763,7 @@ mod tests {
         assert_eq!(found.message(), orig.to_string());
     }
 
-    #[test]
+    #[test_case]
     fn from_error_nested() {
         let orig = Nested(Box::new(Status::new(Code::OutOfRange, "weeaboo")));
         let found = Status::from_error(&orig);
@@ -771,7 +772,7 @@ mod tests {
         assert_eq!(found.message(), "weeaboo");
     }
 
-    #[test]
+    #[test_case]
     #[cfg(feature = "h2")]
     fn from_error_h2() {
         let orig = h2::Error::from(h2::Reason::CANCEL);
@@ -780,7 +781,7 @@ mod tests {
         assert_eq!(found.code(), Code::Cancelled);
     }
 
-    #[test]
+    #[test_case]
     #[cfg(feature = "h2")]
     fn to_h2_error() {
         let orig = Status::new(Code::Cancelled, "stop eet!");
@@ -789,7 +790,7 @@ mod tests {
         assert_eq!(err.reason(), Some(h2::Reason::CANCEL));
     }
 
-    #[test]
+    #[test_case]
     fn code_from_i32() {
         // This for loop should catch if we ever add a new variant and don't
         // update From<i32>.
@@ -806,7 +807,7 @@ mod tests {
         assert_eq!(Code::from(Code::__NonExhaustive as i32), Code::Unknown);
     }
 
-    #[test]
+    #[test_case]
     fn constructors() {
         assert_eq!(Status::ok("").code(), Code::Ok);
         assert_eq!(Status::cancelled("").code(), Code::Cancelled);
@@ -833,7 +834,7 @@ mod tests {
         assert_eq!(Status::unauthenticated("").code(), Code::Unauthenticated);
     }
 
-    #[test]
+    #[test_case]
     fn details() {
         const DETAILS: &[u8] = &[0, 2, 3];
 

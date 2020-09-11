@@ -2493,11 +2493,12 @@ mod as_encoding_agnostic_metadata_key {
     impl<'a> AsEncodingAgnosticMetadataKey for &'a String {}
 }
 
-#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
     use super::*;
-
-    #[test]
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
+    #[test_case]
     fn test_from_headers_takes_http_headers() {
         let mut http_map = http::HeaderMap::new();
         http_map.insert("x-host", "example.com".parse().unwrap());
@@ -2507,7 +2508,7 @@ mod tests {
         assert_eq!(map.get("x-host").unwrap(), "example.com");
     }
 
-    #[test]
+    #[test_case]
     fn test_to_headers_encoding() {
         use crate::Code;
         use crate::Status;
@@ -2522,7 +2523,7 @@ mod tests {
         assert_eq!(s1.message(), s2.message());
     }
 
-    #[test]
+    #[test_case]
     fn test_iter_categorizes_ascii_entries() {
         let mut map = MetadataMap::new();
 
@@ -2544,7 +2545,7 @@ mod tests {
         assert!(found_x_word);
     }
 
-    #[test]
+    #[test_case]
     fn test_iter_categorizes_binary_entries() {
         let mut map = MetadataMap::new();
 
@@ -2565,7 +2566,7 @@ mod tests {
         assert!(found_x_word_bin);
     }
 
-    #[test]
+    #[test_case]
     fn test_iter_mut_categorizes_ascii_entries() {
         let mut map = MetadataMap::new();
 
@@ -2587,7 +2588,7 @@ mod tests {
         assert!(found_x_word);
     }
 
-    #[test]
+    #[test_case]
     fn test_iter_mut_categorizes_binary_entries() {
         let mut map = MetadataMap::new();
 
@@ -2608,7 +2609,7 @@ mod tests {
         assert!(found_x_word_bin);
     }
 
-    #[test]
+    #[test_case]
     fn test_keys_categorizes_ascii_entries() {
         let mut map = MetadataMap::new();
 
@@ -2630,7 +2631,7 @@ mod tests {
         assert!(found_x_word);
     }
 
-    #[test]
+    #[test_case]
     fn test_keys_categorizes_binary_entries() {
         let mut map = MetadataMap::new();
 
@@ -2651,7 +2652,7 @@ mod tests {
         assert!(found_x_number_bin);
     }
 
-    #[test]
+    #[test_case]
     fn test_values_categorizes_ascii_entries() {
         let mut map = MetadataMap::new();
 
@@ -2673,7 +2674,7 @@ mod tests {
         assert!(found_x_word);
     }
 
-    #[test]
+    #[test_case]
     fn test_values_categorizes_binary_entries() {
         let mut map = MetadataMap::new();
 
@@ -2690,7 +2691,7 @@ mod tests {
         assert!(found_x_word_bin);
     }
 
-    #[test]
+    #[test_case]
     fn test_values_mut_categorizes_ascii_entries() {
         let mut map = MetadataMap::new();
 
@@ -2708,7 +2709,7 @@ mod tests {
         assert!(found_x_word);
     }
 
-    #[test]
+    #[test_case]
     fn test_values_mut_categorizes_binary_entries() {
         let mut map = MetadataMap::new();
 

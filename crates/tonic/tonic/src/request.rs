@@ -265,13 +265,16 @@ mod sealed {
     pub trait Sealed {}
 }
 
-#[cfg(test)]
+//#[cfg(test)]
+#[cfg(feature = "enclave_unit_test")]
 mod tests {
+    use std::prelude::v1::*;
+    use crates_unittest::test_case;
     use super::*;
     use crate::metadata::MetadataValue;
     use http::Uri;
-
-    #[test]
+    
+    #[test_case]
     fn reserved_headers_are_excluded() {
         let mut r = Request::new(1);
 
