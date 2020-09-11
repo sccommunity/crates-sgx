@@ -88,7 +88,8 @@ pub fn scope<'s, F, R>(f: F) -> R
         f(&this)
     }));
     if this.active_holes.get() != 0 {
-        std::process::abort();
+        //std::process::abort();
+        sgx_trts::trts::rsgx_abort();
     }
     match result {
         Ok(r) => r,

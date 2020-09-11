@@ -121,6 +121,7 @@ try-lock, 0.2.2, https://github.com/seanmonstar/try-lock, 90a682467dfbaf762a8986
 traitobject, 0.1.0, https://github.com/reem/rust-traitobject, b3471a15917b2caf5a8b27debb0b4b390fc6634f, MIT/Apache-2.0, none
 typeable, 0.1.2, https://github.com/reem/rust-typeable, 99e26e44905fc61211e6ad4f910eb9652b747289, MIT, none
 tonic, 0.3.0, https://github.com/hyperium/tonic, 73938e1e0ade5826ffbcf873d7e3e4ee96b7e13a, MIT, full
+take_mut, 0.2.2, https://github.com/Sgeo/take_mut, 1bd70d842c6febcd16ec1fe3a954a84032b89f52, MIT, full
 url, 1.7.2, https://github.com/servo/rust-url, 695351be29b015a29f39f55e44f4b88a947b3844, MIT/Apache-2.0, none
 url, 2.1.1, https://github.com/servo/rust-url, 0a92c73a37725aacddcfbeaac4c6bfc40fdf0a1b, MIT/Apache-2.0, none
 unicase, 1.0.0, https://github.com/seanmonstar/unicase, 7b116bc70c16b972a06c2e084ad1e9f3edfbaa2f, MIT, none

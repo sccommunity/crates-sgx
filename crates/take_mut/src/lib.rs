@@ -6,6 +6,12 @@
 //! Use `take_or_recover()` to replace the `&mut T` with a recovery value before continuing the panic.
 //!
 //! Contrast with `std::mem::replace()`, which allows for putting a different `T` into a `&mut T`, but requiring the new `T` to be available before being able to consume the old `T`.
+#![cfg_attr(all(feature = "mesalock_sgx",
+                not(target_env = "sgx")), no_std)]
+#![cfg_attr(all(target_env = "sgx", target_vendor = "mesalock"),
+            feature(rustc_private))]
+#[cfg(all(feature = "mesalock_sgx", not(target_env = "sgx")))]
+extern crate sgx_tstd as std;
 
 use std::panic;
 
@@ -35,7 +41,10 @@ pub fn take<T, F>(mut_ref: &mut T, closure: F)
     unsafe {
         let old_t = ptr::read(mut_ref);
         let new_t = panic::catch_unwind(panic::AssertUnwindSafe(|| closure(old_t)))
-            .unwrap_or_else(|_| ::std::process::abort());
+            .unwrap_or_else(|_| 
+                // ::std::process::abort()
+                sgx_trts::trts::rsgx_abort()
+            );
         ptr::write(mut_ref, new_t);
     }
 }
@@ -87,7 +96,10 @@ pub fn take_or_recover<T, F, R>(mut_ref: &mut T, recover: R, closure: F)
         match new_t {
             Err(err) => {
                 let r = panic::catch_unwind(panic::AssertUnwindSafe(|| recover()))
-                    .unwrap_or_else(|_| ::std::process::abort());
+                    .unwrap_or_else(|_| 
+                        // ::std::process::abort()
+                        sgx_trts::trts::rsgx_abort()
+                    );
                 ptr::write(mut_ref, r);
                 panic::resume_unwind(err);
             }
